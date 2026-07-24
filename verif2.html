@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostic 2 — AURA90</title>
+<style>
+body{font-family:-apple-system,system-ui,sans-serif;background:#070B12;color:#fff;padding:22px 16px;line-height:1.55;font-size:14px}
+h1{font-size:17px;margin-bottom:14px}
+.bloc{background:#0E1520;border:1px solid #1E2A3A;border-radius:12px;padding:14px;margin-bottom:10px;word-break:break-word}
+.ok{color:#3DE8C8;font-weight:800}
+.ko{color:#FF7A9E;font-weight:800}
+b{color:#3DE8C8}
+iframe{position:absolute;left:-9999px;width:390px;height:800px;border:0}
+</style>
+</head>
+<body>
+<h1>🔬 Diagnostic 2 — état réel de la carte</h1>
+<div id="sortie"><div class="bloc">Chargement de l'accueil en coulisse…</div></div>
+<iframe id="cadre"></iframe>
+<script>
+const S = document.getElementById('sortie');
+function ligne(html){ const d=document.createElement('div'); d.className='bloc'; d.innerHTML=html; S.appendChild(d); }
+
+const cadre = document.getElementById('cadre');
+cadre.src = './?diag=' + Date.now();
+
+cadre.addEventListener('load', () => {
+  // on laisse 2,5 s au JS de la page pour finir son travail
+  setTimeout(() => {
+    S.innerHTML = '';
+    let doc, win;
+    try{ win = cadre.contentWindow; doc = win.document; }
+    catch(e){ ligne('<span class="ko">Impossible de lire la page : '+e.message+'</span>'); return; }
+
+    // 1 — l'élément existe-t-il dans le rendu ?
+    const carte = doc.getElementById('carte-aof90');
+    if(!carte){
+      ligne('<span class="ko">1. La carte n\'existe PAS dans la page rendue</span><br><small>Le HTML reçu ne contient pas l\'élément, ou un script l\'a supprimé.</small>');
+      const n = (doc.documentElement.outerHTML.match(/carte-aof90/g)||[]).length;
+      ligne('Occurrences de "carte-aof90" dans le document rendu : <b>'+n+'</b>');
+      ligne('Fonctions présentes — majCarteAof90: <b>'+(typeof win.majCarteAof90)+'</b> · ouvrirAof90: <b>'+(typeof win.ouvrirAof90)+'</b> · estDeverrouille: <b>'+(typeof win.estDeverrouille)+'</b>');
+      return;
+    }
+    ligne('<span class="ok">1. La carte EXISTE dans la page rendue</span>');
+
+    // 2 — dimensions et visibilité calculées
+    const r = carte.getBoundingClientRect();
+    const cs = win.getComputedStyle(carte);
+    ligne('2. Dimensions : <b>'+Math.round(r.width)+' × '+Math.round(r.height)+'</b> px · display: <b>'+cs.display+'</b> · visibility: <b>'+cs.visibility+'</b> · opacity: <b>'+cs.opacity+'</b>');
+
+    // 3 — un parent la masque-t-il ?
+    let p = carte.parentElement, masques = [];
+    while(p && p !== doc.body){
+      const s = win.getComputedStyle(p);
+      if(s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) === 0 || (p.getBoundingClientRect().height === 0 && s.overflow === 'hidden')){
+        masques.push((p.id ? '#'+p.id : p.className ? '.'+String(p.className).split(' ')[0] : p.tagName) + ' ('+ (s.display==='none'?'display:none': s.visibility==='hidden'?'visibility:hidden': parseFloat(s.opacity)===0?'opacity:0':'hauteur 0 + overflow hidden') +')');
+      }
+      p = p.parentElement;
+    }
+    ligne(masques.length
+      ? '<span class="ko">3. Masquée par un parent : '+masques.join(' · ')+'</span>'
+      : '<span class="ok">3. Aucun parent ne la masque</span>');
+
+    // 4 — le style .carte-aof90 est-il chargé ?
+    let regle = false;
+    try{
+      for(const feuille of doc.styleSheets){
+        try{ for(const rg of feuille.cssRules){ if(rg.selectorText && rg.selectorText.includes('carte-aof90')){ regle = true; break; } } }catch(e){}
+        if(regle) break;
+      }
+    }catch(e){}
+    ligne(regle ? '<span class="ok">4. Style .carte-aof90 chargé</span>' : '<span class="ko">4. Style .carte-aof90 INTROUVABLE dans les feuilles de style</span>');
+
+    // 5 — position dans la page
+    ligne('5. Position verticale dans la page : <b>'+Math.round(r.top + win.scrollY)+'</b> px du haut · élément précédent : <b>'+(carte.previousElementSibling ? (carte.previousElementSibling.id||carte.previousElementSibling.className||carte.previousElementSibling.tagName) : 'aucun')+'</b>');
+
+    // 6 — l'image de couverture répond-elle ?
+    const img = new Image();
+    img.onload = () => ligne('<span class="ok">6. aof90-couverture.png : OK ('+img.naturalWidth+'×'+img.naturalHeight+')</span>');
+    img.onerror = () => ligne('<span class="ko">6. aof90-couverture.png : ERREUR de chargement</span>');
+    img.src = 'aof90-couverture.png?d=' + Date.now();
+  }, 2500);
+});
+</script>
+</body>
+</html>
