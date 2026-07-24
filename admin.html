@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AURA90' — Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--nuit:#070B12;--surface:#0E1520;--surface2:#141D2B;--ligne:#1E2A3A;--texte:#E8EEF6;--sourdine:#8A97A8;--aura1:#3DE8C8;--aura2:#8B7CFF;--ko:#FF7A9E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--nuit);color:var(--texte);font-family:'Manrope',sans-serif;min-height:100vh;padding:20px 16px 60px;max-width:680px;margin:0 auto}
+h1{font-family:'Unbounded',sans-serif;font-size:19px;margin-bottom:4px}
+h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sous{color:var(--sourdine);font-size:12px;margin-bottom:20px}
+h2{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--sourdine);text-transform:uppercase;margin:22px 0 10px}
+input,textarea{width:100%;background:var(--surface);border:1px solid var(--ligne);border-radius:11px;padding:12px 14px;color:var(--texte);font-family:inherit;font-size:13px;margin-bottom:8px}
+textarea{min-height:80px;resize:vertical}
+button{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;border:none;border-radius:11px;padding:12px 18px;font-weight:800;font-size:13px;font-family:inherit;cursor:pointer}
+button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)}
+.tuiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.tuile{background:var(--surface);border:1px solid var(--ligne);border-radius:13px;padding:13px;text-align:center}
+.tuile .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:17px;color:var(--aura1)}
+.tuile .l{font-size:8.5px;color:var(--sourdine);margin-top:4px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.retrait{background:var(--surface);border:1px solid var(--ligne);border-radius:13px;padding:13px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.retrait .g{min-width:0}
+.retrait .m{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--aura1)}
+.retrait .num{font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:2px}
+.retrait .e{color:var(--sourdine);font-size:10.5px;margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+.msg{margin:10px 0;font-size:12px;color:var(--aura1)}
+.msg.err{color:var(--ko)}
+.vide{color:var(--sourdine);font-size:12px;padding:14px;text-align:center;border:1px dashed var(--ligne);border-radius:12px}
+#panel{display:none}
+.ligne-btn{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>AURA<span class="neuf0">90</span>' — Administration</h1>
+<div class="sous" id="qui">Connexion requise</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <input id="email" type="email" placeholder="Email admin">
+  <input id="mdp" type="password" placeholder="Mot de passe">
+  <button onclick="connecter()">Entrer</button>
+  <div class="msg err" id="msg-login"></div>
+</div>
+
+<!-- ===== PANNEAU ===== -->
+<div id="panel">
+  <h2>Vue d'ensemble</h2>
+  <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
+
+  <h2>Retraits en attente — versements du mardi</h2>
+  <div id="retraits"><div class="vide">Chargement…</div></div>
+  <div class="ligne-btn">
+    <button class="gris" onclick="chargerRetraits()">↻ Rafraîchir</button>
+    <button onclick="cloturer()">Clôturer la semaine (push aux payés)</button>
+  </div>
+  <div class="msg" id="msg-retraits"></div>
+
+  <h2>Notification à tous les utilisateurs (in-app + push)</h2>
+  <input id="n-titre" placeholder="Titre — ex. 3 pronos Très sûr ce week-end 🔒">
+  <textarea id="n-corps" placeholder="Message"></textarea>
+  <button onclick="notifierTous()">Envoyer à tout le monde</button>
+  <div class="msg" id="msg-notif"></div>
+
+  <h2>Candidatures partenaires</h2>
+  <div id="zone-candidatures"><div class="vide">Chargement…</div></div>
+  <div class="ligne-btn"><button class="gris" onclick="chargerCandidatures()">↻ Rafraîchir</button></div>
+
+  <h2>Configurer un code partenaire</h2>
+  <input id="c-email" type="email" placeholder="Email du compte du partenaire">
+  <input id="c-code" placeholder="Code souhaité (4-10 lettres/chiffres) — ex : MODOU10" style="text-transform:uppercase">
+  <select id="c-modele" onchange="basculerModele()" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface2);color:var(--texte);font-family:inherit;margin-bottom:8px">
+    <option value="pct">Modèle pourcentage (35 %)</option>
+    <option value="fixe">Modèle fixe (3 000 / 6 000 F)</option>
+    <option value="standard">Barème standard (1 000 / 2 000 F)</option>
+  </select>
+  <div id="c-champs-pct"><input id="c-pct" type="number" value="35" placeholder="Pourcentage de chaque paiement"></div>
+  <div id="c-champs-fixe" style="display:none">
+    <input id="c-com-mois" type="number" value="3000" placeholder="Commission / abonné mois (F)">
+    <input id="c-com-3mois" type="number" value="6000" placeholder="Commission / abonné 3 mois (F)">
+  </div>
+  <input id="c-reduc-mois" type="number" placeholder="Réduction filleul mois (vide = standard 1000)">
+  <input id="c-reduc-3mois" type="number" placeholder="Réduction filleul 3 mois (vide = standard 2000)">
+  <button onclick="configurerCode()">Activer / mettre à jour le code</button>
+  <div class="msg" id="msg-code"></div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://nzsvmqyiukxzsfjprpiy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW";
+let JETON = null;
+const $ = id => document.getElementById(id);
+
+async function connecter(){
+  const r = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY },
+    body: JSON.stringify({ email: $('email').value.trim(), password: $('mdp').value })
+  });
+  const d = await r.json();
+  if(!d.access_token){ $('msg-login').textContent = 'Identifiants incorrects.'; return; }
+  JETON = d.access_token;
+  // test d'accès admin
+  const t = await admin({ action:'stats' });
+  if(t && t.erreur){ $('msg-login').textContent = 'Ce compte n\'est pas administrateur.'; JETON = null; return; }
+  $('login').style.display = 'none';
+  $('panel').style.display = 'block';
+  $('qui').textContent = 'Connecté : ' + $('email').value.trim();
+  afficherStats(t); chargerRetraits();
+}
+
+async function admin(corps){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/admin', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
+    body: JSON.stringify(corps)
+  });
+  return r.json();
+}
+
+function afficherStats(s){
+  if(!s || s.erreur || s.message){
+    $('tuiles').innerHTML = '<div class="vide">Erreur stats : ' + (s && (s.erreur||s.message) || 'réponse vide') + '</div>';
+    return;
+  }
+  const F = n => (n||0).toLocaleString('fr-FR');
+  const T = [
+    [s.utilisateurs,'Utilisateurs'], [s.abonnes_actifs,'VIP actifs'],
+    [s.vip_mois,'VIP mois'], [s.vip_3mois,'VIP 3 mois'],
+    [F(s.revenu_total)+' F','Revenu total'], [F(s.revenu_30j)+' F','Revenu 30 j'],
+    [s.paiements_30j,'Paiements 30 j'],
+    [s.actifs_jour,'Actifs jour'], [s.actifs_semaine,'Actifs semaine'],
+    [s.actifs_mois,'Actifs mois'], [s.actifs_annee,'Actifs année'],
+    [s.affilies,'Affiliés'], [F(s.commissions_total)+' F','Commissions dues'],
+    [s.retraits_attente + ' · ' + F(s.retraits_attente_montant)+' F','Retraits en attente'],
+    [s.push_abonnes,'Abonnés push'],
+  ];
+  $('tuiles').innerHTML = T.map(x=>`<div class="tuile"><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`).join('');
+}
+
+async function chargerRetraits(){
+  const liste = await admin({ action:'retraits' });
+  $('retraits').innerHTML = (Array.isArray(liste) && liste.length) ? liste.map(r=>`
+    <div class="retrait">
+      <div class="g">
+        <div class="m">${r.montant.toLocaleString('fr-FR')} F</div>
+        <div class="num">📱 ${r.numero_wave || '—'}</div>
+        <div class="e">${r.email} · demandé le ${new Date(r.demande_le).toLocaleDateString('fr-FR')}</div>
+      </div>
+      <button onclick="payer(${r.id}, this)">✓ Versement effectué</button>
+    </div>`).join('') : `<div class="vide">Aucun retrait en attente.</div>`;
+}
+
+async function payer(id, btn){
+  btn.disabled = true; btn.textContent = '…';
+  const r = await admin({ action:'payer_retrait', id });
+  $('msg-retraits').textContent = r.ok
+    ? `Retrait marqué versé — notification envoyée (${r.push_envoyes} push).`
+    : (r.erreur || 'Erreur');
+  chargerRetraits();
+  admin({ action:'stats' }).then(afficherStats);
+  chargerCandidatures();
+}
+
+async function chargerCandidatures(){
+  const liste = await admin({ action:'candidatures' });
+  if(!Array.isArray(liste) || !liste.length){
+    $('zone-candidatures').innerHTML = '<div class="vide">Aucune candidature en attente.</div>';
+    return;
+  }
+  $('zone-candidatures').innerHTML = liste.map(c => `
+    <div class="retrait">
+      <div class="g">
+        <div class="m" style="font-size:15px">${c.nom} · ${c.canal}</div>
+        <div class="num">${c.audience || 'audience non précisée'} · ${c.modele || 'modèle ?'}</div>
+        <div class="e">📱 <a href="https://wa.me/${String(c.contact).replace(/\D/g,'')}" target="_blank" style="color:inherit">${c.contact}</a> · ${new Date(c.cree_le).toLocaleDateString('fr-FR')}</div>
+        ${c.message ? `<div class="e" style="opacity:.85">« ${c.message} »</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button onclick="traiterCandidature(${c.id},'contacte')">✓ Contacté</button>
+        <button class="gris" onclick="traiterCandidature(${c.id},'refuse')">✗ Refuser</button>
+      </div>
+    </div>`).join('');
+}
+
+async function traiterCandidature(id, statut){
+  await admin({ action:'traiter_candidature', id, statut });
+  chargerCandidatures();
+}
+
+function basculerModele(){
+  const m = $('c-modele').value;
+  $('c-champs-pct').style.display = m === 'pct' ? '' : 'none';
+  $('c-champs-fixe').style.display = m === 'fixe' ? '' : 'none';
+}
+
+async function configurerCode(){
+  const email = $('c-email').value.trim(), code = $('c-code').value.trim();
+  if(!email || !code){ $('msg-code').textContent = 'Email et code requis.'; return; }
+  const m = $('c-modele').value;
+  const corps = { action:'config_code', email, code,
+    reduc_mois: $('c-reduc-mois').value ? parseInt($('c-reduc-mois').value) : null,
+    reduc_3mois: $('c-reduc-3mois').value ? parseInt($('c-reduc-3mois').value) : null };
+  if(m === 'pct'){ corps.pct = parseInt($('c-pct').value) || 35; }
+  if(m === 'fixe'){
+    corps.com_mois = parseInt($('c-com-mois').value) || 3000;
+    corps.com_3mois = parseInt($('c-com-3mois').value) || 6000;
+  }
+  const r = await admin(corps);
+  $('msg-code').textContent = (r && r.resultat) ? String(r.resultat) : (r.erreur || 'Erreur');
+}
+
+async function cloturer(){
+  const r = await admin({ action:'cloturer_semaine' });
+  $('msg-retraits').textContent = r.ok
+    ? `Semaine clôturée — ${r.push_envoyes} push envoyées à ${r.personnes} affilié(s) payé(s).`
+    : (r.erreur || 'Erreur');
+}
+
+async function notifierTous(){
+  const titre = $('n-titre').value.trim(), corps = $('n-corps').value.trim();
+  if(!titre || !corps){ $('msg-notif').textContent = 'Titre et message requis.'; return; }
+  const r = await admin({ action:'notifier_tous', titre, corps });
+  $('msg-notif').textContent = r.ok
+    ? `Envoyé — notification in-app pour tous + ${r.push_envoyes} push.`
+    : (r.erreur || 'Erreur');
+  if(r.ok){ $('n-titre').value=''; $('n-corps').value=''; }
+}
+</script>
+</body>
+</html>

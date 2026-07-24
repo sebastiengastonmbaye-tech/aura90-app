@@ -1,0 +1,17 @@
+{
+  "name": "AURA90 — L'IA qui analyse chaque match",
+  "short_name": "AURA90",
+  "description": "Pronostics football calculés par intelligence artificielle. Palmarès public et vérifiable.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070B12",
+  "theme_color": "#070B12",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devenir partenaire — AURA90</title>
+<meta name="description" content="Recommande AURA90 et sois payé chaque semaine. Programme partenaire pour créateurs et admins de groupes.">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nuit:#070B12; --surface:#0E1520; --surface2:#141D2B; --ligne:#1E2A3A;
+  --texte:#E8EDF5; --sourdine:#7A8AA0;
+  --aura1:#3DE8C8; --aura2:#8B7CFF; --or:#FFB454;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--nuit)}
+html,body{overflow-x:hidden;max-width:100%}
+body{background:var(--nuit);color:var(--texte);font-family:'Manrope',sans-serif;line-height:1.55}
+.wrap{max-width:560px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(40px + env(safe-area-inset-bottom,0px))}
+
+.logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.02em;margin-bottom:34px}
+.logo span{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.chapeau{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:var(--aura1);font-weight:700;margin-bottom:12px}
+h1{font-family:'Unbounded',sans-serif;font-size:27px;line-height:1.25;margin-bottom:14px}
+h1 span{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro{color:var(--sourdine);font-size:14.5px;margin-bottom:30px}
+
+h2{font-family:'Unbounded',sans-serif;font-size:15px;margin:36px 0 14px}
+
+/* simulateur */
+.simu{background:linear-gradient(140deg,rgba(61,232,200,.10),var(--surface));border:1px solid rgba(61,232,200,.35);border-radius:20px;padding:20px 18px}
+.simu-lbl{font-size:12px;color:var(--sourdine);margin-bottom:12px}
+.simu-choix{display:flex;gap:8px;margin-bottom:18px}
+.simu-choix button{flex:1;padding:11px 4px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface2);color:var(--sourdine);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.simu-choix button.actif{border-color:var(--aura1);color:#06110E;background:linear-gradient(135deg,var(--aura1),var(--aura2))}
+.simu-res{text-align:center}
+.simu-res .gros{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:33px;color:var(--aura1);letter-spacing:-.02em}
+.simu-res .sous{font-size:11.5px;color:var(--sourdine);margin-top:4px}
+.simu-note{font-size:10px;color:var(--sourdine);text-align:center;margin-top:14px;opacity:.75}
+
+/* arguments */
+.arg{display:flex;gap:13px;padding:15px 16px;background:var(--surface);border:1px solid var(--ligne);border-radius:15px;margin-bottom:10px}
+.arg .num{width:26px;height:26px;flex-shrink:0;border-radius:9px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.arg b{display:block;font-size:13.5px;margin-bottom:3px}
+.arg p{font-size:12.5px;color:var(--sourdine)}
+
+/* niveaux */
+.niveau{border:1px solid var(--ligne);background:var(--surface);border-radius:17px;padding:17px;margin-bottom:12px}
+.niveau.officiel{border-color:rgba(255,180,84,.5);background:linear-gradient(140deg,rgba(255,180,84,.09),var(--surface))}
+.niveau-tag{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.13em;font-weight:700;color:var(--aura1);margin-bottom:7px}
+.niveau.officiel .niveau-tag{color:var(--or)}
+.niveau h3{font-family:'Unbounded',sans-serif;font-size:15px;margin-bottom:9px}
+.niveau ul{list-style:none}
+.niveau li{font-size:12.5px;color:var(--sourdine);padding-left:17px;position:relative;margin-bottom:5px}
+.niveau li::before{content:'▸';position:absolute;left:0;color:var(--aura1)}
+.niveau.officiel li::before{color:var(--or)}
+
+.grille-com{display:flex;gap:9px;margin:12px 0 13px}
+.com{flex:1;background:var(--surface2);border:1px solid var(--ligne);border-radius:13px;padding:13px 10px;text-align:center}
+.com b{display:block;font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--aura1);letter-spacing:-.02em}
+.com.or b{color:var(--or)}
+.com small{display:block;font-size:10px;color:var(--sourdine);margin-top:5px;line-height:1.4}
+
+/* formulaire */
+.champ{margin-bottom:11px}
+.champ label{display:block;font-size:11px;color:var(--sourdine);margin-bottom:5px;letter-spacing:.04em}
+input,select,textarea{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface2);color:var(--texte);font-family:inherit;font-size:14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(61,232,200,.6)}
+textarea{resize:vertical;min-height:74px}
+.envoyer{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 0 24px rgba(61,232,200,.28);margin-top:6px}
+.envoyer:disabled{opacity:.55;box-shadow:none}
+.msg{margin-top:14px;padding:14px;border-radius:13px;font-size:13px;text-align:center;display:none}
+.msg.ok{display:block;background:rgba(61,232,200,.12);border:1px solid rgba(61,232,200,.45);color:var(--aura1)}
+.msg.ko{display:block;background:rgba(255,107,138,.10);border:1px solid rgba(255,107,138,.4);color:#FF6B8A}
+
+.lien-app{display:block;text-align:center;margin-top:26px;color:var(--sourdine);font-size:12.5px;text-decoration:underline}
+.pied{margin-top:30px;padding-top:20px;border-top:1px solid var(--ligne);font-size:10.5px;color:var(--sourdine);text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo">AURA<span>90</span>'</div>
+
+  <div class="chapeau">PROGRAMME PARTENAIRE</div>
+  <h1>Recommande AURA90.<br><span>Sois payé chaque semaine.</span></h1>
+  <p class="intro">Tu as une communauté qui aime le football ? Gagne une commission sur chaque personne qui s'abonne grâce à toi. Sans stock, sans avance, sans engagement.</p>
+
+  <h2 style="margin-top:0">Deux modèles, tu choisis</h2>
+
+  <div class="niveau">
+    <div class="niveau-tag">MODÈLE 1 · MONTANT FIXE</div>
+    <h3>Tu sais exactement ce que tu gagnes</h3>
+    <div class="grille-com">
+      <div class="com"><b>3 000 F</b><small>par abonné · 1 mois</small></div>
+      <div class="com"><b>6 000 F</b><small>par abonné · 3 mois</small></div>
+    </div>
+    <ul>
+      <li>Montant garanti, quel que soit le tarif de l'app</li>
+      <li>Simple à calculer, versé chaque semaine</li>
+    </ul>
+  </div>
+
+  <div class="niveau officiel">
+    <div class="niveau-tag">MODÈLE 2 · POURCENTAGE</div>
+    <h3>Ta commission suit le prix de l'app</h3>
+    <div class="grille-com">
+      <div class="com or"><b>35 %</b><small>de chaque abonnement pris avec ton code</small></div>
+    </div>
+    <ul>
+      <li>Aujourd'hui : 2 800 F par abonné mois · 5 600 F par abonné 3 mois</li>
+      <li>Le tarif de lancement (8 000 F) remontera au plein tarif — ta commission monte avec, automatiquement</li>
+      <li>Pour ceux qui misent sur la durée</li>
+    </ul>
+  </div>
+
+  <p style="font-size:12px;color:var(--sourdine);margin:14px 0 4px">Dans les deux cas : ta communauté reçoit une réduction avec ton code, tu as un accès VIP offert pour tester le produit, et tu suis tes gains en temps réel dans l'app.</p>
+
+  <h2>Pourquoi AURA90 et pas un autre</h2>
+
+  <div class="arg">
+    <span class="num">1</span>
+    <div><b>Tu vois tes gains toi-même, en direct</b>
+    <p>Ton espace personnel dans l'app affiche tes filleuls et tes commissions en temps réel. Tu ne dépends de la parole de personne.</p></div>
+  </div>
+  <div class="arg">
+    <span class="num">2</span>
+    <div><b>Zéro risque pour ta crédibilité</b>
+    <p>Tu ne promets aucun gain à personne. Tu recommandes un outil d'analyse dont les résultats sont publiés avant les matchs et vérifiables par tous. Si quelqu'un doute, il vérifie.</p></div>
+  </div>
+  <div class="arg">
+    <span class="num">3</span>
+    <div><b>Payé chaque semaine</b>
+    <p>Tes gains sont disponibles 7 jours après chaque paiement. Demande le lundi, versement le mardi, par le moyen de ton choix.</p></div>
+  </div>
+
+  <h2>Comment ça marche</h2>
+  <div class="arg"><span class="num">1</span><div><b>Crée ton compte sur l'app</b><p>Gratuit, en 30 secondes.</p></div></div>
+  <div class="arg"><span class="num">2</span><div><b>Génère ton code</b><p>Un code à ton nom + un lien de partage prêt à envoyer.</p></div></div>
+  <div class="arg"><span class="num">3</span><div><b>Partage, tu es payé</b><p>Chaque abonnement pris avec ton code te rapporte, automatiquement.</p></div></div>
+
+  <h2>Devenir partenaire</h2>
+  <div class="champ"><label>Ton nom ou pseudo</label><input id="f-nom" placeholder="Ex : Modou / @modou_foot"></div>
+  <div class="champ"><label>Ton canal principal</label>
+    <select id="f-canal">
+      <option>TikTok</option>
+      <option>Groupe WhatsApp</option>
+      <option>Chaîne WhatsApp</option>
+      <option>YouTube</option>
+      <option>Instagram</option>
+      <option>Autre</option>
+    </select>
+  </div>
+  <div class="champ"><label>Taille de ton audience</label><input id="f-audience" placeholder="Ex : 12 000 abonnés / groupe de 400 membres"></div>
+  <div class="champ"><label>Ton numéro WhatsApp</label><input id="f-contact" placeholder="Ex : 77 000 00 00" inputmode="tel"></div>
+  <div class="champ"><label>Un mot sur ta communauté (optionnel)</label><textarea id="f-message" placeholder="Type de contenu, engagement, ce que tu proposes…"></textarea></div>
+  <div class="champ"><label>Modèle qui t'intéresse</label>
+    <select id="f-modele">
+      <option>Montant fixe (3 000 / 6 000 F)</option>
+      <option>Pourcentage (35 %)</option>
+      <option>À discuter ensemble</option>
+    </select>
+  </div>
+  <button class="envoyer" id="btn-envoyer" onclick="postuler()">Envoyer ma candidature</button>
+  <div class="msg" id="msg"></div>
+
+  <a class="lien-app" href="./">← Découvrir l'application AURA90</a>
+
+  <div class="pied">
+    Interdit aux moins de 18 ans. AURA90 fournit des analyses statistiques, jamais une promesse de gains.<br>
+    Les montants affichés sont des exemples de calcul et dépendent du nombre réel d'abonnements confirmés.
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  SUPABASE_URL: "https://nzsvmqyiukxzsfjprpiy.supabase.co",
+  SUPABASE_KEY: "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW"
+};
+
+const $ = id => document.getElementById(id);
+
+/* ---------- candidature ---------- */
+async function postuler(){
+  const nom = $('f-nom').value.trim();
+  const contact = $('f-contact').value.trim();
+  if(nom.length < 2 || contact.length < 6){
+    $('msg').className = 'msg ko';
+    $('msg').textContent = 'Merci d\'indiquer au minimum ton nom et ton numéro WhatsApp.';
+    return;
+  }
+  $('btn-envoyer').disabled = true;
+  $('btn-envoyer').textContent = 'Envoi…';
+  try{
+    const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/partenaire_candidatures', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: CONFIG.SUPABASE_KEY,
+        Authorization: 'Bearer ' + CONFIG.SUPABASE_KEY,
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify({
+        nom: nom,
+        canal: $('f-canal').value,
+        modele: $('f-modele').value,
+        audience: $('f-audience').value.trim(),
+        contact: contact,
+        message: $('f-message').value.trim()
+      })
+    });
+    if(!r.ok) throw new Error(r.status);
+    $('msg').className = 'msg ok';
+    $('msg').innerHTML = '<b>Candidature reçue ✓</b><br>Je regarde chaque demande personnellement et je te réponds sur WhatsApp sous 48h.';
+    $('btn-envoyer').style.display = 'none';
+  }catch(e){
+    $('msg').className = 'msg ko';
+    $('msg').textContent = 'Envoi impossible pour le moment. Vérifie ta connexion et réessaie.';
+    $('btn-envoyer').disabled = false;
+    $('btn-envoyer').textContent = 'Envoyer ma candidature';
+  }
+}
+</script>
+</body>
+</html>
