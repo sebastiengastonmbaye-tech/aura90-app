@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostic AURA90</title>
+<style>
+body{font-family:-apple-system,system-ui,sans-serif;background:#070B12;color:#fff;padding:24px 18px;line-height:1.6}
+h1{font-size:18px;margin-bottom:18px}
+.bloc{background:#0E1520;border:1px solid #1E2A3A;border-radius:14px;padding:16px;margin-bottom:12px}
+.ok{color:#3DE8C8;font-weight:800}
+.ko{color:#FF7A9E;font-weight:800}
+.gros{font-size:26px;font-weight:800;margin:4px 0}
+small{color:#8A97A8}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#3DE8C8;color:#06110E;font-weight:800;font-size:14px;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>🔬 Diagnostic AURA90</h1>
+<div class="bloc"><small>1. Le serveur envoie-t-il la carte du jeu ?</small><div class="gros" id="r1">…</div><small id="d1"></small></div>
+<div class="bloc"><small>2. Service worker sur cette page</small><div class="gros" id="r2">…</div></div>
+<div class="bloc"><small>3. Caches stockés sur ce téléphone</small><div class="gros" id="r3">…</div><small id="d3"></small></div>
+<button onclick="purger()">🧹 Tout purger sur ce téléphone (SW + caches) puis recharger l'accueil</button>
+<script>
+(async function(){
+  // 1 — contenu réellement servi par le serveur, cache contourné
+  try{
+    const r = await fetch('./index.html?verif=' + Date.now(), { cache:'no-store' });
+    const t = await r.text();
+    const n = (t.match(/carte-aof90/g) || []).length;
+    const v2 = t.includes('aof90-carte-v2');
+    document.getElementById('r1').innerHTML = n > 0
+      ? '<span class="ok">OUI — carte présente (' + n + '×)' + (v2 ? ' · version corrigée v2' : ' · ancienne version v1') + '</span>'
+      : '<span class="ko">NON — le serveur envoie un index SANS la carte</span>';
+    document.getElementById('d1').textContent = 'Taille reçue : ' + t.length + ' octets';
+  }catch(e){ document.getElementById('r1').innerHTML = '<span class="ko">Erreur : ' + e.message + '</span>'; }
+
+  // 2 — service worker actif ici
+  try{
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      document.getElementById('r2').innerHTML = regs.length
+        ? '<span class="ko">' + regs.length + ' actif(s)</span>'
+        : '<span class="ok">Aucun</span>';
+    } else document.getElementById('r2').textContent = 'Non supporté';
+  }catch(e){ document.getElementById('r2').textContent = '—'; }
+
+  // 3 — caches locaux
+  try{
+    const cles = await caches.keys();
+    document.getElementById('r3').innerHTML = cles.length
+      ? '<span class="ko">' + cles.length + ' cache(s)</span>'
+      : '<span class="ok">Aucun</span>';
+    document.getElementById('d3').textContent = cles.join(' · ');
+  }catch(e){ document.getElementById('r3').textContent = '—'; }
+})();
+
+async function purger(){
+  try{
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for(const r of regs) await r.unregister();
+    const cles = await caches.keys();
+    for(const k of cles) await caches.delete(k);
+    alert('Purgé. L\'accueil va se recharger tout propre.');
+    location.href = './?apres-purge=' + Date.now();
+  }catch(e){ alert('Erreur : ' + e.message); }
+}
+</script>
+</body>
+</html>
