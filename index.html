@@ -76,9 +76,9 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 /* ---------- composants ---------- */
 .carte-aof90{margin:4px 16px 14px;border-radius:16px;overflow:hidden;border:1px solid var(--ligne);background:var(--surface);cursor:pointer;transition:transform .15s ease}
 .carte-aof90:active{transform:scale(.98)}
-.aof90-visu{position:relative;aspect-ratio:16/7;background-size:cover;background-position:center}
+.aof90-visu{position:relative;height:150px;min-height:150px;background-size:cover;background-position:center;background-color:#123a2c}
 .aof90-tag{position:absolute;top:10px;left:10px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.13em;font-weight:700;color:#FFD400;background:rgba(0,0,0,.55);border:1px solid rgba(255,212,0,.5);padding:4px 8px;border-radius:20px}
-.aof90-pied{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+.aof90-pied{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;min-height:52px}
 .aof90-nom{font-weight:800;font-size:14px}
 .aof90-sous{font-size:10.5px;color:var(--sourdine);margin-top:2px}
 .aof90-etat{font-size:18px}
@@ -1569,5 +1569,6 @@ charger();
   }
 })();
 </script>
+<!-- aof90-carte-v2 -->
 </body>
 </html>
