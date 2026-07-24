@@ -1,7 +1,7 @@
 // AURA90 — service worker
 // Stratégie : réseau d'abord (les pronos sont des données vivantes),
 // cache de secours pour rouvrir l'app sans connexion.
-const CACHE = 'aura90-v4';
+const CACHE = 'aura90-v5';
 const COQUILLE = ['.', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
 
 self.addEventListener('install', e => {

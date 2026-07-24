@@ -198,6 +198,9 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 
 #panneau-install{position:fixed;inset:0;z-index:70;background:rgba(4,7,12,.8);display:none;align-items:flex-end;justify-content:center}
 #panneau-install.actif{display:flex}
+#panneau-install .etape{opacity:1;transform:none;margin-bottom:8px}
+.carte-install h3{font-family:'Unbounded',sans-serif;font-size:16px;margin:0 0 14px}
+.btn-fermer-install{width:100%;margin-top:14px;padding:13px;border:none;border-radius:12px;background:var(--surface2);color:var(--texte);border:1px solid var(--ligne);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
 .carte-install{background:var(--surface);border:1px solid var(--ligne);border-radius:20px 20px 0 0;padding:22px 20px 30px;width:100%;max-width:520px}
 .carte-install{max-height:70vh;overflow-y:auto}
 .carte-install h3{font-family:'Unbounded',sans-serif;font-size:15px;margin-bottom:14px}
@@ -561,8 +564,11 @@ const CONFIG = {
       <button class="lien-retour" onclick="deconnecter()">Se déconnecter (<span id="profil-email"></span>)</button>
     </div>
 
-    <button class="lien-retour" onclick="location.href='partenaire.html'">💼 Devenir partenaire AURA90</button>
-    <button class="lien-retour" id="guide-ios" style="display:none" onclick="ouvrirGuideInstall()">📱 Comment installer l'app sur iPhone</button>
+    <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px">
+      <button class="lien-retour" style="display:inline;width:auto;margin:0;font-size:11px" onclick="location.href='partenaire.html'">💼 Devenir partenaire</button>
+      <span style="color:var(--sourdine);font-size:11px" id="sep-guide-ios" hidden>·</span>
+      <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📱 Installer l'app</button>
+    </div>
 
     <div class="jeu-resp">Interdit aux moins de 18 ans. AURA90 fournit des analyses statistiques,<br>jamais une promesse de gains.</div>
   </div>
@@ -1252,8 +1258,10 @@ const estInstallee = () => matchMedia('(display-mode: standalone)').matches || n
 const estIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
 
 function majInstall(){
-  const g = $('guide-ios');
-  if(g) g.style.display = (estIOS() && !estInstallee()) ? '' : 'none';
+  const g = $('guide-ios'), sep = $('sep-guide-ios');
+  const visible = estIOS() && !estInstallee();
+  if(g) g.style.display = visible ? 'inline' : 'none';
+  if(sep) sep.hidden = !visible;
 }
 
 function etapeHtml(num, texte){
@@ -1569,6 +1577,6 @@ charger();
   }
 })();
 </script>
-<!-- aof90-carte-v3-inline -->
+<!-- aura90-v3.1-pied-guide -->
 </body>
 </html>
