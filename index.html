@@ -1419,7 +1419,9 @@ function couponsDuJour(){
 
 function dessinerOnglets(){
   $('onglets-coupons').innerHTML = CATS.map(c=>{
-    const n = c.cle === 'montante' ? (MONTANTE.length?1:0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
+    const auj0 = new Date().toISOString().slice(0,10);
+    const n = c.cle === 'montante'
+      ? (MONTANTE.some(p => JOUR_ACTIF === 'auj' ? p.jour === auj0 : p.jour > auj0) ? 1 : 0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
     return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
   }).join('');
 }
@@ -1513,11 +1515,19 @@ function copierCoupon(id){
 }
 
 function afficherMontante(){
+  const auj = new Date().toISOString().slice(0,10);
+  // on ne montre la montante que le jour où son coupon se joue
+  const pertinents = MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
+  if(!pertinents.length){
+    const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de palier de montante ${quand}.<br>La montante avance d'un palier par jour, tant qu'elle passe.</div>`;
+    return;
+  }
   if(!MONTANTE.length){
     $('zone-coupons').innerHTML = `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
     return;
   }
-  const serie = MONTANTE[0].serie;
+  const serie = pertinents[0].serie;
   const paliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
   const dernier = paliers[paliers.length-1];
   const atteint = Number(dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise) / 5000;
