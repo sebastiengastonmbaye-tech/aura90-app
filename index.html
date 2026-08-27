@@ -211,9 +211,9 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .note-signe{margin:2px 22px 12px;text-align:center;font-size:9.5px;color:var(--sourdine);line-height:1.5}
 
 /* ---------- coupons ---------- */
-.onglets{display:flex;gap:7px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+.onglets{display:flex;flex:0 0 auto;gap:7px;overflow-x:auto;padding:2px 16px 14px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .onglets::-webkit-scrollbar{display:none}
-.onglets button{flex-shrink:0;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
+.onglets button{flex:0 0 auto;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
 .onglets button.actif{border-color:transparent;color:#06110E;background:linear-gradient(135deg,var(--aura1),var(--aura2))}
 .cp{margin:0 16px 11px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);overflow:hidden}
 .cp.ouvert{border-color:rgba(61,232,200,.45)}
@@ -1329,13 +1329,19 @@ async function sbUser(chemin){
 async function chargerCoupons(){
   const zone = $('zone-coupons');
   if(!estConnecte()){
-    zone.innerHTML = `<div class="vide">Connecte-toi pour voir les coupons du jour.</div>`;
+    zone.innerHTML = `<div class="vide">
+      <b style="color:var(--texte);font-size:14px">Les coupons sont réservés aux membres</b><br>
+      Connecte-toi pour voir les combinés du jour construits par le moteur.<br><br>
+      <button class="bouton-aura" style="max-width:260px;margin:0 auto" onclick="allerPage('compte')">Se connecter →</button>
+    </div>`;
     $('onglets-coupons').innerHTML = ''; return;
   }
   if(!estAbonne()){
-    zone.innerHTML = `<div class="vide"><b style="color:var(--aura1)">Réservé aux abonnés PRO</b><br>
-      Les coupons du jour sont construits chaque matin par le moteur.<br><br>
-      <button class="bouton-aura" style="max-width:260px;margin:0 auto" onclick="allerPage('compte')">Passer à PRO</button></div>`;
+    zone.innerHTML = `<div class="vide">
+      <b style="color:var(--aura1);font-size:14px">Réservé aux abonnés PRO</b><br>
+      Chaque matin, le moteur construit ses combinés : sûrs, confiance, fun et grosses cotes.<br><br>
+      <button class="bouton-aura" style="max-width:260px;margin:0 auto" onclick="allerPage('compte')">Passer à PRO →</button>
+    </div>`;
     $('onglets-coupons').innerHTML = ''; return;
   }
   try{
