@@ -211,6 +211,10 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .note-signe{margin:2px 22px 12px;text-align:center;font-size:9.5px;color:var(--sourdine);line-height:1.5}
 
 /* ---------- coupons ---------- */
+.jours-coupons{display:flex;flex:0 0 auto;gap:8px;padding:0 16px 12px}
+.jours-coupons button{flex:1;padding:11px 8px;border-radius:13px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;transition:all .2s}
+.jours-coupons button.actif{border-color:rgba(61,232,200,.55);background:linear-gradient(120deg,rgba(61,232,200,.13),var(--surface2));color:var(--texte)}
+.jours-coupons button small{display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;color:var(--sourdine);margin-top:3px;letter-spacing:.06em}
 .onglets{display:flex;flex:0 0 auto;gap:7px;overflow-x:auto;padding:2px 16px 14px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .onglets::-webkit-scrollbar{display:none}
 .onglets button{flex:0 0 auto;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
@@ -529,6 +533,7 @@ const CONFIG = {
   <!-- ============ BOOKMAKERS ============ -->
   <div class="page" id="page-coupons">
     <div class="abo-tete"><h2 id="cp-titre">Coupons</h2><p id="cp-sous">Combinés prêts à jouer, construits par le moteur.</p></div>
+    <div class="jours-coupons" id="jours-coupons"></div>
     <div class="onglets" id="onglets-coupons"></div>
     <div id="zone-coupons"><div class="chargement">CHARGEMENT DES COUPONS…</div></div>
   </div>
@@ -1323,7 +1328,7 @@ const CATS = [
   {cle:'nuit',      nom:'Nuit',         ico:'🌙'},
   {cle:'montante',  nom:'Montante',     ico:'📈'},
 ];
-let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'sure', COUPONS_CHARGES = false;
+let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'sure', COUPONS_CHARGES = false, JOUR_ACTIF = 'auj';
 
 function ecuMini(url, nom){
   return url ? `<img class="ecu-m" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
@@ -1382,6 +1387,9 @@ async function chargerCoupons(){
       (sels||[]).forEach(s=>{ (SELECTIONS[s.coupon_id] = SELECTIONS[s.coupon_id] || []).push(s); });
     }
     COUPONS_CHARGES = true;
+    const auj = new Date().toISOString().slice(0,10);
+    if(!COUPONS.some(c=>c.jour === auj) && COUPONS.some(c=>c.jour > auj)) JOUR_ACTIF = 'demain';
+    dessinerJours();
     dessinerOnglets();
     afficherCategorie(CAT_ACTIVE);
   }catch(e){
@@ -1389,9 +1397,29 @@ async function chargerCoupons(){
   }
 }
 
+function dessinerJours(){
+  const d = new Date(), dem = new Date(Date.now() + 864e5);
+  const fmt = x => x.toLocaleDateString('fr-FR', {day:'numeric', month:'short'});
+  $('jours-coupons').innerHTML = `
+    <button class="${JOUR_ACTIF==='auj'?'actif':''}" onclick="choisirJour('auj')">Aujourd'hui<small>${fmt(d).toUpperCase()}</small></button>
+    <button class="${JOUR_ACTIF==='demain'?'actif':''}" onclick="choisirJour('demain')">Demain<small>${fmt(dem).toUpperCase()}</small></button>`;
+}
+
+function choisirJour(j){
+  JOUR_ACTIF = j;
+  dessinerJours();
+  dessinerOnglets();
+  afficherCategorie(CAT_ACTIVE);
+}
+
+function couponsDuJour(){
+  const auj = new Date().toISOString().slice(0,10);
+  return COUPONS.filter(c => JOUR_ACTIF === 'auj' ? c.jour === auj : c.jour > auj);
+}
+
 function dessinerOnglets(){
   $('onglets-coupons').innerHTML = CATS.map(c=>{
-    const n = c.cle === 'montante' ? (MONTANTE.length?1:0) : COUPONS.filter(x=>x.categorie===c.cle).length;
+    const n = c.cle === 'montante' ? (MONTANTE.length?1:0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
     return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
   }).join('');
 }
@@ -1401,33 +1429,23 @@ function afficherCategorie(cle){
   document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>b.classList.toggle('actif', CATS[i].cle===cle));
   if(cle === 'montante'){ afficherMontante(); return; }
 
-  const auj = new Date().toISOString().slice(0,10);
-  const liste = COUPONS.filter(c=>c.categorie===cle);
-  const dujour = liste.filter(c=>c.jour === auj);
-  const demain = liste.filter(c=>c.jour > auj);
-
-  if(!liste.length){
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » pour le moment.${cle==='nuit'?'<br>Les coupons de nuit couvrent les matchs des Amériques, entre 23h et 7h.':'<br>Le moteur en publie chaque matin à 5h — et prépare ceux du lendemain en soirée.'}</div>`;
-    return;
-  }
+  const liste = couponsDuJour().filter(c => c.categorie === cle && (SELECTIONS[c.id]||[]).length);
 
   const t = $('cp-titre'), st = $('cp-sous');
   if(t && st){
-    if(dujour.length && demain.length){ t.textContent = 'Coupons'; st.textContent = "Ceux d'aujourd'hui, et ceux de demain déjà prêts."; }
-    else if(demain.length){ t.textContent = 'Coupons de demain'; st.textContent = 'Déjà disponibles — à jouer dès maintenant.'; }
-    else { t.textContent = 'Coupons du jour'; st.textContent = 'Combinés prêts à jouer, construits ce matin par le moteur.'; }
+    t.textContent = JOUR_ACTIF === 'auj' ? 'Coupons du jour' : 'Coupons de demain';
+    st.textContent = JOUR_ACTIF === 'auj'
+      ? 'Combinés prêts à jouer, construits ce matin par le moteur.'
+      : 'Déjà disponibles — à jouer dès maintenant.';
   }
 
-  let html = '';
-  if(dujour.length){
-    html += `<div class="cp-jour">AUJOURD'HUI</div>`;
-    html += dujour.map((c,i)=>carteCoupon(c, i===0 && !(!dujour.some(x=>x.statut==='en_cours') && demain.length))).join('');
+  if(!liste.length){
+    const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » ${quand}.${cle==='nuit'?"<br>Les coupons de nuit couvrent les matchs des Amériques, de 22h à 7h.":"<br>Le moteur publie chaque matin à 5h — et prépare le lendemain en soirée."}</div>`;
+    return;
   }
-  if(demain.length){
-    html += `<div class="cp-jour demain">DEMAIN · à jouer dès maintenant</div>`;
-    html += demain.map((c,i)=>carteCoupon(c, i===0 && !dujour.length)).join('');
-  }
-  $('zone-coupons').innerHTML = html;
+
+  $('zone-coupons').innerHTML = liste.map((c,i)=>carteCoupon(c, i===0)).join('');
   cascade('#zone-coupons .cp');
 }
 
@@ -1447,7 +1465,6 @@ function carteCoupon(c, ouvert){
       <span class="cp-fleche">›</span>
     </div>
     <div class="cp-corps">
-      ${c.note ? `<div class="cp-note">${c.note}</div>` : ''}
       ${sels.map(s=>`
         <div class="cp-sel ${s.resultat||''}">
           <div class="g">
