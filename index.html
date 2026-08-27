@@ -215,6 +215,9 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .onglets::-webkit-scrollbar{display:none}
 .onglets button{flex:0 0 auto;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
 .onglets button.actif{border-color:transparent;color:#06110E;background:linear-gradient(135deg,var(--aura1),var(--aura2))}
+.cp-jour{margin:2px 16px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--sourdine);font-weight:700;display:flex;align-items:center;gap:9px}
+.cp-jour::after{content:'';flex:1;height:1px;background:var(--ligne)}
+.cp-jour.demain{color:var(--aura2)}
 .cp{margin:0 16px 11px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);overflow:hidden}
 .cp.ouvert{border-color:rgba(61,232,200,.45)}
 .cp-tete{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer}
@@ -1359,7 +1362,7 @@ async function chargerCoupons(){
   try{
     const jour = new Date().toISOString().slice(0,10);
     const [cps, mt] = await Promise.all([
-      sbUser(`coupons?jour=eq.${jour}&order=categorie.asc,numero.asc&select=id,categorie,numero,cote_totale,nb_matchs,statut,note`),
+      sbUser(`coupons?jour=gte.${jour}&order=jour.asc,categorie.asc,numero.asc&select=id,jour,categorie,numero,cote_totale,nb_matchs,statut,note`),
       sbUser(`montante?order=serie.desc,palier.asc&limit=20&select=serie,palier,coupon_id,mise,gain_vise,statut,jour`)
     ]);
     COUPONS = Array.isArray(cps) ? cps : [];
@@ -1390,12 +1393,26 @@ function afficherCategorie(cle){
   document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>b.classList.toggle('actif', CATS[i].cle===cle));
   if(cle === 'montante'){ afficherMontante(); return; }
 
+  const auj = new Date().toISOString().slice(0,10);
   const liste = COUPONS.filter(c=>c.categorie===cle);
+  const dujour = liste.filter(c=>c.jour === auj);
+  const demain = liste.filter(c=>c.jour > auj);
+
   if(!liste.length){
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » aujourd'hui.<br>Le moteur n'a pas trouvé assez de matchs à sa main.</div>`;
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » pour le moment.<br>Le moteur en publie chaque matin à 5h — et prépare ceux du lendemain en soirée.</div>`;
     return;
   }
-  $('zone-coupons').innerHTML = liste.map((c,i)=>carteCoupon(c, i===0)).join('');
+
+  let html = '';
+  if(dujour.length){
+    html += `<div class="cp-jour">AUJOURD'HUI</div>`;
+    html += dujour.map((c,i)=>carteCoupon(c, i===0 && !(!dujour.some(x=>x.statut==='en_cours') && demain.length))).join('');
+  }
+  if(demain.length){
+    html += `<div class="cp-jour demain">DEMAIN · à jouer dès maintenant</div>`;
+    html += demain.map((c,i)=>carteCoupon(c, i===0 && !dujour.length)).join('');
+  }
+  $('zone-coupons').innerHTML = html;
   cascade('#zone-coupons .cp');
 }
 
