@@ -233,10 +233,10 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .cp-sel .g{flex:1;min-width:0}
 .cp-sel .lig{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--sourdine);letter-spacing:.08em;text-transform:uppercase}
 .cp-sel .duel{display:flex;align-items:center;gap:7px;margin:5px 0 6px;flex-wrap:wrap}
-.cp-sel .duel .eq{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700}
+.cp-sel .duel .eq{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
 .cp-sel .duel .vs{color:var(--sourdine);font-size:11px}
-.ecu-m{width:19px;height:19px;border-radius:50%;object-fit:contain;background:var(--surface2);padding:1.5px;flex-shrink:0}
-.ecu-m.vide{display:inline-flex;align-items:center;justify-content:center;font-size:9.5px;color:var(--sourdine);font-weight:700}
+.ecu-m{width:28px;height:28px;border-radius:50%;object-fit:contain;background:var(--surface2);padding:2px;flex-shrink:0;border:1px solid var(--ligne)}
+.ecu-m.vide{display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:var(--sourdine);font-weight:700}
 .cp-sel .pick{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--aura1);font-weight:700;background:rgba(61,232,200,.09);border:1px solid rgba(61,232,200,.28);padding:4px 9px;border-radius:8px}
 .cp-sel .pick .fl{font-size:9px;opacity:.8}
 .cp-sel .c{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;white-space:nowrap;background:var(--surface2);padding:7px 10px;border-radius:9px;border:1px solid var(--ligne)}
@@ -1320,6 +1320,7 @@ const CATS = [
   {cle:'confiance', nom:'Confiance',    ico:'🎯'},
   {cle:'fun',       nom:'Fun',          ico:'🎲'},
   {cle:'grosses',   nom:'Grosses cotes',ico:'🔥'},
+  {cle:'nuit',      nom:'Nuit',         ico:'🌙'},
   {cle:'montante',  nom:'Montante',     ico:'📈'},
 ];
 let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'sure', COUPONS_CHARGES = false;
@@ -1406,7 +1407,7 @@ function afficherCategorie(cle){
   const demain = liste.filter(c=>c.jour > auj);
 
   if(!liste.length){
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » pour le moment.<br>Le moteur en publie chaque matin à 5h — et prépare ceux du lendemain en soirée.</div>`;
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » pour le moment.${cle==='nuit'?'<br>Les coupons de nuit couvrent les matchs des Amériques, entre 23h et 7h.':'<br>Le moteur en publie chaque matin à 5h — et prépare ceux du lendemain en soirée.'}</div>`;
     return;
   }
 
