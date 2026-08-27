@@ -1438,7 +1438,7 @@ function carteCoupon(c, ouvert){
           <div class="g">
             <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
             <div class="duel">${s.dom} – ${s.ext}</div>
-            <div class="pick">${s.selection} <small>· ${s.marche}</small></div>
+            <div class="pick">${s.selection} <small>· ${s.marche}${s.confiance?` · moteur ${s.confiance}%`:''}</small></div>
           </div>
           <div class="c">${Number(s.cote).toFixed(2)}</div>
         </div>`).join('')}
