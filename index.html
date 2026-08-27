@@ -235,6 +235,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .cp-sel .c{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap}
 .cp-sel.gagne .c{color:var(--aura1)} .cp-sel.perdu{opacity:.55}
 .cp-sel.perdu .c{color:var(--ko)}
+.cp-note{margin:0 0 4px;padding:10px 12px;border-radius:10px;background:rgba(255,180,84,.10);border:1px solid rgba(255,180,84,.35);color:var(--sur);font-size:11px;line-height:1.5}
 .cp-calcul{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface2);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--sourdine);text-align:center;line-height:1.6;word-break:break-word}
 .cp-calcul b{color:var(--aura1);font-size:12.5px}
 .cp-gain{margin-top:9px;padding:13px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;gap:10px}
@@ -1349,7 +1350,7 @@ async function chargerCoupons(){
   try{
     const jour = new Date().toISOString().slice(0,10);
     const [cps, mt] = await Promise.all([
-      sbUser(`coupons?jour=eq.${jour}&order=categorie.asc,numero.asc&select=id,categorie,numero,cote_totale,nb_matchs,statut`),
+      sbUser(`coupons?jour=eq.${jour}&order=categorie.asc,numero.asc&select=id,categorie,numero,cote_totale,nb_matchs,statut,note`),
       sbUser(`montante?order=serie.desc,palier.asc&limit=20&select=serie,palier,coupon_id,mise,gain_vise,statut,jour`)
     ]);
     COUPONS = Array.isArray(cps) ? cps : [];
@@ -1405,6 +1406,7 @@ function carteCoupon(c, ouvert){
       <span class="cp-fleche">›</span>
     </div>
     <div class="cp-corps">
+      ${c.note ? `<div class="cp-note">${c.note}</div>` : ''}
       ${sels.map(s=>`
         <div class="cp-sel ${s.resultat||''}">
           <div class="g">
