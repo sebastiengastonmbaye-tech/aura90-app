@@ -210,6 +210,59 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .match .heure{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .note-signe{margin:2px 22px 12px;text-align:center;font-size:9.5px;color:var(--sourdine);line-height:1.5}
 
+/* ---------- coupons ---------- */
+.onglets{display:flex;gap:7px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+.onglets::-webkit-scrollbar{display:none}
+.onglets button{flex-shrink:0;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
+.onglets button.actif{border-color:transparent;color:#06110E;background:linear-gradient(135deg,var(--aura1),var(--aura2))}
+.cp{margin:0 16px 11px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);overflow:hidden}
+.cp.ouvert{border-color:rgba(61,232,200,.45)}
+.cp-tete{display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer}
+.cp-tete .g{flex:1;min-width:0}
+.cp-nom{font-size:13.5px;font-weight:800}
+.cp-sous{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--sourdine);margin-top:3px;letter-spacing:.04em}
+.cp-cote{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:20px;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.cp-fleche{color:var(--sourdine);font-size:15px;transition:transform .25s}
+.cp.ouvert .cp-fleche{transform:rotate(90deg)}
+.cp-corps{display:none;padding:0 15px 15px}
+.cp.ouvert .cp-corps{display:block}
+.cp-sel{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--ligne)}
+.cp-sel .g{flex:1;min-width:0}
+.cp-sel .lig{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--sourdine);letter-spacing:.08em;text-transform:uppercase}
+.cp-sel .duel{font-size:12.5px;font-weight:700;margin:2px 0 3px}
+.cp-sel .pick{font-size:11.5px;color:var(--aura1);font-weight:700}
+.cp-sel .pick small{color:var(--sourdine);font-weight:500}
+.cp-sel .c{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;white-space:nowrap}
+.cp-sel.gagne .c{color:var(--aura1)} .cp-sel.perdu{opacity:.55}
+.cp-sel.perdu .c{color:var(--ko)}
+.cp-gain{margin-top:13px;padding:13px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;gap:10px}
+.cp-gain label{font-size:10.5px;color:var(--sourdine);display:block;margin-bottom:4px}
+.cp-gain input{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--ligne);background:var(--nuit);color:var(--texte);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none}
+.cp-gain input:focus{border-color:rgba(61,232,200,.6)}
+.cp-gain .res{text-align:right;flex:1}
+.cp-gain .res b{display:block;font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--aura1)}
+.cp-actions{display:flex;gap:8px;margin-top:11px}
+.cp-actions button{flex:1;padding:13px;border-radius:12px;border:none;font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
+.cp-jouer{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;box-shadow:0 0 18px rgba(61,232,200,.25)}
+.cp-copier{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)!important;flex:0 0 44%!important}
+.cp-etat{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;padding:4px 8px;border-radius:7px;white-space:nowrap}
+.cp-etat.g{background:rgba(61,232,200,.15);color:var(--aura1)}
+.cp-etat.p{background:rgba(255,107,138,.13);color:var(--ko)}
+/* montante */
+.mt-obj{margin:0 16px 12px;padding:14px 15px;border-radius:15px;background:linear-gradient(120deg,rgba(255,180,84,.10),var(--surface));border:1px solid rgba(255,180,84,.4)}
+.mt-obj .t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--sur);font-weight:700}
+.mt-obj .v{font-family:'Unbounded',sans-serif;font-size:19px;margin:6px 0 3px}
+.mt-obj .s{font-size:11px;color:var(--sourdine)}
+.mt-barre{height:7px;border-radius:99px;background:var(--surface2);margin-top:10px;overflow:hidden}
+.mt-barre i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--sur),var(--aura1));transition:width .9s cubic-bezier(.3,0,.2,1)}
+.mt-palier{margin:0 16px 8px;padding:12px 14px;border-radius:13px;background:var(--surface);border:1px solid var(--ligne);display:flex;align-items:center;gap:11px}
+.mt-palier .n{width:28px;height:28px;flex-shrink:0;border-radius:9px;background:var(--surface2);color:var(--sourdine);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.mt-palier.gagne .n{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+.mt-palier.perdu .n{background:rgba(255,107,138,.15);color:var(--ko)}
+.mt-palier .g{flex:1}
+.mt-palier .m{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700}
+.mt-palier .d{font-size:10px;color:var(--sourdine);margin-top:2px}
+
 /* ---------- palmarès ---------- */
 .tuiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 16px 12px}
 .tuile{background:var(--surface);border:1px solid var(--ligne);border-radius:13px;padding:12px 8px;text-align:center}
@@ -391,6 +444,7 @@ const CONFIG = {
   <symbol id="i-ballon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7 4 3-1.5 4.7h-5L8 10l4-3zM12 3v4M4.2 9.4 8 10M19.8 9.4 16 10M6.5 19l3-4.3M17.5 19l-3-4.3"/></symbol>
   <symbol id="i-grille" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
   <symbol id="i-duo" viewBox="0 0 24 24"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-6z"/><path d="M9 5v14" stroke-dasharray="2 3"/></symbol>
   <symbol id="i-etoile" viewBox="0 0 24 24"><path d="m12 3 2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3 1.2-6.2L3 9.5l6.3-.8L12 3z"/></symbol>
   <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9zM10.3 20a2 2 0 0 0 3.4 0"/></symbol>
   <symbol id="i-oeil" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
@@ -465,6 +519,12 @@ const CONFIG = {
   </div>
 
   <!-- ============ BOOKMAKERS ============ -->
+  <div class="page" id="page-coupons">
+    <div class="abo-tete"><h2>Coupons du jour</h2><p>Combinés prêts à jouer, construits chaque matin par le moteur.</p></div>
+    <div class="onglets" id="onglets-coupons"></div>
+    <div id="zone-coupons"><div class="chargement">CHARGEMENT DES COUPONS…</div></div>
+  </div>
+
   <div class="page" id="page-book">
     <div class="abo-tete"><h2>Où parier</h2><p>Comparés sur des critères concrets, pas sur les commissions.</p></div>
     <div id="zone-books"></div>
@@ -593,6 +653,7 @@ const CONFIG = {
   <div class="nav">
     <button class="actif" data-page="accueil" onclick="allerPage('accueil')"><svg class="ic"><use href="#i-eclair"/></svg>Accueil</button>
     <button data-page="palmares" onclick="allerPage('palmares')"><svg class="ic"><use href="#i-graph"/></svg>Palmarès</button>
+    <button data-page="coupons" onclick="allerPage('coupons')"><svg class="ic"><use href="#i-ticket"/></svg>Coupons</button>
     <button data-page="book" onclick="allerPage('book')"><svg class="ic"><use href="#i-coupe"/></svg>Bookmakers</button>
     <button data-page="compte" onclick="allerPage('compte')"><svg class="ic"><use href="#i-user"/></svg>Compte</button>
   </div>
@@ -682,6 +743,7 @@ function allerPage(p){
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('actif', b.dataset.page===p));
   if(p === 'palmares') animerPalmares();
   if(p === 'accueil') cascade('#zone-matchs .match');
+  if(p === 'coupons') chargerCoupons();
 }
 
 /* ================= CHARGEMENT ================= */
@@ -1242,6 +1304,184 @@ function ouvrirGuideInstall(){
   $('panneau-install').classList.add('actif');
 }
 function fermerGuideInstall(){ $('panneau-install').classList.remove('actif'); }
+
+
+/* ================= COUPONS ================= */
+const CATS = [
+  {cle:'sure',      nom:'Sûre',         ico:'🛡️'},
+  {cle:'confiance', nom:'Confiance',    ico:'🎯'},
+  {cle:'fun',       nom:'Fun',          ico:'🎲'},
+  {cle:'grosses',   nom:'Grosses cotes',ico:'🔥'},
+  {cle:'montante',  nom:'Montante',     ico:'📈'},
+];
+let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'sure', COUPONS_CHARGES = false;
+
+const fmtF = n => Math.round(n).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ');
+
+async function sbUser(chemin){
+  const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/' + chemin, {
+    headers:{ apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }
+  });
+  if(!r.ok) throw new Error('Supabase ' + r.status);
+  return r.json();
+}
+
+async function chargerCoupons(){
+  const zone = $('zone-coupons');
+  if(!estConnecte()){
+    zone.innerHTML = `<div class="vide">Connecte-toi pour voir les coupons du jour.</div>`;
+    $('onglets-coupons').innerHTML = ''; return;
+  }
+  if(!estAbonne()){
+    zone.innerHTML = `<div class="vide"><b style="color:var(--aura1)">Réservé aux abonnés PRO</b><br>
+      Les coupons du jour sont construits chaque matin par le moteur.<br><br>
+      <button class="bouton-aura" style="max-width:260px;margin:0 auto" onclick="allerPage('compte')">Passer à PRO</button></div>`;
+    $('onglets-coupons').innerHTML = ''; return;
+  }
+  try{
+    const jour = new Date().toISOString().slice(0,10);
+    const [cps, mt] = await Promise.all([
+      sbUser(`coupons?jour=eq.${jour}&order=categorie.asc,numero.asc&select=id,categorie,numero,cote_totale,nb_matchs,statut`),
+      sbUser(`montante?order=serie.desc,palier.asc&limit=20&select=serie,palier,coupon_id,mise,gain_vise,statut,jour`)
+    ]);
+    COUPONS = Array.isArray(cps) ? cps : [];
+    MONTANTE = Array.isArray(mt) ? mt : [];
+    if(COUPONS.length){
+      const ids = COUPONS.map(c=>c.id).join(',');
+      const sels = await sbUser(`coupon_selections?coupon_id=in.(${ids})&select=coupon_id,ligue,dom,ext,heure,marche,selection,cote,confiance,resultat`);
+      SELECTIONS = {};
+      (sels||[]).forEach(s=>{ (SELECTIONS[s.coupon_id] = SELECTIONS[s.coupon_id] || []).push(s); });
+    }
+    COUPONS_CHARGES = true;
+    dessinerOnglets();
+    afficherCategorie(CAT_ACTIVE);
+  }catch(e){
+    zone.innerHTML = `<div class="vide">Impossible de charger les coupons pour le moment.</div>`;
+  }
+}
+
+function dessinerOnglets(){
+  $('onglets-coupons').innerHTML = CATS.map(c=>{
+    const n = c.cle === 'montante' ? (MONTANTE.length?1:0) : COUPONS.filter(x=>x.categorie===c.cle).length;
+    return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
+  }).join('');
+}
+
+function afficherCategorie(cle){
+  CAT_ACTIVE = cle;
+  document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>b.classList.toggle('actif', CATS[i].cle===cle));
+  if(cle === 'montante'){ afficherMontante(); return; }
+
+  const liste = COUPONS.filter(c=>c.categorie===cle);
+  if(!liste.length){
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » aujourd'hui.<br>Le moteur n'a pas trouvé assez de matchs à sa main.</div>`;
+    return;
+  }
+  $('zone-coupons').innerHTML = liste.map((c,i)=>carteCoupon(c, i===0)).join('');
+  cascade('#zone-coupons .cp');
+}
+
+function carteCoupon(c, ouvert){
+  const sels = SELECTIONS[c.id] || [];
+  const nom = CATS.find(x=>x.cle===c.categorie).nom;
+  const etat = c.statut==='gagne' ? '<span class="cp-etat g">✓ GAGNÉ</span>'
+             : c.statut==='perdu' ? '<span class="cp-etat p">✗ PERDU</span>' : '';
+  return `
+  <div class="cp ${ouvert?'ouvert':''}" id="cp-${c.id}">
+    <div class="cp-tete" onclick="basculerCoupon(${c.id})">
+      <div class="g">
+        <div class="cp-nom">${nom} ${c.numero>1?'#'+c.numero:''} ${etat}</div>
+        <div class="cp-sous">${c.nb_matchs} MATCH${c.nb_matchs>1?'S':''}</div>
+      </div>
+      <div class="cp-cote">${Number(c.cote_totale).toFixed(2)}</div>
+      <span class="cp-fleche">›</span>
+    </div>
+    <div class="cp-corps">
+      ${sels.map(s=>`
+        <div class="cp-sel ${s.resultat||''}">
+          <div class="g">
+            <div class="lig">${s.ligue||''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+            <div class="duel">${s.dom} – ${s.ext}</div>
+            <div class="pick">${s.selection} <small>· ${s.marche}</small></div>
+          </div>
+          <div class="c">${Number(s.cote).toFixed(2)}</div>
+        </div>`).join('')}
+      <div class="cp-gain">
+        <div style="flex:0 0 42%">
+          <label>Ta mise (F)</label>
+          <input type="number" inputmode="numeric" value="1000" oninput="majGain(${c.id}, ${c.cote_totale}, this.value)">
+        </div>
+        <div class="res"><label>Gain potentiel</label><b id="gain-${c.id}">${fmtF(1000*c.cote_totale)} F</b></div>
+      </div>
+      <div class="cp-actions">
+        <button class="cp-copier" onclick="copierCoupon(${c.id})">Copier</button>
+        <button class="cp-jouer" onclick="window.open(CONFIG.LIEN_AFFILIE,'_blank')">Jouer ce coupon →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function basculerCoupon(id){ $('cp-'+id).classList.toggle('ouvert'); }
+
+function majGain(id, cote, mise){
+  const m = parseFloat(mise) || 0;
+  $('gain-'+id).textContent = fmtF(m*cote) + ' F';
+}
+
+function copierCoupon(id){
+  const c = COUPONS.find(x=>x.id===id); if(!c) return;
+  const sels = SELECTIONS[id] || [];
+  const nom = CATS.find(x=>x.cle===c.categorie).nom;
+  const txt = `⚡ COUPON ${nom.toUpperCase()}${c.numero>1?' #'+c.numero:''} — AURA90\n\n`
+    + sels.map(s=>`${s.dom} – ${s.ext}\n→ ${s.selection}  (${Number(s.cote).toFixed(2)})`).join('\n\n')
+    + `\n\nCOTE TOTALE : ${Number(c.cote_totale).toFixed(2)}\n${location.origin}${location.pathname}`;
+  navigator.clipboard?.writeText(txt);
+  const b = document.querySelector(`#cp-${id} .cp-copier`);
+  if(b){ const av = b.textContent; b.textContent = 'Copié ✓'; setTimeout(()=>b.textContent = av, 1600); }
+}
+
+function afficherMontante(){
+  if(!MONTANTE.length){
+    $('zone-coupons').innerHTML = `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
+    return;
+  }
+  const serie = MONTANTE[0].serie;
+  const paliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
+  const dernier = paliers[paliers.length-1];
+  const atteint = Number(dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise) / 5000;
+  const pct = Math.min(100, atteint/15*100);
+
+  let html = `
+    <div class="mt-obj">
+      <div class="t">OBJECTIF ×15 — MONTANTE N°${serie}</div>
+      <div class="v">${fmtF(dernier.statut==='gagne'?dernier.gain_vise:dernier.mise)} F <span style="color:var(--sourdine);font-size:13px">sur 75 000 F</span></div>
+      <div class="s">Départ 5 000 F · palier ${dernier.palier}</div>
+      <div class="mt-barre"><i style="width:0%"></i></div>
+    </div>`;
+
+  html += paliers.map(p=>{
+    const c = COUPONS.find(x=>x.id===p.coupon_id);
+    return `
+    <div class="mt-palier ${p.statut}">
+      <div class="n">${p.statut==='gagne'?'✓':p.statut==='perdu'?'✗':p.palier}</div>
+      <div class="g">
+        <div class="m">${fmtF(p.mise)} F → ${fmtF(p.gain_vise)} F</div>
+        <div class="d">Palier ${p.palier} · ${new Date(p.jour+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}${c?` · cote ${Number(c.cote_totale).toFixed(2)}`:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const enCours = paliers.find(p=>p.statut==='en_cours');
+  if(enCours){
+    const c = COUPONS.find(x=>x.id===enCours.coupon_id);
+    if(c){
+      html += `<div style="margin:16px 16px 8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--sourdine)">LE COUPON DU PALIER ${enCours.palier}</div>`;
+      html += carteCoupon(c, true);
+    }
+  }
+  $('zone-coupons').innerHTML = html;
+  setTimeout(()=>{ const b = document.querySelector('.mt-barre i'); if(b) b.style.width = pct+'%'; }, 120);
+}
 
 /* ================= PUSH ================= */
 function b64versCle(b64){
