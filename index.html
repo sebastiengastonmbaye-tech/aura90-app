@@ -362,6 +362,11 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .separateur::before,.separateur::after{content:'';flex:1;height:1px;background:var(--ligne)}
 .champ button{padding:11px 16px;border:none;border-radius:11px;background:var(--surface2);color:var(--aura1);font-weight:800;font-family:inherit;cursor:pointer;border:1px solid rgba(61,232,200,.35)}
 .statut-ok{margin:8px 16px;padding:11px 14px;border-radius:12px;background:rgba(61,232,200,.08);border:1px solid rgba(61,232,200,.3);font-size:11.5px;color:var(--aura1);font-weight:700;text-align:center}
+.carte-admin{width:calc(100% - 32px);margin:0 16px 12px;padding:14px 16px;border-radius:14px;border:1px solid rgba(61,232,200,.45);background:linear-gradient(120deg,rgba(61,232,200,.12),var(--surface));color:var(--texte);font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:left}
+.carte-admin span{flex:1}
+.carte-admin b{color:var(--aura1);font-size:17px}
+.note-prolong{margin:8px 16px 0;padding:11px 13px;border-radius:12px;background:rgba(61,232,200,.08);border:1px solid rgba(61,232,200,.3);font-size:11.5px;color:var(--sourdine);line-height:1.55}
+.note-prolong b{color:var(--aura1)}
 .jeu-resp{margin:14px 22px 8px;text-align:center;color:var(--sourdine);font-size:9px;line-height:1.6}
 .book{margin:0 16px 12px;padding:16px;border-radius:17px;background:var(--surface);border:1px solid var(--ligne)}
 .book-tete{display:flex;align-items:center;gap:13px;margin-bottom:12px}
@@ -581,6 +586,9 @@ const CONFIG = {
 
     <!-- ----- connecté ----- -->
     <div id="bloc-profil" style="display:none">
+      <button id="btn-admin" class="carte-admin" style="display:none" onclick="location.href='admin.html'">
+        🛠️ <span>Panneau d'administration</span> <b>›</b>
+      </button>
       <div id="statut-acces"></div>
       </div>
       <div class="offre star" style="cursor:pointer" onclick="choisirFormule('mois',8000,'1 mois',this)">
@@ -616,8 +624,6 @@ const CONFIG = {
     </div>
 
     <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px">
-      <button class="lien-retour" id="btn-admin" style="display:none;width:auto;margin:0;font-size:11px;color:var(--aura1);font-weight:800" onclick="location.href='admin.html'">🛠️ Administration</button>
-      <span style="color:var(--sourdine);font-size:11px" id="sep-admin" hidden>·</span>
       <button class="lien-retour" style="display:inline;width:auto;margin:0;font-size:11px" onclick="location.href='partenaire.html'">💼 Devenir partenaire</button>
       <span style="color:var(--sourdine);font-size:11px" id="sep-guide-ios" hidden>·</span>
       <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📱 Installer l'app</button>
@@ -1122,6 +1128,7 @@ async function rafraichirSession(){
 }
 
 function deconnecter(){
+  EST_ADMIN = null;
   SESSION = { access:null, refresh:null, email:null, uid:null, fin:null };
   sauverSession();
   location.reload();
@@ -1184,14 +1191,28 @@ function connecterGoogle(){
 
 
 /* ================= COMPTE (affichage) ================= */
-const ADMINS = ['sebastiengastonmbaye@gmail.com'];
+let EST_ADMIN = null;   // null = pas encore vérifié
 
-function majBoutonAdmin(){
+async function majBoutonAdmin(){
   const b = $('btn-admin'), s = $('sep-admin');
   if(!b) return;
-  const estAdmin = ADMINS.includes((SESSION.email || '').trim().toLowerCase());
-  b.style.display = estAdmin ? 'inline' : 'none';
-  if(s) s.hidden = !estAdmin;
+  const montrer = v => { b.style.display = v ? 'flex' : 'none'; if(s) s.hidden = !v; };
+
+  if(!estConnecte()){ montrer(false); return; }
+  if(EST_ADMIN !== null){ montrer(EST_ADMIN); return; }
+
+  // on demande au serveur : lui seul sait qui est administrateur
+  try{
+    const r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/admin', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY,
+                Authorization:'Bearer ' + SESSION.access },
+      body: JSON.stringify({ action:'stats' })
+    });
+    const d = await r.json().catch(()=>({ erreur:1 }));
+    EST_ADMIN = !!(r.ok && d && !d.erreur);
+  }catch(e){ EST_ADMIN = false; }
+  montrer(EST_ADMIN);
 }
 
 function majBoutonPro(){
@@ -1210,7 +1231,6 @@ function majCompte(){
   const co = estConnecte();
   majBoutonPro();
   majBoutonAdmin();
-  majBoutonAdmin();
   if(co){ chargerParrainage(); chargerNotifs(); majBoutonPush(); }
   else {
     $('btn-cloche').style.display='none';
@@ -1223,7 +1243,10 @@ function majCompte(){
     $('profil-email').textContent = SESSION.email || '';
     if(estAbonne()){
       const fin = new Date(SESSION.fin);
-      $('statut-acces').innerHTML = `<div class="statut-ok">◈ Abonnement PRO actif jusqu'au ${fin.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div>`;
+      const jours = Math.max(1, Math.ceil((fin - Date.now()) / 864e5));
+      $('statut-acces').innerHTML = `
+        <div class="statut-ok">◈ Abonnement PRO actif jusqu'au ${fin.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})} · ${jours} jour${jours>1?'s':''} restant${jours>1?'s':''}</div>
+        <div class="note-prolong">Tu peux prolonger dès maintenant : la durée choisie <b>s'ajoute</b> à ta date de fin, tu ne perds aucun jour.</div>`;
     } else {
       $('statut-acces').innerHTML = `<div class="avert">Aucun abonnement actif — choisis une formule ci-dessous.</div>`;
     }
