@@ -30,11 +30,17 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .msg{margin:10px 0;font-size:12px;color:var(--aura1)}
 .msg.err{color:var(--ko)}
 .vide{color:var(--sourdine);font-size:12px;padding:14px;text-align:center;border:1px dashed var(--ligne);border-radius:12px}
+.barre-haut{margin-bottom:14px}
+.retour-app{background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-family:inherit;font-size:12.5px;font-weight:700;padding:10px 15px;border-radius:11px;cursor:pointer}
+.retour-app:hover{border-color:rgba(61,232,200,.5)}
 #panel{display:none}
 .ligne-btn{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 </style>
 </head>
 <body>
+<div class="barre-haut">
+  <button class="retour-app" onclick="location.href='./'">‹ Mon compte AURA90</button>
+</div>
 <h1>AURA<span class="neuf0">90</span>' — Administration</h1>
 <div class="sous" id="qui">Connexion requise</div>
 
