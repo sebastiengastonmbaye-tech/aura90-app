@@ -180,8 +180,6 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .carte-marche .g svg{width:16px;height:16px;color:var(--aura2);flex-shrink:0}
 .carte-marche .g small{display:block;font-weight:500;color:var(--sourdine);font-size:10px;margin-top:2px}
 .carte-marche .d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--aura1);font-weight:600;text-align:right;white-space:nowrap}
-.affil{margin:12px 0 4px;display:block;text-align:center;padding:13px;border-radius:12px;background:transparent;border:1px solid var(--aura1);color:var(--aura1);font-weight:800;font-size:13.5px;text-decoration:none}
-.affil small{display:block;font-weight:500;font-size:9.5px;color:var(--sourdine);margin-top:3px}
 .fermer{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:16px;background:var(--surface2);border:1px solid var(--ligne);color:var(--sourdine);width:32px;height:32px;border-radius:10px;font-size:15px;cursor:pointer;z-index:5}
 .lien-retour{display:block;text-align:center;margin:10px 0;color:var(--sourdine);font-size:12px;background:none;border:none;font-family:inherit;cursor:pointer;text-decoration:underline;width:100%}
 
@@ -256,7 +254,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .cp-actions{display:flex;gap:8px;margin-top:11px}
 .cp-actions button{flex:1;padding:13px;border-radius:12px;border:none;font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
 .cp-jouer{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;box-shadow:0 0 18px rgba(61,232,200,.25)}
-.cp-copier{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)!important;flex:0 0 44%!important}
+.cp-copier{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)!important}
 .cp-etat{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;padding:4px 8px;border-radius:7px;white-space:nowrap}
 .cp-etat.g{background:rgba(61,232,200,.15);color:var(--aura1)}
 .cp-etat.p{background:rgba(255,107,138,.13);color:var(--ko)}
@@ -368,19 +366,6 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .note-prolong{margin:8px 16px 0;padding:11px 13px;border-radius:12px;background:rgba(61,232,200,.08);border:1px solid rgba(61,232,200,.3);font-size:11.5px;color:var(--sourdine);line-height:1.55}
 .note-prolong b{color:var(--aura1)}
 .jeu-resp{margin:14px 22px 8px;text-align:center;color:var(--sourdine);font-size:9px;line-height:1.6}
-.book{margin:0 16px 12px;padding:16px;border-radius:17px;background:var(--surface);border:1px solid var(--ligne)}
-.book-tete{display:flex;align-items:center;gap:13px;margin-bottom:12px}
-.book-logo{width:92px;height:48px;border-radius:11px;background:#F3F5F8;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:7px}
-.book-logo img{max-width:100%;max-height:100%;object-fit:contain}
-.book .n{font-size:15px;font-weight:800}
-.book .bonus{margin-top:3px;color:var(--aura1);font-size:11.5px;font-weight:700}
-.code-ligne{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px dashed rgba(61,232,200,.35);border-radius:11px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
-.code-ligne .lbl{color:var(--sourdine);font-size:11px;font-weight:700}
-.code-ligne .val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--aura1);font-size:14px;letter-spacing:.08em}
-.book-cta{display:flex;align-items:center;justify-content:center;width:100%;padding:13px;border-radius:12px;font-weight:900;font-size:14.5px;letter-spacing:.01em;text-decoration:none;color:#FFFFFF;text-shadow:0 1px 4px rgba(4,10,16,.5);background:linear-gradient(135deg,#25C9A9,#7361F2);box-shadow:0 0 18px rgba(61,232,200,.3)}
-.book .n{font-size:13px;font-weight:800}
-.book .crit{margin-top:6px;color:var(--sourdine);font-size:10.5px;line-height:1.6}
-.book a{display:inline-block;margin-top:9px;color:var(--aura1);font-weight:800;font-size:12px;text-decoration:none;border:1px solid rgba(61,232,200,.4);padding:8px 14px;border-radius:10px}
 .avert{margin:4px 16px 10px;color:var(--sourdine);font-size:9.5px;line-height:1.5;text-align:center}
 .chargement{margin:40px auto;text-align:center;color:var(--sourdine);font-size:12px;font-family:'JetBrains Mono',monospace}
 .erreur-cfg{margin:30px 20px;padding:16px;border-radius:14px;background:rgba(255,122,158,.08);border:1px solid rgba(255,122,158,.35);font-size:12px;line-height:1.6}
@@ -440,8 +425,6 @@ const CONFIG = {
   SUPABASE_URL: "https://nzsvmqyiukxzsfjprpiy.supabase.co",
   // ⬇️ Colle ici ta clé PUBLISHABLE (sb_publishable_..., PAS la secrète !)
   SUPABASE_KEY: "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW",
-  // Ton lien d'affiliation bookmaker principal
-  LIEN_AFFILIE: "https://refpa98980.com/L?tag=d_5332676m_94904c_&site=5332676&ad=94904",
   // Clé publique push (la privée vit dans les secrets Supabase)
   VAPID_PUBLIC: "BDGot_Oa8VaB2k5JRbfc0mn89LezBeaqxRbhhDky1X_B4ms2c-lpyYMXeGVzdsHW9V1SHKi3bpjt0Mx014oj9Nw",
   // Repo public = preuve d'antériorité
@@ -541,14 +524,6 @@ const CONFIG = {
     <div class="jours-coupons" id="jours-coupons"></div>
     <div class="onglets" id="onglets-coupons"></div>
     <div id="zone-coupons"><div class="chargement">CHARGEMENT DES COUPONS…</div></div>
-  </div>
-
-  <div class="page" id="page-book">
-    <div class="abo-tete"><h2>Où parier</h2><p>Comparés sur des critères concrets, pas sur les commissions.</p></div>
-    <div id="zone-books"></div>
-    <div class="avert">Liens partenaires — c'est ce qui finance AURA90. Les critères affichés restent objectifs.</div>
-
-    <div class="jeu-resp">Interdit aux moins de 18 ans. Le pari comporte des risques : ne jouez que ce que vous pouvez perdre.<br>Besoin d'aide ? Parlez-en à un proche ou à un professionnel.</div>
   </div>
 
   <!-- ============ COMPTE / ABO ============ -->
@@ -675,7 +650,6 @@ const CONFIG = {
     <button class="actif" data-page="accueil" onclick="allerPage('accueil')"><svg class="ic"><use href="#i-eclair"/></svg>Accueil</button>
     <button data-page="palmares" onclick="allerPage('palmares')"><svg class="ic"><use href="#i-graph"/></svg>Palmarès</button>
     <button data-page="coupons" onclick="allerPage('coupons')"><svg class="ic"><use href="#i-ticket"/></svg>Coupons</button>
-    <button data-page="book" onclick="allerPage('book')"><svg class="ic"><use href="#i-coupe"/></svg>Bookmakers</button>
     <button data-page="compte" onclick="allerPage('compte')"><svg class="ic"><use href="#i-user"/></svg>Compte</button>
   </div>
 </div>
@@ -915,8 +889,7 @@ function montrerFiche(p){
       <div class="m-haut"><span class="m-lbl"><svg class="ic"><use href="#i-grille"/></svg><span>Scores les plus probables<small>121 scénarios simulés</small></span></span></div>
       <div class="scores-ligne">${String(p.scores_top3).split('·').map((s,i)=>`<div class="score-cap${i===0?' top':''}">${s.trim()}${i===0?'<small>le + probable</small>':'<small>&nbsp;</small>'}</div>`).join('')}</div>
     </div>
-    <a class="affil" href="${CONFIG.LIEN_AFFILIE}" target="_blank" rel="noopener">Parier sur ce match →
-      <small>Lien partenaire — meilleur bookmaker du marché</small></a>
+    
     <button class="lien-retour" onclick="fermerAnalyse()">← Analyser une autre rencontre</button>`;
   $('fiche').classList.add('actif');
   setTimeout(()=>{ document.querySelectorAll('#fiche .m-barre i').forEach(b=>{ b.style.width = (b.dataset.w||0)+'%'; }); }, 80);
@@ -1031,15 +1004,6 @@ async function chargerHisto(ajouter){
 }
 
 /* ================= BOOKMAKERS ================= */
-const BOOKS = [
-  { nom:"Win Win Bet", code:"RV120",  bonus:"200 % jusqu'à 95 000 FCFA", img:"logo-winwin.png",    lien:"https://refpa98980.com/L?tag=d_5332676m_94904c_&site=5332676&ad=94904" },
-  { nom:"Melbet",      code:"RV120",  bonus:"100 % jusqu'à 80 000 FCFA", img:"logo-melbet.png",    lien:"https://refpa3665.com/L?tag=d_5176363m_66329c_&site=5176363&ad=66329" },
-  { nom:"Linebet",     code:"XEUS60", bonus:"100 % jusqu'à 35 000 FCFA", img:"logo-linebet.png",   lien:"https://lb-aff.com/L?tag=d_5228202m_22611c_" },
-  { nom:"1xBet",       code:"XEUS60", bonus:"200 % jusqu'à 100 €", img:"logo-1xbet.png",     lien:"https://reffpa.com/L?tag=d_3439114m_97c_&site=3439114&ad=97&r=Inscription" },
-  { nom:"1win",        code:"XEUS60", bonus:"500 % sur le 1er dépôt", img:"logo-1win.png",      lien:"https://1win.com/?open=register&p=qxwz" },
-  { nom:"Mega Pari",   code:"XEUS60", bonus:"100 % jusqu'à 45 000 FCFA", img:"logo-megapari.png",  lien:"https://refpazitag.top/L?tag=d_4160319m_25437c_&site=4160319&ad=25437&r=registration" },
-  { nom:"Betwinner",   code:"RV120",  bonus:"100 % jusqu'à 65 000 FCFA", img:"logo-betwinner.png", lien:"https://bwredir.com/2Qxq" },
-];
 function copierCode(code, el){
   navigator.clipboard?.writeText(code).then(()=>{
     const v = el.querySelector('.val'); const t = v.textContent;
@@ -1047,18 +1011,7 @@ function copierCode(code, el){
     setTimeout(()=>{ v.textContent = t; }, 1500);
   });
 }
-$('zone-books').innerHTML = BOOKS.map((b,i)=>`
-  <div class="book">
-    <div class="book-tete">
-      <div class="book-logo"><img src="${b.img}" alt="${b.nom}" loading="lazy"></div>
-      <div><div class="n">${b.nom}</div><div class="bonus">🎁 ${b.bonus}</div></div>
-    </div>
-    <div class="code-ligne" onclick="copierCode('${b.code}', this)">
-      <span class="lbl">CODE PROMO — appuie pour copier</span>
-      <span class="val">${b.code}</span>
-    </div>
-    <a class="book-cta" href="${b.lien}" target="_blank" rel="noopener">J'en profite →</a>
-  </div>`).join('');
+
 
 /* ================= AUTH ================= */
 async function authApi(chemin, corps, jeton){
@@ -1526,7 +1479,7 @@ function carteCoupon(c, ouvert){
       </div>
       <div class="cp-actions">
         <button class="cp-copier" onclick="copierCoupon(${c.id})">Copier</button>
-        <button class="cp-jouer" onclick="window.open(CONFIG.LIEN_AFFILIE,'_blank')">Jouer ce coupon →</button>
+
       </div>
     </div>
   </div>`;
