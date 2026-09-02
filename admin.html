@@ -94,6 +94,23 @@ const SUPABASE_KEY = "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW";
 let JETON = null;
 const $ = id => document.getElementById(id);
 
+// Si l'utilisateur est déjà connecté dans l'application (même domaine),
+// on reprend sa session : plus besoin de retaper email et mot de passe.
+async function sessionExistante(){
+  try{
+    const s = JSON.parse(localStorage.getItem('aura90_session') || 'null');
+    if(!s || !s.access) return false;
+    JETON = s.access;
+    const t = await admin({ action:'stats' });
+    if(!t || t.erreur){ JETON = null; return false; }
+    $('login').style.display = 'none';
+    $('panel').style.display = 'block';
+    $('qui').textContent = 'Connecté : ' + (s.email || '');
+    afficherStats(t); chargerRetraits();
+    return true;
+  }catch(e){ JETON = null; return false; }
+}
+
 async function connecter(){
   const r = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY },
@@ -227,6 +244,8 @@ async function notifierTous(){
     : (r.erreur || 'Erreur');
   if(r.ok){ $('n-titre').value=''; $('n-corps').value=''; }
 }
+
+sessionExistante();
 </script>
 </body>
 </html>

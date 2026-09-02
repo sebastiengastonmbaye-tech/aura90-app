@@ -616,6 +616,8 @@ const CONFIG = {
     </div>
 
     <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px">
+      <button class="lien-retour" id="btn-admin" style="display:none;width:auto;margin:0;font-size:11px;color:var(--aura1);font-weight:800" onclick="location.href='admin.html'">🛠️ Administration</button>
+      <span style="color:var(--sourdine);font-size:11px" id="sep-admin" hidden>·</span>
       <button class="lien-retour" style="display:inline;width:auto;margin:0;font-size:11px" onclick="location.href='partenaire.html'">💼 Devenir partenaire</button>
       <span style="color:var(--sourdine);font-size:11px" id="sep-guide-ios" hidden>·</span>
       <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📱 Installer l'app</button>
@@ -1182,6 +1184,16 @@ function connecterGoogle(){
 
 
 /* ================= COMPTE (affichage) ================= */
+const ADMINS = ['sebastiengastonmbaye@gmail.com'];
+
+function majBoutonAdmin(){
+  const b = $('btn-admin'), s = $('sep-admin');
+  if(!b) return;
+  const estAdmin = ADMINS.includes((SESSION.email || '').trim().toLowerCase());
+  b.style.display = estAdmin ? 'inline' : 'none';
+  if(s) s.hidden = !estAdmin;
+}
+
 function majBoutonPro(){
   const b = $('btn-pro'); if(!b) return;
   if(estAbonne()){
@@ -1197,6 +1209,8 @@ function majBoutonPro(){
 function majCompte(){
   const co = estConnecte();
   majBoutonPro();
+  majBoutonAdmin();
+  majBoutonAdmin();
   if(co){ chargerParrainage(); chargerNotifs(); majBoutonPush(); }
   else {
     $('btn-cloche').style.display='none';
