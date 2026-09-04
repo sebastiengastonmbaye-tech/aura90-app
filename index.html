@@ -1145,6 +1145,7 @@ function connecterGoogle(){
 
 /* ================= COMPTE (affichage) ================= */
 let EST_ADMIN = null;   // null = pas encore vérifié
+let _ADMIN_EN_COURS = null;   // évite deux appels simultanés au serveur
 
 async function majBoutonAdmin(){
   const b = $('btn-admin'), s = $('sep-admin');
@@ -1153,19 +1154,40 @@ async function majBoutonAdmin(){
 
   if(!estConnecte()){ montrer(false); return; }
   if(EST_ADMIN !== null){ montrer(EST_ADMIN); return; }
+  if(_ADMIN_EN_COURS){ montrer(await _ADMIN_EN_COURS); return; }
 
-  // on demande au serveur : lui seul sait qui est administrateur
-  try{
-    const r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/admin', {
+  // on demande au serveur : lui seul sait qui est administrateur.
+  // IMPORTANT : au chargement, le jeton du localStorage est souvent expiré.
+  // On retente donc après rafraîchissement, exactement comme chargerAbonnement(),
+  // et on ne mémorise JAMAIS un « non » venant d'un problème d'authentification :
+  // sinon le bouton reste caché jusqu'au rechargement de la page.
+  _ADMIN_EN_COURS = (async () => {
+    const appel = () => fetch(CONFIG.SUPABASE_URL + '/functions/v1/admin', {
       method:'POST',
       headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY,
                 Authorization:'Bearer ' + SESSION.access },
       body: JSON.stringify({ action:'stats' })
     });
-    const d = await r.json().catch(()=>({ erreur:1 }));
-    EST_ADMIN = !!(r.ok && d && !d.erreur);
-  }catch(e){ EST_ADMIN = false; }
-  montrer(EST_ADMIN);
+    try{
+      let r = await appel();
+      if(r.status === 401 && await rafraichirSession()) r = await appel();
+      if(r.status === 401 || r.status === 403){
+        // jeton toujours invalide : on ne conclut rien, on réessaiera plus tard
+        if(r.status === 403) EST_ADMIN = false;   // le serveur dit « pas admin » : c'est définitif
+        return EST_ADMIN === true;
+      }
+      const d = await r.json().catch(()=>null);
+      if(r.ok && d && !d.erreur){ EST_ADMIN = true; return true; }
+      if(r.ok){ EST_ADMIN = false; return false; }
+      return false;                                // erreur serveur : on ne mémorise rien
+    }catch(e){
+      return false;                                // réseau coupé : on ne mémorise rien
+    }finally{
+      _ADMIN_EN_COURS = null;
+    }
+  })();
+
+  montrer(await _ADMIN_EN_COURS);
 }
 
 function majBoutonPro(){
@@ -1852,6 +1874,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu -->
+<!-- aura90-v4-sans-jeu · correctif bouton admin 03/09 -->
 </body>
 </html>
