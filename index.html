@@ -1532,7 +1532,7 @@ function afficherMontante(){
   const pertinents = MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
   if(!pertinents.length){
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de palier de montante ${quand}.<br>La montante avance d'un palier par jour, tant qu'elle passe.</div>`;
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de palier de montante ${quand}.<br>La montante avance d'un palier par jour, tant qu'elle passe — 15 paliers pour boucler une série.</div>`;
     return;
   }
   if(!MONTANTE.length){
@@ -1542,14 +1542,17 @@ function afficherMontante(){
   const serie = pertinents[0].serie;
   const paliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
   const dernier = paliers[paliers.length-1];
-  const atteint = Number(dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise) / 5000;
-  const pct = Math.min(100, atteint/15*100);
+  // Montante en 15 paliers : la série est réussie quand 15 paliers passent d'affilée
+  const PALIERS_MAX = 15;
+  const gagnes = paliers.filter(p=>p.statut==='gagne').length;
+  const pct = Math.min(100, gagnes/PALIERS_MAX*100);
+  const capital = dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise;
 
   let html = `
     <div class="mt-obj">
-      <div class="t">OBJECTIF ×15 — MONTANTE N°${serie}</div>
-      <div class="v">${fmtF(dernier.statut==='gagne'?dernier.gain_vise:dernier.mise)} F <span style="color:var(--sourdine);font-size:13px">sur 75 000 F</span></div>
-      <div class="s">Départ 5 000 F · palier ${dernier.palier}</div>
+      <div class="t">MONTANTE N°${serie} — ${PALIERS_MAX} PALIERS</div>
+      <div class="v">${fmtF(capital)} F <span style="color:var(--sourdine);font-size:13px">· palier ${dernier.palier} / ${PALIERS_MAX}</span></div>
+      <div class="s">Départ 5 000 F · ${gagnes} palier${gagnes>1?'s':''} passé${gagnes>1?'s':''}</div>
       <div class="mt-barre"><i style="width:0%"></i></div>
     </div>`;
 
@@ -1874,6 +1877,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · correctif bouton admin 03/09 -->
+<!-- aura90-v4-sans-jeu · montante 15 paliers 19/09 -->
 </body>
 </html>
