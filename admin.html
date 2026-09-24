@@ -35,6 +35,11 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .retour-app:hover{border-color:rgba(61,232,200,.5)}
 #panel{display:none}
 .ligne-btn{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.carte-tiktok{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--ligne);border-radius:13px;padding:14px;text-decoration:none;color:var(--texte)}
+.carte-tiktok:hover{border-color:rgba(61,232,200,.5)}
+.carte-tiktok .t{font-weight:800;font-size:14px}
+.carte-tiktok .s{color:var(--sourdine);font-size:11px;margin-top:3px}
+.carte-tiktok .fl{font-size:20px;color:var(--aura1)}
 </style>
 </head>
 <body>
@@ -56,6 +61,15 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 <div id="panel">
   <h2>Vue d'ensemble</h2>
   <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
+
+  <h2>Contenu</h2>
+  <a class="carte-tiktok" href="tiktok.html">
+    <div>
+      <div class="t">🎬 Combinés TikTok</div>
+      <div class="s">3 combinés par jour · 10 à 15 matchs · cote 90+ · 7 jours à l'avance</div>
+    </div>
+    <span class="fl">›</span>
+  </a>
 
   <h2>Retraits en attente — versements du mardi</h2>
   <div id="retraits"><div class="vide">Chargement…</div></div>
@@ -125,6 +139,8 @@ async function connecter(){
   const d = await r.json();
   if(!d.access_token){ $('msg-login').textContent = 'Identifiants incorrects.'; return; }
   JETON = d.access_token;
+  // la page des combinés TikTok reprend cette session
+  localStorage.setItem('aura90_session', JSON.stringify({ access: d.access_token, refresh: d.refresh_token || null, email: $('email').value.trim(), fin: null }));
   // test d'accès admin
   const t = await admin({ action:'stats' });
   if(t && t.erreur){ $('msg-login').textContent = 'Ce compte n\'est pas administrateur.'; JETON = null; return; }
