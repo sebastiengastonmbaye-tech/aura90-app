@@ -263,6 +263,14 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .se-cap.gagne{border-color:var(--aura1);background:rgba(61,232,200,.16)}
 .se-cap.perdu{opacity:.45}
 .se-note{font-size:11px;color:var(--sourdine);margin-top:10px;line-height:1.45}
+.lv-tete{background:linear-gradient(135deg,rgba(255,107,138,.14),rgba(139,124,255,.10));border:1px solid rgba(255,107,138,.35);border-radius:18px;padding:16px;margin-bottom:12px}
+.lv-tete .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.lv-tete .t i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 0 0 rgba(255,92,122,.6);animation:lvp 1.6s infinite}
+@keyframes lvp{0%{box-shadow:0 0 0 0 rgba(255,92,122,.6)}70%{box-shadow:0 0 0 9px rgba(255,92,122,0)}100%{box-shadow:0 0 0 0 rgba(255,92,122,0)}}
+.lv-tete .s{color:var(--sourdine);font-size:12px;margin:6px 0 12px;line-height:1.5}
+.lv-stat{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sourdine);margin-top:8px}
+.lv-min{font-family:'JetBrains Mono',monospace;font-size:9px;color:#ff8fa6;letter-spacing:.06em;margin-left:6px}
+.lv-msg{color:var(--sourdine);font-size:12.5px;text-align:center;padding:18px 10px;line-height:1.5}
 .cp-etat.g{background:rgba(61,232,200,.15);color:var(--aura1)}
 .cp-etat.p{background:rgba(255,107,138,.13);color:var(--ko)}
 /* montante */
@@ -1340,6 +1348,7 @@ function fermerGuideInstall(){ $('panneau-install').classList.remove('actif'); }
 
 /* ================= COUPONS ================= */
 const CATS = [
+  {cle:'live',      nom:'LIVE',         ico:'🔴'},
   {cle:'sure',      nom:'Sûre',         ico:'🛡️'},
   {cle:'score',     nom:'Score exact',  ico:'⚽'},
   {cle:'confiance', nom:'Confiance',    ico:'🎯'},
@@ -1440,7 +1449,7 @@ function couponsDuJour(){
 function dessinerOnglets(){
   $('onglets-coupons').innerHTML = CATS.map(c=>{
     const auj0 = new Date().toISOString().slice(0,10);
-    const n = c.cle === 'montante'
+    const n = c.cle === 'live' ? 0 : c.cle === 'montante'
       ? (MONTANTE.some(p => JOUR_ACTIF === 'auj' ? p.jour === auj0 : p.jour > auj0) ? 1 : 0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
     return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
   }).join('');
@@ -1450,6 +1459,7 @@ function afficherCategorie(cle){
   CAT_ACTIVE = cle;
   document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>b.classList.toggle('actif', CATS[i].cle===cle));
   if(cle === 'montante'){ afficherMontante(); return; }
+  if(cle === 'live'){ afficherLive(); return; }
 
   const liste = couponsDuJour().filter(c => c.categorie === cle && (SELECTIONS[c.id]||[]).length);
 
@@ -1471,6 +1481,93 @@ function afficherCategorie(cle){
     ? liste.map(c=>carteScore(c)).join('') + `<div class="se-note">Les scores exacts les plus nets du jour selon le moteur. Un match est validé dès qu'un des scores proposés tombe.</div>`
     : liste.map((c,i)=>carteCoupon(c, i===0)).join('');
   cascade('#zone-coupons .cp');
+}
+
+let LIVE_DERNIER = 0;   // horodatage du dernier calcul (limite 60 s côté app)
+
+async function afficherLive(){
+  const zone = $('zone-coupons'), t = $('cp-titre'), st = $('cp-sous');
+  if(t && st){ t.textContent = 'Coupons LIVE'; st.textContent = 'Combinés sur les matchs en cours, calculés à l\'instant où tu cliques.'; }
+  let stat = '';
+  try{
+    const p = await sbUser('palmares_live?select=gagnes,verifies');
+    if(p && p[0] && p[0].verifies > 0) stat = `<div class="lv-stat">${p[0].gagnes} validé${p[0].gagnes>1?'s':''} sur ${p[0].verifies} combiné${p[0].verifies>1?'s':''} live vérifié${p[0].verifies>1?'s':''}</div>`;
+  }catch(e){}
+  const reste = Math.max(0, 60 - Math.round((Date.now() - LIVE_DERNIER) / 1000));
+  zone.innerHTML = `
+    <div class="lv-tete">
+      <div class="t"><i></i> LIVE COUPON</div>
+      <div class="s">Le moteur reprend chaque match en cours à la minute et au score actuels, et construit 2 à 3 combinés de 2-3 matchs, cote 1,85 à 3. Une cote live bouge vite : joue-la tout de suite ou recalcule.</div>
+      <button class="bouton-aura" id="lv-btn" onclick="genererLive()" ${reste?'disabled':''}>${reste ? 'Recalcul dans '+reste+' s' : '⚡ Générer mes combinés live'}</button>
+      ${stat}
+    </div>
+    <div id="lv-zone"></div>`;
+  if(reste){ setTimeout(()=>{ if(CAT_ACTIVE==='live') afficherLive(); }, reste*1000); }
+  chargerLiveDuJour();
+}
+
+async function chargerLiveDuJour(){
+  try{
+    const jour = new Date().toISOString().slice(0,10);
+    const rows = await sbUser(`coupons_live?jour=eq.${jour}&order=cree_le.desc,numero.asc&limit=12&select=id,numero,cote_totale,selections,cree_le,statut`);
+    rendreLive(rows, false);
+  }catch(e){}
+}
+
+async function genererLive(){
+  const b = $('lv-btn'); if(!b) return;
+  b.disabled = true; b.textContent = 'Analyse des matchs en cours…';
+  try{
+    let r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', {
+      method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body:'{}'
+    });
+    if(r.status === 401 && await rafraichirSession()){
+      r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', {
+        method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body:'{}'
+      });
+    }
+    const d = await r.json().catch(()=>({erreur:'réponse illisible'}));
+    if(d.erreur){ $('lv-zone').innerHTML = `<div class="lv-msg">${d.erreur}</div>`; b.disabled=false; b.textContent='⚡ Générer mes combinés live'; return; }
+    LIVE_DERNIER = Date.now();
+    if(!d.combos || !d.combos.length){
+      $('lv-zone').innerHTML = `<div class="lv-msg">${d.message || 'Rien à proposer pour l\'instant.'}</div>`;
+    }else{
+      rendreLive(d.combos, true);
+    }
+    afficherLive();
+  }catch(e){
+    $('lv-zone').innerHTML = `<div class="lv-msg">Impossible de joindre le moteur live. Réessaie.</div>`;
+    b.disabled=false; b.textContent='⚡ Générer mes combinés live';
+  }
+}
+
+function rendreLive(rows, nouveaux){
+  const zone = $('lv-zone'); if(!zone || !rows) return;
+  if(!rows.length){ if(nouveaux) zone.innerHTML = `<div class="lv-msg">Aucun combiné live pour l'instant.</div>`; return; }
+  const heure = iso => new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  zone.innerHTML = rows.map(c=>{
+    const sels = c.selections || [];
+    const etat = c.statut==='gagne' ? '<span class="cp-etat g">✓ VALIDÉ</span>' : c.statut==='perdu' ? '<span class="cp-etat p">✗ PERDU</span>' : '<span class="cp-etat">EN COURS</span>';
+    return `
+    <div class="cp ouvert">
+      <div class="cp-tete" onclick="this.parentElement.classList.toggle('ouvert')">
+        <div class="g"><div class="cp-nom">Live ${c.numero} ${etat}</div><div class="cp-sous">${sels.length} MATCHS · calculé à ${heure(c.cree_le)}</div></div>
+        <div class="cp-cote">${Number(c.cote_totale).toFixed(2)}</div>
+      </div>
+      <div class="cp-corps">
+        ${sels.map(s=>`
+        <div class="cp-sel">
+          <div class="g">
+            <div class="lig">${s.ligue||''}<span class="lv-min">${s.minute}' · ${s.score}</span></div>
+            <div class="duel"><span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span><span class="vs">–</span><span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span></div>
+            <div class="pick"><span class="fl">▸</span>${s.resultat==='gagne'?'✓ ':s.resultat==='perdu'?'✗ ':''}${s.selection}</div>
+          </div>
+          <div class="c">${Number(s.cote).toFixed(2)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  cascade('#lv-zone .cp');
 }
 
 function carteScore(c){
@@ -1924,6 +2021,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · score exact 24/09 -->
+<!-- aura90-v4-sans-jeu · live coupon 25/09 -->
 </body>
 </html>
