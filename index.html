@@ -1484,33 +1484,61 @@ function afficherCategorie(cle){
 }
 
 let LIVE_DERNIER = 0;   // horodatage du dernier calcul (limite 60 s côté app)
+let LIVE_TIMER = null;
+
+async function appelLive(corps){
+  const opts = () => ({ method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body: JSON.stringify(corps||{}) });
+  let r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', opts());
+  if(r.status === 401 && await rafraichirSession()) r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', opts());
+  return r.json().catch(()=>({erreur:'réponse illisible'}));
+}
 
 async function afficherLive(){
   const zone = $('zone-coupons'), t = $('cp-titre'), st = $('cp-sous');
   if(t && st){ t.textContent = 'Coupons LIVE'; st.textContent = 'Combinés sur les matchs en cours, calculés à l\'instant où tu cliques.'; }
-  let stat = '';
-  try{
-    const p = await sbUser('palmares_live?select=gagnes,verifies');
-    if(p && p[0] && p[0].verifies > 0) stat = `<div class="lv-stat">${p[0].gagnes} validé${p[0].gagnes>1?'s':''} sur ${p[0].verifies} combiné${p[0].verifies>1?'s':''} live vérifié${p[0].verifies>1?'s':''}</div>`;
-  }catch(e){}
-  const reste = Math.max(0, 60 - Math.round((Date.now() - LIVE_DERNIER) / 1000));
   zone.innerHTML = `
     <div class="lv-tete">
       <div class="t"><i></i> LIVE COUPON</div>
       <div class="s">Le moteur reprend chaque match en cours à la minute et au score actuels, et construit 2 à 3 combinés de 2-3 matchs, cote 1,85 à 3. Une cote live bouge vite : joue-la tout de suite ou recalcule.</div>
-      <button class="bouton-aura" id="lv-btn" onclick="genererLive()" ${reste?'disabled':''}>${reste ? 'Recalcul dans '+reste+' s' : '⚡ Générer mes combinés live'}</button>
-      ${stat}
+      <div id="lv-etat" class="lv-msg" style="padding:6px 0 10px">Recherche des matchs en cours…</div>
+      <button class="bouton-aura" id="lv-btn" onclick="genererLive()">⚡ Générer mes combinés live</button>
+      <div id="lv-stat" class="lv-stat"></div>
     </div>
     <div id="lv-zone"></div>`;
-  if(reste){ setTimeout(()=>{ if(CAT_ACTIVE==='live') afficherLive(); }, reste*1000); }
+  majBoutonLive();
+  chargerEtatLive();
   chargerLiveDuJour();
+  try{
+    const p = await sbUser('palmares_live?select=gagnes,verifies');
+    if(p && p[0] && p[0].verifies > 0 && $('lv-stat')) $('lv-stat').textContent = `${p[0].gagnes} validé${p[0].gagnes>1?'s':''} sur ${p[0].verifies} combiné${p[0].verifies>1?'s':''} live vérifié${p[0].verifies>1?'s':''}`;
+  }catch(e){}
+}
+
+function majBoutonLive(){
+  const b = $('lv-btn'); if(!b) return;
+  const reste = Math.max(0, 60 - Math.round((Date.now() - LIVE_DERNIER) / 1000));
+  if(reste){ b.disabled = true; b.textContent = 'Recalcul dans ' + reste + ' s'; clearTimeout(LIVE_TIMER); LIVE_TIMER = setTimeout(majBoutonLive, 1000); }
+  else { b.disabled = false; b.textContent = '⚡ Générer mes combinés live'; }
+}
+
+async function chargerEtatLive(){
+  const e = $('lv-etat'); if(!e) return;
+  try{
+    const d = await appelLive({ action:'etat' });
+    if(!e.isConnected) return;
+    if(d.erreur){ e.textContent = d.erreur; return; }
+    const m = d.matchs || [];
+    if(!m.length){ e.innerHTML = `Aucun match de nos championnats en cours pour l'instant${d.total_live ? ' (' + d.total_live + ' match' + (d.total_live>1?'s':'') + ' en direct ailleurs)' : ''}.`; return; }
+    e.innerHTML = `<div style="color:var(--texte);font-weight:800;margin-bottom:6px">🔴 ${m.length} match${m.length>1?'s':''} en cours</div>` +
+      m.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid var(--ligne);font-size:12px"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.dom} – ${x.ext}</span><span class="lv-min" style="margin:0"><b style="color:var(--texte)">${x.score}</b> · ${x.minute}'</span></div>`).join('');
+  }catch(err){ e.textContent = 'Impossible de lire les matchs en cours.'; }
 }
 
 async function chargerLiveDuJour(){
   try{
     const jour = new Date().toISOString().slice(0,10);
     const rows = await sbUser(`coupons_live?jour=eq.${jour}&order=cree_le.desc,numero.asc&limit=12&select=id,numero,cote_totale,selections,cree_le,statut`);
-    rendreLive(rows, false);
+    if(rows && rows.length && $('lv-zone') && !$('lv-zone').innerHTML) rendreLive(rows, false);
   }catch(e){}
 }
 
@@ -1518,23 +1546,17 @@ async function genererLive(){
   const b = $('lv-btn'); if(!b) return;
   b.disabled = true; b.textContent = 'Analyse des matchs en cours…';
   try{
-    let r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', {
-      method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body:'{}'
-    });
-    if(r.status === 401 && await rafraichirSession()){
-      r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/live', {
-        method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body:'{}'
-      });
-    }
-    const d = await r.json().catch(()=>({erreur:'réponse illisible'}));
+    const d = await appelLive({});
     if(d.erreur){ $('lv-zone').innerHTML = `<div class="lv-msg">${d.erreur}</div>`; b.disabled=false; b.textContent='⚡ Générer mes combinés live'; return; }
     LIVE_DERNIER = Date.now();
     if(!d.combos || !d.combos.length){
       $('lv-zone').innerHTML = `<div class="lv-msg">${d.message || 'Rien à proposer pour l\'instant.'}</div>`;
     }else{
       rendreLive(d.combos, true);
+      if(d.recent) $('lv-zone').insertAdjacentHTML('afterbegin', `<div class="lv-msg" style="padding:4px 0 10px">Combinés calculés il y a moins d'une minute.</div>`);
     }
-    afficherLive();
+    majBoutonLive();
+    chargerEtatLive();
   }catch(e){
     $('lv-zone').innerHTML = `<div class="lv-msg">Impossible de joindre le moteur live. Réessaie.</div>`;
     b.disabled=false; b.textContent='⚡ Générer mes combinés live';
@@ -2021,6 +2043,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · live coupon 25/09 -->
+<!-- aura90-v4-sans-jeu · live coupon v2 25/09 -->
 </body>
 </html>
