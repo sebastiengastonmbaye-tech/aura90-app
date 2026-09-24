@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>AURA90 · Combinés TikTok</title>
+<style>
+:root{--fond:#070a12;--carte:#0f1522;--ligne:#1c2436;--texte:#eef2ff;--sourdine:#8892a8;--aura1:#3de8c8;--aura2:#8b7aff;--ok:#3de8c8;--ko:#ff6b8a;--or:#f5c451}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fond);color:var(--texte);font-family:-apple-system,Inter,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:calc(16px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+.tete{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.logo{font-weight:900;font-size:22px;letter-spacing:-.5px;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.retour{color:var(--sourdine);text-decoration:none;font-size:13px;border:1px solid var(--ligne);padding:8px 12px;border-radius:10px}
+h1{font-size:20px;margin:0 0 4px}
+.sous{color:var(--sourdine);font-size:13px;margin:0 0 16px;line-height:1.5}
+.jours{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:none}
+.jours::-webkit-scrollbar{display:none}
+.jours button{flex:0 0 auto;background:var(--carte);border:1px solid var(--ligne);color:var(--texte);border-radius:14px;padding:10px 14px;font-size:13px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.jours button small{font-family:ui-monospace,monospace;font-size:10px;color:var(--sourdine);font-weight:400}
+.jours button.actif{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#08101a;border-color:transparent}
+.jours button.actif small{color:#08101a;opacity:.8}
+.jours button .n{font-size:10px;color:var(--aura1);font-weight:700}
+.jours button.actif .n{color:#08101a}
+.cp{background:var(--carte);border:1px solid var(--ligne);border-radius:18px;padding:16px;margin-bottom:14px}
+.cp-tete{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.cp-nom{font-weight:800;font-size:16px}
+.cp-nom small{display:block;font-family:ui-monospace,monospace;font-size:10px;color:var(--sourdine);font-weight:400;margin-top:3px;letter-spacing:.05em}
+.cp-cote{font-family:ui-monospace,monospace;font-weight:800;font-size:26px;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.badge{display:inline-block;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;padding:3px 8px;border-radius:7px;margin-left:6px;vertical-align:middle}
+.badge.fige{background:rgba(61,232,200,.15);color:var(--aura1)}
+.badge.prov{background:rgba(245,196,81,.15);color:var(--or)}
+.badge.g{background:rgba(61,232,200,.15);color:var(--aura1)}
+.badge.p{background:rgba(255,107,138,.13);color:var(--ko)}
+.sel{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--ligne);font-size:13px}
+.sel .l{flex:1;min-width:0}
+.sel .lig{font-family:ui-monospace,monospace;font-size:8.5px;color:var(--sourdine);letter-spacing:.08em;text-transform:uppercase}
+.sel .duel{font-weight:700;margin:3px 0 2px}
+.sel .pick{color:var(--aura1);font-size:12px}
+.sel .c{font-family:ui-monospace,monospace;font-weight:700;font-size:15px;white-space:nowrap}
+.sel.est .c::after{content:" ≈";color:var(--or)}
+.sel.gagne .pick::before{content:"✓ ";color:var(--ok)}
+.sel.perdu .pick::before{content:"✗ ";color:var(--ko)}
+.actions{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#08101a;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:13px;cursor:pointer}
+.btn.sec{background:transparent;color:var(--texte);border:1px solid var(--ligne)}
+.vide{color:var(--sourdine);text-align:center;padding:40px 12px;line-height:1.6;border:1px dashed var(--ligne);border-radius:16px}
+.legende{font-size:11px;color:var(--sourdine);line-height:1.6;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="tete">
+  <div class="logo">AURA90'</div>
+  <a class="retour" href="admin.html">‹ Panneau admin</a>
+</div>
+<h1>🎬 Combinés TikTok</h1>
+<p class="sous">Trois combinés par jour, 10 à 15 matchs, cote 90 et plus. Figés deux jours avant le match — le reste est provisoire et se met à jour chaque matin.</p>
+
+<div class="jours" id="jours"></div>
+<div id="zone"><div class="vide">Chargement…</div></div>
+<div class="legende">≈ cote estimée par le moteur (le bookmaker n'a pas encore publié la sienne) · FIGÉ = ne changera plus · PROVISOIRE = recalculé chaque jour jusqu'à J-2.</div>
+
+<script>
+const CONFIG = {
+  SUPABASE_URL: "https://nzsvmqyiukxzsfjprpiy.supabase.co",
+  SUPABASE_KEY: "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW",
+};
+const SESSION = JSON.parse(localStorage.getItem('aura90_session') || 'null');
+const $ = id => document.getElementById(id);
+let COUPONS = [], SELS = {}, JOUR = null;
+
+async function sbUser(chemin){
+  const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/' + chemin, {
+    headers:{ apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }
+  });
+  if(!r.ok) throw new Error('Supabase ' + r.status);
+  return r.json();
+}
+
+async function estAdmin(){
+  try{
+    const r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/admin', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access },
+      body: JSON.stringify({ action:'stats' })
+    });
+    const d = await r.json().catch(()=>({erreur:1}));
+    return r.ok && d && !d.erreur;
+  }catch(e){ return false; }
+}
+
+const fmtJour = iso => new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'});
+
+async function charger(){
+  if(!SESSION || !SESSION.access){
+    $('zone').innerHTML = `<div class="vide">Connecte-toi d'abord dans l'app AURA90, puis reviens ici.</div>`; return;
+  }
+  if(!await estAdmin()){
+    $('zone').innerHTML = `<div class="vide">Page réservée à l'administrateur.</div>`; return;
+  }
+  const auj = new Date().toISOString().slice(0,10);
+  const cps = await sbUser(`coupons?categorie=eq.tiktok&jour=gte.${auj}&order=jour.asc,numero.asc&select=id,jour,numero,cote_totale,nb_matchs,statut,note`);
+  COUPONS = Array.isArray(cps) ? cps : [];
+  if(COUPONS.length){
+    const ids = COUPONS.map(c=>c.id).join(',');
+    const sels = await sbUser(`coupon_selections?coupon_id=in.(${ids})&order=coupon_id.asc,id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,marche,selection,cote,resultat`);
+    (sels||[]).forEach(s=>{ (SELS[s.coupon_id] = SELS[s.coupon_id] || []).push(s); });
+  }
+  const jours = [...new Set(COUPONS.map(c=>c.jour))].sort();
+  if(!jours.length){
+    $('jours').innerHTML = ''; $('zone').innerHTML = `<div class="vide">Aucun combiné pour l'instant.<br>Le générateur les construit chaque matin à 5h pour les 6 jours suivants.</div>`; return;
+  }
+  JOUR = jours.find(j => j > auj) || jours[0];
+  dessinerJours(jours); afficher();
+}
+
+function dessinerJours(jours){
+  $('jours').innerHTML = jours.map(j=>{
+    const n = COUPONS.filter(c=>c.jour===j).length;
+    const fige = COUPONS.some(c=>c.jour===j && (c.note||'').startsWith('figé'));
+    return `<button class="${j===JOUR?'actif':''}" onclick="choisir('${j}')">${fmtJour(j)}<small>${j}</small><span class="n">${n} combiné${n>1?'s':''}${fige?' · figé':''}</span></button>`;
+  }).join('');
+}
+function choisir(j){ JOUR = j; dessinerJours([...new Set(COUPONS.map(c=>c.jour))].sort()); afficher(); }
+
+const PROFIL = {1:'Solide', 2:'Mixte', 3:'Valeur'};
+
+function afficher(){
+  const liste = COUPONS.filter(c=>c.jour===JOUR);
+  $('zone').innerHTML = liste.map(c=>{
+    const sels = SELS[c.id] || [];
+    const note = c.note || '';
+    const fige = note.startsWith('figé');
+    const nEst = (note.match(/(\d+) cote/)||[])[1];
+    const etat = c.statut==='gagne' ? '<span class="badge g">GAGNÉ</span>' : c.statut==='perdu' ? '<span class="badge p">PERDU</span>' : '';
+    return `
+    <div class="cp" id="cp-${c.id}">
+      <div class="cp-tete">
+        <div class="cp-nom">Combiné ${c.numero} · ${PROFIL[c.numero]||''}
+          <span class="badge ${fige?'fige':'prov'}">${fige?'FIGÉ':'PROVISOIRE'}</span>${etat}
+          <small>${sels.length} MATCHS${nEst?' · '+nEst+' COTE(S) ESTIMÉE(S)':''}</small>
+        </div>
+        <div class="cp-cote">${Number(c.cote_totale).toFixed(2)}</div>
+      </div>
+      ${sels.map(s=>`
+        <div class="sel ${s.resultat||''}">
+          <div class="l">
+            <div class="lig">${s.ligue||''} · ${s.date_match||''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+            <div class="duel">${s.dom} – ${s.ext}</div>
+            <div class="pick">${s.selection}</div>
+          </div>
+          <div class="c">${Number(s.cote).toFixed(2)}</div>
+        </div>`).join('')}
+      <div class="actions">
+        <button class="btn" onclick="copier(${c.id})">Copier le combiné</button>
+        <button class="btn sec" onclick="copier(${c.id}, true)">Copier pour la vidéo</button>
+      </div>
+    </div>`;
+  }).join('') || `<div class="vide">Pas de combiné ce jour-là.</div>`;
+}
+
+function copier(id, video){
+  const c = COUPONS.find(x=>x.id===id); if(!c) return;
+  const sels = SELS[id] || [];
+  const txt = video
+    ? sels.map((s,i)=>`${i+1}. ${s.dom} – ${s.ext} → ${s.selection}`).join('\n') + `\n\nTOTAL : ${Number(c.cote_totale).toFixed(2)}`
+    : `🎬 COMBINÉ ${c.numero} — ${c.jour}\n\n` + sels.map(s=>`${s.ligue} · ${s.dom} – ${s.ext}\n→ ${s.selection} (${Number(s.cote).toFixed(2)})`).join('\n\n') + `\n\nCOTE TOTALE : ${Number(c.cote_totale).toFixed(2)}`;
+  navigator.clipboard?.writeText(txt);
+  const b = document.querySelector(`#cp-${id} .btn${video?'.sec':''}`);
+  if(b){ const av = b.textContent; b.textContent = 'Copié ✓'; setTimeout(()=>b.textContent = av, 1600); }
+}
+
+charger().catch(e => { $('zone').innerHTML = `<div class="vide">Impossible de charger : ${e.message}</div>`; });
+</script>
+</body>
+</html>

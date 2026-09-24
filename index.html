@@ -256,6 +256,13 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .cp-jouer{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;box-shadow:0 0 18px rgba(61,232,200,.25)}
 .cp-copier{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)!important}
 .cp-etat{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;padding:4px 8px;border-radius:7px;white-space:nowrap}
+.se-scores{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.se-cap{display:inline-flex;flex-direction:column;align-items:center;gap:2px;min-width:74px;padding:9px 14px;border-radius:12px;border:1px solid rgba(61,232,200,.35);background:rgba(61,232,200,.07)}
+.se-cap b{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.se-cap small{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--sourdine);letter-spacing:.06em}
+.se-cap.gagne{border-color:var(--aura1);background:rgba(61,232,200,.16)}
+.se-cap.perdu{opacity:.45}
+.se-note{font-size:11px;color:var(--sourdine);margin-top:10px;line-height:1.45}
 .cp-etat.g{background:rgba(61,232,200,.15);color:var(--aura1)}
 .cp-etat.p{background:rgba(255,107,138,.13);color:var(--ko)}
 /* montante */
@@ -1334,6 +1341,7 @@ function fermerGuideInstall(){ $('panneau-install').classList.remove('actif'); }
 /* ================= COUPONS ================= */
 const CATS = [
   {cle:'sure',      nom:'Sûre',         ico:'🛡️'},
+  {cle:'score',     nom:'Score exact',  ico:'⚽'},
   {cle:'confiance', nom:'Confiance',    ico:'🎯'},
   {cle:'fun',       nom:'Fun',          ico:'🎲'},
   {cle:'grosses',   nom:'Grosses cotes',ico:'🔥'},
@@ -1459,8 +1467,39 @@ function afficherCategorie(cle){
     return;
   }
 
-  $('zone-coupons').innerHTML = liste.map((c,i)=>carteCoupon(c, i===0)).join('');
+  $('zone-coupons').innerHTML = cle === 'score'
+    ? liste.map(c=>carteScore(c)).join('') + `<div class="se-note">Les scores exacts les plus nets du jour selon le moteur. Un match est validé dès qu'un des scores proposés tombe.</div>`
+    : liste.map((c,i)=>carteCoupon(c, i===0)).join('');
   cascade('#zone-coupons .cp');
+}
+
+function carteScore(c){
+  const sels = SELECTIONS[c.id] || [];
+  if(!sels.length) return '';
+  const s0 = sels[0];
+  const etat = c.statut==='gagne' ? '<span class="cp-etat g">✓ TROUVÉ</span>'
+             : c.statut==='perdu' ? '<span class="cp-etat p">✗ RATÉ</span>' : '';
+  return `
+  <div class="cp ouvert" id="cp-${c.id}">
+    <div class="cp-corps" style="padding-top:12px">
+      <div class="cp-sel" style="border-top:0;padding-top:4px">
+        <div class="g">
+          <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(s0.date_match):''}${s0.heure?' · '+String(s0.heure).slice(0,5):''} ${etat}</div>
+          <div class="duel">
+            <span class="eq">${ecuMini(s0.logo_dom, s0.dom)}<b>${s0.dom}</b></span>
+            <span class="vs">–</span>
+            <span class="eq">${ecuMini(s0.logo_ext, s0.ext)}<b>${s0.ext}</b></span>
+          </div>
+          <div class="se-scores">
+            ${sels.map(s=>`<span class="se-cap ${s.resultat||''}"><b>${String(s.selection).replace('Score exact ','')}</b><small>${Number(s.cote).toFixed(2)}</small></span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="cp-actions">
+        <button class="cp-copier" onclick="copierCoupon(${c.id})">Copier</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function carteCoupon(c, ouvert){
@@ -1518,6 +1557,14 @@ function copierCoupon(id){
   const c = COUPONS.find(x=>x.id===id); if(!c) return;
   const sels = SELECTIONS[id] || [];
   const nom = CATS.find(x=>x.cle===c.categorie).nom;
+  if(c.categorie === 'score'){
+    const s0 = sels[0];
+    const txt0 = `⚽ SCORE EXACT — AURA90\n\n${s0.dom} – ${s0.ext}\n→ ${sels.map(s=>String(s.selection).replace('Score exact ','')+' ('+Number(s.cote).toFixed(2)+')').join('  ou  ')}\n${location.origin}${location.pathname}`;
+    navigator.clipboard?.writeText(txt0);
+    const b0 = document.querySelector(`#cp-${id} .cp-copier`);
+    if(b0){ const av = b0.textContent; b0.textContent = 'Copié ✓'; setTimeout(()=>b0.textContent = av, 1600); }
+    return;
+  }
   const txt = `⚡ COUPON ${nom.toUpperCase()}${c.numero>1?' #'+c.numero:''} — AURA90\n\n`
     + sels.map(s=>`${s.dom} – ${s.ext}\n→ ${s.selection}  (${Number(s.cote).toFixed(2)})`).join('\n\n')
     + `\n\nCOTE TOTALE : ${Number(c.cote_totale).toFixed(2)}\n${location.origin}${location.pathname}`;
@@ -1877,6 +1924,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · montante 15 paliers 19/09 -->
+<!-- aura90-v4-sans-jeu · score exact 24/09 -->
 </body>
 </html>
