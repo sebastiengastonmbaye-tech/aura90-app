@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>AURA90 · Combinés TikTok</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{--fond:#070a12;--carte:#0f1522;--ligne:#1c2436;--texte:#eef2ff;--sourdine:#8892a8;--aura1:#3de8c8;--aura2:#8b7aff;--ok:#3de8c8;--ko:#ff6b8a;--or:#f5c451}
 *{box-sizing:border-box}
@@ -213,27 +213,57 @@ function dessinerLogo(ctx, img, nom, cx, cy, taille){
   ctx.fillText(ini, cx, cy + 2);
 }
 
+function nomEquipe(ctx, nom, cx, yHaut, largeurMax){
+  // nom en capitales : une ligne si ça tient sans trop réduire, sinon deux lignes équilibrées
+  const police = t => `700 ${t}px Montserrat, Arial, sans-serif`;
+  const texte = String(nom || '').toUpperCase();
+  ctx.fillStyle = '#111827'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for(let t = 40; t >= 34; t -= 2){
+    ctx.font = police(t);
+    if(ctx.measureText(texte).width <= largeurMax){ ctx.fillText(texte, cx, yHaut); return; }
+  }
+  const mots = texte.split(/\s+/).filter(Boolean);
+  let t = 38, l1 = texte, l2 = '';
+  ctx.font = police(t);
+  if(mots.length > 1){
+    // coupure qui équilibre le mieux les deux lignes
+    let meilleur = Infinity;
+    for(let k = 1; k < mots.length; k++){
+      const a = mots.slice(0, k).join(' '), b = mots.slice(k).join(' ');
+      const ecart = Math.max(ctx.measureText(a).width, ctx.measureText(b).width);
+      if(ecart < meilleur){ meilleur = ecart; l1 = a; l2 = b; }
+    }
+  }
+  while(Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) > largeurMax && t > 24){ t -= 2; ctx.font = police(t); }
+  ctx.fillText(l1, cx, yHaut);
+  if(l2) ctx.fillText(l2, cx, yHaut + t * 1.15);
+}
+
 async function imageMatch(s){
-  const W = 1080, H = 324;
+  const W = 1080, H = 430;
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
   const ctx = cv.getContext('2d');
   ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
   const [ld, le] = await Promise.all([logo(s.logo_dom), logo(s.logo_ext)]);
-  dessinerLogo(ctx, ld, s.dom, 190, H/2, 250);
-  dessinerLogo(ctx, le, s.ext, W-190, H/2, 250);
-  // prono au milieu, en capitales grasses bleues
+  const yLogo = 175, tailleLogo = 230, xDom = 200, xExt = W - 200;
+  dessinerLogo(ctx, ld, s.dom, xDom, yLogo, tailleLogo);
+  dessinerLogo(ctx, le, s.ext, xExt, yLogo, tailleLogo);
+  // noms des équipes sous les logos
+  nomEquipe(ctx, s.dom, xDom, yLogo + tailleLogo / 2 + 22, 380);
+  nomEquipe(ctx, s.ext, xExt, yLogo + tailleLogo / 2 + 22, 380);
+  // prono au milieu, en capitales grasses bleues, aligné sur les logos
   const txt = pronoCourt(s).toUpperCase();
   const police = t => `900 ${t}px Montserrat, 'Arial Black', Arial, sans-serif`;
   let taille = 130;
   ctx.font = police(taille);
-  while(ctx.measureText(txt).width > 360 && taille > 44){ taille -= 4; ctx.font = police(taille); }
+  while(ctx.measureText(txt).width > 330 && taille > 44){ taille -= 4; ctx.font = police(taille); }
   ctx.fillStyle = '#1f4fe0'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(txt, W/2, H/2 + 4);
+  ctx.fillText(txt, W/2, yLogo + 4);
   return new Promise(res => cv.toBlob(b => res(b), 'image/png'));
 }
 
 async function genererVisuels(liste){
-  try{ await document.fonts.load("900 120px Montserrat"); }catch(e){}
+  try{ await Promise.all([document.fonts.load("900 120px Montserrat"), document.fonts.load("700 40px Montserrat")]); }catch(e){}
   for(const c of liste){
     const sels = SELS[c.id] || [];
     for(let i = 0; i < sels.length; i++){
