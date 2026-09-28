@@ -215,6 +215,12 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .jours-coupons button small{display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;color:var(--sourdine);margin-top:3px;letter-spacing:.06em}
 .onglets{display:flex;flex:0 0 auto;gap:7px;overflow-x:auto;padding:2px 16px 14px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .onglets::-webkit-scrollbar{display:none}
+.onglets-cadre{position:relative}
+.onglets-fl{display:none;position:absolute;top:0;bottom:14px;z-index:3;width:44px;border:0;cursor:pointer;color:var(--texte);font-size:22px;font-weight:800;padding:0}
+.onglets-fl.g{left:0;background:linear-gradient(90deg,var(--nuit) 45%,transparent)}
+.onglets-fl.d{right:0;background:linear-gradient(270deg,var(--nuit) 45%,transparent)}
+.onglets-fl:hover{color:var(--aura1)}
+@media (hover:hover) and (pointer:fine){ .onglets-fl.visible{display:block} }
 .onglets button{flex:0 0 auto;padding:9px 15px;border-radius:999px;border:1px solid var(--ligne);background:var(--surface);color:var(--sourdine);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
 .onglets button.actif{border-color:transparent;color:#06110E;background:linear-gradient(135deg,var(--aura1),var(--aura2))}
 .cp-jour{margin:2px 16px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--sourdine);font-weight:700;display:flex;align-items:center;gap:9px}
@@ -537,7 +543,11 @@ const CONFIG = {
   <div class="page" id="page-coupons">
     <div class="abo-tete"><h2 id="cp-titre">Coupons</h2><p id="cp-sous">Combinés prêts à jouer, construits par le moteur.</p></div>
     <div class="jours-coupons" id="jours-coupons"></div>
-    <div class="onglets" id="onglets-coupons"></div>
+    <div class="onglets-cadre">
+      <button class="onglets-fl g" id="fl-g" aria-label="Défiler à gauche" onclick="defilerOnglets(-1)">‹</button>
+      <div class="onglets" id="onglets-coupons" onscroll="majFlechesOnglets()"></div>
+      <button class="onglets-fl d" id="fl-d" aria-label="Défiler à droite" onclick="defilerOnglets(1)">›</button>
+    </div>
     <div id="zone-coupons"><div class="chargement">CHARGEMENT DES COUPONS…</div></div>
   </div>
 
@@ -1446,6 +1456,17 @@ function couponsDuJour(){
   return COUPONS.filter(c => JOUR_ACTIF === 'auj' ? c.jour === auj : c.jour > auj);
 }
 
+function defilerOnglets(sens){
+  const o = $('onglets-coupons'); if(!o) return;
+  o.scrollBy({ left: sens * Math.max(180, o.clientWidth * 0.6), behavior:'smooth' });
+}
+function majFlechesOnglets(){
+  const o = $('onglets-coupons'), g = $('fl-g'), d = $('fl-d'); if(!o || !g || !d) return;
+  g.classList.toggle('visible', o.scrollLeft > 4);
+  d.classList.toggle('visible', o.scrollLeft + o.clientWidth < o.scrollWidth - 4);
+}
+window.addEventListener('resize', ()=>majFlechesOnglets());
+
 function dessinerOnglets(){
   $('onglets-coupons').innerHTML = CATS.map(c=>{
     const auj0 = new Date().toISOString().slice(0,10);
@@ -1453,11 +1474,15 @@ function dessinerOnglets(){
       ? (MONTANTE.some(p => JOUR_ACTIF === 'auj' ? p.jour === auj0 : p.jour > auj0) ? 1 : 0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
     return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
   }).join('');
+  requestAnimationFrame(majFlechesOnglets);
 }
 
 function afficherCategorie(cle){
   CAT_ACTIVE = cle;
-  document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>b.classList.toggle('actif', CATS[i].cle===cle));
+  document.querySelectorAll('#onglets-coupons button').forEach((b,i)=>{
+    b.classList.toggle('actif', CATS[i].cle===cle);
+    if(CATS[i].cle===cle) b.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'nearest' });
+  });
   if(cle === 'montante'){ afficherMontante(); return; }
   if(cle === 'live'){ afficherLive(); return; }
 
@@ -2043,6 +2068,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · live coupon v2 25/09 -->
+<!-- aura90-v4-sans-jeu · onglets + demain 28/09 -->
 </body>
 </html>
