@@ -1719,19 +1719,32 @@ function copierCoupon(id){
 
 function afficherMontante(){
   const auj = new Date().toISOString().slice(0,10);
-  // on ne montre la montante que le jour où son coupon se joue
-  const pertinents = MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
-  if(!pertinents.length){
-    const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de palier de montante ${quand}.<br>La montante avance d'un palier par jour, tant qu'elle passe — 15 paliers pour boucler une série.</div>`;
-    return;
-  }
   if(!MONTANTE.length){
     $('zone-coupons').innerHTML = `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
     return;
   }
-  const serie = pertinents[0].serie;
-  const paliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
+  // la série affichée : celle du jour choisi si elle existe, sinon la plus récente
+  const pertinents = MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
+  const serieRecente = Math.max(...MONTANTE.map(p=>p.serie));
+  const serie = pertinents.length ? pertinents[0].serie : serieRecente;
+  const tousPaliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
+  const derniere = tousPaliers[tousPaliers.length-1];
+
+  // message quand aucun palier ne se joue le jour choisi
+  let info = '';
+  if(!pertinents.length){
+    const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
+    const dateP = d => new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+    if(derniere.statut === 'en_cours')
+      info = `Le palier ${derniere.palier} (${dateP(derniere.jour)}) attend son résultat. Le palier ${derniere.palier+1} s'ouvrira dès qu'il sera validé.`;
+    else if(derniere.statut === 'perdu')
+      info = `La série n°${serie} s'est arrêtée au palier ${derniere.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
+    else if(derniere.palier >= 15)
+      info = `Série n°${serie} bouclée : 15 paliers sur 15 ✓. Une nouvelle série repart à 5 000 F.`;
+    else
+      info = `Pas de palier ${quand} : aucun coupon assez sûr pour la montante. Le palier ${derniere.palier+1} se jouera dès qu'un coupon à sa main apparaîtra.`;
+  }
+  const paliers = tousPaliers;
   const dernier = paliers[paliers.length-1];
   // Montante en 15 paliers : la série est réussie quand 15 paliers passent d'affilée
   const PALIERS_MAX = 15;
@@ -1759,7 +1772,8 @@ function afficherMontante(){
     </div>`;
   }).join('');
 
-  const enCours = paliers.find(p=>p.statut==='en_cours');
+  if(info) html += `<div class="vide" style="margin-top:12px;text-align:left">${info}</div>`;
+  const enCours = pertinents.length ? paliers.find(p=>p.statut==='en_cours') : null;
   if(enCours){
     const c = COUPONS.find(x=>x.id===enCours.coupon_id);
     if(c){
@@ -2068,6 +2082,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · onglets + demain 28/09 -->
+<!-- aura90-v4-sans-jeu · montante toujours visible 28/09 -->
 </body>
 </html>
