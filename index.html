@@ -1601,7 +1601,8 @@ async function chargerEtatLive(){
     const m = d.matchs || [];
     if(!m.length){ e.innerHTML = `Aucun match de nos championnats en cours pour l'instant${d.total_live ? ' (' + d.total_live + ' match' + (d.total_live>1?'s':'') + ' en direct ailleurs)' : ''}.`; return; }
     e.innerHTML = `<div style="color:var(--texte);font-weight:800;margin-bottom:6px">🔴 ${m.length} match${m.length>1?'s':''} en cours</div>` +
-      m.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid var(--ligne);font-size:12px"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.dom} – ${x.ext}</span><span class="lv-min" style="margin:0"><b style="color:var(--texte)">${x.score}</b> · ${x.minute}'</span></div>`).join('');
+      m.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid var(--ligne);font-size:12px;${x.cotes===false?'opacity:.55':''}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.dom} – ${x.ext}</span><span class="lv-min" style="margin:0"><b style="color:var(--texte)">${x.score}</b> · ${x.statut==='HT'?'MT':x.minute+"'"}${x.cotes===false?' · sans cotes':''}</span></div>`).join('') +
+      (m.some(x=>x.cotes===false) ? `<div style="font-size:10.5px;margin-top:6px">Les matchs « sans cotes » n'ont pas encore de cotes en direct chez le bookmaker : ils entreront dans les combinés dès qu'elles apparaîtront.</div>` : '');
   }catch(err){ e.textContent = 'Impossible de lire les matchs en cours.'; }
 }
 
