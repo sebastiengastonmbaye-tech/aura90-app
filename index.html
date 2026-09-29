@@ -1772,6 +1772,7 @@ let MT_ONGLET = null;
 // l'historique et le record ne comptent que les séries démarrées à partir de cette date
 // (plus la série en cours, qui continue avec les nouvelles règles).
 const DEBUT_FORMATS = '2026-09-29';
+const MISE_DEPART = 10000;   // mise de départ des nouvelles séries
 
 function lignesMontante(type){ return MONTANTE.filter(p => (p.type || 'montante') === type); }
 
@@ -1799,8 +1800,8 @@ function blocMontante(def){
     return `
       <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
         <div class="t">${def.nom} — ${N} PALIERS</div>
-        <div class="v">5 000 F</div>
-        <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,90–2,60 · objectif ≈ 150 000 F en 5 paliers' : 'Paliers à cote 1,40–1,80'}</div>
+        <div class="v">${fmtF(MISE_DEPART)} F</div>
+        <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,90–2,60 · objectif ≈ 300 000 F en 5 paliers' : 'Paliers à cote 1,40–1,80'}</div>
       </div>
       <div class="mt-info">La première série démarre dès que le moteur trouve un coupon à sa main. Même exigence d'analyse que les pronos signés.</div>
       <div class="mt-etiq">PARCOURS DE LA SÉRIE</div>
@@ -1813,7 +1814,8 @@ function blocMontante(def){
   const gagnes = paliers.filter(p=>p.statut==='gagne').length;
   const capital = dernier.statut==='gagne' ? Number(dernier.gain_vise) : Number(dernier.mise);
   const pct = Math.min(100, gagnes/N*100);
-  const coteMoy = gagnes ? Math.pow(capital/5000, 1/gagnes) : 0;
+  const depart = Number(paliers[0].mise) || MISE_DEPART;
+  const coteMoy = gagnes ? Math.pow(capital/depart, 1/gagnes) : 0;
   // record : meilleur parcours parmi les séries chargées
   const parSerie = {};
   LIGNES.forEach(p=>{ const x = parSerie[p.serie] ||= {max:0, perdu:false, fin:0, debut:p.jour}; x.max = Math.max(x.max, p.statut==='gagne'?p.palier:0); if(p.statut==='perdu') x.perdu=true; x.fin=Math.max(x.fin,p.palier); if(p.jour < x.debut) x.debut = p.jour; });
@@ -1825,7 +1827,7 @@ function blocMontante(def){
     <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
       <div class="t">${def.nom} N°${serie} — ${N} PALIERS</div>
       <div class="v">${fmtF(capital)} F</div>
-      <div class="s">Départ 5 000 F · ×${(capital/5000).toFixed(1).replace('.',',')}${dernier.statut==='perdu' ? ' · série arrêtée' : ''}</div>
+      <div class="s">Départ ${fmtF(depart)} F · ×${(capital/depart).toFixed(1).replace('.',',')}${dernier.statut==='perdu' ? ' · série arrêtée' : ''}</div>
       <div class="mt-barre"><i data-pct="${pct}" style="width:0%"></i></div>
       <div class="mt-stats">
         <div><b>${gagnes}/${N}</b><span>Paliers passés</span></div>
@@ -1845,8 +1847,8 @@ function blocMontante(def){
     const dateP = d => new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
     let info;
     if(dernier.statut === 'en_cours') info = `⏳ Le palier ${dernier.palier} (${dateP(dernier.jour)}) attend son résultat. Le palier ${dernier.palier+1} s'ouvrira dès qu'il sera validé.`;
-    else if(dernier.statut === 'perdu') info = `La série n°${serie} s'est arrêtée au palier ${dernier.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
-    else if(dernier.palier >= N) info = `🏆 Série n°${serie} bouclée : ${N} paliers sur ${N}. Une nouvelle série repart à 5 000 F.`;
+    else if(dernier.statut === 'perdu') info = `La série n°${serie} s'est arrêtée au palier ${dernier.palier}. Une nouvelle série repart à ${fmtF(MISE_DEPART)} F dès qu'un coupon à sa main apparaît.`;
+    else if(dernier.palier >= N) info = `🏆 Série n°${serie} bouclée : ${N} paliers sur ${N}. Une nouvelle série repart à ${fmtF(MISE_DEPART)} F.`;
     else info = `Pas de palier ${quand} : aucun coupon assez sûr. Le palier ${dernier.palier+1} (${fmtF(capital)} F) se jouera dès qu'un coupon à sa main apparaîtra.`;
     html += `<div class="mt-etiq">${quand.toUpperCase()}</div><div class="mt-info">${info}</div>`;
   }
