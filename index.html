@@ -292,6 +292,45 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .mt-palier.perdu .n{background:rgba(255,107,138,.15);color:var(--ko)}
 .mt-palier .g{flex:1}
 .mt-palier.clic{cursor:pointer}
+/* --- montantes v2 : onglets, grille de paliers, statistiques --- */
+.mt-switch{display:flex;gap:6px;margin:0 16px 12px;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne)}
+.mt-switch button{flex:1;border:0;border-radius:10px;padding:10px 6px;background:transparent;color:var(--sourdine);font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.mt-switch button small{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;opacity:.85}
+.mt-switch button.actif{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+.mt-switch button .pt{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff5c7a;margin-left:4px;vertical-align:middle}
+.mt-hero{margin:0 16px 12px;padding:15px;border-radius:16px;background:linear-gradient(120deg,rgba(255,180,84,.12),var(--surface));border:1px solid rgba(255,180,84,.4)}
+.mt-hero.turbo{background:linear-gradient(120deg,rgba(139,124,255,.16),var(--surface));border-color:rgba(139,124,255,.45)}
+.mt-hero .t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--sur);font-weight:700}
+.mt-hero.turbo .t{color:var(--aura2)}
+.mt-hero .v{font-family:'Unbounded',sans-serif;font-size:24px;margin:6px 0 2px}
+.mt-hero .s{font-size:11px;color:var(--sourdine)}
+.mt-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.mt-stats div{background:var(--surface2);border-radius:10px;padding:8px 6px;text-align:center}
+.mt-stats b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px}
+.mt-stats span{font-size:9px;color:var(--sourdine);letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+.mt-etiq{margin:14px 16px 8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--sourdine)}
+.mt-grille{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:0 16px}
+.mt-grille.g5{grid-template-columns:repeat(5,1fr)}
+.mt-case{aspect-ratio:1;border-radius:12px;border:1px solid var(--ligne);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:'JetBrains Mono',monospace;cursor:default;position:relative}
+.mt-case b{font-size:15px}
+.mt-case small{font-size:8px;color:var(--sourdine)}
+.mt-case.gagne{background:linear-gradient(135deg,var(--aura1),var(--aura2));border-color:transparent;color:#06110E;cursor:pointer}
+.mt-case.gagne small{color:#06110E;opacity:.75}
+.mt-case.perdu{background:rgba(255,122,158,.14);border-color:rgba(255,122,158,.5);color:var(--ko);cursor:pointer}
+.mt-case.encours{border:2px solid var(--sur);color:var(--sur);animation:mtp 1.8s infinite}
+@keyframes mtp{0%{box-shadow:0 0 0 0 rgba(255,180,84,.5)}70%{box-shadow:0 0 0 8px rgba(255,180,84,0)}100%{box-shadow:0 0 0 0 rgba(255,180,84,0)}}
+.mt-case.avenir{opacity:.45}
+.mt-case.choisie{outline:2px solid var(--texte);outline-offset:2px}
+.mt-fiche{margin:10px 16px 0;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne)}
+.mt-fiche .h{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:4px}
+.mt-fiche .h b{font-family:'JetBrains Mono',monospace}
+.mt-fiche .cp-sel:first-of-type{border-top:0}
+.mt-fiche .pick.gagne{color:var(--aura1)}
+.mt-fiche .pick.perdu{color:var(--ko);background:rgba(255,107,138,.08);border-color:rgba(255,107,138,.3)}
+.mt-info{margin:0 16px;padding:12px 14px;border-radius:14px;border:1px dashed var(--ligne);color:var(--sourdine);font-size:12px;line-height:1.5}
+.mt-hist{margin:0 16px;display:flex;flex-direction:column;gap:6px}
+.mt-hist div{display:flex;justify-content:space-between;font-size:11.5px;padding:8px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--ligne)}
+.mt-hist div span{color:var(--sourdine)}
 .mt-palier.clic .chev{color:var(--sourdine);font-size:16px;transition:transform .2s}
 .mt-palier.ouvert .chev{transform:rotate(90deg)}
 .mt-detail{margin:-4px 16px 10px;padding:4px 14px 6px;border-radius:0 0 13px 13px;background:var(--surface);border:1px solid var(--ligne);border-top:0}
@@ -1725,81 +1764,133 @@ function copierCoupon(id){
 }
 
 const MONTANTES_DEF = [
-  { type:'montante', nom:'MONTANTE',       paliers:12 },
-  { type:'turbo',    nom:'MONTANTE TURBO', paliers:5  },
+  { type:'montante', nom:'MONTANTE',       court:'Montante', ico:'📈', paliers:12 },
+  { type:'turbo',    nom:'MONTANTE TURBO', court:'Turbo',    ico:'⚡', paliers:5  },
 ];
+let MT_ONGLET = null;
+
+function lignesMontante(type){ return MONTANTE.filter(p => (p.type || 'montante') === type); }
 
 function afficherMontante(){
-  const blocs = MONTANTES_DEF.map(blocMontante).filter(Boolean);
-  $('zone-coupons').innerHTML = blocs.length ? blocs.join('<div style="height:22px"></div>')
-    : `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
+  const auj = new Date().toISOString().slice(0,10);
+  const joueCeJour = type => lignesMontante(type).some(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
+  if(!MT_ONGLET) MT_ONGLET = MONTANTES_DEF.find(d => joueCeJour(d.type))?.type || 'montante';
+  const onglets = MONTANTES_DEF.map(d=>{
+    const l = lignesMontante(d.type);
+    const serie = l.length ? Math.max(...l.map(p=>p.serie)) : 0;
+    const der = l.filter(p=>p.serie===serie).sort((a,b)=>b.palier-a.palier)[0];
+    const etat = !der ? 'à venir' : `palier ${der.palier}/${d.paliers}`;
+    return `<button class="${d.type===MT_ONGLET?'actif':''}" onclick="MT_ONGLET='${d.type}';afficherMontante()">
+      <span>${d.ico} ${d.court}${joueCeJour(d.type)?'<i class="pt"></i>':''}</span><small>${etat.toUpperCase()}</small></button>`;
+  }).join('');
+  $('zone-coupons').innerHTML = `<div class="mt-switch">${onglets}</div>` + blocMontante(MONTANTES_DEF.find(d=>d.type===MT_ONGLET));
   setTimeout(()=>{ document.querySelectorAll('.mt-barre i').forEach(b=>{ b.style.width = b.dataset.pct + '%'; }); }, 120);
 }
 
 function blocMontante(def){
   const auj = new Date().toISOString().slice(0,10);
-  const LIGNES = MONTANTE.filter(p => (p.type || 'montante') === def.type);
-  const PALIERS_MAX = def.paliers;
+  const LIGNES = lignesMontante(def.type), N = def.paliers;
+  const k = n => n >= 1e6 ? (n/1e6).toFixed(1).replace('.0','')+'M' : n >= 1e3 ? Math.round(n/1e3)+'k' : String(Math.round(n));
   if(!LIGNES.length){
-    return def.type === 'turbo'
-      ? `<div class="vide" style="text-align:left"><b>${def.nom}</b> · ${PALIERS_MAX} paliers<br>Elle démarre à 5 000 F dès que le moteur trouve un coupon à sa main (cote 1,90 à 2,60).</div>`
-      : '';
+    return `
+      <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
+        <div class="t">${def.nom} — ${N} PALIERS</div>
+        <div class="v">5 000 F</div>
+        <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,90–2,60 · objectif ≈ 150 000 F en 5 paliers' : 'Paliers à cote 1,40–1,80'}</div>
+      </div>
+      <div class="mt-info">La première série démarre dès que le moteur trouve un coupon à sa main. Même exigence d'analyse que les pronos signés.</div>
+      <div class="mt-etiq">PARCOURS DE LA SÉRIE</div>
+      <div class="mt-grille ${N===5?'g5':''}">${Array.from({length:N},(_,i)=>`<div class="mt-case avenir"><b>${i+1}</b><small>${i===0?'départ':''}</small></div>`).join('')}</div>`;
   }
-  // la série affichée : celle du jour choisi si elle existe, sinon la plus récente
   const pertinents = LIGNES.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
   const serie = pertinents.length ? pertinents[0].serie : Math.max(...LIGNES.map(p=>p.serie));
   const paliers = LIGNES.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
   const dernier = paliers[paliers.length-1];
+  const gagnes = paliers.filter(p=>p.statut==='gagne').length;
+  const capital = dernier.statut==='gagne' ? Number(dernier.gain_vise) : Number(dernier.mise);
+  const pct = Math.min(100, gagnes/N*100);
+  const coteMoy = gagnes ? Math.pow(capital/5000, 1/gagnes) : 0;
+  // record : meilleur parcours parmi les séries chargées
+  const parSerie = {};
+  LIGNES.forEach(p=>{ const x = parSerie[p.serie] ||= {max:0, perdu:false, fin:0}; x.max = Math.max(x.max, p.statut==='gagne'?p.palier:0); if(p.statut==='perdu') x.perdu=true; x.fin=Math.max(x.fin,p.palier); });
+  const record = Math.max(...Object.values(parSerie).map(x=>x.max));
 
-  let info = '';
-  if(!pertinents.length){
+  // ---------- héro ----------
+  let html = `
+    <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
+      <div class="t">${def.nom} N°${serie} — ${N} PALIERS</div>
+      <div class="v">${fmtF(capital)} F</div>
+      <div class="s">Départ 5 000 F · ×${(capital/5000).toFixed(1).replace('.',',')}${dernier.statut==='perdu' ? ' · série arrêtée' : ''}</div>
+      <div class="mt-barre"><i data-pct="${pct}" style="width:0%"></i></div>
+      <div class="mt-stats">
+        <div><b>${gagnes}/${N}</b><span>Paliers passés</span></div>
+        <div><b>${gagnes ? coteMoy.toFixed(2) : '—'}</b><span>Cote moyenne</span></div>
+        <div><b>${record}/${N}</b><span>Record</span></div>
+      </div>
+    </div>`;
+
+  // ---------- coupon du jour (ou message) ----------
+  const enCours = pertinents.find(p=>p.statut==='en_cours');
+  const cEnCours = enCours && COUPONS.find(x=>x.id===enCours.coupon_id);
+  if(cEnCours){
+    html += `<div class="mt-etiq">PALIER ${enCours.palier} · ${fmtF(enCours.mise)} F → ${fmtF(enCours.gain_vise)} F</div>`;
+    html += carteCoupon(cEnCours, true);
+  }else{
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
     const dateP = d => new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
-    if(dernier.statut === 'en_cours')
-      info = `Le palier ${dernier.palier} (${dateP(dernier.jour)}) attend son résultat. Le palier ${dernier.palier+1} s'ouvrira dès qu'il sera validé.`;
-    else if(dernier.statut === 'perdu')
-      info = `La série n°${serie} s'est arrêtée au palier ${dernier.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
-    else if(dernier.palier >= PALIERS_MAX)
-      info = `Série n°${serie} bouclée : ${PALIERS_MAX} paliers sur ${PALIERS_MAX} ✓. Une nouvelle série repart à 5 000 F.`;
-    else
-      info = `Pas de palier ${quand} : aucun coupon assez sûr. Le palier ${dernier.palier+1} se jouera dès qu'un coupon à sa main apparaîtra.`;
+    let info;
+    if(dernier.statut === 'en_cours') info = `⏳ Le palier ${dernier.palier} (${dateP(dernier.jour)}) attend son résultat. Le palier ${dernier.palier+1} s'ouvrira dès qu'il sera validé.`;
+    else if(dernier.statut === 'perdu') info = `La série n°${serie} s'est arrêtée au palier ${dernier.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
+    else if(dernier.palier >= N) info = `🏆 Série n°${serie} bouclée : ${N} paliers sur ${N}. Une nouvelle série repart à 5 000 F.`;
+    else info = `Pas de palier ${quand} : aucun coupon assez sûr. Le palier ${dernier.palier+1} (${fmtF(capital)} F) se jouera dès qu'un coupon à sa main apparaîtra.`;
+    html += `<div class="mt-etiq">${quand.toUpperCase()}</div><div class="mt-info">${info}</div>`;
   }
-  const gagnes = paliers.filter(p=>p.statut==='gagne').length;
-  const pct = Math.min(100, gagnes/PALIERS_MAX*100);
-  const capital = dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise;
 
-  let html = `
-    <div class="mt-obj">
-      <div class="t">${def.nom} N°${serie} — ${PALIERS_MAX} PALIERS</div>
-      <div class="v">${fmtF(capital)} F <span style="color:var(--sourdine);font-size:13px">· palier ${dernier.palier} / ${PALIERS_MAX}</span></div>
-      <div class="s">Départ 5 000 F · ${gagnes} palier${gagnes>1?'s':''} passé${gagnes>1?'s':''}</div>
-      <div class="mt-barre"><i data-pct="${pct}" style="width:0%"></i></div>
-    </div>`;
+  // ---------- grille des paliers ----------
+  html += `<div class="mt-etiq">PARCOURS DE LA SÉRIE · TOUCHE UN PALIER JOUÉ</div><div class="mt-grille ${N===5?'g5':''}">`;
+  for(let i = 1; i <= N; i++){
+    const p = paliers.find(x=>x.palier===i);
+    const cls = !p ? 'avenir' : p.statut==='gagne' ? 'gagne' : p.statut==='perdu' ? 'perdu' : 'encours';
+    const montant = p ? (p.statut==='gagne' ? p.gain_vise : p.mise) : null;
+    const clic = p && p.statut !== 'en_cours' && p.coupon_id;
+    html += `<div class="mt-case ${cls}" ${clic?`onclick="ficheCase(this, ${p.coupon_id}, ${i}, ${p.mise}, ${p.gain_vise}, '${p.jour}', '${p.statut}')"`:''}>
+      <b>${cls==='gagne'?'✓':cls==='perdu'?'✗':i}</b><small>${montant ? k(montant) : (i===dernier.palier+1 && dernier.statut==='gagne' ? 'prochain' : '')}</small></div>`;
+  }
+  html += `</div><div id="mt-fiche"></div>`;
 
-  html += paliers.map(p=>{
-    const c = COUPONS.find(x=>x.id===p.coupon_id);
-    const clic = p.coupon_id && p.statut !== 'en_cours';
-    return `
-    <div class="mt-palier ${p.statut}${clic?' clic':''}" ${clic?`onclick="voirPalier(${p.coupon_id}, this)"`:''}>
-      <div class="n">${p.statut==='gagne'?'✓':p.statut==='perdu'?'✗':p.palier}</div>
-      <div class="g">
-        <div class="m">${fmtF(p.mise)} F → ${fmtF(p.gain_vise)} F</div>
-        <div class="d">Palier ${p.palier} · ${new Date(p.jour+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}${c?` · cote ${Number(c.cote_totale).toFixed(2)}`:''}</div>
-      </div>
-      ${clic?'<span class="chev">›</span>':''}
-    </div>`;
-  }).join('');
-
-  if(info) html += `<div class="vide" style="margin-top:12px;text-align:left">${info}</div>`;
-  const enCours = pertinents.length ? paliers.find(p=>p.statut==='en_cours') : null;
-  if(enCours){
-    const c = COUPONS.find(x=>x.id===enCours.coupon_id);
-    if(c){
-      html += `<div style="margin:16px 16px 8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--sourdine)">LE COUPON DU PALIER ${enCours.palier}</div>`;
-      html += carteCoupon(c, true);
-    }
+  // ---------- séries précédentes ----------
+  const anciennes = Object.entries(parSerie).map(([n,x])=>({n:+n, ...x})).filter(x=>x.n!==serie).sort((a,b)=>b.n-a.n).slice(0,3);
+  if(anciennes.length){
+    html += `<div class="mt-etiq">SÉRIES PRÉCÉDENTES</div><div class="mt-hist">` + anciennes.map(x=>
+      `<div><b>Série n°${x.n}</b><span>${x.max>=N ? '🏆 bouclée' : x.perdu ? 'arrêtée au palier '+x.fin : 'palier '+x.max}</span></div>`).join('') + `</div>`;
   }
   return html;
+}
+
+// Fiche d'un palier joué : montant, date et matchs du coupon
+async function ficheCase(el, cid, n, mise, gain, jour, statut){
+  const box = $('mt-fiche'); if(!box) return;
+  const deja = el.classList.contains('choisie');
+  document.querySelectorAll('.mt-case.choisie').forEach(x=>x.classList.remove('choisie'));
+  if(deja){ box.innerHTML = ''; return; }
+  el.classList.add('choisie');
+  const dateP = new Date(jour+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long'});
+  box.innerHTML = `<div class="mt-fiche"><div class="h"><span>Palier ${n} · ${dateP}</span><b>${statut==='gagne'?'✓ GAGNÉ':'✗ PERDU'}</b></div>
+    <div class="h"><span>${fmtF(mise)} F → ${fmtF(gain)} F</span><span>cote ${(gain/mise).toFixed(2)}</span></div><div class="lv-msg">Chargement…</div></div>`;
+  try{
+    let sels = SELECTIONS[cid];
+    if(!sels || !sels.length) sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat`);
+    const zone = box.querySelector('.lv-msg'); if(!zone) return;
+    zone.outerHTML = (sels && sels.length) ? sels.map(s=>`
+      <div class="cp-sel">
+        <div class="g">
+          <div class="lig">${s.ligue||''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+          <div class="duel"><span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span><span class="vs">–</span><span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span></div>
+          <div class="pick ${s.resultat||''}"><span class="fl">${s.resultat==='gagne'?'✓':s.resultat==='perdu'?'✗':'▸'}</span>${s.selection}</div>
+        </div>
+        <div class="c">${Number(s.cote).toFixed(2)}</div>
+      </div>`).join('') : `<div class="lv-msg">Détail indisponible pour ce palier.</div>`;
+  }catch(e){ const z = box.querySelector('.lv-msg'); if(z) z.textContent = 'Impossible de charger ce palier.'; }
 }
 
 // Détail d'un palier déjà joué : les matchs du coupon, avec le résultat de chacun
@@ -2128,6 +2219,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · deux montantes 29/09 -->
+<!-- aura90-v4-sans-jeu · montantes v2 29/09 -->
 </body>
 </html>
