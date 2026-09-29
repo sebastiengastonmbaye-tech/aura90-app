@@ -1768,6 +1768,10 @@ const MONTANTES_DEF = [
   { type:'turbo',    nom:'MONTANTE TURBO', court:'Turbo',    ico:'⚡', paliers:5  },
 ];
 let MT_ONGLET = null;
+// Formats actuels (Montante 12 paliers, Turbo 5 paliers) depuis le 29/09/2026 :
+// l'historique et le record ne comptent que les séries démarrées à partir de cette date
+// (plus la série en cours, qui continue avec les nouvelles règles).
+const DEBUT_FORMATS = '2026-09-29';
 
 function lignesMontante(type){ return MONTANTE.filter(p => (p.type || 'montante') === type); }
 
@@ -1812,8 +1816,9 @@ function blocMontante(def){
   const coteMoy = gagnes ? Math.pow(capital/5000, 1/gagnes) : 0;
   // record : meilleur parcours parmi les séries chargées
   const parSerie = {};
-  LIGNES.forEach(p=>{ const x = parSerie[p.serie] ||= {max:0, perdu:false, fin:0}; x.max = Math.max(x.max, p.statut==='gagne'?p.palier:0); if(p.statut==='perdu') x.perdu=true; x.fin=Math.max(x.fin,p.palier); });
-  const record = Math.max(...Object.values(parSerie).map(x=>x.max));
+  LIGNES.forEach(p=>{ const x = parSerie[p.serie] ||= {max:0, perdu:false, fin:0, debut:p.jour}; x.max = Math.max(x.max, p.statut==='gagne'?p.palier:0); if(p.statut==='perdu') x.perdu=true; x.fin=Math.max(x.fin,p.palier); if(p.jour < x.debut) x.debut = p.jour; });
+  const nouveauFormat = (n, x) => n === serie || x.debut >= DEBUT_FORMATS;
+  const record = Math.max(0, ...Object.entries(parSerie).filter(([n,x])=>nouveauFormat(+n, x)).map(([,x])=>x.max));
 
   // ---------- héro ----------
   let html = `
@@ -1859,9 +1864,10 @@ function blocMontante(def){
   html += `</div><div id="mt-fiche"></div>`;
 
   // ---------- séries précédentes ----------
-  const anciennes = Object.entries(parSerie).map(([n,x])=>({n:+n, ...x})).filter(x=>x.n!==serie).sort((a,b)=>b.n-a.n).slice(0,3);
+  const anciennes = Object.entries(parSerie).map(([n,x])=>({n:+n, ...x}))
+    .filter(x=>x.n!==serie && x.debut >= DEBUT_FORMATS).sort((a,b)=>b.n-a.n).slice(0,5);
   if(anciennes.length){
-    html += `<div class="mt-etiq">SÉRIES PRÉCÉDENTES</div><div class="mt-hist">` + anciennes.map(x=>
+    html += `<div class="mt-etiq">HISTORIQUE</div><div class="mt-hist">` + anciennes.map(x=>
       `<div><b>Série n°${x.n}</b><span>${x.max>=N ? '🏆 bouclée' : x.perdu ? 'arrêtée au palier '+x.fin : 'palier '+x.max}</span></div>`).join('') + `</div>`;
   }
   return html;
