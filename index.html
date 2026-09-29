@@ -1422,7 +1422,7 @@ async function chargerCoupons(){
     const jour = new Date().toISOString().slice(0,10);
     const [cps, mt] = await Promise.all([
       sbUser(`coupons?jour=gte.${jour}&order=jour.asc,categorie.asc,numero.asc&select=id,jour,categorie,numero,cote_totale,nb_matchs,statut,note`),
-      sbUser(`montante?order=serie.desc,palier.asc&limit=20&select=serie,palier,coupon_id,mise,gain_vise,statut,jour`)
+      sbUser(`montante?order=serie.desc,palier.asc&limit=60&select=type,serie,palier,coupon_id,mise,gain_vise,statut,jour`)
     ]);
     COUPONS = Array.isArray(cps) ? cps : [];
     MONTANTE = Array.isArray(mt) ? mt : [];
@@ -1478,7 +1478,7 @@ function dessinerOnglets(){
   $('onglets-coupons').innerHTML = CATS.map(c=>{
     const auj0 = new Date().toISOString().slice(0,10);
     const n = c.cle === 'live' ? 0 : c.cle === 'montante'
-      ? (MONTANTE.some(p => JOUR_ACTIF === 'auj' ? p.jour === auj0 : p.jour > auj0) ? 1 : 0) : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
+      ? new Set(MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj0 : p.jour > auj0).map(p => p.type || 'montante')).size : couponsDuJour().filter(x=>x.categorie===c.cle && (SELECTIONS[x.id]||[]).length).length;
     return `<button class="${c.cle===CAT_ACTIVE?'actif':''}" onclick="afficherCategorie('${c.cle}')">${c.ico} ${c.nom}${n?` · ${n}`:''}</button>`;
   }).join('');
   requestAnimationFrame(majFlechesOnglets);
@@ -1655,7 +1655,7 @@ function carteScore(c){
 
 function carteCoupon(c, ouvert){
   const sels = SELECTIONS[c.id] || [];
-  const nom = CATS.find(x=>x.cle===c.categorie).nom;
+  const nom = (CATS.find(x=>x.cle===c.categorie) || {nom: c.categorie==='turbo' ? 'Montante Turbo' : c.categorie}).nom;
   const etat = c.statut==='gagne' ? '<span class="cp-etat g">✓ GAGNÉ</span>'
              : c.statut==='perdu' ? '<span class="cp-etat p">✗ PERDU</span>' : '';
   return `
@@ -1707,7 +1707,7 @@ function majGain(id, cote, mise){
 function copierCoupon(id){
   const c = COUPONS.find(x=>x.id===id); if(!c) return;
   const sels = SELECTIONS[id] || [];
-  const nom = CATS.find(x=>x.cle===c.categorie).nom;
+  const nom = (CATS.find(x=>x.cle===c.categorie) || {nom: c.categorie==='turbo' ? 'Montante Turbo' : c.categorie}).nom;
   if(c.categorie === 'score'){
     const s0 = sels[0];
     const txt0 = `⚽ SCORE EXACT — AURA90\n\n${s0.dom} – ${s0.ext}\n→ ${sels.map(s=>String(s.selection).replace('Score exact ','')+' ('+Number(s.cote).toFixed(2)+')').join('  ou  ')}\n${location.origin}${location.pathname}`;
@@ -1724,47 +1724,56 @@ function copierCoupon(id){
   if(b){ const av = b.textContent; b.textContent = 'Copié ✓'; setTimeout(()=>b.textContent = av, 1600); }
 }
 
+const MONTANTES_DEF = [
+  { type:'montante', nom:'MONTANTE',       paliers:12 },
+  { type:'turbo',    nom:'MONTANTE TURBO', paliers:5  },
+];
+
 function afficherMontante(){
+  const blocs = MONTANTES_DEF.map(blocMontante).filter(Boolean);
+  $('zone-coupons').innerHTML = blocs.length ? blocs.join('<div style="height:22px"></div>')
+    : `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
+  setTimeout(()=>{ document.querySelectorAll('.mt-barre i').forEach(b=>{ b.style.width = b.dataset.pct + '%'; }); }, 120);
+}
+
+function blocMontante(def){
   const auj = new Date().toISOString().slice(0,10);
-  if(!MONTANTE.length){
-    $('zone-coupons').innerHTML = `<div class="vide">Aucune montante en cours.<br>La prochaine démarre dès que le moteur trouve un coupon à sa main.</div>`;
-    return;
+  const LIGNES = MONTANTE.filter(p => (p.type || 'montante') === def.type);
+  const PALIERS_MAX = def.paliers;
+  if(!LIGNES.length){
+    return def.type === 'turbo'
+      ? `<div class="vide" style="text-align:left"><b>${def.nom}</b> · ${PALIERS_MAX} paliers<br>Elle démarre à 5 000 F dès que le moteur trouve un coupon à sa main (cote 1,90 à 2,60).</div>`
+      : '';
   }
   // la série affichée : celle du jour choisi si elle existe, sinon la plus récente
-  const pertinents = MONTANTE.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
-  const serieRecente = Math.max(...MONTANTE.map(p=>p.serie));
-  const serie = pertinents.length ? pertinents[0].serie : serieRecente;
-  const tousPaliers = MONTANTE.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
-  const derniere = tousPaliers[tousPaliers.length-1];
+  const pertinents = LIGNES.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
+  const serie = pertinents.length ? pertinents[0].serie : Math.max(...LIGNES.map(p=>p.serie));
+  const paliers = LIGNES.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
+  const dernier = paliers[paliers.length-1];
 
-  // message quand aucun palier ne se joue le jour choisi
   let info = '';
   if(!pertinents.length){
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
     const dateP = d => new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
-    if(derniere.statut === 'en_cours')
-      info = `Le palier ${derniere.palier} (${dateP(derniere.jour)}) attend son résultat. Le palier ${derniere.palier+1} s'ouvrira dès qu'il sera validé.`;
-    else if(derniere.statut === 'perdu')
-      info = `La série n°${serie} s'est arrêtée au palier ${derniere.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
-    else if(derniere.palier >= 15)
-      info = `Série n°${serie} bouclée : 15 paliers sur 15 ✓. Une nouvelle série repart à 5 000 F.`;
+    if(dernier.statut === 'en_cours')
+      info = `Le palier ${dernier.palier} (${dateP(dernier.jour)}) attend son résultat. Le palier ${dernier.palier+1} s'ouvrira dès qu'il sera validé.`;
+    else if(dernier.statut === 'perdu')
+      info = `La série n°${serie} s'est arrêtée au palier ${dernier.palier}. Une nouvelle série repart à 5 000 F dès qu'un coupon à sa main apparaît.`;
+    else if(dernier.palier >= PALIERS_MAX)
+      info = `Série n°${serie} bouclée : ${PALIERS_MAX} paliers sur ${PALIERS_MAX} ✓. Une nouvelle série repart à 5 000 F.`;
     else
-      info = `Pas de palier ${quand} : aucun coupon assez sûr pour la montante. Le palier ${derniere.palier+1} se jouera dès qu'un coupon à sa main apparaîtra.`;
+      info = `Pas de palier ${quand} : aucun coupon assez sûr. Le palier ${dernier.palier+1} se jouera dès qu'un coupon à sa main apparaîtra.`;
   }
-  const paliers = tousPaliers;
-  const dernier = paliers[paliers.length-1];
-  // Montante en 15 paliers : la série est réussie quand 15 paliers passent d'affilée
-  const PALIERS_MAX = 15;
   const gagnes = paliers.filter(p=>p.statut==='gagne').length;
   const pct = Math.min(100, gagnes/PALIERS_MAX*100);
   const capital = dernier.statut==='gagne' ? dernier.gain_vise : dernier.mise;
 
   let html = `
     <div class="mt-obj">
-      <div class="t">MONTANTE N°${serie} — ${PALIERS_MAX} PALIERS</div>
+      <div class="t">${def.nom} N°${serie} — ${PALIERS_MAX} PALIERS</div>
       <div class="v">${fmtF(capital)} F <span style="color:var(--sourdine);font-size:13px">· palier ${dernier.palier} / ${PALIERS_MAX}</span></div>
       <div class="s">Départ 5 000 F · ${gagnes} palier${gagnes>1?'s':''} passé${gagnes>1?'s':''}</div>
-      <div class="mt-barre"><i style="width:0%"></i></div>
+      <div class="mt-barre"><i data-pct="${pct}" style="width:0%"></i></div>
     </div>`;
 
   html += paliers.map(p=>{
@@ -1790,8 +1799,7 @@ function afficherMontante(){
       html += carteCoupon(c, true);
     }
   }
-  $('zone-coupons').innerHTML = html;
-  setTimeout(()=>{ const b = document.querySelector('.mt-barre i'); if(b) b.style.width = pct+'%'; }, 120);
+  return html;
 }
 
 // Détail d'un palier déjà joué : les matchs du coupon, avec le résultat de chacun
@@ -2120,6 +2128,6 @@ charger();
   }
 })();
 </script>
-<!-- aura90-v4-sans-jeu · paliers cliquables 28/09 -->
+<!-- aura90-v4-sans-jeu · deux montantes 29/09 -->
 </body>
 </html>
