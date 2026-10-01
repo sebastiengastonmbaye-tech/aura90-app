@@ -1765,10 +1765,12 @@ function copierCoupon(id){
 }
 
 const MONTANTES_DEF = [
-  { type:'montante', nom:'MONTANTE',       court:'Montante', ico:'📈', paliers:12 },
+  { type:'montante', nom:'MONTANTE',       court:'Montante', ico:'📈', paliers:10 },
   { type:'turbo',    nom:'MONTANTE TURBO', court:'Turbo',    ico:'⚡', paliers:5  },
 ];
 let MT_ONGLET = null;
+// la série n°6 de la Montante, lancée avant le passage à 10 paliers, garde ses 12 paliers
+const paliersSerie = (def, serie) => (def.type === 'montante' && serie <= 6) ? 12 : def.paliers;
 // Formats actuels (Montante 12 paliers, Turbo 5 paliers) depuis le 29/09/2026 :
 // l'historique et le record ne comptent que les séries démarrées à partir de cette date
 // (plus la série en cours, qui continue avec les nouvelles règles).
@@ -1785,7 +1787,7 @@ function afficherMontante(){
     const l = lignesMontante(d.type);
     const serie = l.length ? Math.max(...l.map(p=>p.serie)) : 0;
     const der = l.filter(p=>p.serie===serie).sort((a,b)=>b.palier-a.palier)[0];
-    const etat = !der ? 'à venir' : `palier ${der.palier}/${d.paliers}`;
+    const etat = !der ? 'à venir' : `palier ${der.palier}/${paliersSerie(d, serie)}`;
     return `<button class="${d.type===MT_ONGLET?'actif':''}" onclick="MT_ONGLET='${d.type}';afficherMontante()">
       <span>${d.ico} ${d.court}${joueCeJour(d.type)?'<i class="pt"></i>':''}</span><small>${etat.toUpperCase()}</small></button>`;
   }).join('');
@@ -1795,7 +1797,8 @@ function afficherMontante(){
 
 function blocMontante(def){
   const auj = new Date().toISOString().slice(0,10);
-  const LIGNES = lignesMontante(def.type), N = def.paliers;
+  const LIGNES = lignesMontante(def.type);
+  let N = def.paliers;
   const k = n => n >= 1e6 ? (n/1e6).toFixed(1).replace('.0','')+'M' : n >= 1e3 ? Math.round(n/1e3)+'k' : String(Math.round(n));
   if(!LIGNES.length){
     return `
@@ -1810,6 +1813,7 @@ function blocMontante(def){
   }
   const pertinents = LIGNES.filter(p => JOUR_ACTIF === 'auj' ? p.jour === auj : p.jour > auj);
   const serie = pertinents.length ? pertinents[0].serie : Math.max(...LIGNES.map(p=>p.serie));
+  N = paliersSerie(def, serie);
   const paliers = LIGNES.filter(p=>p.serie===serie).sort((a,b)=>a.palier-b.palier);
   const dernier = paliers[paliers.length-1];
   const gagnes = paliers.filter(p=>p.statut==='gagne').length;
