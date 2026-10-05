@@ -40,6 +40,32 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .carte-tiktok .t{font-weight:800;font-size:14px}
 .carte-tiktok .s{color:var(--sourdine);font-size:11px;margin-top:3px}
 .carte-tiktok .fl{font-size:20px;color:var(--aura1)}
+/* ----- Preuves : coupons validés, prêts à capturer ----- */
+.pv-jours{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none}
+.pv-jours::-webkit-scrollbar{display:none}
+.pv-jours button{flex:0 0 auto;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:2px}
+.pv-jours button small{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--sourdine);font-weight:700}
+.pv-jours button.actif{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;border-color:transparent}
+.pv-jours button.actif small{color:#06110E}
+.pv-carte{background:linear-gradient(160deg,#0f1a26,#0b1119);border:1px solid rgba(61,232,200,.45);border-radius:18px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
+.pv-carte::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 100% 0%,rgba(61,232,200,.13),transparent 55%)}
+.pv-haut{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.pv-logo{font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;letter-spacing:.02em}
+.pv-logo i{font-style:normal;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pv-cat{font-weight:800;font-size:16px;margin-top:6px}
+.pv-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sourdine);margin-top:2px}
+.pv-cote{text-align:right}
+.pv-cote b{display:block;font-family:'JetBrains Mono',monospace;font-size:28px;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pv-tampon{display:inline-block;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:8px;background:rgba(61,232,200,.16);color:var(--aura1);border:1px solid rgba(61,232,200,.5)}
+.pv-sel{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--ligne)}
+.pv-sel .lig{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:var(--sourdine);text-transform:uppercase}
+.pv-duel{display:flex;align-items:center;gap:7px;margin:5px 0;font-weight:800;font-size:13px;flex-wrap:wrap}
+.pv-duel img{width:20px;height:20px;object-fit:contain}
+.pv-duel .sc{font-family:'JetBrains Mono',monospace;background:var(--surface2);border:1px solid var(--ligne);border-radius:7px;padding:2px 7px;font-size:12px}
+.pv-pick{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:800;color:var(--aura1);background:rgba(61,232,200,.09);border:1px solid rgba(61,232,200,.3);border-radius:8px;padding:4px 9px}
+.pv-c{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;white-space:nowrap}
+.pv-pied{display:flex;justify-content:space-between;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sourdine)}
+.pv-mt{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#FFB454}
 </style>
 </head>
 <body>
@@ -70,6 +96,18 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
     </div>
     <span class="fl">›</span>
   </a>
+
+  <a class="carte-tiktok" href="#preuves" onclick="setTimeout(()=>document.getElementById('preuves').scrollIntoView({behavior:'smooth'}),50)" style="margin-top:8px">
+    <div>
+      <div class="t">🏆 Preuves — coupons validés</div>
+      <div class="s">Chaque coupon gagnant, prêt à capturer et à partager</div>
+    </div>
+    <span class="fl">›</span>
+  </a>
+
+  <h2 id="preuves">Preuves — coupons validés</h2>
+  <div class="pv-jours" id="pv-jours"></div>
+  <div id="pv-zone"><div class="vide">Chargement…</div></div>
 
   <h2>Retraits en attente — versements du mardi</h2>
   <div id="retraits"><div class="vide">Chargement…</div></div>
@@ -147,7 +185,7 @@ async function connecter(){
   $('login').style.display = 'none';
   $('panel').style.display = 'block';
   $('qui').textContent = 'Connecté : ' + $('email').value.trim();
-  afficherStats(t); chargerRetraits();
+  afficherStats(t); chargerRetraits(); chargerPreuves(preuvesDepuisLien());
 }
 
 async function admin(corps){
@@ -267,7 +305,91 @@ async function notifierTous(){
   if(r.ok){ $('n-titre').value=''; $('n-corps').value=''; }
 }
 
-sessionExistante();
+/* ================= PREUVES : coupons validés ================= */
+const CAT_NOMS = { sure:'🛡️ Sûre', confiance:'🎯 Confiance', fun:'🎲 Fun', grosses:'🔥 Grosses cotes', nuit:'🌙 Nuit',
+                   montante:'📈 Montante', turbo:'⚡ Montante Turbo', score:'⚽ Score exact', tiktok:'🎬 Combiné TikTok' };
+let PV_JOUR = null, PV_CACHE = {};
+const F = n => Math.round(n).toLocaleString('fr-FR');
+
+async function rest(chemin){
+  const r = await fetch(SUPABASE_URL + '/rest/v1/' + chemin, { headers:{ apikey: SUPABASE_KEY, Authorization:'Bearer ' + JETON } });
+  if(!r.ok) throw new Error('Supabase ' + r.status);
+  return r.json();
+}
+
+function jourFr(iso, court){
+  return new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', court ? {weekday:'short', day:'numeric', month:'short'} : {weekday:'long', day:'numeric', month:'long'});
+}
+
+async function chargerPreuves(jourVoulu){
+  const z = $('pv-zone'); if(!z) return;
+  try{
+    // 14 derniers jours : quels jours ont des coupons validés ?
+    const depuis = new Date(Date.now() - 14*864e5).toISOString().slice(0,10);
+    const liste = await rest(`coupons?statut=eq.gagne&jour=gte.${depuis}&categorie=neq.tiktok&select=jour&order=jour.desc`);
+    const jours = [...new Set(liste.map(x=>x.jour))];
+    if(!jours.length){ $('pv-jours').innerHTML=''; z.innerHTML = '<div class="vide">Aucun coupon validé sur les 14 derniers jours.</div>'; return; }
+    PV_JOUR = (jourVoulu && jours.includes(jourVoulu)) ? jourVoulu : (jourVoulu || jours[0]);
+    const compte = j => liste.filter(x=>x.jour===j).length;
+    $('pv-jours').innerHTML = jours.map(j=>`<button class="${j===PV_JOUR?'actif':''}" onclick="chargerPreuves('${j}')">${jourFr(j,true)}<small>${compte(j)} validé${compte(j)>1?'s':''}</small></button>`).join('');
+    await afficherPreuves(PV_JOUR);
+  }catch(e){ z.innerHTML = '<div class="vide">Impossible de charger les preuves (' + e.message + ').</div>'; }
+}
+
+async function afficherPreuves(jour){
+  const z = $('pv-zone');
+  z.innerHTML = '<div class="vide">Chargement…</div>';
+  const cps = await rest(`coupons?statut=eq.gagne&jour=eq.${jour}&categorie=neq.tiktok&order=categorie.asc,numero.asc&select=id,jour,categorie,numero,cote_totale,nb_matchs`);
+  if(!cps.length){ z.innerHTML = '<div class="vide">Aucun coupon validé ce jour-là.</div>'; return; }
+  const ids = cps.map(c=>c.id).join(',');
+  const [sels, mts] = await Promise.all([
+    rest(`coupon_selections?coupon_id=in.(${ids})&order=coupon_id.asc,id.asc&select=*`),
+    rest(`montante?coupon_id=in.(${ids})&select=coupon_id,type,serie,palier,mise,gain_vise`).catch(()=>[])
+  ]);
+  const ordre = ['montante','turbo','score','sure','confiance','fun','grosses','nuit'];
+  cps.sort((a,b)=>ordre.indexOf(a.categorie)-ordre.indexOf(b.categorie) || a.numero-b.numero);
+  z.innerHTML = cps.map(c=>{
+    const ss = sels.filter(x=>x.coupon_id===c.id);
+    const mt = mts.find(m=>m.coupon_id===c.id);
+    const nom = (CAT_NOMS[c.categorie]||c.categorie) + (c.numero>1 && c.categorie!=='score' ? ' #'+c.numero : '');
+    const lignes = (c.categorie==='score' ? ss.filter(x=>x.resultat==='gagne') : ss).map(x=>`
+      <div class="pv-sel">
+        <div style="min-width:0">
+          <div class="lig">${x.ligue||''}${x.heure?' · '+String(x.heure).slice(0,5):''}</div>
+          <div class="pv-duel">${x.logo_dom?`<img src="${x.logo_dom}" alt="">`:''}${x.dom}
+            ${x.score?`<span class="sc">${x.score}</span>`:'<span style="color:var(--sourdine)">–</span>'}
+            ${x.ext}${x.logo_ext?`<img src="${x.logo_ext}" alt="">`:''}</div>
+          <div class="pv-pick">✓ ${x.selection}</div>
+        </div>
+        <div class="pv-c">${Number(x.cote).toFixed(2)}</div>
+      </div>`).join('');
+    const coteAff = c.categorie==='score' ? Number((ss.find(x=>x.resultat==='gagne')||{}).cote || c.cote_totale) : Number(c.cote_totale);
+    return `
+    <div class="pv-carte">
+      <div class="pv-haut">
+        <div>
+          <div class="pv-logo">AURA<i>90</i>'</div>
+          <div class="pv-cat">${nom}</div>
+          <div class="pv-date">${jourFr(c.jour)}</div>
+        </div>
+        <div class="pv-cote"><b>${coteAff.toFixed(2)}</b><span class="pv-tampon">✓ VALIDÉ</span></div>
+      </div>
+      ${mt ? `<div class="pv-mt">Palier ${mt.palier} · ${F(mt.mise)} F → ${F(mt.gain_vise)} F</div>` : ''}
+      ${lignes}
+      <div class="pv-pied"><span>${c.categorie==='score' ? 'Score exact trouvé' : (ss.length + ' match' + (ss.length>1?'s':'') + ' · tous gagnés')}</span><span>aura90.netlify.app</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ouverture directe depuis une notification : admin.html#preuves=AAAA-MM-JJ
+function preuvesDepuisLien(){
+  const m = location.hash.match(/preuves(?:=(\d{4}-\d{2}-\d{2}))?/);
+  if(!m) return null;
+  setTimeout(()=>{ const el = document.getElementById('preuves'); if(el) el.scrollIntoView({behavior:'smooth'}); }, 400);
+  return m[1] || null;
+}
+
+sessionExistante().then(ok => { if(ok) chargerPreuves(preuvesDepuisLien()); });
 </script>
 </body>
 </html>
