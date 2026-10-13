@@ -1409,7 +1409,6 @@ const CATS = [
   {cle:'score',     nom:'Score exact',  ico:'⚽'},
   {cle:'confiance', nom:'Confiance',    ico:'🎯'},
   {cle:'fun',       nom:'Fun',          ico:'🎲'},
-  {cle:'grosses',   nom:'Grosses cotes',ico:'🔥'},
   {cle:'nuit',      nom:'Nuit',         ico:'🌙'},
   {cle:'montante',  nom:'Montante',     ico:'📈'},
 ];
@@ -1452,7 +1451,7 @@ async function chargerCoupons(){
   if(!estAbonne()){
     zone.innerHTML = `<div class="vide">
       <b style="color:var(--aura1);font-size:14px">Réservé aux abonnés PRO</b><br>
-      Chaque matin, le moteur construit ses combinés : sûrs, confiance, fun et grosses cotes.<br><br>
+      Chaque matin, le moteur construit ses combinés : sûrs, confiance, fun, score exact et montantes.<br><br>
       <button class="bouton-aura" style="max-width:260px;margin:0 auto" onclick="allerPage('compte')">Passer à PRO →</button>
     </div>`;
     $('onglets-coupons').innerHTML = ''; return;
