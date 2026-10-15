@@ -127,6 +127,26 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
 .mb-rep{display:flex;gap:8px;margin-top:8px}
 .mb-rep textarea{min-height:52px;margin:0}
+
+/* messagerie plein écran */
+#mb-ecran{position:fixed;inset:0;z-index:60;background:var(--nuit);display:none;justify-content:center}
+#mb-ecran.ouvert{display:flex}
+.mb-vue{width:100%;max-width:680px;height:100%;display:none;flex-direction:column}
+.mb-vue.active{display:flex}
+.mb-barre{display:flex;align-items:center;gap:10px;padding:12px 12px;border-bottom:1px solid var(--ligne);background:var(--surface);flex:0 0 auto}
+.mb-fleche{background:none;color:var(--texte);font-size:28px;line-height:1;padding:0 8px 4px;border-radius:10px}
+.mb-titre{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px}
+.mb-qui{flex:1;min-width:0}
+.mb-qui .n{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mb-qui .m{font-size:11px;color:var(--sourdine);margin-top:2px}
+.mb-btn-mode{padding:8px 10px;font-size:11.5px;flex:0 0 auto}
+#mb-vue-liste .mb-filtres{padding:10px 12px 0;margin:0}
+.mb-defile{flex:1;overflow-y:auto;padding:10px 12px;overscroll-behavior:contain}
+#mb-fil{display:flex;flex-direction:column;gap:6px;max-height:none;border:none;border-radius:0;background:var(--nuit)}
+.mb-saisie{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ligne);background:var(--surface);flex:0 0 auto}
+.mb-saisie textarea{margin:0;min-height:46px;height:46px;max-height:130px;resize:none;border-radius:14px}
+.mb-saisie button{width:50px;padding:0;font-size:18px;border-radius:14px}
+.mb-jour{align-self:center;font:700 10px 'JetBrains Mono',monospace;color:var(--sourdine);background:var(--surface);border:1px solid var(--ligne);border-radius:99px;padding:4px 10px;margin:6px 0}
 </style>
 </head>
 <body>
@@ -149,23 +169,39 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
   <h2>Vue d'ensemble</h2>
   <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
 
-  <h2 id="messagerie">Messagerie <span id="mb-badge" style="color:var(--aura1)"></span></h2>
-  <div id="mb-liste-zone">
-    <div class="mb-filtres" id="mb-filtres"></div>
-    <div id="mb-liste"><div class="vide">Chargement…</div></div>
-  </div>
-  <div id="mb-fil-zone">
-    <div class="mb-entete">
-      <button class="gris" onclick="mbRetour()">‹ Retour</button>
-      <div class="qui" id="mb-qui"></div>
-      <button class="gris" id="mb-btn-mode" onclick="mbBasculerMode()"></button>
+  <h2>Messagerie</h2>
+  <a class="carte-tiktok" href="#" onclick="mbOuvrirBoite();return false">
+    <div>
+      <div class="t">💬 Messagerie <span id="mb-badge" style="color:var(--aura1)"></span></div>
+      <div class="s" id="mb-resume">Toutes les discussions des utilisateurs</div>
     </div>
-    <div id="mb-fil"></div>
-    <div class="mb-rep">
-      <textarea id="mb-texte" placeholder="Ta réponse… (l'IA se met en pause sur cette discussion dès que tu réponds)"></textarea>
-      <button onclick="mbRepondre()">Envoyer</button>
+    <span class="fl">›</span>
+  </a>
+
+  <!-- écran messagerie (liste ⇄ discussion) -->
+  <div id="mb-ecran">
+    <div class="mb-vue" id="mb-vue-liste">
+      <div class="mb-barre">
+        <button class="mb-fleche" onclick="history.back()">‹</button>
+        <div class="mb-titre">Messagerie</div>
+      </div>
+      <div class="mb-filtres" id="mb-filtres"></div>
+      <div class="mb-defile" id="mb-liste"><div class="vide">Chargement…</div></div>
     </div>
-    <div class="msg" id="msg-mb"></div>
+    <div class="mb-vue" id="mb-vue-conv">
+      <div class="mb-barre">
+        <button class="mb-fleche" onclick="history.back()">‹</button>
+        <div class="mb-av" id="mb-av">?</div>
+        <div class="mb-qui"><div class="n" id="mb-qui"></div><div class="m" id="mb-mode-txt"></div></div>
+        <button class="gris mb-btn-mode" id="mb-btn-mode" onclick="mbBasculerMode()"></button>
+      </div>
+      <div class="mb-defile" id="mb-fil"></div>
+      <div class="msg" id="msg-mb" style="margin:4px 12px"></div>
+      <div class="mb-saisie">
+        <textarea id="mb-texte" placeholder="Écris ta réponse…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
+        <button onclick="mbRepondre()">➤</button>
+      </div>
+    </div>
   </div>
 
   <h2>Contenu</h2>
@@ -514,6 +550,7 @@ async function chargerMessagerie(silencieux){
 function afficherMessagerie(){
   const nb = { tous: MB_CONVS.length, traiter: MB_CONVS.filter(c => c.a_traiter).length, nonlus: MB_CONVS.filter(c => c.non_lu_admin > 0).length };
   $('mb-badge').textContent = nb.traiter ? '· ' + nb.traiter + ' à traiter' : (nb.nonlus ? '· ' + nb.nonlus + ' non lue(s)' : '');
+  $('mb-resume').textContent = nb.tous ? `${nb.tous} discussion(s)` + (nb.nonlus ? ` · ${nb.nonlus} non lue(s)` : '') : 'Aucune discussion pour l\'instant';
   $('mb-filtres').innerHTML = [['tous','Toutes'],['traiter','À traiter'],['nonlus','Non lues']]
     .map(([k,n]) => `<button class="${k===MB_FILTRE?'actif':''}" onclick="MB_FILTRE='${k}';afficherMessagerie()">${n} · ${nb[k]}</button>`).join('');
   let l = MB_CONVS;
@@ -527,19 +564,47 @@ function afficherMessagerie(){
         ${c.non_lu_admin ? `<div class="mb-nl">${c.non_lu_admin}</div>` : `<span class="mb-tag ${c.mode}">${c.mode==='ia'?'IA':'TOI'}</span>`}</div>
     </div>`).join('') : '<div class="vide">Aucune discussion ici.</div>';
 }
+function mbVue(v){
+  $('mb-vue-liste').classList.toggle('active', v === 'liste');
+  $('mb-vue-conv').classList.toggle('active', v === 'conv');
+}
+function mbOuvrirBoite(){
+  $('mb-ecran').classList.add('ouvert'); document.body.style.overflow = 'hidden';
+  mbVue('liste'); history.pushState({ mb:'liste' }, '');
+  chargerMessagerie();
+}
+function mbFermerBoite(){
+  MB_ACTIVE = null; $('mb-ecran').classList.remove('ouvert'); document.body.style.overflow = '';
+}
+window.addEventListener('popstate', e => {
+  const st = e.state && e.state.mb;
+  if(st === 'liste'){ MB_ACTIVE = null; mbVue('liste'); chargerMessagerie(true); }
+  else if($('mb-ecran').classList.contains('ouvert')) mbFermerBoite();
+});
 async function mbOuvrir(id){
   MB_ACTIVE = id;
-  $('mb-liste-zone').style.display = 'none'; $('mb-fil-zone').style.display = 'block';
+  mbVue('conv'); history.pushState({ mb:'conv', id }, '');
+  const c0 = MB_CONVS.find(x => x.id === id);
+  $('mb-qui').textContent = c0?.email || 'utilisateur';
+  $('mb-av').textContent = (c0?.email || '?')[0].toUpperCase();
   $('mb-fil').innerHTML = '<div class="vide">Chargement…</div>'; $('msg-mb').textContent = '';
   const d = await msgApi({ action:'admin_conv', id });
   if(d.erreur){ $('mb-fil').innerHTML = `<div class="vide">${echap(d.erreur)}</div>`; return; }
-  $('mb-qui').textContent = d.conversation?.email || 'utilisateur';
   mbMajMode(d.conversation?.mode);
   const l = d.messages || [];
   MB_DERNIER = l.length ? l[l.length-1].id : 0;
-  $('mb-fil').innerHTML = l.map(mbBulle).join('') || '<div class="vide">Pas encore de message.</div>';
+  $('mb-fil').innerHTML = mbAvecJours(l) || '<div class="vide">Pas encore de message.</div>';
   $('mb-fil').scrollTop = 1e9;
   const c = MB_CONVS.find(x => x.id === id); if(c){ c.non_lu_admin = 0; }
+}
+function mbAvecJours(l){
+  let j = '', h = '';
+  for(const m of l){
+    const d = new Date(m.cree_le).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    if(d !== j){ h += `<div class="mb-jour">${d}</div>`; j = d; }
+    h += mbBulle(m);
+  }
+  return h;
 }
 function mbBulle(m){
   const qui = { user:'', ia:'🤖 IA · ', admin:'Toi · ' }[m.auteur] || '';
@@ -547,7 +612,8 @@ function mbBulle(m){
 }
 function mbMajMode(mode){
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c) c.mode = mode;
-  $('mb-btn-mode').textContent = mode === 'humain' ? '🤖 Rendre la main à l\'IA' : '✋ Couper l\'IA';
+  $('mb-btn-mode').textContent = mode === 'humain' ? '🤖 Relancer l\'IA' : '✋ Couper l\'IA';
+  $('mb-mode-txt').textContent = mode === 'humain' ? 'Tu réponds toi-même · IA en pause' : 'L\'IA répond automatiquement';
   $('mb-btn-mode').dataset.mode = mode;
 }
 async function mbBasculerMode(){
@@ -564,7 +630,6 @@ async function mbRepondre(){
   MB_DERNIER = d.message.id; mbMajMode('humain');
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c){ c.a_traiter = false; c.dernier_texte = t; }
 }
-function mbRetour(){ MB_ACTIVE = null; $('mb-fil-zone').style.display = 'none'; $('mb-liste-zone').style.display = 'block'; chargerMessagerie(true); }
 async function mbSuivre(){
   if(!JETON) return;
   if(!MB_ACTIVE) return chargerMessagerie(true);
