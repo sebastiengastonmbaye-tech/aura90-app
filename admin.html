@@ -147,6 +147,51 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .mb-saisie textarea{margin:0;min-height:46px;height:46px;max-height:130px;resize:none;border-radius:14px;font-size:16px}
 .mb-saisie button{width:50px;padding:0;font-size:18px;border-radius:14px}
 .mb-jour{align-self:center;font:700 10px 'JetBrains Mono',monospace;color:var(--sourdine);background:var(--surface);border:1px solid var(--ligne);border-radius:99px;padding:4px 10px;margin:6px 0}
+
+/* ----- Détail des statistiques (15/10/2026) ----- */
+.tuile.clic{cursor:pointer;position:relative;transition:border-color .15s,transform .15s}
+.tuile.clic:hover{border-color:rgba(61,232,200,.55)}
+.tuile.clic:active{transform:scale(.97)}
+.tuile.clic::after{content:"›";position:absolute;top:6px;right:9px;color:var(--sourdine);font-size:13px}
+#dt-ecran{position:fixed;inset:0;z-index:61;background:var(--nuit);display:none;justify-content:center}
+#dt-ecran.ouvert{display:flex}
+#dt-boite{width:100%;max-width:760px;height:100%;display:flex;flex-direction:column}
+#dt-corps{flex:1;overflow-y:auto;padding:14px 14px 40px;overscroll-behavior:contain}
+.dt-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.dt-kpi{background:var(--surface);border:1px solid var(--ligne);border-radius:13px;padding:12px}
+.dt-kpi b{display:block;font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--aura1)}
+.dt-kpi span{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--sourdine);margin-top:4px}
+.dt-kpi small{display:block;font-size:10.5px;color:var(--sourdine);margin-top:3px}
+.dt-bloc{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;padding:13px;margin-bottom:12px}
+.dt-bloc h3{font-size:12.5px;font-weight:800;margin-bottom:10px}
+.dt-bloc h3 small{color:var(--sourdine);font-weight:600}
+.dt-graphe{position:relative}
+.dt-graphe svg{width:100%;height:auto;max-height:240px;display:block}
+.dt-barre{fill:var(--aura1)}
+.dt-cible{fill:transparent}
+.dt-cible:hover{fill:rgba(255,255,255,.04)}
+.dt-grille{stroke:var(--ligne);stroke-width:1;vector-effect:non-scaling-stroke}
+.dt-ax{fill:var(--sourdine);font:600 9px 'JetBrains Mono',monospace}
+.dt-info{position:absolute;top:0;right:0;background:var(--surface2);border:1px solid var(--ligne);border-radius:8px;padding:5px 9px;font:700 11px 'JetBrains Mono',monospace;opacity:0;pointer-events:none;transition:opacity .12s}
+.dt-repart{display:flex;gap:8px;flex-wrap:wrap}
+.dt-repart div{flex:1;min-width:110px;background:var(--surface2);border-radius:10px;padding:10px}
+.dt-repart b{display:block;font-family:'JetBrains Mono',monospace;font-size:17px}
+.dt-repart span{font-size:11px;color:var(--sourdine)}
+.dt-cherche{margin-bottom:8px;font-size:16px}
+.dt-table-boite{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:10px;border:1px solid var(--ligne)}
+.dt-table{width:100%;border-collapse:collapse;font-size:12px}
+.dt-table th{position:sticky;top:0;background:var(--surface2);text-align:left;padding:8px 10px;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--sourdine);white-space:nowrap}
+.dt-table td{padding:8px 10px;border-top:1px solid var(--ligne);white-space:nowrap}
+.dt-table td small{color:var(--sourdine)}
+.dt-compte{font-size:10.5px;color:var(--sourdine);margin-top:6px;text-align:right}
+.dt-p{display:inline-block;font:700 9.5px 'JetBrains Mono',monospace;padding:3px 7px;border-radius:6px;background:var(--surface2);color:var(--sourdine)}
+.dt-p.ok{background:rgba(61,232,200,.14);color:var(--aura1)}
+.dt-p.att{background:rgba(255,180,84,.15);color:#FFB454}
+.dt-p.ko{background:rgba(255,122,158,.14);color:var(--ko)}
+.dt-onglets{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.dt-onglets button{background:var(--surface);border:1px solid var(--ligne);color:var(--texte);border-radius:99px;padding:7px 12px;font-size:12px}
+.dt-onglets button.actif{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;border-color:transparent}
+.dt-note{font-size:11px;color:var(--sourdine);margin:-6px 0 12px}
 </style>
 </head>
 <body>
@@ -169,6 +214,18 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
   <h2>Vue d'ensemble</h2>
   <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
 
+
+  <!-- écran de détail des statistiques -->
+  <div id="dt-ecran">
+    <div id="dt-boite">
+      <div class="mb-barre">
+        <button class="mb-fleche" onclick="history.back()">‹</button>
+        <div class="mb-titre" id="dt-titre">Détail</div>
+        <button class="gris" style="margin-left:auto;padding:8px 11px;font-size:12px" onclick="dtCharger(true).then(()=>dtRendre(DT_VUE))">↻</button>
+      </div>
+      <div id="dt-corps"></div>
+    </div>
+  </div>
   <h2>Messagerie</h2>
   <a class="carte-tiktok" href="#" onclick="mbOuvrirBoite();return false">
     <div>
@@ -343,7 +400,8 @@ function afficherStats(s){
     [s.retraits_attente + ' · ' + F(s.retraits_attente_montant)+' F','Retraits en attente'],
     [s.push_abonnes,'Abonnés push'],
   ];
-  $('tuiles').innerHTML = T.map(x=>`<div class="tuile"><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`).join('');
+  $('tuiles').innerHTML = T.map(x=>{ const k = DT_TUILES[x[1]];
+    return `<div class="tuile${k?' clic':''}" ${k?`onclick="dtOuvrir('${k}')"`:''}><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`; }).join('');
 }
 
 async function chargerRetraits(){
@@ -638,6 +696,252 @@ async function mbSuivre(){
   if(l.length){ $('mb-fil').insertAdjacentHTML('beforeend', l.map(mbBulle).join('')); $('mb-fil').scrollTop = 1e9; MB_DERNIER = l[l.length-1].id; }
 }
 setInterval(mbSuivre, 15000);
+
+/* ======== DÉTAIL DES STATISTIQUES (15/10/2026) ========
+   Chaque tuile de la vue d'ensemble s'ouvre sur un écran détaillé
+   (graphiques + tableaux). Données : fonction SQL admin_donnees().
+   Les noms de colonnes sont détectés automatiquement. */
+let DT = null, DT_T = 0, DT_VUE = null;
+const DT_TUILES = {
+  'Utilisateurs':'users', 'VIP actifs':'vip', 'VIP mois':'vip_mois', 'VIP 3 mois':'vip_3mois',
+  'Revenu total':'revenus', 'Revenu 30 j':'revenus', 'Paiements 30 j':'paiements',
+  'Actifs jour':'actifs', 'Actifs semaine':'actifs', 'Actifs mois':'actifs', 'Actifs année':'actifs',
+  'Affiliés':'affilies', 'Commissions dues':'commissions', 'Retraits en attente':'retraits', 'Abonnés push':'push',
+};
+const JOUR = 864e5;
+const champ = (o, noms) => { for(const n of noms) if(o && o[n] !== undefined && o[n] !== null && o[n] !== '') return o[n]; return null; };
+const dateDe = (o, noms) => { const v = champ(o, noms || ['cree_le','created_at','paye_le','date','demande_le','maj']); const d = v ? new Date(v) : null; return d && !isNaN(d) ? d : null; };
+const fF = n => Math.round(n || 0).toLocaleString('fr-FR') + ' F';
+const fD = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+const fDH = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
+const jours = d => d ? Math.floor((Date.now() - d) / JOUR) : null;
+
+async function dtCharger(force){
+  if(DT && !force && Date.now() - DT_T < 60000) return DT;
+  DT = await rpc('admin_donnees'); DT_T = Date.now();
+  // index utilisateurs
+  DT._email = {}; (DT.users || []).forEach(u => DT._email[u.id] = u.email);
+  return DT;
+}
+const emailDe = r => champ(r, ['email','user_email','parrain_email']) || (DT && DT._email[champ(r, ['user_id','uid','proprietaire','parrain_id'])]) || '—';
+
+/* --- paiements réussis --- */
+const OK_PAIE = /pay|succ|valid|confirm|complet|ok|accept|réuss|reuss/i;
+function paiementsOk(){
+  const l = DT.paiements || [];
+  return l.filter(p => {
+    const st = champ(p, ['statut','status','etat']);
+    if(st === null) return p.confirme !== false && p.paye !== false;
+    return OK_PAIE.test(String(st));
+  }).map(p => ({ ...p, _d: dateDe(p, ['paye_le','confirme_le','cree_le','created_at','date']), _m: Number(champ(p, ['montant','montant_paye','amount','prix','total'])) || 0,
+                 _f: String(champ(p, ['formule','offre','plan','duree','type','produit']) || '') }));
+}
+const est3m = f => /3/.test(f);
+
+/* --- abonnés --- */
+function abonnes(){
+  const paie = paiementsOk();
+  const derniere = {};
+  paie.forEach(p => { const k = champ(p, ['user_id','email']); if(k && (!derniere[k] || p._d > derniere[k]._d)) derniere[k] = p; });
+  return (DT.abonnes || []).map(a => {
+    const fin = dateDe(a, ['actif_jusqua','fin','expire_le']);
+    const uid = champ(a, ['user_id','id']), email = emailDe(a);
+    const dp = derniere[uid] || derniere[email];
+    return { ...a, _fin: fin, _email: email, _actif: fin && fin > new Date(), _reste: fin ? Math.ceil((fin - Date.now()) / JOUR) : null,
+             _f: dp ? dp._f : String(champ(a, ['formule','offre','plan']) || ''), _total: paie.filter(p => champ(p,['user_id','email']) === uid || champ(p,['email']) === email).reduce((s,p)=>s+p._m,0) };
+  });
+}
+
+/* ================= rendu ================= */
+function dtOuvrir(cle){
+  DT_VUE = cle;
+  $('dt-ecran').classList.add('ouvert'); document.body.style.overflow = 'hidden';
+  history.pushState({ dt: cle }, '');
+  $('dt-corps').innerHTML = '<div class="vide">Chargement…</div>';
+  dtCharger().then(() => dtRendre(cle)).catch(e => {
+    $('dt-corps').innerHTML = `<div class="vide">Impossible de charger le détail : ${echap(e.message)}<br>(as-tu exécuté stats_detail.sql dans Supabase ?)</div>`;
+  });
+}
+function dtFermer(){ DT_VUE = null; $('dt-ecran').classList.remove('ouvert'); document.body.style.overflow = ''; }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.dt) && $('dt-ecran').classList.contains('ouvert')) dtFermer(); });
+
+const kpi = l => `<div class="dt-kpis">${l.map(([v,t,s]) => `<div class="dt-kpi"><b>${v}</b><span>${t}</span>${s?`<small>${s}</small>`:''}</div>`).join('')}</div>`;
+const bloc = (titre, html) => `<div class="dt-bloc"><h3>${titre}</h3>${html}</div>`;
+
+/* histogramme simple : une série, barres fines arrondies, info au survol/toucher */
+function barres(points, fmt){
+  if(!points.length) return '<div class="vide">Pas de données.</div>';
+  const W = 380, H = 170, pb = 20, pt = 10, max = Math.max(1, ...points.map(p => p.v));
+  const n = points.length, pas = W / n, lb = Math.max(3, Math.min(18, pas * 0.62));
+  const ech = Math.pow(10, Math.floor(Math.log10(max))); const haut = Math.ceil(max / ech) * ech;
+  const y = v => H - pb - (v / haut) * (H - pb - pt);
+  let g = '';
+  [0, .5, 1].forEach(f => { const yy = y(haut * f); g += `<line x1="0" x2="${W}" y1="${yy}" y2="${yy}" class="dt-grille"/><text x="2" y="${yy - 3}" class="dt-ax">${fmt ? fmt(haut*f) : Math.round(haut*f)}</text>`; });
+  const etiq = Math.ceil(n / 6);
+  points.forEach((p, i) => {
+    const x = i * pas + (pas - lb) / 2, yy = y(p.v), h = Math.max(0, H - pb - yy);
+    if(p.v > 0) g += `<path class="dt-barre" d="M${x},${H-pb} V${yy+Math.min(4,h)} Q${x},${yy} ${x+Math.min(4,lb/2)},${yy} H${x+lb-Math.min(4,lb/2)} Q${x+lb},${yy} ${x+lb},${yy+Math.min(4,h)} V${H-pb} Z"/>`;
+    g += `<rect x="${i*pas}" y="0" width="${pas}" height="${H-pb}" class="dt-cible" data-t="${echap(p.l)} · ${echap(fmt ? fmt(p.v) : p.v)}"/>`;
+    if(i % etiq === 0) g += `<text x="${i === 0 ? 1 : i*pas + pas/2}" y="${H-6}" text-anchor="${i === 0 ? 'start' : 'middle'}" class="dt-ax">${echap(p.c || p.l)}</text>`;
+  });
+  return `<div class="dt-graphe"><svg viewBox="0 0 ${W} ${H}" onmousemove="dtInfo(event)" ontouchstart="dtInfo(event)" onmouseleave="dtInfo()">${g}</svg><div class="dt-info"></div></div>`;
+}
+function dtInfo(e){
+  const zone = e ? e.currentTarget.parentNode : document.querySelector('.dt-graphe .dt-info')?.parentNode;
+  document.querySelectorAll('.dt-info').forEach(x => x.style.opacity = 0);
+  if(!e) return;
+  const t = (e.touches ? document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) : e.target);
+  const info = zone.querySelector('.dt-info');
+  if(t && t.dataset && t.dataset.t){ info.textContent = t.dataset.t; info.style.opacity = 1; }
+}
+/* série journalière sur N jours */
+function parJour(liste, nbJours, val){
+  const auj = new Date(); auj.setHours(0,0,0,0);
+  const pts = [];
+  for(let i = nbJours - 1; i >= 0; i--){
+    const d = new Date(auj - i * JOUR);
+    pts.push({ d, v: 0, l: d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'}), c: d.toLocaleDateString('fr-FR',{day:'numeric',month:'numeric'}) });
+  }
+  liste.forEach(x => { if(!x._d) return; const k = Math.floor((x._d - auj) / JOUR) + nbJours - 1; if(k >= 0 && k < nbJours) pts[k].v += val ? val(x) : 1; });
+  return pts;
+}
+function parMois(liste, nb, val){
+  const pts = [], now = new Date();
+  for(let i = nb - 1; i >= 0; i--){ const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    pts.push({ y: d.getFullYear(), m: d.getMonth(), v: 0, l: d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}), c: d.toLocaleDateString('fr-FR',{month:'short'}) }); }
+  liste.forEach(x => { if(!x._d) return; const p = pts.find(p => p.y === x._d.getFullYear() && p.m === x._d.getMonth()); if(p) p.v += val ? val(x) : 1; });
+  return pts;
+}
+/* tableau avec recherche */
+function tableau(id, entetes, lignes, vide){
+  if(!lignes.length) return `<div class="vide">${vide || 'Rien à afficher.'}</div>`;
+  return `<input class="dt-cherche" placeholder="Rechercher…" oninput="dtFiltrer('${id}', this.value)">
+    <div class="dt-table-boite"><table class="dt-table" id="${id}"><thead><tr>${entetes.map(e=>`<th>${e}</th>`).join('')}</tr></thead>
+    <tbody>${lignes.map(l => `<tr>${l.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="dt-compte">${lignes.length} ligne(s)</div>`;
+}
+function dtFiltrer(id, q){ q = q.toLowerCase(); document.querySelectorAll('#' + id + ' tbody tr').forEach(tr => tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none'); }
+const pastille = (t, c) => `<span class="dt-p ${c||''}">${t}</span>`;
+
+function dtRendre(cle){
+  const titres = { users:'Utilisateurs', vip:'Abonnés VIP', vip_mois:'Abonnés VIP', vip_3mois:'Abonnés VIP', revenus:'Revenus', paiements:'Paiements',
+                   actifs:'Activité', affilies:'Affiliés', commissions:'Commissions', retraits:'Retraits', push:'Abonnés push' };
+  $('dt-titre').textContent = titres[cle] || 'Détail';
+  const f = { users:dtUsers, vip:dtVip, vip_mois:()=>dtVip('mois'), vip_3mois:()=>dtVip('3mois'), revenus:dtRevenus, paiements:dtRevenus,
+              actifs:dtActifs, affilies:dtAffilies, commissions:dtRetraits, retraits:dtRetraits, push:dtPush }[cle];
+  $('dt-corps').innerHTML = f ? f() : '<div class="vide">Pas de détail.</div>';
+  $('dt-corps').scrollTop = 0;
+}
+
+/* ---------- Utilisateurs ---------- */
+function dtUsers(){
+  const u = (DT.users || []).map(x => ({ ...x, _d: x.cree_le ? new Date(x.cree_le) : null, _l: x.derniere ? new Date(x.derniere) : null }));
+  const ab = abonnes(), actifs = new Set(ab.filter(a => a._actif).map(a => a._email));
+  const n7 = u.filter(x => jours(x._d) < 7).length, n30 = u.filter(x => jours(x._d) < 30).length;
+  const vip = actifs.size, conv = u.length ? (vip / u.length * 100).toFixed(1).replace('.', ',') : '0';
+  const via = {}; u.forEach(x => via[x.via || 'email'] = (via[x.via || 'email'] || 0) + 1);
+  return kpi([[u.length,'Inscrits'], [n7,'Nouveaux 7 j'], [n30,'Nouveaux 30 j'], [conv + ' %','Passés VIP', vip + ' abonnés actifs']])
+    + bloc('Inscriptions par jour · 30 jours', barres(parJour(u, 30)))
+    + bloc('Inscriptions par mois', barres(parMois(u, 6)))
+    + bloc('Mode d\'inscription', `<div class="dt-repart">${Object.entries(via).map(([k,v]) => `<div><b>${v}</b><span>${k === 'google' ? 'Google' : k === 'email' ? 'Email' : k}</span></div>`).join('')}</div>`)
+    + bloc('Tous les inscrits', tableau('t-users', ['Email','Inscrit le','Dernière connexion','Statut'],
+        u.map(x => [echap(x.email), fD(x._d), x._l ? fD(x._l) + ` <small>(${jours(x._l)} j)</small>` : '—', actifs.has(x.email) ? pastille('VIP','ok') : pastille('Gratuit')])));
+}
+
+/* ---------- VIP ---------- */
+function dtVip(filtre){
+  let ab = abonnes();
+  const actifs = ab.filter(a => a._actif), m = actifs.filter(a => !est3m(a._f)), t = actifs.filter(a => est3m(a._f));
+  const bientot = actifs.filter(a => a._reste <= 7), expires = ab.filter(a => !a._actif && a._fin && jours(a._fin) <= 30);
+  let liste = actifs; if(filtre === 'mois') liste = m; if(filtre === '3mois') liste = t;
+  const onglets = `<div class="dt-onglets">${[['vip','Tous',actifs.length],['vip_mois','1 mois',m.length],['vip_3mois','3 mois',t.length]]
+      .map(([k,n,c]) => `<button class="${(DT_VUE===k)?'actif':''}" onclick="DT_VUE='${k}';dtRendre('${k}')">${n} · ${c}</button>`).join('')}</div>`;
+  return kpi([[actifs.length,'VIP actifs'], [m.length,'Formule 1 mois'], [t.length,'Formule 3 mois'], [bientot.length,'Expirent ≤ 7 j','à relancer']])
+    + onglets
+    + (bientot.length ? bloc('⏳ À relancer — expirent dans 7 jours ou moins', tableau('t-relance', ['Email','Fin','Reste'],
+        bientot.sort((a,b)=>a._reste-b._reste).map(a => [echap(a._email), fD(a._fin), pastille(a._reste + ' j', a._reste <= 2 ? 'ko' : 'att')])) ) : '')
+    + bloc('Abonnés ' + (filtre === 'mois' ? '1 mois' : filtre === '3mois' ? '3 mois' : 'actifs'), tableau('t-vip', ['Email','Formule','Fin','Reste','Total payé'],
+        liste.sort((a,b)=>a._reste-b._reste).map(a => [echap(a._email), est3m(a._f) ? '3 mois' : (a._f ? '1 mois' : '—'), fD(a._fin), pastille(a._reste + ' j', a._reste <= 7 ? 'att' : 'ok'), fF(a._total)]), 'Aucun abonné dans cette formule.'))
+    + bloc('Expirés ces 30 derniers jours (non renouvelés)', tableau('t-exp', ['Email','Expiré le','Depuis'],
+        expires.sort((a,b)=>b._fin-a._fin).map(a => [echap(a._email), fD(a._fin), jours(a._fin) + ' j']), 'Aucun abonnement expiré récemment.'));
+}
+
+/* ---------- Revenus / paiements ---------- */
+function dtRevenus(){
+  const p = paiementsOk(), now = Date.now();
+  const s = l => l.reduce((x,y)=>x+y._m,0);
+  const p30 = p.filter(x => x._d && now - x._d < 30*JOUR), p7 = p.filter(x => x._d && now - x._d < 7*JOUR);
+  const pm = p.filter(x => !est3m(x._f)), p3 = p.filter(x => est3m(x._f));
+  const panier = p.length ? s(p) / p.length : 0;
+  // payeurs fidèles (plusieurs paiements)
+  const parUser = {}; p.forEach(x => { const k = emailDe(x); parUser[k] = (parUser[k]||0) + 1; });
+  const fideles = Object.values(parUser).filter(n => n > 1).length;
+  const tous = (DT.paiements || []).length;
+  return kpi([[fF(s(p)),'Revenu total', p.length + ' paiements'], [fF(s(p30)),'Revenu 30 j', p30.length + ' paiements'], [fF(s(p7)),'Revenu 7 j', p7.length + ' paiements'], [fF(panier),'Panier moyen', fideles + ' client(s) ont repayé']])
+    + bloc('Revenus par jour · 30 jours', barres(parJour(p, 30, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
+    + bloc('Revenus par mois', barres(parMois(p, 6, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
+    + bloc('Répartition des formules', `<div class="dt-repart"><div><b>${pm.length}</b><span>1 mois · ${fF(s(pm))}</span></div><div><b>${p3.length}</b><span>3 mois · ${fF(s(p3))}</span></div></div>`)
+    + bloc('Historique des paiements' + (tous > p.length ? ` <small>(${tous - p.length} tentative(s) non abouties masquées)</small>` : ''),
+        tableau('t-paie', ['Date','Email','Montant','Formule','Code'],
+          p.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [fDH(x._d), echap(emailDe(x)), fF(x._m), est3m(x._f) ? '3 mois' : '1 mois', echap(champ(x, ['code','code_parrain','ref','code_promo']) || '—')])));
+}
+
+/* ---------- Activité ---------- */
+function dtActifs(){
+  const u = (DT.users || []).map(x => ({ ...x, _d: x.derniere ? new Date(x.derniere) : null }));
+  const cles = Object.keys(DT).filter(k => k.startsWith('activite_'));
+  const act = cles.length ? DT[cles[0]].map(r => ({ ...r, _d: dateDe(r, ['vu_le','date','cree_le','created_at','jour']) })) : null;
+  const base = act || u;
+  const fen = j => { const s = new Set(); base.forEach(x => { if(x._d && Date.now() - x._d < j*JOUR) s.add(champ(x,['user_id','email','id'])); }); return s.size; };
+  const ab = new Set(abonnes().filter(a => a._actif).map(a => a._email));
+  const note = act ? '' : '<div class="dt-note">Basé sur la dernière connexion de chaque compte.</div>';
+  return kpi([[fen(1),'Actifs 24 h'], [fen(7),'Actifs 7 j'], [fen(30),'Actifs 30 j'], [fen(365),'Actifs 1 an']]) + note
+    + bloc('Activité par jour · 30 jours', barres(parJour(base, 30)))
+    + bloc('Dernières activités', tableau('t-act', ['Email','Dernière activité','Statut'],
+        u.filter(x => x._d).sort((a,b)=>b._d-a._d).map(x => [echap(x.email), fDH(x._d), ab.has(x.email) ? pastille('VIP','ok') : pastille('Gratuit')])))
+    + bloc('😴 Inactifs depuis plus de 14 jours', tableau('t-inact', ['Email','Dernière connexion','Statut'],
+        u.filter(x => !x._d || jours(x._d) > 14).sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [echap(x.email), x._d ? fD(x._d) + ` <small>(${jours(x._d)} j)</small>` : 'jamais', ab.has(x.email) ? pastille('VIP','ok') : pastille('Gratuit')]), 'Personne.'));
+}
+
+/* ---------- Affiliés ---------- */
+function dtAffilies(){
+  const par = DT.parrainage || [], p = paiementsOk();
+  const lignes = par.map(a => {
+    const code = String(champ(a, ['code','code_parrain']) || '').toUpperCase();
+    const ventes = p.filter(x => String(champ(x, ['code','code_parrain','ref','code_promo']) || '').toUpperCase() === code && code);
+    const com = Number(champ(a, ['commissions','commission_totale','solde','gains','total_commissions'])) || 0;
+    const modele = a.pct ? a.pct + ' %' : (a.commission_mois ? `${a.commission_mois} / ${a.commission_3mois} F` : 'standard');
+    return { email: emailDe(a), code, ventes: ventes.length, ca: ventes.reduce((s,x)=>s+x._m,0), com, modele, d: dateDe(a) };
+  }).sort((a,b) => b.ventes - a.ventes || b.ca - a.ca);
+  const actifs = lignes.filter(l => l.ventes > 0);
+  return kpi([[lignes.length,'Codes créés'], [actifs.length,'Ont déjà vendu'], [lignes.reduce((s,l)=>s+l.ventes,0),'Ventes via code'], [fF(lignes.reduce((s,l)=>s+l.ca,0)),'CA apporté']])
+    + bloc('🏆 Classement des affiliés', tableau('t-aff', ['Code','Email','Ventes','CA apporté','Modèle'],
+        lignes.map(l => [`<b>${echap(l.code||'—')}</b>`, echap(l.email), l.ventes, fF(l.ca), echap(l.modele)]), 'Aucun code créé.'));
+}
+
+/* ---------- Commissions & retraits ---------- */
+function dtRetraits(){
+  const r = (DT.retraits || []).map(x => ({ ...x, _d: dateDe(x, ['demande_le','cree_le','created_at']), _m: Number(champ(x,['montant','amount'])) || 0, _s: String(champ(x,['statut','status','etat']) || '') }));
+  const att = r.filter(x => /attente|pending|demand/i.test(x._s) || (!x._s && !x.paye_le));
+  const verse = r.filter(x => !att.includes(x));
+  const par = DT.parrainage || [];
+  const dues = par.map(a => ({ email: emailDe(a), code: champ(a,['code']), solde: Number(champ(a, ['solde','commissions','commission_due','gains'])) || 0 })).filter(x => x.solde > 0).sort((a,b)=>b.solde-a.solde);
+  return kpi([[fF(att.reduce((s,x)=>s+x._m,0)),'En attente', att.length + ' demande(s)'], [fF(verse.reduce((s,x)=>s+x._m,0)),'Déjà versé', verse.length + ' retrait(s)'], [fF(dues.reduce((s,x)=>s+x.solde,0)),'Soldes affiliés', dues.length + ' affilié(s)']])
+    + (dues.length ? bloc('Soldes des affiliés', tableau('t-dues', ['Email','Code','Solde'], dues.map(d => [echap(d.email), echap(d.code||'—'), fF(d.solde)]))) : '')
+    + bloc('Historique des retraits', tableau('t-ret', ['Demandé le','Email','Montant','Numéro Wave','Statut'],
+        r.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [fD(x._d), echap(emailDe(x)), fF(x._m), echap(champ(x,['numero_wave','numero','telephone']) || '—'), att.includes(x) ? pastille('En attente','att') : pastille('Versé','ok')]), 'Aucun retrait pour l\'instant.'));
+}
+
+/* ---------- Push ---------- */
+function dtPush(){
+  const l = (DT.push_abonnements || []).map(x => ({ ...x, _d: dateDe(x) }));
+  const n = (DT.users || []).length, pct = n ? (l.length / n * 100).toFixed(0) : 0;
+  const ab = new Set(abonnes().filter(a => a._actif).map(a => a._email));
+  return kpi([[l.length,'Appareils abonnés'], [pct + ' %','des inscrits'], [l.filter(x => jours(x._d) < 30).length,'Nouveaux 30 j']])
+    + bloc('Nouveaux abonnés push par jour · 30 jours', barres(parJour(l, 30)))
+    + bloc('Appareils', tableau('t-push', ['Email','Abonné le','Statut'],
+        l.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => { const e = emailDe(x); return [echap(e), fD(x._d), ab.has(e) ? pastille('VIP','ok') : pastille('Gratuit')]; })));
+}
 
 // rafraîchissement automatique (plus besoin du bouton)
 setInterval(() => { if(JETON) chargerCandidatures(true); }, 60000);
