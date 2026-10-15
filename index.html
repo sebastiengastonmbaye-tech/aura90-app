@@ -536,11 +536,14 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
   #splash .s-halo,#splash.boom .s-logo,#splash.boom .s-ring,#splash.boom .s-flash{animation:none;transition:none}
 }
 
+/* défilement iOS : dans une page en colonne flex, Safari écrasait les cartes
+   (contenu coupé, page qui « bloque ») → aucun enfant ne rétrécit */
+.page > *{flex-shrink:0}
 /* ================= MESSAGERIE (15/10/2026) ================= */
 #ms-bulle{position:fixed;z-index:46;bottom:calc(78px + env(safe-area-inset-bottom,0px));right:max(14px,calc(50% - 246px));width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:var(--nuit);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(61,232,200,.35);cursor:pointer}
 #ms-bulle svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #ms-bulle .pt{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:99px;background:var(--ko);color:#fff;font:800 10px 'JetBrains Mono',monospace;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--nuit)}
-#ms-panneau{position:fixed;inset:0;z-index:70;display:none;justify-content:center;background:rgba(3,6,10,.6)}
+#ms-panneau{position:fixed;top:0;left:0;right:0;height:100%;z-index:70;display:none;justify-content:center;background:rgba(3,6,10,.6)}
 #ms-panneau.ouvert{display:flex}
 #ms-boite{width:100%;max-width:520px;height:100%;background:var(--nuit);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .ms-tete{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--ligne);background:var(--surface)}
@@ -561,8 +564,8 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .ms-sugg button{background:var(--surface);border:1px solid var(--ligne);color:var(--texte);border-radius:99px;padding:8px 12px;font:700 12px 'Manrope',sans-serif;cursor:pointer}
 .ms-ecrit{align-self:flex-start;color:var(--sourdine);font-size:12px;padding:4px 8px}
 .ms-pied{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ligne);background:var(--surface)}
-.ms-pied textarea{flex:1;resize:none;height:44px;max-height:120px;background:var(--surface2);border:1px solid var(--ligne);border-radius:13px;padding:11px 12px;color:var(--texte);font:500 14px 'Manrope',sans-serif}
-.ms-pied button{width:46px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:var(--nuit);font-size:18px;font-weight:800;cursor:pointer}
+.ms-pied textarea{flex:1;resize:none;height:46px;max-height:120px;line-height:1.35;overflow-y:hidden;background:var(--surface2);border:1px solid var(--ligne);border-radius:13px;padding:11px 12px;color:var(--texte);font:500 16px 'Manrope',sans-serif}
+.ms-pied button{width:46px;height:46px;align-self:flex-end;border:none;border-radius:13px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:var(--nuit);font-size:18px;font-weight:800;cursor:pointer}
 .ms-pied button:disabled{opacity:.5}
 </style>
 </head>
@@ -821,7 +824,7 @@ const CONFIG = {
     </div>
     <div id="ms-fil"></div>
     <div class="ms-pied">
-      <textarea id="ms-texte" placeholder="Écris ton message…" maxlength="1200" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();envoyerMessage()}"></textarea>
+      <textarea id="ms-texte" rows="1" placeholder="Écris ton message…" maxlength="1200" oninput="msAjuster()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();envoyerMessage()}"></textarea>
       <button id="ms-envoi" onclick="envoyerMessage()">➤</button>
     </div>
   </div>
@@ -2322,7 +2325,7 @@ function msAccueil(){
 function msSugg(b){ $('ms-texte').value = b.textContent; envoyerMessage(); }
 
 async function ouvrirMessagerie(){
-  $('ms-panneau').classList.add('ouvert'); MS_OUVERT = true;
+  $('ms-panneau').classList.add('ouvert'); MS_OUVERT = true; document.body.style.overflow = 'hidden'; msViewport();
   const fil = $('ms-fil');
   if(!estConnecte()){
     fil.innerHTML = `<div class="ms-accueil">Connecte-toi (gratuit) pour écrire à l'équipe AURA90.<br><br>
@@ -2340,7 +2343,7 @@ async function ouvrirMessagerie(){
   msStatut(d.mode); msPastille(0); msBas();
   clearInterval(MS_TIMER); MS_TIMER = setInterval(msSuivre, 6000);
 }
-function fermerMessagerie(){ $('ms-panneau').classList.remove('ouvert'); MS_OUVERT = false; clearInterval(MS_TIMER); }
+function fermerMessagerie(){ $('ms-panneau').classList.remove('ouvert'); MS_OUVERT = false; clearInterval(MS_TIMER); document.body.style.overflow = ''; msViewport(); $('ms-texte').blur(); }
 function msStatut(mode){ $('ms-statut').textContent = mode === 'humain' ? 'Babs te répond personnellement' : 'Réponse en quelques secondes'; }
 function msPastille(n){ const p = $('ms-pt'); p.textContent = n; p.style.display = n ? 'flex' : 'none'; }
 
@@ -2357,7 +2360,7 @@ async function msSuivre(){
 async function envoyerMessage(){
   const zone = $('ms-texte'), t = zone.value.trim();
   if(!t || !estConnecte()) return;
-  zone.value = ''; $('ms-envoi').disabled = true;
+  zone.value = ''; msAjuster(); $('ms-envoi').disabled = true;
   const fil = $('ms-fil'); if(fil.querySelector('.ms-accueil')) fil.innerHTML = '';
   fil.insertAdjacentHTML('beforeend', msBulle({ auteur:'user', texte:t, cree_le:new Date() }) + '<div class="ms-ecrit" id="ms-ecrit">AURA90 écrit…</div>');
   msBas();
@@ -2371,6 +2374,24 @@ async function envoyerMessage(){
   if(!l.some(m => m.auteur !== 'user'))
     fil.insertAdjacentHTML('beforeend', `<div class="ms-ecrit">Message reçu — Babs te répond ici très vite.</div>`);
   msStatut(d.mode); msBas();
+}
+
+
+// ---- confort mobile : hauteur auto du champ, clavier, fond figé
+function msAjuster(){
+  const z = $('ms-texte'); z.style.height = '46px';
+  const h = Math.min(z.scrollHeight, 120); z.style.height = h + 'px';
+  z.style.overflowY = z.scrollHeight > 120 ? 'auto' : 'hidden';
+}
+function msViewport(){
+  const v = window.visualViewport, p = $('ms-panneau');
+  if(!v || !MS_OUVERT){ p.style.height = ''; p.style.top = ''; return; }
+  p.style.height = v.height + 'px'; p.style.top = v.offsetTop + 'px';   // le panneau suit le clavier
+  msBas();
+}
+if(window.visualViewport){
+  visualViewport.addEventListener('resize', msViewport);
+  visualViewport.addEventListener('scroll', msViewport);
 }
 
 // pastille « nouveau message » (réponse de Babs) quand la discussion est fermée
