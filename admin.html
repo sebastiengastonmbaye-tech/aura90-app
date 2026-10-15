@@ -710,7 +710,19 @@ const DT_TUILES = {
 };
 const JOUR = 864e5;
 const champ = (o, noms) => { for(const n of noms) if(o && o[n] !== undefined && o[n] !== null && o[n] !== '') return o[n]; return null; };
-const dateDe = (o, noms) => { const v = champ(o, noms || ['cree_le','created_at','paye_le','date','demande_le','maj']); const d = v ? new Date(v) : null; return d && !isNaN(d) ? d : null; };
+/* date d'une ligne : d'abord les noms connus, sinon n'importe quelle colonne qui contient
+   une date (hors dates de fin d'abonnement), en privilégiant les noms « date / créé / payé » */
+const ISO = /^\d{4}-\d{2}-\d{2}/;
+function dateDe(o, noms){
+  const v = champ(o, noms || ['cree_le','created_at','paye_le','date','demande_le','maj']);
+  let d = v ? new Date(v) : null;
+  if(d && !isNaN(d)) return d;
+  if(!o) return null;
+  const cles = Object.keys(o).filter(k => typeof o[k] === 'string' && ISO.test(o[k]) && !/jusqu|fin|expir|valid_until|ends?_/i.test(k));
+  cles.sort((a,b) => (/(paye|pay|confirm|cree|creat|date|_le$|_at$)/i.test(b) ? 1 : 0) - (/(paye|pay|confirm|cree|creat|date|_le$|_at$)/i.test(a) ? 1 : 0));
+  for(const k of cles){ d = new Date(o[k]); if(!isNaN(d)) return d; }
+  return null;
+}
 const fF = n => Math.round(n || 0).toLocaleString('fr-FR') + ' F';
 const fD = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'2-digit'}) : '—';
 const fDH = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
@@ -776,7 +788,7 @@ function barres(points, fmt){
   const ech = Math.pow(10, Math.floor(Math.log10(max))); const haut = Math.ceil(max / ech) * ech;
   const y = v => H - pb - (v / haut) * (H - pb - pt);
   let g = '';
-  [0, .5, 1].forEach(f => { const yy = y(haut * f); g += `<line x1="0" x2="${W}" y1="${yy}" y2="${yy}" class="dt-grille"/><text x="2" y="${yy - 3}" class="dt-ax">${fmt ? fmt(haut*f) : Math.round(haut*f)}</text>`; });
+  (haut >= 2 || fmt ? [0, .5, 1] : [0, 1]).forEach(f => { const yy = y(haut * f); g += `<line x1="0" x2="${W}" y1="${yy}" y2="${yy}" class="dt-grille"/><text x="2" y="${yy - 3}" class="dt-ax">${fmt ? fmt(haut*f) : Math.round(haut*f)}</text>`; });
   const etiq = Math.ceil(n / 6);
   points.forEach((p, i) => {
     const x = i * pas + (pas - lb) / 2, yy = y(p.v), h = Math.max(0, H - pb - yy);
