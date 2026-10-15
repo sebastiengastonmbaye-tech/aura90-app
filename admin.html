@@ -198,7 +198,7 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
       <div class="mb-defile" id="mb-fil"></div>
       <div class="msg" id="msg-mb" style="margin:4px 12px"></div>
       <div class="mb-saisie">
-        <textarea id="mb-texte" placeholder="Écris ta réponse…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
+        <textarea id="mb-texte" placeholder="Ta réponse (signée « Équipe AURA90 »)…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
         <button onclick="mbRepondre()">➤</button>
       </div>
     </div>
@@ -613,7 +613,7 @@ function mbBulle(m){
 function mbMajMode(mode){
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c) c.mode = mode;
   $('mb-btn-mode').textContent = mode === 'humain' ? '🤖 Relancer l\'IA' : '✋ Couper l\'IA';
-  $('mb-mode-txt').textContent = mode === 'humain' ? 'Tu réponds toi-même · IA en pause' : 'L\'IA répond automatiquement';
+  $('mb-mode-txt').textContent = mode === 'humain' ? 'IA coupée · toi seul réponds' : 'IA active · se met en pause 15 min quand tu réponds';
   $('mb-btn-mode').dataset.mode = mode;
 }
 async function mbBasculerMode(){
@@ -627,7 +627,7 @@ async function mbRepondre(){
   const d = await msgApi({ action:'admin_repondre', id: MB_ACTIVE, texte: t });
   if(d.erreur){ $('msg-mb').textContent = 'Erreur : ' + d.erreur; return; }
   $('mb-fil').insertAdjacentHTML('beforeend', mbBulle(d.message)); $('mb-fil').scrollTop = 1e9;
-  MB_DERNIER = d.message.id; mbMajMode('humain');
+  MB_DERNIER = d.message.id; 
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c){ c.a_traiter = false; c.dernier_texte = t; }
 }
 async function mbSuivre(){

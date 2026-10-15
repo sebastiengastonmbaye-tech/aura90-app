@@ -2309,12 +2309,12 @@ async function appelMsg(corps){
 const msHeure = d => new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 const msEchap = t => String(t ?? '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
 function msBulle(m){
-  const qui = m.auteur === 'admin' ? '<div class="qui">Babs · AURA90</div>' : '';
+  const qui = m.auteur === 'admin' ? '<div class="qui">Équipe AURA90</div>' : '';
   return `<div class="ms-m ${m.auteur}">${qui}${msEchap(m.texte)}<small>${msHeure(m.cree_le || Date.now())}</small></div>`;
 }
 function msBas(){ const f = $('ms-fil'); f.scrollTop = f.scrollHeight; }
 function msAccueil(){
-  return `<div class="ms-accueil">👋 Salut ! Pose ta question sur AURA90 : abonnement, paiement Wave / Orange Money, coupons, montantes, parrainage…<br>Babs lit aussi les discussions et te répond ici.
+  return `<div class="ms-accueil">👋 Salut ! Pose ta question sur AURA90 : abonnement, paiement Wave / Orange Money, coupons, montantes, parrainage…<br>L'équipe AURA90 suit aussi les discussions.
     <div class="ms-sugg">
       <button onclick="msSugg(this)">Comment payer avec Wave ?</button>
       <button onclick="msSugg(this)">C'est quoi un prono signé ?</button>
@@ -2344,7 +2344,7 @@ async function ouvrirMessagerie(){
   clearInterval(MS_TIMER); MS_TIMER = setInterval(msSuivre, 6000);
 }
 function fermerMessagerie(){ $('ms-panneau').classList.remove('ouvert'); MS_OUVERT = false; clearInterval(MS_TIMER); document.body.style.overflow = ''; msViewport(); $('ms-texte').blur(); }
-function msStatut(mode){ $('ms-statut').textContent = mode === 'humain' ? 'Babs te répond personnellement' : 'Réponse en quelques secondes'; }
+function msStatut(mode){ $('ms-statut').textContent = mode === 'humain' ? 'Un membre de l\'équipe te répond' : 'Réponse en quelques secondes'; }
 function msPastille(n){ const p = $('ms-pt'); p.textContent = n; p.style.display = n ? 'flex' : 'none'; }
 
 async function msSuivre(){
@@ -2372,7 +2372,7 @@ async function envoyerMessage(){
   fil.insertAdjacentHTML('beforeend', l.filter(m => m.auteur !== 'user').map(msBulle).join(''));
   if(l.length) MS_DERNIER = Math.max(MS_DERNIER, ...l.map(m => m.id));
   if(!l.some(m => m.auteur !== 'user'))
-    fil.insertAdjacentHTML('beforeend', `<div class="ms-ecrit">Message reçu — Babs te répond ici très vite.</div>`);
+    fil.insertAdjacentHTML('beforeend', `<div class="ms-ecrit">Message reçu — l'équipe AURA90 te répond ici très vite.</div>`);
   msStatut(d.mode); msBas();
 }
 
