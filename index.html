@@ -306,7 +306,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .cp-note{margin:0 0 4px;padding:10px 12px;border-radius:10px;background:rgba(255,180,84,.10);border:1px solid rgba(255,180,84,.35);color:var(--sur);font-size:11px;line-height:1.5}
 .cp-gain{margin-top:13px;padding:13px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;gap:10px}
 .cp-gain label{font-size:10.5px;color:var(--sourdine);display:block;margin-bottom:4px}
-.cp-gain input{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--ligne);background:var(--nuit);color:var(--texte);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none}
+.cp-gain input{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--ligne);background:var(--nuit);color:var(--texte);font-family:'JetBrains Mono',monospace;font-size:16px;outline:none}
 .cp-gain input:focus{border-color:rgba(61,232,200,.6)}
 .cp-gain .res{text-align:right;flex:1}
 .cp-gain .res b{display:block;font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--aura1)}
@@ -542,6 +542,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
      color:var(--sourdine);-webkit-text-fill-color:var(--sourdine);background:rgba(255,255,255,.05);border:1px solid var(--ligne);
      border-radius:99px;padding:2px 7px}
 .offre.star .usd{color:#cfd8e3;-webkit-text-fill-color:#cfd8e3;border-color:rgba(61,232,200,.35)}
+.cp-usd{display:block;margin:3px 0 0;font-size:10px}
 .usd-inline{font-family:'JetBrains Mono',monospace;font-size:.82em;color:var(--sourdine);font-weight:600;margin-left:4px}
 /* défilement iOS : dans une page en colonne flex, Safari écrasait les cartes
    (contenu coupé, page qui « bloque ») → aucun enfant ne rétrécit */
@@ -1541,6 +1542,14 @@ function jourCourt(d){
 }
 
 const fmtF = n => Math.round(n).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ');
+/* ---- équivalent en dollars (indicatif) : 1 $ ≈ 570 FCFA — ajuster ici si le cours bouge ---- */
+const XOF_PAR_USD = 570;
+const enUSD = xof => { const d = xof / XOF_PAR_USD;
+  return '≈ ' + (d < 10 ? d.toLocaleString('fr-FR',{maximumFractionDigits:1}) : Math.round(d).toLocaleString('fr-FR')) + ' $'; };
+const usdH = xof => `<span class="usd-inline">${enUSD(xof)}</span>`;
+function remplirUSD(){ document.querySelectorAll('.usd[data-xof]').forEach(e => e.textContent = enUSD(+e.dataset.xof) + ' US'); }
+document.addEventListener('DOMContentLoaded', remplirUSD); setTimeout(remplirUSD, 0);
+
 
 async function sbUser(chemin){
   const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/' + chemin, {
@@ -1837,8 +1846,9 @@ function carteCoupon(c, ouvert){
         <div style="flex:0 0 42%">
           <label>Ta mise (F)</label>
           <input type="number" inputmode="numeric" value="1000" oninput="majGain(${c.id}, ${c.cote_totale}, this.value)">
+          <span class="usd-inline cp-usd" id="mise-usd-${c.id}">${enUSD(1000)}</span>
         </div>
-        <div class="res"><label>Gain potentiel</label><b id="gain-${c.id}">${fmtF(1000*c.cote_totale)} F</b></div>
+        <div class="res"><label>Gain potentiel</label><b id="gain-${c.id}">${fmtF(1000*c.cote_totale)} F</b><span class="usd-inline cp-usd" id="gain-usd-${c.id}">${enUSD(1000*c.cote_totale)}</span></div>
       </div>
       <div class="cp-actions">
         <button class="cp-copier" onclick="copierCoupon(${c.id})">Copier</button>
@@ -1853,6 +1863,8 @@ function basculerCoupon(id){ $('cp-'+id).classList.toggle('ouvert'); }
 function majGain(id, cote, mise){
   const m = parseFloat(mise) || 0;
   $('gain-'+id).textContent = fmtF(m*cote) + ' F';
+  const u1 = $('mise-usd-'+id), u2 = $('gain-usd-'+id);
+  if(u1) u1.textContent = enUSD(m); if(u2) u2.textContent = enUSD(m*cote);
 }
 
 function copierCoupon(id){
@@ -1915,7 +1927,7 @@ function blocMontante(def){
     return `
       <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
         <div class="t">${def.nom} — ${N} PALIERS</div>
-        <div class="v">${fmtF(MISE_DEPART)} F</div>
+        <div class="v">${fmtF(MISE_DEPART)} F${usdH(MISE_DEPART)}</div>
         <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,90–2,60 · objectif ≈ 300 000 F en 5 paliers' : 'Paliers à cote 1,40–1,80'}</div>
       </div>
       <div class="mt-info">La première série démarre dès que le moteur trouve un coupon à sa main. Même exigence d'analyse que les pronos signés.</div>
@@ -1942,7 +1954,7 @@ function blocMontante(def){
   let html = `
     <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
       <div class="t">${def.nom} N°${serie} — ${N} PALIERS</div>
-      <div class="v">${fmtF(capital)} F</div>
+      <div class="v">${fmtF(capital)} F${usdH(capital)}</div>
       <div class="s">Départ ${fmtF(depart)} F · ×${(capital/depart).toFixed(1).replace('.',',')}${dernier.statut==='perdu' ? ' · série arrêtée' : ''}</div>
       <div class="mt-barre"><i data-pct="${pct}" style="width:0%"></i></div>
       <div class="mt-stats">
@@ -1956,7 +1968,7 @@ function blocMontante(def){
   const enCours = pertinents.find(p=>p.statut==='en_cours');
   const cEnCours = enCours && COUPONS.find(x=>x.id===enCours.coupon_id);
   if(cEnCours){
-    html += `<div class="mt-etiq">PALIER ${enCours.palier} · ${fmtF(enCours.mise)} F → ${fmtF(enCours.gain_vise)} F</div>`;
+    html += `<div class="mt-etiq">PALIER ${enCours.palier} · ${fmtF(enCours.mise)} F → ${fmtF(enCours.gain_vise)} F${usdH(enCours.gain_vise)}</div>`;
     html += carteCoupon(cEnCours, true);
   }else{
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
@@ -2000,7 +2012,7 @@ async function ficheCase(el, cid, n, mise, gain, jour, statut){
   el.classList.add('choisie');
   const dateP = new Date(jour+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long'});
   box.innerHTML = `<div class="mt-fiche"><div class="h"><span>Palier ${n} · ${dateP}</span><b>${statut==='gagne'?'✓ GAGNÉ':'✗ PERDU'}</b></div>
-    <div class="h"><span>${fmtF(mise)} F → ${fmtF(gain)} F</span><span>cote ${(gain/mise).toFixed(2)}</span></div><div class="lv-msg">Chargement…</div></div>`;
+    <div class="h"><span>${fmtF(mise)} F → ${fmtF(gain)} F${usdH(gain)}</span><span>cote ${(gain/mise).toFixed(2)}</span></div><div class="lv-msg">Chargement…</div></div>`;
   try{
     let sels = SELECTIONS[cid];
     if(!sels || !sels.length) sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat`);
@@ -2410,11 +2422,6 @@ async function msCompteur(){
 setTimeout(msCompteur, 4000);
 setInterval(msCompteur, 90000);
 
-/* ---- équivalent en dollars (indicatif) : 1 $ ≈ 570 FCFA — ajuster ici si le cours bouge ---- */
-const XOF_PAR_USD = 570;
-const enUSD = xof => '≈ ' + Math.max(1, Math.round(xof / XOF_PAR_USD)) + ' $';
-function remplirUSD(){ document.querySelectorAll('.usd[data-xof]').forEach(e => e.textContent = enUSD(+e.dataset.xof) + ' US'); }
-remplirUSD();
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
