@@ -536,6 +536,13 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
   #splash .s-halo,#splash.boom .s-logo,#splash.boom .s-ring,#splash.boom .s-flash{animation:none;transition:none}
 }
 
+
+/* prix en dollars (16/10/2026) : discret, sous le prix en FCFA */
+.usd{display:inline-block;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.02em;
+     color:var(--sourdine);-webkit-text-fill-color:var(--sourdine);background:rgba(255,255,255,.05);border:1px solid var(--ligne);
+     border-radius:99px;padding:2px 7px}
+.offre.star .usd{color:#cfd8e3;-webkit-text-fill-color:#cfd8e3;border-color:rgba(61,232,200,.35)}
+.usd-inline{font-family:'JetBrains Mono',monospace;font-size:.82em;color:var(--sourdine);font-weight:600;margin-left:4px}
 /* défilement iOS : dans une page en colonne flex, Safari écrasait les cartes
    (contenu coupé, page qui « bloque ») → aucun enfant ne rétrécit */
 .page > *{flex-shrink:0}
@@ -725,15 +732,15 @@ const CONFIG = {
       <div class="offre star" style="cursor:pointer" onclick="choisirFormule('mois',8000,'1 mois',this)">
         <div class="populaire">OFFRE DE LANCEMENT</div>
         <div class="g"><div class="nom-o">Mois</div><div class="eco"><b>−47 %</b> pendant l'offre de lancement</div></div>
-        <div class="prix"><span class="ancien">15 000 F</span>8 000 F<small>CFA / mois</small></div>
+        <div class="prix"><span class="ancien">15 000 F</span>8 000 F<small>CFA / mois</small><span class="usd" data-xof="8000"></span></div>
         <div class="radio"></div>
       </div>
       <div class="offre" style="cursor:pointer" onclick="choisirFormule('3mois',16000,'3 mois',this)">
         <div class="g"><div class="nom-o">3 mois</div><div class="eco">soit <b>≈ 5 300 F/mois</b> au lieu de 15 000 F</div></div>
-        <div class="prix"><span class="ancien">35 000 F</span>16 000 F<small>CFA</small></div>
+        <div class="prix"><span class="ancien">35 000 F</span>16 000 F<small>CFA</small><span class="usd" data-xof="16000"></span></div>
         <div class="radio"></div>
       </div>
-      <div class="note-secu">Paiement Wave / Orange Money via PayTech.<br>Prix de lancement, durée limitée — le passage au plein tarif (15 000 F/mois) sera annoncé à l'avance.</div>
+      <div class="note-secu">Paiement Wave / Orange Money via PayTech · prix en dollars donnés à titre indicatif.<br>Prix de lancement, durée limitée — le passage au plein tarif (15 000 F/mois) sera annoncé à l'avance.</div>
       <div id="zone-paiement" style="display:none">
         <div class="recap-paie"><span>FORMULE CHOISIE</span><b id="paie-libelle"></b></div>
         <div class="champ">
@@ -1410,7 +1417,7 @@ function choisirFormule(f, prix, libelle, el){
   FORMULE = f;
   document.querySelectorAll('.offre').forEach(o=>o.classList.remove('choisie'));
   if(el) el.classList.add('choisie');
-  $('paie-libelle').textContent = `${libelle} · ${prix.toLocaleString('fr-FR')} FCFA`;
+  $('paie-libelle').innerHTML = `${libelle} · ${prix.toLocaleString('fr-FR')} FCFA<span class="usd-inline">(${enUSD(prix)})</span>`;
   $('zone-paiement').style.display = '';
   const ref = localStorage.getItem('aura90_ref');
   if(ref && !$('code-promo').value){ $('code-promo').value = ref; verifierCodePromo(); }
@@ -1432,7 +1439,7 @@ async function verifierCodePromo(){
       const ok = await r.json();
       const red = FORMULE === '3mois' ? 2000 : 1000;
       $('msg-promo').innerHTML = ok === true
-        ? `<div class="avert" style="color:var(--aura1)">Code ${c} appliqué : −${red.toLocaleString('fr-FR')} F sur ce paiement.</div>`
+        ? `<div class="avert" style="color:var(--aura1)">Code ${c} appliqué : −${red.toLocaleString('fr-FR')} F <span class="usd-inline">(${enUSD(red)})</span> sur ce paiement.</div>`
         : `<div class="avert" style="color:var(--ko)">Code inconnu — vérifie l'orthographe.</div>`;
     }catch(e){ $('msg-promo').innerHTML=''; }
   }, 350);
@@ -2402,6 +2409,12 @@ async function msCompteur(){
 }
 setTimeout(msCompteur, 4000);
 setInterval(msCompteur, 90000);
+
+/* ---- équivalent en dollars (indicatif) : 1 $ ≈ 570 FCFA — ajuster ici si le cours bouge ---- */
+const XOF_PAR_USD = 570;
+const enUSD = xof => '≈ ' + Math.max(1, Math.round(xof / XOF_PAR_USD)) + ' $';
+function remplirUSD(){ document.querySelectorAll('.usd[data-xof]').forEach(e => e.textContent = enUSD(+e.dataset.xof) + ' US'); }
+remplirUSD();
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
