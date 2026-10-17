@@ -265,6 +265,8 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
         <div class="mb-titre">Messagerie</div>
       </div>
       <div class="mb-filtres" id="mb-filtres"></div>
+      <div style="padding:8px 12px 0"><button class="gris" style="width:100%;font-size:12px" onclick="mbRelancer(this)">📲 Notifier tous ceux qui ont reçu un message de l'équipe</button>
+        <div class="msg" id="msg-relance" style="margin:6px 0 0"></div></div>
       <div class="mb-defile" id="mb-liste"><div class="vide">Chargement…</div></div>
     </div>
     <div class="mb-vue" id="mb-vue-conv">
@@ -655,6 +657,14 @@ function afficherMessagerie(){
         ${c.non_lu_admin ? `<div class="mb-nl">${c.non_lu_admin}</div>` : `<span class="mb-tag ${c.mode}">${c.mode==='ia'?'IA':'TOI'}</span>`}</div>
     </div>`).join('') : '<div class="vide">Aucune discussion ici.</div>';
 }
+async function mbRelancer(btn){
+  if(!confirm('Envoyer une notification à chaque utilisateur qui a reçu un message de l\'équipe ?')) return;
+  btn.disabled = true; btn.textContent = 'Envoi…';
+  const d = await msgApi({ action:'admin_relancer' });
+  btn.disabled = false; btn.textContent = '📲 Notifier tous ceux qui ont reçu un message de l\'équipe';
+  $('msg-relance').textContent = d.erreur ? 'Erreur : ' + d.erreur
+    : `${d.notifies} utilisateur(s) notifié(s) sur ${d.conversations} discussion(s) — les autres n'ont pas activé les notifications.`;
+}
 function mbVue(v){
   $('mb-vue-liste').classList.toggle('active', v === 'liste');
   $('mb-vue-conv').classList.toggle('active', v === 'conv');
@@ -718,6 +728,10 @@ async function mbRepondre(){
   const d = await msgApi({ action:'admin_repondre', id: MB_ACTIVE, texte: t });
   if(d.erreur){ $('msg-mb').textContent = 'Erreur : ' + d.erreur; return; }
   $('mb-fil').insertAdjacentHTML('beforeend', mbBulle(d.message)); $('mb-fil').scrollTop = 1e9;
+  $('msg-mb').textContent = !d.push_actif ? '⚠️ Notifications indisponibles (clés VAPID absentes de la fonction).'
+    : d.push ? `📲 Notification envoyée sur ${d.push} appareil(s).`
+    : d.appareils ? '⚠️ Notification refusée par l\'appareil (abonnement expiré ?).'
+    : 'ℹ️ Pas de notification : cet utilisateur n\'a pas activé les notifications sur son téléphone.';
   MB_DERNIER = d.message.id; 
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c){ c.a_traiter = false; c.dernier_texte = t; }
 }
