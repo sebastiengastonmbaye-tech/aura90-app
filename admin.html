@@ -9,7 +9,9 @@
 <style>
 :root{--nuit:#070B12;--surface:#0E1520;--surface2:#141D2B;--ligne:#1E2A3A;--texte:#E8EEF6;--sourdine:#8A97A8;--aura1:#3DE8C8;--aura2:#8B7CFF;--ko:#FF7A9E}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--nuit);color:var(--texte);font-family:'Manrope',sans-serif;min-height:100vh;padding:20px 16px 60px;max-width:680px;margin:0 auto}
+body{background:var(--nuit);color:var(--texte);font-family:'Manrope',sans-serif;min-height:100vh;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(60px + env(safe-area-inset-bottom,0px));max-width:680px;margin:0 auto}
+body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--nuit,#070B12);z-index:9000;pointer-events:none}
+
 h1{font-family:'Unbounded',sans-serif;font-size:19px;margin-bottom:4px}
 h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .sous{color:var(--sourdine);font-size:12px;margin-bottom:20px}
@@ -122,6 +124,9 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 #mb-fil{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;padding:12px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
 .mb-m{max-width:85%;padding:8px 11px;border-radius:13px;font-size:13px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
 .mb-m small{display:block;font-size:9px;opacity:.6;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.mb-m .tk{display:inline-block;margin-left:5px;font:800 11px/1 'Manrope',sans-serif;letter-spacing:-3px;padding-right:3px;opacity:.75}
+.mb-m .tk.lu{opacity:1;color:#53BDEB}
+.mb-m.admin .tk.lu{color:#0B4FD6}
 .mb-m.user{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne)}
 .mb-m.ia{align-self:flex-end;background:rgba(61,232,200,.12);border:1px solid rgba(61,232,200,.35)}
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
@@ -697,7 +702,9 @@ async function mbOuvrir(id){
   mbMajMode(d.conversation?.mode);
   const l = d.messages || [];
   MB_DERNIER = l.length ? l[l.length-1].id : 0;
+  MB_VU = { recu: 0, lu: 0 };
   $('mb-fil').innerHTML = mbAvecJours(l) || '<div class="vide">Pas encore de message.</div>';
+  mbTicks(d.conversation);
   $('mb-fil').scrollTop = 1e9;
   const c = MB_CONVS.find(x => x.id === id); if(c){ c.non_lu_admin = 0; }
 }
@@ -712,7 +719,20 @@ function mbAvecJours(l){
 }
 function mbBulle(m){
   const qui = { user:'', ia:'🤖 IA · ', admin:'Toi · ' }[m.auteur] || '';
-  return `<div class="mb-m ${m.auteur}">${echap(m.texte)}<small>${qui}${mbH(m.cree_le)}</small></div>`;
+  const tk = m.auteur === 'user' ? '' : `<span class="tk" title="Envoyé">✓</span>`;
+  return `<div class="mb-m ${m.auteur}" data-id="${m.id}">${echap(m.texte)}<small>${qui}${mbH(m.cree_le)}${tk}</small></div>`;
+}
+// Accusés comme WhatsApp : ✓ envoyé · ✓✓ reçu sur son téléphone · ✓✓ bleu lu
+let MB_VU = { recu: 0, lu: 0 };
+function mbTicks(conv){
+  if(conv) MB_VU = { recu: Math.max(MB_VU.recu, +conv.recu_jusqua || 0), lu: Math.max(MB_VU.lu, +conv.lu_jusqua || 0) };
+  document.querySelectorAll('#mb-fil .mb-m[data-id] .tk').forEach(t => {
+    const id = +t.closest('.mb-m').dataset.id;
+    const lu = id <= MB_VU.lu, recu = lu || id <= MB_VU.recu;
+    t.textContent = recu ? '✓✓' : '✓';
+    t.classList.toggle('lu', lu);
+    t.title = lu ? 'Lu' : recu ? 'Reçu' : 'Envoyé';
+  });
 }
 function mbMajMode(mode){
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c) c.mode = mode;
@@ -734,6 +754,8 @@ async function mbRepondre(){
   const d = await msgApi({ action:'admin_repondre', id: MB_ACTIVE, texte: t });
   if(d.erreur){ mbInfo('Erreur : ' + d.erreur); return; }
   $('mb-fil').insertAdjacentHTML('beforeend', mbBulle(d.message)); $('mb-fil').scrollTop = 1e9;
+  if(d.push) MB_VU.recu = Math.max(MB_VU.recu, d.message.id);
+  mbTicks();
   mbInfo(!d.push_actif ? '⚠️ Notifications indisponibles (clés VAPID absentes).'
     : d.push ? `📲 Notifié sur ${d.push} appareil(s)`
     : d.appareils ? '⚠️ Notification refusée (abonnement expiré ?)'
@@ -764,6 +786,7 @@ async function mbSuivre(){
   const d = await msgApi({ action:'admin_conv', id: MB_ACTIVE });
   const l = (d.messages || []).filter(m => m.id > MB_DERNIER);
   if(l.length){ $('mb-fil').insertAdjacentHTML('beforeend', l.map(mbBulle).join('')); $('mb-fil').scrollTop = 1e9; MB_DERNIER = l[l.length-1].id; }
+  if(d.conversation) mbTicks(d.conversation);
 }
 setInterval(mbSuivre, 5000);
 
