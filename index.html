@@ -2387,6 +2387,8 @@ async function envoyerMessage(){
   $('ms-ecrit')?.remove(); $('ms-envoi').disabled = false;
   if(d.erreur){ fil.insertAdjacentHTML('beforeend', `<div class="ms-ecrit">${msEchap(d.erreur)}</div>`); msBas(); return; }
   const l = d.messages || [];
+  // réponse affichée sous ses yeux → lue (pas de notification)
+  if(l.some(m => m.auteur !== 'user') && document.visibilityState === 'visible' && MS_OUVERT) appelMsg({ action:'lu' });
   // le message de l'utilisateur est déjà affiché : on n'ajoute que les réponses
   fil.insertAdjacentHTML('beforeend', l.filter(m => m.auteur !== 'user').map(msBulle).join(''));
   if(l.length) MS_DERNIER = Math.max(MS_DERNIER, ...l.map(m => m.id));
@@ -2420,6 +2422,11 @@ async function msCompteur(){
   if(d && !d.erreur) msPastille(d.non_lu || 0);
 }
 setTimeout(msCompteur, 4000);
+// arrivée depuis une notification de la messagerie (?messages=1 ou #messages)
+if(/[?&]messages=1/.test(location.search) || location.hash === '#messages'){
+  history.replaceState(null, '', location.pathname);
+  setTimeout(() => { if(estConnecte()) ouvrirMessagerie(); }, 1200);
+}
 setInterval(msCompteur, 90000);
 
 
