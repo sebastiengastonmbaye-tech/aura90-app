@@ -319,7 +319,8 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
         <div class="mb-titre">Messagerie</div>
       </div>
       <div class="mb-filtres" id="mb-filtres"></div>
-      <div style="padding:8px 12px 0"><button class="gris" style="width:100%;font-size:12px" onclick="mbRelancer(this)">📲 Notifier tous ceux qui ont reçu un message de l'équipe</button>
+      <div style="padding:8px 12px 0;display:flex;gap:6px"><button class="gris" style="flex:1;font-size:12px" onclick="mbRelancer(this)">📲 Notifier ceux qui ont reçu un message</button><button class="gris" style="font-size:12px;flex:0 0 auto" onclick="mbTesterIA(this)">🤖 Tester l'IA</button></div>
+      <div style="padding:0 12px">
         <div class="msg" id="msg-relance" style="margin:6px 0 0"></div></div>
       <div class="mb-defile" id="mb-liste"><div class="vide">Chargement…</div></div>
     </div>
@@ -730,6 +731,14 @@ function afficherMessagerie(){
       <div class="mb-droite"><div class="h">${mbH(c.dernier_message)}</div>
         ${c.non_lu_admin ? `<div class="mb-nl">${c.non_lu_admin}</div>` : `<span class="mb-tag ${c.mode}">${c.mode==='ia'?'IA':'TOI'}</span>`}</div>
     </div>`).join('') : '<div class="vide">Aucune discussion ici.</div>';
+}
+async function mbTesterIA(btn){
+  btn.disabled = true; btn.textContent = '…';
+  const d = await msgApi({ action:'admin_test_ia' });
+  btn.disabled = false; btn.textContent = '🤖 Tester l\'IA';
+  $('msg-relance').innerHTML = d.erreur ? '❌ ' + echap(d.erreur)
+    : d.ok ? '✅ L\'IA fonctionne (' + echap(d.modele) + ').'
+    : '❌ L\'IA ne répond pas' + (d.api ? ' (code ' + d.api + ')' : '') + ' : ' + echap(d.raison || '') + (d.colonnes && d.colonnes !== 'ok' ? '<br>⚠️ ' + echap(d.colonnes) : '');
 }
 async function mbRelancer(btn){
   if(!confirm('Envoyer une notification à chaque utilisateur qui a reçu un message de l\'équipe ?')) return;
