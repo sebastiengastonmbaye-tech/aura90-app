@@ -201,6 +201,52 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .dt-onglets button.actif{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;border-color:transparent}
 .dt-note{font-size:11px;color:var(--sourdine);margin:-6px 0 12px}
 
+/* ----- Montantes : suivi des séries (17/10/2026) ----- */
+#mt-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:63;background:var(--nuit);display:none;justify-content:center}
+#mt-ecran.ouvert{display:flex}
+#mt-boite{width:100%;max-width:560px;height:100%;display:flex;flex-direction:column}
+#mt-corps{flex:1;overflow-y:auto;padding:12px 12px calc(40px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}
+.mt-bilan{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.mt-bilan div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:10px 4px;text-align:center}
+.mt-bilan b{display:block;font:800 17px 'JetBrains Mono',monospace}
+.mt-bilan span{font-size:9.5px;color:var(--sourdine);text-transform:uppercase;letter-spacing:.04em}
+.mt-serie{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.mt-serie.ko{border-color:rgba(255,122,158,.35)}
+.mt-serie.top{border-color:rgba(61,232,200,.5)}
+.mt-st{display:flex;gap:10px;align-items:center;padding:12px 13px;cursor:pointer}
+.mt-st .g{flex:1;min-width:0}
+.mt-st .t{font-weight:800;font-size:14px}
+.mt-st .s{font-size:11px;color:var(--sourdine);margin-top:3px}
+.mt-st .e{font:800 11px 'JetBrains Mono',monospace;padding:5px 8px;border-radius:8px;white-space:nowrap}
+.mt-st .e.ok{background:rgba(61,232,200,.14);color:var(--aura1)}
+.mt-st .e.ko{background:rgba(255,122,158,.14);color:var(--ko)}
+.mt-st .e.en{background:rgba(255,180,84,.14);color:#FFB454}
+.mt-cases{display:flex;gap:4px;flex-wrap:wrap;padding:0 13px 12px}
+.mt-cases i{flex:1 0 22px;max-width:34px;height:24px;border-radius:7px;background:var(--surface2);border:1px solid var(--ligne);font:700 10px/22px 'JetBrains Mono',monospace;font-style:normal;text-align:center;color:var(--sourdine)}
+.mt-cases i.ok{background:rgba(61,232,200,.18);border-color:rgba(61,232,200,.6);color:var(--aura1)}
+.mt-cases i.ko{background:rgba(255,122,158,.16);border-color:rgba(255,122,158,.6);color:var(--ko)}
+.mt-cases i.en{border-color:#FFB454;color:#FFB454}
+.mt-det{border-top:1px solid var(--ligne);display:none}
+.mt-serie.ouverte .mt-det{display:block}
+.mt-pal{border-bottom:1px solid var(--ligne)}
+.mt-pal:last-child{border-bottom:0}
+.mt-pl{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:10px 13px;cursor:pointer}
+.mt-pl .n{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font:800 11px 'JetBrains Mono',monospace;background:var(--surface2)}
+.mt-pal.ok .n{background:rgba(61,232,200,.18);color:var(--aura1)}
+.mt-pal.ko .n{background:rgba(255,122,158,.16);color:var(--ko)}
+.mt-pal.en .n{color:#FFB454;border:1px solid #FFB454}
+.mt-pl .i{font-size:12px;line-height:1.4}
+.mt-pl .i small{display:block;color:var(--sourdine);font-size:10.5px}
+.mt-pl .m{text-align:right;font:700 12px 'JetBrains Mono',monospace;white-space:nowrap}
+.mt-pl .m small{display:block;color:var(--sourdine);font-size:10px;font-weight:500}
+.mt-sels{display:none;padding:0 13px 10px 53px}
+.mt-pal.voir .mt-sels{display:block}
+.mt-sel{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:6px 0;border-top:1px dashed var(--ligne)}
+.mt-sel .q{min-width:0}
+.mt-sel .q small{display:block;color:var(--sourdine);font-size:10px}
+.mt-sel .r{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700}
+.mt-sel.ok .r{color:var(--aura1)} .mt-sel.ko .r{color:var(--ko)} .mt-sel.ko{background:rgba(255,122,158,.06)}
+
 /* ----- Preuves v2 (15/10/2026) : écran plein, catégories, paliers ----- */
 #pv-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:62;background:var(--nuit);display:none;justify-content:center}
 #pv-ecran.ouvert{display:flex}
@@ -309,6 +355,26 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
     </div>
     <span class="fl">›</span>
   </a>
+
+  <a class="carte-tiktok" href="#" onclick="mtOuvrir();return false" style="margin-top:8px">
+    <div>
+      <div class="t">📈 Montantes — suivi des séries</div>
+      <div class="s">Chaque série palier par palier : validés, perdus, match qui a fait perdre</div>
+    </div>
+    <span class="fl">›</span>
+  </a>
+
+  <!-- écran Montantes -->
+  <div id="mt-ecran">
+    <div id="mt-boite">
+      <div class="mb-barre">
+        <button class="mb-fleche" onclick="history.back()">‹</button>
+        <div class="mb-titre">Montantes</div>
+      </div>
+      <div class="pv-cats" id="mt-types"></div>
+      <div id="mt-corps"><div class="vide">Chargement…</div></div>
+    </div>
+  </div>
 
   <!-- écran Preuves -->
   <div id="pv-ecran">
@@ -793,7 +859,7 @@ setInterval(mbSuivre, 5000);
 /* ======== ÉCRANS PLEINS & CLAVIER IPHONE (17/10/2026) ========
    Le fond est figé pendant qu'un écran plein est ouvert et l'écran suit la
    zone visible (au-dessus du clavier) : plus rien ne transparaît derrière. */
-const ECRANS = ['mb-ecran','dt-ecran','pv-ecran'];
+const ECRANS = ['mb-ecran','dt-ecran','pv-ecran','mt-ecran'];
 let VERROU_Y = null;
 function ecranOuvert(){ return ECRANS.map(i => $(i)).find(e => e && e.classList.contains('ouvert')); }
 function ecranAjuster(){
@@ -1264,6 +1330,104 @@ async function pvMontante(typ){
       </div>`;
     }).join('') + (Object.keys(series).length > ordre.length ? `<button class="gris pv-plus" onclick="PV_LIMITE+=20;pvMontante('${typ}')">Séries plus anciennes</button>` : '');
   }catch(e){ z.innerHTML = '<div class="vide">Impossible de charger (' + e.message + ').</div>'; }
+}
+
+/* ======== MONTANTES : SUIVI DES SÉRIES (17/10/2026) ========
+   Chaque série palier par palier (validés ET perdus), avec mise, cote, gain
+   et le détail des matchs : on voit tout de suite quel match a fait perdre. */
+let MT_TYPE = 'montante', MT_DATA = null;
+const mtF = n => Math.round(n || 0).toLocaleString('fr-FR') + ' F';
+function mtOuvrir(){
+  $('mt-ecran').classList.add('ouvert');
+  history.pushState({ mt: 1 }, '');
+  mtCharger();
+}
+function mtFermer(){ $('mt-ecran').classList.remove('ouvert'); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.mt) && $('mt-ecran').classList.contains('ouvert')) mtFermer(); });
+
+async function mtCharger(){
+  $('mt-corps').innerHTML = '<div class="vide">Chargement…</div>';
+  try{
+    const pal = await rest('montante?order=serie.desc,palier.asc&select=type,serie,palier,coupon_id,mise,gain_vise,statut,jour');
+    const ids = [...new Set(pal.map(p => p.coupon_id).filter(Boolean))];
+    const [cps, sels] = await Promise.all([
+      ids.length ? rest(`coupons?id=in.(${ids.join(',')})&select=id,jour,cote_totale,nb_matchs,statut`) : [],
+      pvSelections(ids)
+    ]);
+    MT_DATA = { pal, cps, sels };
+    mtAfficher();
+  }catch(e){ $('mt-corps').innerHTML = '<div class="vide">Impossible de charger (' + echap(e.message) + ').</div>'; }
+}
+function mtType(t){ MT_TYPE = t; mtAfficher(); $('mt-corps').scrollTop = 0; }
+
+function mtAfficher(){
+  const { pal, cps, sels } = MT_DATA;
+  const nb = t => new Set(pal.filter(p => (p.type || 'montante') === t).map(p => p.serie)).size;
+  $('mt-types').innerHTML = [['montante','📈 Montante'],['turbo','⚡ Turbo']]
+    .map(([k,n]) => `<button class="${k===MT_TYPE?'actif':''}" onclick="mtType('${k}')">${n}<b>${nb(k)}</b></button>`).join('');
+
+  const series = {};
+  pal.filter(p => (p.type || 'montante') === MT_TYPE).forEach(p => (series[p.serie] = series[p.serie] || []).push(p));
+  const nums = Object.keys(series).map(Number).sort((a,b) => b - a);
+  if(!nums.length){ $('mt-corps').innerHTML = '<div class="vide">Aucune série pour l\'instant.</div>'; return; }
+  const total = sn => MT_TYPE === 'montante' ? (sn <= 6 ? 12 : 10) : 5;
+
+  const infos = nums.map(sn => {
+    const ps = series[sn].sort((a,b) => a.palier - b.palier), n = total(sn);
+    const ok = ps.filter(p => p.statut === 'gagne'), ko = ps.find(p => p.statut === 'perdu');
+    const etat = ok.length >= n ? 'top' : ko ? 'ko' : 'en';
+    return { sn, ps, n, ok, ko, etat };
+  });
+  const bouclees = infos.filter(x => x.etat === 'top').length, perdues = infos.filter(x => x.etat === 'ko').length;
+  const palOk = infos.reduce((a,x) => a + x.ok.length, 0), palJoues = infos.reduce((a,x) => a + x.ok.length + (x.ko ? 1 : 0), 0);
+
+  let h = `<div class="mt-bilan">
+    <div><b>${nums.length}</b><span>Séries</span></div>
+    <div><b style="color:var(--aura1)">${bouclees}</b><span>Bouclées</span></div>
+    <div><b style="color:var(--ko)">${perdues}</b><span>Perdues</span></div>
+    <div><b>${palOk}/${palJoues}</b><span>Paliers OK</span></div>
+  </div>`;
+
+  h += infos.map((x, k) => {
+    const deb = x.ps[0]?.jour, fin = x.ps[x.ps.length - 1]?.jour;
+    const dernierOk = x.ok[x.ok.length - 1];
+    const badge = x.etat === 'top' ? `<span class="e ok">🏆 BOUCLÉE</span>`
+      : x.etat === 'ko' ? `<span class="e ko">✗ PALIER ${x.ko.palier}</span>`
+      : `<span class="e en">⏳ PALIER ${(x.ps.find(p => p.statut === 'en_cours') || {palier: x.ok.length + 1}).palier}</span>`;
+    const resume = x.etat === 'ko' ? `perdue au palier ${x.ko.palier} · mise perdue ${mtF(x.ko.mise)}`
+      : dernierOk ? `atteint ${mtF(dernierOk.gain_vise)}` : 'démarrage';
+    const cases = Array.from({ length: x.n }, (_, i) => {
+      const p = x.ps.find(q => q.palier === i + 1);
+      const c = p ? (p.statut === 'gagne' ? 'ok' : p.statut === 'perdu' ? 'ko' : 'en') : '';
+      return `<i class="${c}">${c === 'ok' ? '✓' : c === 'ko' ? '✗' : i + 1}</i>`; }).join('');
+    const lignes = x.ps.map(p => {
+      const c = cps.find(y => y.id === p.coupon_id), ls = sels.filter(y => y.coupon_id === p.coupon_id);
+      const cl = p.statut === 'gagne' ? 'ok' : p.statut === 'perdu' ? 'ko' : 'en';
+      const st = { ok:'validé', ko:'perdu', en:'en cours' }[cl];
+      const matchs = ls.map(m => {
+        const r = m.resultat === 'gagne' ? 'ok' : m.resultat === 'perdu' ? 'ko' : '';
+        return `<div class="mt-sel ${r}"><div class="q">${echap(m.dom)} – ${echap(m.ext)}<small>${echap(m.selection || m.marche || '')} · ${echap(m.ligue || '')}</small></div>
+          <div class="r">${m.cote ? Number(m.cote).toFixed(2) : ''} ${r === 'ok' ? '✓' : r === 'ko' ? '✗' : '…'}</div></div>`; }).join('');
+      return `<div class="mt-pal ${cl}">
+        <div class="mt-pl" onclick="this.parentElement.classList.toggle('voir')">
+          <div class="n">${p.palier}</div>
+          <div class="i"><b>Palier ${p.palier}</b> · ${st}<small>${p.jour ? jourFr(p.jour, true) : ''}${c ? ' · cote ' + Number(c.cote_totale).toFixed(2) + ' · ' + (c.nb_matchs || ls.length) + ' match(s)' : ''}</small></div>
+          <div class="m">${mtF(p.mise)}<small>→ ${mtF(p.gain_vise)}</small></div>
+        </div>
+        <div class="mt-sels">${matchs || '<div class="mt-sel"><div class="q"><small>Matchs indisponibles</small></div></div>'}</div>
+      </div>`;
+    }).join('');
+    return `<div class="mt-serie ${x.etat}${k === 0 ? ' ouverte' : ''}">
+      <div class="mt-st" onclick="this.parentElement.classList.toggle('ouverte')">
+        <div class="g"><div class="t">${MT_TYPE === 'turbo' ? '⚡ Turbo' : '📈 Montante'} · série ${x.sn}</div>
+          <div class="s">${deb ? jourFr(deb, true) : ''}${fin && fin !== deb ? ' → ' + jourFr(fin, true) : ''} · ${x.ok.length}/${x.n} validés · ${resume}</div></div>
+        ${badge}
+      </div>
+      <div class="mt-cases">${cases}</div>
+      <div class="mt-det">${lignes}</div>
+    </div>`;
+  }).join('');
+  $('mt-corps').innerHTML = h;
 }
 
 /* ---------- vue « Par jour » (l'ancienne vue) ---------- */
