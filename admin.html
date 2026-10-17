@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>AURA90' — Administration</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -129,7 +129,7 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .mb-rep textarea{min-height:52px;margin:0}
 
 /* messagerie plein écran */
-#mb-ecran{position:fixed;inset:0;z-index:60;background:var(--nuit);display:none;justify-content:center}
+#mb-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:60;background:var(--nuit);display:none;justify-content:center}
 #mb-ecran.ouvert{display:flex}
 .mb-vue{width:100%;max-width:680px;height:100%;display:none;flex-direction:column}
 .mb-vue.active{display:flex}
@@ -144,8 +144,11 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .mb-defile{flex:1;overflow-y:auto;padding:10px 12px;overscroll-behavior:contain}
 #mb-fil{display:flex;flex-direction:column;gap:6px;max-height:none;border:none;border-radius:0;background:var(--nuit)}
 .mb-saisie{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ligne);background:var(--surface);flex:0 0 auto}
-.mb-saisie textarea{margin:0;min-height:46px;height:46px;max-height:130px;resize:none;border-radius:14px;font-size:16px}
-.mb-saisie button{width:50px;padding:0;font-size:18px;border-radius:14px}
+.mb-saisie textarea{margin:0;min-height:44px;height:44px;max-height:130px;resize:none;border-radius:22px;font-size:16px;padding:11px 15px;line-height:1.3}
+.clavier .mb-saisie{padding-bottom:8px}
+#msg-mb{font-size:11px;color:var(--sourdine);margin:0 12px;min-height:0;transition:opacity .4s}
+#msg-mb:empty{display:none}
+.mb-saisie button{width:44px;height:44px;padding:0;font-size:17px;border-radius:50%;align-self:flex-end;flex:0 0 auto}
 .mb-jour{align-self:center;font:700 10px 'JetBrains Mono',monospace;color:var(--sourdine);background:var(--surface);border:1px solid var(--ligne);border-radius:99px;padding:4px 10px;margin:6px 0}
 
 /* ----- Détail des statistiques (15/10/2026) ----- */
@@ -153,7 +156,7 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .tuile.clic:hover{border-color:rgba(61,232,200,.55)}
 .tuile.clic:active{transform:scale(.97)}
 .tuile.clic::after{content:"›";position:absolute;top:6px;right:9px;color:var(--sourdine);font-size:13px}
-#dt-ecran{position:fixed;inset:0;z-index:61;background:var(--nuit);display:none;justify-content:center}
+#dt-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:61;background:var(--nuit);display:none;justify-content:center}
 #dt-ecran.ouvert{display:flex}
 #dt-boite{width:100%;max-width:760px;height:100%;display:flex;flex-direction:column}
 #dt-corps{flex:1;overflow-y:auto;padding:14px 14px 40px;overscroll-behavior:contain}
@@ -194,7 +197,7 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .dt-note{font-size:11px;color:var(--sourdine);margin:-6px 0 12px}
 
 /* ----- Preuves v2 (15/10/2026) : écran plein, catégories, paliers ----- */
-#pv-ecran{position:fixed;inset:0;z-index:62;background:var(--nuit);display:none;justify-content:center}
+#pv-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:62;background:var(--nuit);display:none;justify-content:center}
 #pv-ecran.ouvert{display:flex}
 #pv-boite{width:100%;max-width:560px;height:100%;display:flex;flex-direction:column}
 .pv-cats{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;border-bottom:1px solid var(--ligne);scrollbar-width:none;flex:0 0 auto}
@@ -277,9 +280,9 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
         <button class="gris mb-btn-mode" id="mb-btn-mode" onclick="mbBasculerMode()"></button>
       </div>
       <div class="mb-defile" id="mb-fil"></div>
-      <div class="msg" id="msg-mb" style="margin:4px 12px"></div>
+      <div id="msg-mb"></div>
       <div class="mb-saisie">
-        <textarea id="mb-texte" placeholder="Ta réponse (signée « Équipe AURA90 ») — l'IA continue ensuite" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
+        <textarea id="mb-texte" placeholder="Message…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
         <button onclick="mbRepondre()">➤</button>
       </div>
     </div>
@@ -670,16 +673,16 @@ function mbVue(v){
   $('mb-vue-conv').classList.toggle('active', v === 'conv');
 }
 function mbOuvrirBoite(){
-  $('mb-ecran').classList.add('ouvert'); document.body.style.overflow = 'hidden';
+  $('mb-ecran').classList.add('ouvert');
   mbVue('liste'); history.pushState({ mb:'liste' }, '');
   chargerMessagerie();
 }
 function mbFermerBoite(){
-  MB_ACTIVE = null; $('mb-ecran').classList.remove('ouvert'); document.body.style.overflow = '';
+  mbQuitter(); $('mb-ecran').classList.remove('ouvert');
 }
 window.addEventListener('popstate', e => {
   const st = e.state && e.state.mb;
-  if(st === 'liste'){ MB_ACTIVE = null; mbVue('liste'); chargerMessagerie(true); }
+  if(st === 'liste'){ mbQuitter(); mbVue('liste'); chargerMessagerie(true); }
   else if($('mb-ecran').classList.contains('ouvert')) mbFermerBoite();
 });
 async function mbOuvrir(id){
@@ -713,36 +716,88 @@ function mbBulle(m){
 }
 function mbMajMode(mode){
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c) c.mode = mode;
-  $('mb-btn-mode').textContent = mode === 'humain' ? '🤖 Relancer l\'IA' : '✋ Couper l\'IA';
-  $('mb-mode-txt').textContent = mode === 'humain' ? 'IA coupée · toi seul réponds' : 'IA active · elle gère la discussion';
+  $('mb-btn-mode').textContent = mode === 'humain' ? '🤖 IA' : '✋ IA';
+  $('mb-btn-mode').title = mode === 'humain' ? 'Relancer l\'IA' : 'Couper l\'IA';
+  $('mb-mode-txt').textContent = mode === 'humain' ? 'IA coupée · toi seul réponds' : 'Tu es là · l\'IA attend que tu sortes';
   $('mb-btn-mode').dataset.mode = mode;
 }
 async function mbBasculerMode(){
   const mode = $('mb-btn-mode').dataset.mode === 'humain' ? 'ia' : 'humain';
   const d = await msgApi({ action:'admin_mode', id: MB_ACTIVE, mode, traite: true });
-  if(!d.erreur){ mbMajMode(mode); $('msg-mb').textContent = mode === 'ia' ? 'L\'IA répond de nouveau sur cette discussion.' : 'IA en pause : toi seul réponds ici.'; }
+  if(!d.erreur){ mbMajMode(mode); mbInfo(mode === 'ia' ? 'L\'IA reprendra quand tu sortiras.' : 'IA coupée sur cette discussion.'); }
 }
+let MB_INFO_T;
+function mbInfo(t){ $('msg-mb').textContent = t; clearTimeout(MB_INFO_T); MB_INFO_T = setTimeout(() => $('msg-mb').textContent = '', 5000); }
 async function mbRepondre(){
   const t = $('mb-texte').value.trim(); if(!t || !MB_ACTIVE) return;
   $('mb-texte').value = '';
   const d = await msgApi({ action:'admin_repondre', id: MB_ACTIVE, texte: t });
-  if(d.erreur){ $('msg-mb').textContent = 'Erreur : ' + d.erreur; return; }
+  if(d.erreur){ mbInfo('Erreur : ' + d.erreur); return; }
   $('mb-fil').insertAdjacentHTML('beforeend', mbBulle(d.message)); $('mb-fil').scrollTop = 1e9;
-  $('msg-mb').textContent = !d.push_actif ? '⚠️ Notifications indisponibles (clés VAPID absentes de la fonction).'
-    : d.push ? `📲 Notification envoyée sur ${d.push} appareil(s).`
-    : d.appareils ? '⚠️ Notification refusée par l\'appareil (abonnement expiré ?).'
-    : 'ℹ️ Pas de notification : cet utilisateur n\'a pas activé les notifications sur son téléphone.';
+  mbInfo(!d.push_actif ? '⚠️ Notifications indisponibles (clés VAPID absentes).'
+    : d.push ? `📲 Notifié sur ${d.push} appareil(s)`
+    : d.appareils ? '⚠️ Notification refusée (abonnement expiré ?)'
+    : 'ℹ️ Notifications non activées chez lui');
   MB_DERNIER = d.message.id; 
   const c = MB_CONVS.find(x => x.id === MB_ACTIVE); if(c){ c.a_traiter = false; c.dernier_texte = t; }
 }
+// Présence : tant que tu regardes une discussion, l'IA ne répond pas.
+// Elle reprend la main (dans la continuité) dès que tu en sors.
+function mbQuitter(){
+  const id = MB_ACTIVE; MB_ACTIVE = null;
+  if(!id || !JETON) return;
+  fetch(SUPABASE_URL + '/functions/v1/messagerie', { method:'POST', keepalive:true,
+    headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
+    body: JSON.stringify({ action:'admin_quitter', id }) }).catch(()=>{});
+}
+let MB_PAUSE_ID = null, MB_TOUR = 0;
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){ if(MB_ACTIVE){ MB_PAUSE_ID = MB_ACTIVE; mbQuitter(); } }
+  else if(MB_PAUSE_ID && $('mb-ecran').classList.contains('ouvert') && $('mb-vue-conv').classList.contains('active')){
+    MB_ACTIVE = MB_PAUSE_ID; MB_PAUSE_ID = null; mbSuivre();
+  }
+});
+window.addEventListener('pagehide', mbQuitter);
 async function mbSuivre(){
-  if(!JETON) return;
-  if(!MB_ACTIVE) return chargerMessagerie(true);
+  if(!JETON || document.hidden) return;
+  if(!MB_ACTIVE){ if(++MB_TOUR % 3 === 0) chargerMessagerie(true); return; }
   const d = await msgApi({ action:'admin_conv', id: MB_ACTIVE });
   const l = (d.messages || []).filter(m => m.id > MB_DERNIER);
   if(l.length){ $('mb-fil').insertAdjacentHTML('beforeend', l.map(mbBulle).join('')); $('mb-fil').scrollTop = 1e9; MB_DERNIER = l[l.length-1].id; }
 }
-setInterval(mbSuivre, 15000);
+setInterval(mbSuivre, 5000);
+
+/* ======== ÉCRANS PLEINS & CLAVIER IPHONE (17/10/2026) ========
+   Le fond est figé pendant qu'un écran plein est ouvert et l'écran suit la
+   zone visible (au-dessus du clavier) : plus rien ne transparaît derrière. */
+const ECRANS = ['mb-ecran','dt-ecran','pv-ecran'];
+let VERROU_Y = null;
+function ecranOuvert(){ return ECRANS.map(i => $(i)).find(e => e && e.classList.contains('ouvert')); }
+function ecranAjuster(){
+  const e = ecranOuvert(), b = document.body;
+  if(e && VERROU_Y === null){
+    VERROU_Y = window.scrollY;
+    Object.assign(b.style, { position:'fixed', top: -VERROU_Y + 'px', left:'0', right:'0', overflow:'hidden' });
+  } else if(!e && VERROU_Y !== null){
+    Object.assign(b.style, { position:'', top:'', left:'', right:'', overflow:'' });
+    window.scrollTo(0, VERROU_Y); VERROU_Y = null;
+  }
+  const v = window.visualViewport;
+  for(const i of ECRANS){
+    const x = $(i); if(!x) continue;
+    if(x === e && v){ x.style.height = v.height + 'px'; x.style.top = v.offsetTop + 'px'; }
+    else { x.style.height = ''; x.style.top = ''; }
+  }
+  const clavier = !!(v && e && v.height < window.innerHeight - 120);
+  document.documentElement.classList.toggle('clavier', clavier);
+}
+ECRANS.forEach(i => { const x = $(i); if(x) new MutationObserver(ecranAjuster).observe(x, { attributes:true, attributeFilter:['class'] }); });
+if(window.visualViewport){
+  visualViewport.addEventListener('resize', () => { ecranAjuster(); if(MB_ACTIVE) $('mb-fil').scrollTop = 1e9; });
+  visualViewport.addEventListener('scroll', ecranAjuster);
+}
+$('mb-texte').addEventListener('focus', () => setTimeout(() => { ecranAjuster(); $('mb-fil').scrollTop = 1e9; }, 300));
+$('mb-texte').addEventListener('input', e => { const t = e.target; t.style.height = '44px'; t.style.height = Math.min(t.scrollHeight, 130) + 'px'; });
 
 /* ======== DÉTAIL DES STATISTIQUES (15/10/2026) ========
    Chaque tuile de la vue d'ensemble s'ouvre sur un écran détaillé
@@ -814,14 +869,14 @@ function abonnes(){
 /* ================= rendu ================= */
 function dtOuvrir(cle){
   DT_VUE = cle;
-  $('dt-ecran').classList.add('ouvert'); document.body.style.overflow = 'hidden';
+  $('dt-ecran').classList.add('ouvert');
   history.pushState({ dt: cle }, '');
   $('dt-corps').innerHTML = '<div class="vide">Chargement…</div>';
   dtCharger().then(() => dtRendre(cle)).catch(e => {
     $('dt-corps').innerHTML = `<div class="vide">Impossible de charger le détail : ${echap(e.message)}<br>(as-tu exécuté stats_detail.sql dans Supabase ?)</div>`;
   });
 }
-function dtFermer(){ DT_VUE = null; $('dt-ecran').classList.remove('ouvert'); document.body.style.overflow = ''; }
+function dtFermer(){ DT_VUE = null; $('dt-ecran').classList.remove('ouvert'); }
 window.addEventListener('popstate', e => { if(!(e.state && e.state.dt) && $('dt-ecran').classList.contains('ouvert')) dtFermer(); });
 
 const kpi = l => `<div class="dt-kpis">${l.map(([v,t,s]) => `<div class="dt-kpi"><b>${v}</b><span>${t}</span>${s?`<small>${s}</small>`:''}</div>`).join('')}</div>`;
@@ -1106,11 +1161,11 @@ const PV_ONGLETS = [
 let PV_ONGLET = 'montante', PV_COMPTES = {}, PV_LIMITE = 20;
 
 function pvOuvrir(onglet, jour){
-  $('pv-ecran').classList.add('ouvert'); document.body.style.overflow = 'hidden';
+  $('pv-ecran').classList.add('ouvert');
   history.pushState({ pv: 1 }, '');
   pvCompter().then(() => pvOnglet(onglet || PV_ONGLET, jour));
 }
-function pvFermer(){ $('pv-ecran').classList.remove('ouvert'); document.body.style.overflow = ''; }
+function pvFermer(){ $('pv-ecran').classList.remove('ouvert'); }
 window.addEventListener('popstate', e => { if(!(e.state && e.state.pv) && $('pv-ecran').classList.contains('ouvert')) pvFermer(); });
 
 async function pvCompter(){
