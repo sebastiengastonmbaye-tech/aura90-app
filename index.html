@@ -726,7 +726,6 @@ const CONFIG = {
       <div class="fleche">›</div>
     </div>
     <div id="zone-valides"></div>
-    <div id="zone-dernier"></div>
     <div id="zone-mdj"></div>
 
     <div id="zone-matchs"><div class="chargement">CONNEXION AU MOTEUR…</div></div>
@@ -1033,7 +1032,6 @@ async function charger(){
     }
     afficherAccueil();
     chargerPalmares(g);
-  chargerDernierGagne();
   }catch(e){
     $('zone-matchs').innerHTML = `<div class="erreur-cfg"><b>Connexion impossible.</b> Vérifie ta connexion internet — ou la clé dans CONFIG. (${e.message})</div>`;
   }
@@ -1209,27 +1207,6 @@ async function chargerPalmares(g){
   chargerHisto(false);
 }
 
-async function chargerDernierGagne(){
-  try{
-    const recents = await sb(`pronos?verifie=eq.true&order=date_match.desc&limit=40&select=dom,ext,score_reel,scores_top3,prono_principal,prono_gagne,signe,date_match,ligue`);
-    if(!Array.isArray(recents) || !recents.length){ $('zone-dernier').innerHTML=''; return; }
-
-    const meta = d => `${new Date(d.date_match+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'}).toUpperCase()} · ${d.ligue.toUpperCase()}`;
-
-    // dernière victoire signée (la carte « score exact trouvé » a été retirée le 18/10)
-    const gagne = recents.find(p => p.prono_gagne && p.signe);
-    if(!gagne){ $('zone-dernier').innerHTML=''; return; }
-    $('zone-dernier').innerHTML = `
-      <div class="dernier-win" onclick="allerPage('palmares')">
-        <div class="dw-haut">
-          <span class="dw-tag">✓ DERNIÈRE VICTOIRE SIGNÉE</span>
-          <span class="dw-date">${meta(gagne)}</span>
-        </div>
-        <div class="dw-match">${gagne.dom} <span class="pc-score">${gagne.score_reel||''}</span> ${gagne.ext} <span class="puce ok">✓ GAGNÉ</span></div>
-        <div class="dw-prono">Le moteur avait signé : <b>${gagne.prono_principal}</b> — voir tout le palmarès →</div>
-      </div>`;
-  }catch(e){ $('zone-dernier').innerHTML=''; }
-}
 
 const COUL_BADGE = {'Très sûr':'#3DE8C8','Sûr':'#FFB454','Équilibré':'#5BA8F5','Audacieux':'#A78BFF'};
 async function chargerHisto(ajouter){
