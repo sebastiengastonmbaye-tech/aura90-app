@@ -557,6 +557,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .vh-sel{border-top:1px solid var(--ligne);padding:10px 14px;display:flex;justify-content:space-between;gap:8px}
 .vh-sel .lig{font:600 9px 'JetBrains Mono',monospace;color:var(--sourdine);letter-spacing:.06em;text-transform:uppercase}
 .vh-duel{font-size:13px;font-weight:700;margin:4px 0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.vh-duel .ecu-m{width:22px;height:22px}
 .vh-sc{font:800 12.5px 'JetBrains Mono',monospace;background:var(--surface2);border:1px solid var(--ligne);border-radius:7px;padding:2px 7px}
 .vh-pick{font-size:11.5px;color:var(--aura1);font-weight:700}
 .vh-co{font:700 13px 'JetBrains Mono',monospace;align-self:center;white-space:nowrap}
@@ -573,6 +574,7 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .vh-bandeau .t b{display:block;font-size:13.5px}
 .vh-bandeau .t span{display:block;font-size:11.5px;color:var(--sourdine);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vh-bandeau .f{color:var(--aura1);font-size:20px}
+
 
 /* ---------- splash ---------- */
 #splash{position:fixed;inset:0;z-index:200;background:var(--nuit);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .45s ease}
@@ -1336,7 +1338,7 @@ function ouvrirSession(d){
   SESSION.access = d.access_token; SESSION.refresh = d.refresh_token;
   SESSION.email = d.user?.email || SESSION.email; SESSION.uid = d.user?.id || SESSION.uid;
   sauverSession(); msgAuth('');
-  chargerAbonnement().then(()=>{ majCompte(); afficherAccueil(); });
+  chargerAbonnement().then(()=>{ majCompte(); afficherAccueil(); proposerNotifs(1500); });
 }
 
 async function rafraichirSession(){
@@ -1621,16 +1623,18 @@ function ouvrirGuideInstall(){
     h = ENTETE_INS('Installe AURA90', 'Un seul geste : l\'app arrive sur ton écran d\'accueil, en plein écran, avec les notifications.')
       + '<button class="ins-btn" onclick="installerAndroid()">📲 Installer l\'application</button>';
   } else if(estIOS()){
-    h = ENTETE_INS('Ajoute AURA90 à ton iPhone', '3 gestes, 10 secondes. Le nom « AURA90 » est déjà rempli.')
-      + etapeHtml('1', `Touche le bouton <b>Partager</b> ${IC_PARTAGE} de Safari (en bas de l'écran, ou en haut sur iPad)`)
+    // explication valable pour tous les navigateurs de l'iPhone (Safari, Chrome, Edge…)
+    const ou = /CriOS|EdgiOS|FxiOS/i.test(navigator.userAgent)
+      ? 'en haut à droite, dans la barre d\'adresse'
+      : 'dans la barre du navigateur (en bas ou en haut de l\'écran)';
+    h = ENTETE_INS('Ajoute AURA90 à ton écran d\'accueil', '3 gestes, 10 secondes.')
+      + etapeHtml('1', `Touche le bouton <b>Partager</b> ${IC_PARTAGE}, ${ou}. Tu ne le vois pas ? Touche <b>•••</b> d'abord.`)
       + etapeHtml('2', `Fais défiler et choisis <b>« Sur l'écran d'accueil »</b> ${IC_PLUS}`)
-      + etapeHtml('3', 'Touche <b>Ajouter</b> en haut à droite — c\'est tout ✓')
-      + '<div class="ins-note">Ouvre ensuite AURA90 depuis l\'icône 90\' et connecte-toi une fois : c\'est indispensable sur iPhone pour recevoir les <b>notifications</b>.</div>';
-    $('ins-fleche').style.display = 'block';
-    h += '<div style="height:44px"></div>';   // place pour la flèche qui pointe la barre de Safari
+      + etapeHtml('3', 'Touche <b>Ajouter</b> — c\'est tout ✓')
+      + '<div class="ins-note">Ouvre ensuite AURA90 depuis la nouvelle icône 90\' et connecte-toi une fois : sur iPhone, c\'est indispensable pour recevoir les <b>notifications</b>.</div>';
   } else if(estAndroid()){
     h = ENTETE_INS('Installe AURA90', 'L\'app arrive sur ton écran d\'accueil, en plein écran.')
-      + etapeHtml('1', `Touche le menu ${IC_MENU} en haut à droite de Chrome`)
+      + etapeHtml('1', `Touche le menu de ton navigateur : ${IC_MENU} en haut à droite (Chrome) ou ≡ en bas (Samsung Internet)`)
       + etapeHtml('2', '<b>« Installer l\'application »</b> ou <b>« Ajouter à l\'écran d\'accueil »</b>')
       + etapeHtml('3', 'Confirme avec <b>Installer</b> ✓');
   } else return;
@@ -2529,9 +2533,11 @@ function fermerMessagerie(){ $('ms-panneau').classList.remove('ouvert'); MS_OUVE
 function msStatut(mode){ $('ms-statut').textContent = mode === 'humain' ? 'Un membre de l\'équipe te répond' : 'Réponse en quelques secondes'; }
 function msPastille(n){ const p = $('ms-pt'); p.textContent = n; p.style.display = n ? 'flex' : 'none'; }
 
+let MS_ENVOI = false;
 async function msSuivre(){
-  if(!MS_OUVERT || !estConnecte()) return;
+  if(!MS_OUVERT || !estConnecte() || MS_ENVOI) return;   // pendant un envoi : jamais de doublon
   const d = await appelMsg({ action:'nouveaux', apres: MS_DERNIER });
+  if(MS_ENVOI) return;
   const l = (d.messages || []).filter(m => m.id > MS_DERNIER);
   if(!l.length) return;
   const fil = $('ms-fil'); if(fil.querySelector('.ms-accueil')) fil.innerHTML = '';
@@ -2541,12 +2547,14 @@ async function msSuivre(){
 
 async function envoyerMessage(){
   const zone = $('ms-texte'), t = zone.value.trim();
-  if(!t || !estConnecte()) return;
+  if(!t || !estConnecte() || MS_ENVOI) return;
+  MS_ENVOI = true;
   zone.value = ''; msAjuster(); $('ms-envoi').disabled = true;
   const fil = $('ms-fil'); if(fil.querySelector('.ms-accueil')) fil.innerHTML = '';
   fil.insertAdjacentHTML('beforeend', msBulle({ auteur:'user', texte:t, cree_le:new Date() }) + '<div class="ms-ecrit" id="ms-ecrit">AURA90 écrit…</div>');
   msBas();
-  const d = await appelMsg({ action:'envoyer', texte:t });
+  const d = await appelMsg({ action:'envoyer', texte:t }).catch(() => ({ erreur:'Connexion perdue, réessaie.' }));
+  MS_ENVOI = false;
   $('ms-ecrit')?.remove(); $('ms-envoi').disabled = false;
   if(d.erreur){ fil.insertAdjacentHTML('beforeend', `<div class="ms-ecrit">${msEchap(d.erreur)}</div>`); msBas(); return; }
   const l = d.messages || [];
@@ -2634,7 +2642,7 @@ function vhCarte(c, i){
   const ligne = (x, cache) => `
     <div class="vh-sel${cache ? ' vh-cache' : ''}"><div style="min-width:0">
       <div class="lig">${vhEsc(x.ligue || '')}${x.heure ? ' · ' + String(x.heure).slice(0,5) : ''}</div>
-      <div class="vh-duel">${vhEsc(x.dom)} <span class="vh-sc">${x.score ? vhEsc(x.score) : '–'}</span> ${vhEsc(x.ext)}</div>
+      <div class="vh-duel">${ecuMini(x.logo_dom, x.dom)}${vhEsc(x.dom)} <span class="vh-sc">${x.score ? vhEsc(x.score) : '–'}</span> ${vhEsc(x.ext)}${ecuMini(x.logo_ext, x.ext)}</div>
       <div class="vh-pick">✓ ${vhEsc(x.selection)}</div></div>
       <div class="vh-co">${vhCote(x.cote)}</div></div>`;
   const cote = c.categorie === 'score' ? (sels[0] ? sels[0].cote : c.cote_totale) : c.cote_totale;
@@ -2727,6 +2735,29 @@ vhBandeau();
 })();
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+/* ================= NOTIFICATIONS : RÉINSCRIPTION SILENCIEUSE (18/10/2026) =================
+   Aucune fenêtre en plus. Si la personne a déjà autorisé les notifications sur
+   ce téléphone mais que l'abonnement manque (changement d'adresse…), on le
+   refait en silence. Sinon, rien : le bouton de l'onglet Compte suffit. */
+async function proposerNotifs(){
+  try{
+    if(!estConnecte() || !SESSION.uid) return;
+    if(!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
+    if(Notification.permission !== 'granted') return;
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: b64versCle(CONFIG.VAPID_PUBLIC) });
+    const j = sub.toJSON();
+    await fetch(CONFIG.SUPABASE_URL + '/rest/v1/push_abonnements?on_conflict=endpoint', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access, Prefer:'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ user_id: SESSION.uid, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth })
+    });
+  }catch(e){}
+}
+proposerNotifs();
+
 
 majCompte();
 majInstall();
