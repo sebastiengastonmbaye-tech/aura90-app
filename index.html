@@ -1216,23 +1216,7 @@ async function chargerDernierGagne(){
 
     const meta = d => `${new Date(d.date_match+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'}).toUpperCase()} · ${d.ligue.toUpperCase()}`;
 
-    // priorité 1 : le dernier SCORE EXACT trouvé (le vrai score figurait dans les scores annoncés)
-    const exact = recents.find(p => p.score_reel && p.scores_top3 &&
-      String(p.scores_top3).split('·').map(s=>s.trim()).includes(String(p.score_reel).trim()));
-    if(exact){
-      $('zone-dernier').innerHTML = `
-      <div class="dernier-win" style="border-color:rgba(255,180,84,.55)" onclick="allerPage('palmares')">
-        <div class="dw-haut">
-          <span class="dw-tag" style="color:var(--sur)">🎯 SCORE EXACT TROUVÉ</span>
-          <span class="dw-date">${meta(exact)}</span>
-        </div>
-        <div class="dw-match">${exact.dom} <span class="pc-score" style="color:var(--sur);border-color:rgba(255,180,84,.4)">${exact.score_reel}</span> ${exact.ext}</div>
-        <div class="dw-prono">Le moteur avait mis <b>${exact.score_reel}</b> dans ses scores probables, publié avant le match — voir le palmarès →</div>
-      </div>`;
-      return;
-    }
-
-    // priorité 2 : la dernière victoire signée
+    // dernière victoire signée (la carte « score exact trouvé » a été retirée le 18/10)
     const gagne = recents.find(p => p.prono_gagne && p.signe);
     if(!gagne){ $('zone-dernier').innerHTML=''; return; }
     $('zone-dernier').innerHTML = `
