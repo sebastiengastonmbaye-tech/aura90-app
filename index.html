@@ -1549,16 +1549,36 @@ async function payerMaintenant(mode){
     let r = await envoyer();
     if(r.status === 401 && await rafraichirSession()) r = await envoyer();
     const d = await r.json();
-    if(d.redirect_url){ location.href = d.redirect_url; return; }
-    $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Paiement indisponible — réessaie dans un instant.</div>`;
+    if(d.redirect_url){ if(mode === 'saspay') spMarquer(); location.href = d.redirect_url; return; }
+    const det = r.status === 404 ? 'service de paiement non déployé' : (d.detail || d.erreur || ('code ' + r.status));
+    $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Paiement indisponible — réessaie dans un instant.<br><small style="opacity:.7">${String(det).replace(/[<>&]/g,'')}</small></div>`;
   }catch(e){
     $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Connexion impossible — vérifie ton réseau.</div>`;
   }
   btn.textContent = TXT_PAYER[mode];
 }
 
-// retour SasPay : demander au serveur de vérifier le paiement auprès de SasPay
+/* ---------- SasPay : confirmation du paiement ----------
+   Canal principal : le webhook SasPay (serveur). En plus, l'app redemande au serveur
+   de vérifier chez SasPay : au retour de la page de paiement, à la réouverture de l'app
+   si un paiement a été lancé depuis cet appareil, et (au plus toutes les 10 min)
+   pour un compte connecté non abonné. */
+const SP_CLE = 'aura90_sp_attente', SP_VERIF = 'aura90_sp_verif';
+function spMarquer(){ try{ localStorage.setItem(SP_CLE, String(Date.now())); }catch(e){} }
+function spEffacer(){ try{ localStorage.removeItem(SP_CLE); }catch(e){} }
+function spEnAttente(){
+  try{
+    const t = Number(localStorage.getItem(SP_CLE) || 0);
+    if(t && Date.now() - t < 48*3600e3) return true;
+    if(t) localStorage.removeItem(SP_CLE);
+  }catch(e){}
+  return false;
+}
+
+// demande au serveur de vérifier chez SasPay les paiements en attente de ce compte
+// → { activees, restantes, recent } ou null
 async function verifierSasPay(){
+  if(!estConnecte()) return null;
   const envoyer = () => fetch(CONFIG.SUPABASE_URL + '/functions/v1/saspay-init', {
     method:'POST',
     headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
@@ -1567,25 +1587,62 @@ async function verifierSasPay(){
   try{
     let r = await envoyer();
     if(r.status === 401 && await rafraichirSession()) r = await envoyer();
-  }catch(e){}
+    if(!r.ok) return null;
+    const d = await r.json();
+    if(d && (d.activees > 0 || d.recent > 0 || d.restantes === 0)) spEffacer();
+    return d;
+  }catch(e){ return null; }
 }
 
+let SP_EN_COURS = false, SP_DERNIER = 0;
+async function spVerifierSiBesoin(){
+  if(SP_EN_COURS || !estConnecte()) return;
+  if(spEnAttente()){
+    if(Date.now() - SP_DERNIER < 20000) return;
+  } else {
+    if(estAbonne()) return;
+    try{
+      if(Date.now() - Number(localStorage.getItem(SP_VERIF) || 0) < 10*60e3) return;
+      localStorage.setItem(SP_VERIF, String(Date.now()));
+    }catch(e){ return; }
+  }
+  SP_EN_COURS = true; SP_DERNIER = Date.now();
+  try{
+    const d = await verifierSasPay();
+    if(d && (d.activees > 0 || d.recent > 0)){
+      await chargerAbonnement(); majCompte(); afficherAccueil();
+      if(d.activees > 0){
+        const m = $('msg-acces');
+        if(m) m.innerHTML = `<div class="avert" style="color:var(--aura1)">Paiement confirmé ✓ — ton accès PRO est actif.</div>`;
+      }
+    }
+  }finally{ SP_EN_COURS = false; }
+}
+document.addEventListener('visibilitychange', () => { if(!document.hidden) spVerifierSiBesoin(); });
+
 async function verifierApresPaiement(tentative=0, sasPay=false){
-  if(sasPay) await verifierSasPay();
+  let confirme = false;
+  if(sasPay){
+    const d = await verifierSasPay();
+    confirme = !!(d && (d.activees > 0 || d.recent > 0));
+  }
   await chargerAbonnement();
-  if(estAbonne()){ majCompte(); afficherAccueil(); allerPage('accueil'); return; }
+  if(estAbonne() && (confirme || !sasPay || tentative >= 4)){ $('msg-acces').innerHTML = ''; majCompte(); afficherAccueil(); allerPage('accueil'); return; }
   if(tentative < 4){
     $('msg-acces').innerHTML = `<div class="avert">Activation en cours… (${tentative+1}/5)</div>`;
     setTimeout(()=>verifierApresPaiement(tentative+1, sasPay), 4000);
+  } else if(sasPay){
+    $('msg-acces').innerHTML = `<div class="avert">Paiement en cours de confirmation — ton accès PRO s'active tout seul dès que SasPay le confirme. Rouvre l'app dans une minute.</div>`;
   } else {
     $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Activation non confirmée — si tu as bien payé, réouvre l'app dans une minute.</div>`;
   }
 }
 
 // retour arrière depuis la page de paiement : remettre le bouton à neuf
-window.addEventListener('pageshow', function(){
+window.addEventListener('pageshow', function(e){
   const b = $('btn-payer'); if(b) b.textContent = TXT_PAYER.paytech;
   const b2 = $('btn-payer-sp'); if(b2) b2.textContent = TXT_PAYER.saspay;
+  if(e && e.persisted) spVerifierSiBesoin();   // page restaurée par le bouton retour
 });
 
 /* ================= INSTALLATION GUIDÉE (17/10/2026) =================
@@ -2805,8 +2862,13 @@ charger();
   }
   // retour de paiement ?
   const p = new URLSearchParams(location.search).get('paiement');
+  const spUrl = new URLSearchParams(location.search).get('sp') === '1';
+  if(p){
+    const u = new URL(location.href); u.searchParams.delete('paiement'); u.searchParams.delete('sp');
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+  }
   if(p === 'ok'){
-    const sp = new URLSearchParams(location.search).get('sp') === '1';
+    const sp = spUrl || spEnAttente();
     allerPage('compte'); if(estConnecte()) verifierApresPaiement(0, sp);
   }
   else if(p === 'annule'){
@@ -2818,6 +2880,7 @@ charger();
     await rafraichirSession();
     await chargerAbonnement();
     majCompte(); afficherAccueil();
+    if(p !== 'ok') spVerifierSiBesoin();   // paiement SasPay confirmé pendant que l'app était fermée ?
   }
 })();
 </script>
