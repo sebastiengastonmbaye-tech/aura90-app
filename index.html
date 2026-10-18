@@ -1431,7 +1431,7 @@ function majBoutonPro(){
   const b = $('btn-pro'); if(!b) return;
   if(estAbonne()){
     const j = Math.max(1, Math.ceil((new Date(SESSION.fin) - Date.now()) / 864e5));
-    b.innerHTML = '<i>◈</i> PRO · J-' + j;
+    b.innerHTML = j > 3650 ? '<i>◈</i> PRO' : '<i>◈</i> PRO · J-' + j;   // compte à vie (admin) : pas de compteur
     b.classList.add('actif-pro');
   } else {
     b.innerHTML = '<i>◈</i> Passer à PRO';
@@ -2775,7 +2775,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-18-2';
+const APP_VERSION = '2026-10-18-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
