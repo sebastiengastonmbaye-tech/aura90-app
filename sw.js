@@ -1,7 +1,7 @@
 // AURA90 — service worker
 // Stratégie : réseau d'abord (les pronos sont des données vivantes),
 // cache de secours pour rouvrir l'app sans connexion.
-const CACHE = 'aura90-v6';
+const CACHE = 'aura90-v7';
 const COQUILLE = ['.', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
 
 self.addEventListener('install', e => {
@@ -40,13 +40,20 @@ self.addEventListener('push', e => {
     body: d.corps || '',
     icon: 'icon-192.png',
     badge: 'icon-192.png',
+    data: { url: d.url || './' },
   }));
 });
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
+  // la notification ouvre directement le bon écran (« Validés hier », messagerie…)
+  const cible = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
   e.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(l => {
-    for (const c of l) { if ('focus' in c) return c.focus(); }
-    return clients.openWindow('.');
+    for (const c of l) {
+      if ('focus' in c) {
+        return (c.navigate ? c.navigate(cible).catch(() => c) : Promise.resolve(c)).then(w => (w || c).focus());
+      }
+    }
+    return clients.openWindow(cible);
   }));
 });
