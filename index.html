@@ -813,15 +813,15 @@ const CONFIG = {
         <div class="prix"><span class="ancien">35 000 F</span>16 000 F<small>CFA</small><span class="usd" data-xof="16000"></span></div>
         <div class="radio"></div>
       </div>
-      <div class="note-secu">Wave, Orange Money, Mobile Money ou carte bancaire · prix en dollars donnés à titre indicatif.<br>Prix de lancement, durée limitée — le passage au plein tarif (15 000 F/mois) sera annoncé à l'avance.</div>
+      <div class="note-secu">Wave, Orange Money et Mobile Money · prix en dollars donnés à titre indicatif.<br>Prix de lancement, durée limitée — le passage au plein tarif (15 000 F/mois) sera annoncé à l'avance.</div>
       <div id="zone-paiement" style="display:none">
         <div class="recap-paie"><span>FORMULE CHOISIE</span><b id="paie-libelle"></b></div>
         <div class="champ">
           <input id="code-promo" placeholder="Code promo (optionnel)" autocomplete="off" style="text-transform:uppercase" oninput="verifierCodePromo()">
         </div>
         <div id="msg-promo"></div>
-        <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" id="btn-payer-sp" onclick="payerMaintenant('saspay')">Payer maintenant</button></div>
-        <div class="avert">Paiement sécurisé via SasPay : Wave, Orange Money, Mobile Money de ton pays ou carte bancaire.</div>
+        <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" id="btn-payer-sp" onclick="payerMaintenant()">Payer maintenant</button></div>
+        <div class="avert">Paiement sécurisé via SasPay : Wave, Orange Money ou le Mobile Money de ton pays. Ton accès PRO s'active automatiquement.</div>
       </div>
       <div id="msg-acces"></div>
 
@@ -1533,14 +1533,13 @@ async function verifierCodePromo(){
   }, 350);
 }
 
-const TXT_PAYER = { paytech:'Payer maintenant', saspay:'Payer maintenant' };   // PayTech désactivé (18/10) : tout passe par SasPay
-async function payerMaintenant(mode){
+// Paiement : SasPay uniquement (PayTech retiré le 18/10/2026)
+const TXT_PAYER = 'Payer maintenant';
+async function payerMaintenant(){
   if(!FORMULE) return;
-  mode = mode === 'saspay' ? 'saspay' : 'paytech';
-  const btn = $(mode === 'saspay' ? 'btn-payer-sp' : 'btn-payer') || $('btn-payer-sp');
+  const btn = $('btn-payer-sp');
   btn.textContent = 'Redirection…';
-  const url = CONFIG.SUPABASE_URL + '/functions/v1/' + (mode === 'saspay' ? 'saspay-init' : 'paytech-init');
-  const envoyer = () => fetch(url, {
+  const envoyer = () => fetch(CONFIG.SUPABASE_URL + '/functions/v1/saspay-init', {
     method:'POST',
     headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
     body: JSON.stringify({ formule: FORMULE, code_promo: $('code-promo').value.trim() })
@@ -1549,13 +1548,13 @@ async function payerMaintenant(mode){
     let r = await envoyer();
     if(r.status === 401 && await rafraichirSession()) r = await envoyer();
     const d = await r.json();
-    if(d.redirect_url){ if(mode === 'saspay') spMarquer(); location.href = d.redirect_url; return; }
+    if(d.redirect_url){ spMarquer(); location.href = d.redirect_url; return; }
     const det = r.status === 404 ? 'service de paiement non déployé' : (d.detail || d.erreur || ('code ' + r.status));
     $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Paiement indisponible — réessaie dans un instant.<br><small style="opacity:.7">${String(det).replace(/[<>&]/g,'')}</small></div>`;
   }catch(e){
     $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">Connexion impossible — vérifie ton réseau.</div>`;
   }
-  btn.textContent = TXT_PAYER[mode];
+  btn.textContent = TXT_PAYER;
 }
 
 /* ---------- SasPay : confirmation du paiement ----------
@@ -1640,8 +1639,7 @@ async function verifierApresPaiement(tentative=0, sasPay=false){
 
 // retour arrière depuis la page de paiement : remettre le bouton à neuf
 window.addEventListener('pageshow', function(e){
-  const b = $('btn-payer'); if(b) b.textContent = TXT_PAYER.paytech;
-  const b2 = $('btn-payer-sp'); if(b2) b2.textContent = TXT_PAYER.saspay;
+  const b2 = $('btn-payer-sp'); if(b2) b2.textContent = TXT_PAYER;
   if(e && e.persisted) spVerifierSiBesoin();   // page restaurée par le bouton retour
 });
 

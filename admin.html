@@ -949,6 +949,12 @@ function paiementsOk(){
                  _f: String(champ(p, ['formule','offre','plan','duree','type','produit']) || '') }));
 }
 const est3m = f => /3/.test(f);
+// moyen de paiement : SasPay (depuis le 18/10) ou PayTech (avant)
+const moyenDe = p => {
+  const m = String(champ(p, ['methode','moyen','payment_method']) || '');
+  if(/saspay/i.test(m) || /^SASPAY-/.test(String(champ(p, ['ref_externe']) || ''))) return 'SasPay';
+  return m ? 'PayTech · ' + m : 'PayTech';
+};
 
 /* --- abonnés --- */
 function abonnes(){
@@ -1093,9 +1099,26 @@ function dtRevenus(){
     + bloc('Revenus par jour · 30 jours', barres(parJour(p, 30, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
     + bloc('Revenus par mois', barres(parMois(p, 6, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
     + bloc('Répartition des formules', `<div class="dt-repart"><div><b>${pm.length}</b><span>1 mois · ${fF(s(pm))}</span></div><div><b>${p3.length}</b><span>3 mois · ${fF(s(p3))}</span></div></div>`)
+    + bloc('Moyens de paiement', `<div class="dt-repart">${[...new Set(p.map(x => moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech'))].sort().map(m => { const l = p.filter(x => (moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech') === m); return `<div><b>${l.length}</b><span>${m} · ${fF(s(l))}</span></div>`; }).join('') || '<div><span>Aucun paiement</span></div>'}</div>`)
+    + saspayEnAttente()
     + bloc('Historique des paiements' + (tous > p.length ? ` <small>(${tous - p.length} tentative(s) non abouties masquées)</small>` : ''),
-        tableau('t-paie', ['Date','Email','Montant','Formule','Code'],
-          p.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [fDH(x._d), echap(emailDe(x)), fF(x._m), est3m(x._f) ? '3 mois' : '1 mois', echap(champ(x, ['code','code_parrain','ref','code_promo']) || '—')])));
+        tableau('t-paie', ['Date','Email','Montant','Formule','Moyen','Code'],
+          p.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [fDH(x._d), echap(emailDe(x)), fF(x._m), est3m(x._f) ? '3 mois' : '1 mois', echap(moyenDe(x)), echap(champ(x, ['code_promo','code','code_parrain']) || '—')])));
+}
+
+/* paiements SasPay ouverts mais pas réglés (7 derniers jours) : clients à relancer */
+function saspayEnAttente(){
+  const l = (DT.saspay_sessions || []).map(x => ({ ...x, _d: dateDe(x, ['cree_le']) }))
+    .filter(x => x.statut === 'en_attente' && x._d && Date.now() - x._d < 7*JOUR);
+  if(!DT.saspay_sessions) return '';
+  // une ligne par client (sa dernière tentative), sauf s'il a payé depuis
+  const payeurs = new Set((DT.saspay_sessions || []).filter(x => x.statut === 'paye').map(x => x.user_id));
+  const parClient = {};
+  l.forEach(x => { if(!payeurs.has(x.user_id) && (!parClient[x.user_id] || x._d > parClient[x.user_id]._d)) parClient[x.user_id] = x; });
+  const lignes = Object.values(parClient).sort((a,b) => b._d - a._d);
+  return bloc('🛒 Paiements commencés, pas finalisés · 7 jours' + (lignes.length ? ` <small>(${lignes.length} à relancer)</small>` : ''),
+    tableau('t-sp-att', ['Ouvert le','Email','Formule','Montant'],
+      lignes.map(x => [fDH(x._d), echap(emailDe(x)), x.formule === '3mois' ? '3 mois' : '1 mois', fF(Number(x.prix) || 0)]), 'Personne — tous les paiements ouverts ont été réglés.'));
 }
 
 /* ---------- Activité ---------- */
