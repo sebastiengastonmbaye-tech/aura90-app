@@ -2508,7 +2508,7 @@ function ouvrirNotifs(){
 function fermerNotifs(){ $('panneau-notifs').classList.remove('actif'); }
 
 /* ================= ESPACE PARTENAIRE (19/10) ================= */
-let EP = null, EP_TAB = 'accueil', EP_PER = '30', EP_FIL = 'tous', RT = null;
+let EP = null, EP_TAB = 'accueil', EP_PER = '30', EP_FIL = 'tous', RT = null, EP_DEB = null, EP_FIN = null;
 const EP_RES = { tt:'TikTok', ig:'Instagram', fb:'Facebook', yt:'YouTube', sc:'Snapchat', x:'X (Twitter)', tg:'Telegram', wa:'WhatsApp', autre:'Autre' };
 const EP_RES_IC = { tt:'TT', ig:'IG', fb:'FB', yt:'YT', sc:'SC', x:'X', tg:'TG', wa:'WA', autre:'•' };
 const epEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2587,6 +2587,8 @@ function epSerie(n, debut, fin){
 }
 function epPeriode(){
   const now = new Date();
+  if(EP_PER === 'jour') return epSerie(1);
+  if(EP_PER === 'perso' && EP_DEB) return epSerie(0, new Date(EP_DEB + 'T12:00:00'), EP_FIN ? new Date(EP_FIN + 'T12:00:00') : now);
   if(EP_PER === '7') return epSerie(7);
   if(EP_PER === '30') return epSerie(30);
   if(EP_PER === 'mois') return epSerie(0, new Date(now.getFullYear(), now.getMonth(), 1), now);
@@ -2711,7 +2713,7 @@ function epStats(){
   const mx = Math.max(1, ...barres);
   const abo = T.abonnes + T.reabos;
   const pc = (a,b) => b ? (a/b*100).toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %' : '—';
-  const per = [['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']];
+  const per = [['jour',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']].concat(EP_DEB ? [['perso', 'Du ' + epJ(EP_DEB + 'T12:00:00') + (EP_FIN ? ' au ' + epJ(EP_FIN + 'T12:00:00') : '')]] : []);
   const lignes = s.slice().reverse().filter(x => x.clics || x.inscrits || x.abonnes || x.reabos || x.commission);
   return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';epTab('stats')">${l}</button>`).join('')}</div>
     <div class="ep-tuiles">

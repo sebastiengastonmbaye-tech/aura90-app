@@ -371,10 +371,6 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .ep-suivi i{display:block;height:4px;border-radius:9px;background:var(--ligne);margin-bottom:6px}
 .ep-suivi .f i{background:var(--aura1)}.ep-suivi .f{color:var(--texte)}
 /* ----- Affiliés (19/10/2026) ----- */
-#af-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:64;background:var(--nuit);display:none;justify-content:center}
-#af-ecran.ouvert{display:flex}
-#af-boite{width:100%;max-width:680px;height:100%;display:flex;flex-direction:column}
-#af-corps{flex:1;overflow-y:auto;padding:12px 0 40px;overscroll-behavior:contain}
 .af-pad{padding:0 12px}
 .af-carte{background:var(--surface);border:1px solid var(--ligne);border-radius:16px;padding:14px;margin:0 12px 10px}
 .af-carte.neuf{border-color:rgba(61,232,200,.45)}
@@ -421,8 +417,96 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
 .af-pal{display:grid;grid-template-columns:1fr 1fr 40px;gap:6px;align-items:center;margin-bottom:6px}
 .af-pal input{margin:0}
 .af-pal button{padding:10px 0}
-#af-ecran .ep-sec{margin:18px 12px 10px}
-#af-ecran .ep-bloc,#af-ecran .ep-hero,#af-ecran .ep-tuiles,#af-ecran .ep-per,#af-ecran .ep-vide{margin-left:12px;margin-right:12px}
+/* ===== Admin v2 : menu du bas + pages (19/10/2026) ===== */
+body.co{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+body.co > .barre-haut, body.co > h1, body.co > #qui{display:none}
+.pg{display:none}
+.pg.actif{display:block;animation:pgIn .18s ease}
+@keyframes pgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pg-haut{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 0 10px;background:linear-gradient(var(--nuit) 80%,rgba(7,11,18,0))}
+.pg-haut h1{flex:1;margin:0;font-size:18px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pg-btn{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne);border-radius:11px;padding:8px 12px;font-size:12px;flex:0 0 auto}
+.pg-ret{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne);border-radius:11px;width:36px;height:36px;padding:0;font-size:20px;line-height:1;flex:0 0 auto}
+.pg-sous{font-size:12px;color:var(--sourdine);margin:-4px 0 6px}
+.pg-lab{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--sourdine);text-transform:uppercase;margin:20px 0 9px}
+.pg-lab b{color:var(--aura1);letter-spacing:0;font-family:'JetBrains Mono',monospace}
+.pg-lab span{letter-spacing:0;text-transform:none;font-weight:600;font-size:11px}
+.todo{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.todo:hover{border-color:rgba(61,232,200,.45)}
+.todo .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.todo .ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.todo .t{flex:1;min-width:0}.todo .t b{font-size:13.5px;display:block}.todo .t span{font-size:11.5px;color:var(--sourdine);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.todo .n{font:800 15px 'JetBrains Mono',monospace;padding:4px 10px;border-radius:9px;flex-shrink:0}
+.todo.or .ic,.todo.or .n{color:#FFC86B;background:rgba(255,200,107,.1)}
+.todo.vert .ic,.todo.vert .n{color:var(--aura1);background:rgba(61,232,200,.1)}
+.todo.rose .ic,.todo.rose .n{color:var(--ko);background:rgba(255,122,158,.1)}
+.todo.calme{cursor:default;color:var(--sourdine);font-size:12.5px;justify-content:center}
+.acc-hero{padding:16px;border-radius:20px;cursor:pointer;border:1px solid transparent;background:radial-gradient(220px 150px at 100% 0%,rgba(139,124,255,.26),transparent 70%) padding-box,linear-gradient(160deg,#0F1D24,#14172C) padding-box,linear-gradient(135deg,rgba(61,232,200,.55),rgba(139,124,255,.55)) border-box}
+.acc-hero small{font-size:12px;color:var(--sourdine)}
+.acc-hero .g{font:800 30px 'JetBrains Mono',monospace;margin:4px 0;letter-spacing:-.02em}.acc-hero .g span{font-size:13px;color:var(--sourdine)}
+.acc-hero .ev{font-size:12px;font-weight:700}
+.acc-spark{display:flex;align-items:flex-end;gap:3px;height:48px;margin-top:12px}
+.acc-spark i{flex:1;border-radius:3px 3px 1px 1px;background:linear-gradient(180deg,var(--aura1),rgba(61,232,200,.2));min-height:2px}
+.acc-axe{display:flex;justify-content:space-between;font:10px 'JetBrains Mono',monospace;color:var(--sourdine);margin-top:5px}
+body.co .tuiles{grid-template-columns:1fr 1fr}
+body.co .tuile{text-align:left;padding:12px 13px}
+body.co .tuile .v{font-size:18px;color:var(--texte)}
+body.co .tuile .l{font-size:10px;letter-spacing:.03em;text-transform:none;font-weight:600}
+.adm-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;background:rgba(10,15,24,.96);border-top:1px solid var(--ligne);padding:7px 4px calc(8px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.adm-nav .in{display:flex;width:100%;max-width:680px}
+.adm-nav button{flex:1;background:none;border:none;border-radius:0;color:var(--sourdine);font-size:10.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0;position:relative}
+.adm-nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.adm-nav button.a{color:var(--aura1)}
+.adm-nav em{position:absolute;top:0;left:calc(50% + 6px);font-style:normal;font:800 9px 'JetBrains Mono',monospace;background:var(--ko);color:#fff;border-radius:99px;padding:2px 5px;min-width:16px}
+.adm-nav em:empty{display:none}
+body:not(.co) .adm-nav{display:none}
+.af-tabs{display:flex;border-bottom:1px solid var(--ligne);margin:0 0 12px;position:sticky;top:58px;z-index:19;background:var(--nuit)}
+.af-tabs button{flex:1;background:none;border:none;border-radius:0;color:var(--sourdine);font-size:12.5px;font-weight:800;padding:11px 0}
+.af-tabs button b{font:800 10px 'JetBrains Mono',monospace;color:#1A1200;background:#FFC86B;border-radius:99px;padding:1px 6px;margin-left:5px}
+.af-tabs button.actif{color:var(--texte);box-shadow:inset 0 -2px 0 var(--aura1)}
+.af-tabs2{display:flex;gap:6px;margin:12px 0}
+.af-tabs2 button{flex:1;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);border-radius:10px;padding:9px 0;font-size:12px}
+.af-tabs2 button.actif{color:var(--texte);border-color:rgba(61,232,200,.5);background:rgba(61,232,200,.08)}
+#pg-affilies .af-carte,#pg-affilies .af-part,#pg-affilies .af-tot,#pg-affilies .af-msg,#pg-affilies .af-titre{margin-left:0;margin-right:0}
+#pg-affilies .af-pad,#pg-affilies .af-sous{padding-left:0;padding-right:0}
+#pg-affilies .ep-sec{margin:18px 0 10px}
+#pg-affilies .ep-bloc,#pg-affilies .ep-hero,#pg-affilies .ep-tuiles,#pg-affilies .ep-per,#pg-affilies .ep-vide{margin-left:0;margin-right:0}
+#pg-affilies .vide[style]{margin-left:0!important;margin-right:0!important}
+.cl-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:9px}
+.cl-chips::-webkit-scrollbar{display:none}
+.cl-chips button{flex:0 0 auto;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);border-radius:9px;padding:7px 11px;font-size:12px}
+.cl-chips button.actif{color:var(--texte);border-color:rgba(61,232,200,.5);background:rgba(61,232,200,.08)}
+.cl-dates{display:flex;align-items:center;gap:8px;margin-bottom:9px}.cl-dates input{margin:0;flex:1;color-scheme:dark}.cl-dates span{color:var(--sourdine)}
+.cl-seg{display:flex;background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:3px;margin-bottom:12px}
+.cl-seg button{flex:1;background:none;border:none;color:var(--sourdine);border-radius:9px;padding:8px 0;font-size:12px}
+.cl-seg button.actif{background:var(--surface2);color:var(--texte)}
+.cl-tot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.cl-tot div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:9px 10px}
+.cl-tot b{display:block;font:800 13.5px 'JetBrains Mono',monospace}.cl-tot span{font-size:10px;color:var(--sourdine)}
+.cl-podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;margin:4px 0 12px;align-items:end}
+.cl-pod{text-align:center;padding:12px 6px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);cursor:pointer;min-width:0}
+.cl-pod .r{width:30px;height:30px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font:800 13px 'JetBrains Mono',monospace;color:#1A1200;background:#C9D3DF}
+.cl-pod.p1{padding-top:20px;border-color:rgba(255,200,107,.5);background:linear-gradient(180deg,rgba(255,200,107,.1),var(--surface))}
+.cl-pod.p1 .r{background:linear-gradient(135deg,#FFD98A,#F2A93B)}.cl-pod.p3 .r{background:#E0A672}
+.cl-pod b{display:block;font:800 12.5px 'JetBrains Mono',monospace;color:var(--aura1);overflow:hidden;text-overflow:ellipsis}
+.cl-pod .v{font:800 15px 'JetBrains Mono',monospace;margin-top:6px}.cl-pod span{font-size:10.5px;color:var(--sourdine);display:block;margin-top:2px}
+.cl-rang{display:flex;align-items:center;gap:10px;margin-bottom:7px;padding:11px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);cursor:pointer}
+.cl-rang:hover{border-color:rgba(61,232,200,.45)}
+.cl-rang.zero{opacity:.55}
+.cl-rang .n{width:22px;font:800 13px 'JetBrains Mono',monospace;color:var(--sourdine);text-align:center;flex-shrink:0}
+.cl-rang .t{flex:1;min-width:0}.cl-rang .t b{font:800 13px 'JetBrains Mono',monospace;color:var(--aura1)}.cl-rang .t div{font-size:11px;color:var(--sourdine);margin-top:2px}
+.cl-rang .bar{height:4px;border-radius:9px;background:var(--surface2);margin-top:6px;overflow:hidden}.cl-rang .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--aura1),var(--aura2))}
+.cl-rang .v{text-align:right;flex-shrink:0}.cl-rang .v b{font:800 14px 'JetBrains Mono',monospace;display:block}.cl-rang .v span{font-size:10px;color:var(--sourdine)}
+.pf-carte{padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--ligne)}
+.pf-l1{display:flex;align-items:center;gap:12px}
+.pf-bad{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));display:flex;align-items:center;justify-content:center;color:#05201B;font:900 15px 'JetBrains Mono',monospace;flex-shrink:0}
+.pf-l1 b{font:800 17px 'JetBrains Mono',monospace}.pf-l1 div div{font-size:11.5px;color:var(--sourdine);margin-top:2px;word-break:break-all}
+.pf-rk{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pf-rk span{font-size:11px;font-weight:800;padding:5px 9px;border-radius:8px;background:rgba(255,200,107,.1);color:#FFC86B}
+.pf-rk span.pct{background:rgba(61,232,200,.1);color:var(--aura1)}.pf-rk span.ko{background:rgba(255,122,158,.1);color:var(--ko)}
+.carte-tiktok{margin-bottom:8px}
+#pg-affilies .ep-sec h2{font-size:14px;letter-spacing:0;text-transform:none;color:var(--texte);margin:0;font-weight:800}
+#pg-affilies .ep-sec span{text-transform:none;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -442,10 +526,16 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
 
 <!-- ===== PANNEAU ===== -->
 <div id="panel">
-  <h2>Vue d'ensemble</h2>
-  <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
-
-
+  <!-- ===== ACCUEIL ===== -->
+  <section class="pg actif" id="pg-accueil">
+    <div class="pg-haut"><h1>AURA<span class="neuf0">90</span> · Admin</h1><button class="pg-btn" onclick="location.href='./'">App ›</button></div>
+    <div class="pg-sous" id="acc-date"></div>
+    <div class="pg-lab">À traiter <b id="acc-nb"></b></div>
+    <div id="acc-todo"><div class="todo calme">Chargement…</div></div>
+    <div class="pg-lab">Ce mois</div>
+    <div id="acc-hero"><div class="vide">Chargement des revenus…</div></div>
+    <div class="pg-lab">Chiffres clés <span>touche une case pour le détail</span></div>
+    <div class="tuiles" id="tuiles"><div class="vide">Chargement…</div></div>
   <!-- écran de détail des statistiques -->
   <div id="dt-ecran">
     <div id="dt-boite">
@@ -457,15 +547,17 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
       <div id="dt-corps"></div>
     </div>
   </div>
-  <h2>Messagerie</h2>
-  <a class="carte-tiktok" href="#" onclick="mbOuvrirBoite();return false">
-    <div>
-      <div class="t">💬 Messagerie <span id="mb-badge" style="color:var(--aura1)"></span></div>
-      <div class="s" id="mb-resume">Toutes les discussions des utilisateurs</div>
-    </div>
-    <span class="fl">›</span>
-  </a>
 
+  </section>
+
+  <!-- ===== MESSAGES ===== -->
+  <section class="pg" id="pg-messages">
+    <div class="pg-haut"><h1>Messages</h1><button class="pg-btn" onclick="chargerMessagerie()">↻</button></div>
+    <div class="mb-filtres" id="pg-mb-filtres"></div>
+    <div id="pg-mb-liste"><div class="vide">Chargement…</div></div>
+    <div class="ligne-btn" style="margin-top:14px"><button class="gris" style="flex:1;font-size:12px" onclick="mbRelancer(this)">📲 Notifier ceux qui ont reçu un message</button><button class="gris" style="font-size:12px" onclick="mbTesterIA(this)">Tester l'IA</button></div>
+    <div class="msg" id="msg-relance"></div>
+    <span id="mb-badge" hidden></span><span id="mb-resume" hidden></span>
   <!-- écran messagerie (liste ⇄ discussion) -->
   <div id="mb-ecran">
     <div class="mb-vue" id="mb-vue-liste">
@@ -474,9 +566,6 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
         <div class="mb-titre">Messagerie</div>
       </div>
       <div class="mb-filtres" id="mb-filtres"></div>
-      <div style="padding:8px 12px 0;display:flex;gap:6px"><button class="gris" style="flex:1;font-size:12px" onclick="mbRelancer(this)">📲 Notifier ceux qui ont reçu un message</button><button class="gris" style="font-size:12px;flex:0 0 auto" onclick="mbTesterIA(this)">🤖 Tester l'IA</button></div>
-      <div style="padding:0 12px">
-        <div class="msg" id="msg-relance" style="margin:6px 0 0"></div></div>
       <div class="mb-defile" id="mb-liste"><div class="vide">Chargement…</div></div>
     </div>
     <div class="mb-vue" id="mb-vue-conv">
@@ -495,7 +584,19 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
     </div>
   </div>
 
-  <h2>Contenu</h2>
+  </section>
+
+  <!-- ===== AFFILIÉS ===== -->
+  <section class="pg" id="pg-affilies">
+    <div class="pg-haut"><button class="pg-ret" id="af-ret" hidden onclick="history.back()">‹</button><h1 id="af-titre">Affiliés</h1><button class="pg-btn" onclick="afCharger()">↻</button></div>
+    <div class="af-tabs" id="af-onglets"></div>
+    <div id="af-corps"><div class="vide">Chargement…</div></div>
+    <span id="af-badge" hidden></span><span id="af-resume" hidden></span>
+  </section>
+
+  <!-- ===== CONTENU ===== -->
+  <section class="pg" id="pg-contenu">
+    <div class="pg-haut"><h1>Contenu</h1></div>
   <a class="carte-tiktok" href="tiktok.html">
     <div>
       <div class="t">🎬 Combinés TikTok</div>
@@ -504,7 +605,7 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
     <span class="fl">›</span>
   </a>
 
-  <a class="carte-tiktok" href="#" onclick="pvOuvrir();return false" style="margin-top:8px">
+  <a class="carte-tiktok" href="#" onclick="pvOuvrir();return false">
     <div>
       <div class="t">🏆 Preuves — coupons validés</div>
       <div class="s">Par catégorie, montantes classées par palier, prêtes à capturer</div>
@@ -512,7 +613,7 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
     <span class="fl">›</span>
   </a>
 
-  <a class="carte-tiktok" href="#" onclick="mtOuvrir();return false" style="margin-top:8px">
+  <a class="carte-tiktok" href="#" onclick="mtOuvrir();return false">
     <div>
       <div class="t">📈 Montantes — suivi des séries</div>
       <div class="s">Chaque série palier par palier : validés, perdus, match qui a fait perdre</div>
@@ -547,37 +648,21 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
     </div>
   </div>
 
-  <h2>Affiliés</h2>
-  <a class="carte-tiktok" href="#" onclick="afOuvrir();return false">
-    <div>
-      <div class="t">🤝 Affiliés <span id="af-badge" style="color:var(--aura1)"></span></div>
-      <div class="s" id="af-resume">Demandes, affiliés, retraits, réglages</div>
-    </div>
-    <span class="fl">›</span>
-  </a>
-  <div class="ligne-btn"><button class="gris" style="flex:1" onclick="afOuvrir('demandes')">Demandes</button><button class="gris" style="flex:1" onclick="afOuvrir('retraits')">Retraits</button></div>
-  <div class="msg" id="msg-retraits"></div>
+  </section>
 
-  <!-- écran Affiliés -->
-  <div id="af-ecran">
-    <div id="af-boite">
-      <div class="mb-barre">
-        <button class="mb-fleche" onclick="history.back()">‹</button>
-        <div class="mb-titre" id="af-titre">Affiliés</div>
-        <button class="gris" style="margin-left:auto;padding:8px 11px;font-size:12px" onclick="afCharger()">↻</button>
-      </div>
-      <div class="pv-cats" id="af-onglets"></div>
-      <div id="af-corps"><div class="vide" style="margin:12px">Chargement…</div></div>
-    </div>
-  </div>
-
-  <h2>Notification à tous les utilisateurs (in-app + push)</h2>
+  <!-- ===== PLUS ===== -->
+  <section class="pg" id="pg-plus">
+    <div class="pg-haut"><h1>Plus</h1></div>
+    <div class="pg-lab" style="margin-top:6px">Affiliés</div>
+    <a class="carte-tiktok" href="#" onclick="afOuvrir('reglages');return false"><div><div class="t">⚙️ Réglages des affiliés</div><div class="s">Paliers, minimums de retrait, pays et moyens, crypto</div></div><span class="fl">›</span></a>
+    <a class="carte-tiktok" href="#" onclick="afOuvrir('demandes');setTimeout(afAjouterForm,50);return false"><div><div class="t">＋ Ajouter un affilié</div><div class="s">Par email, avec son code et son %</div></div><span class="fl">›</span></a>
+  <div class="pg-lab">Notification à tous (in-app + push)</div>
   <input id="n-titre" placeholder="Titre — ex. 3 pronos Très sûr ce week-end 🔒">
   <textarea id="n-corps" placeholder="Message"></textarea>
   <button onclick="notifierTous()">Envoyer à tout le monde</button>
   <div class="msg" id="msg-notif"></div>
 
-  <h2 id="candidatures">Candidatures partenaires <span id="cd-badge" style="color:var(--aura1)"></span></h2>
+  <div class="pg-lab" id="candidatures">Candidatures (page partenaire) <b id="cd-badge"></b></div>
   <div class="cd-onglets" id="cd-onglets"></div>
   <input id="cd-cherche" placeholder="Rechercher un nom, un numéro, un réseau…" oninput="afficherCandidatures()">
   <div id="zone-candidatures"><div class="vide">Chargement…</div></div>
@@ -595,6 +680,16 @@ button.vert{background:rgba(61,232,200,.12);color:var(--aura1);border:1px solid 
     </div>
   </div>
 
+    <div class="ligne-btn" style="margin-top:22px"><button class="gris" style="flex:1" onclick="location.href='./'">‹ Revenir à l'app</button></div>
+  </section>
+
+  <nav class="adm-nav"><div class="in">
+    <button data-o="accueil" class="a" onclick="onglet('accueil')"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</button>
+    <button data-o="messages" onclick="onglet('messages')"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Messages<em id="nb-msg"></em></button>
+    <button data-o="affilies" onclick="onglet('affilies')"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14c2.4.2 4 1.8 4.6 4.5"/></svg>Affiliés<em id="nb-aff"></em></button>
+    <button data-o="contenu" onclick="onglet('contenu')"><svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9 17h6"/></svg>Contenu</button>
+    <button data-o="plus" onclick="onglet('plus')"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Plus</button>
+  </div></nav>
 </div>
 
 <script>
@@ -615,7 +710,7 @@ async function sessionExistante(){
     $('login').style.display = 'none';
     $('panel').style.display = 'block';
     $('qui').textContent = 'Connecté : ' + (s.email || '');
-    afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie();
+    afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie(); adminPret();
     return true;
   }catch(e){ JETON = null; return false; }
 }
@@ -636,7 +731,7 @@ async function connecter(){
   $('login').style.display = 'none';
   $('panel').style.display = 'block';
   $('qui').textContent = 'Connecté : ' + $('email').value.trim();
-  afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie(); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
+  afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie(); adminPret(); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
 }
 
 async function admin(corps){
@@ -668,28 +763,7 @@ function afficherStats(s){
     return `<div class="tuile${k?' clic':''}" ${k?`onclick="dtOuvrir('${k}')"`:''}><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`; }).join('');
 }
 
-async function chargerRetraits(){
-  const liste = await admin({ action:'retraits' });
-  $('retraits').innerHTML = (Array.isArray(liste) && liste.length) ? liste.map(r=>`
-    <div class="retrait">
-      <div class="g">
-        <div class="m">${r.montant.toLocaleString('fr-FR')} F</div>
-        <div class="num">📱 ${r.numero_wave || '—'}</div>
-        <div class="e">${r.email} · demandé le ${new Date(r.demande_le).toLocaleDateString('fr-FR')}</div>
-      </div>
-      <button onclick="payer(${r.id}, this)">✓ Versement effectué</button>
-    </div>`).join('') : `<div class="vide">Aucun retrait en attente.</div>`;
-}
 
-async function payer(id, btn){
-  btn.disabled = true; btn.textContent = '…';
-  const r = await admin({ action:'payer_retrait', id });
-  $('msg-retraits').textContent = r.ok
-    ? `Retrait marqué versé — notification envoyée (${r.push_envoyes} push).`
-    : (r.erreur || 'Erreur');
-  chargerRetraits();
-  admin({ action:'stats' }).then(afficherStats);
-}
 
 /* ======== CANDIDATURES PARTENAIRES v2 (15/10/2026) ========
    Lecture/écriture par deux fonctions SQL réservées à l'admin
@@ -880,6 +954,7 @@ function afficherMessagerie(){
       <div class="mb-droite"><div class="h">${mbH(c.dernier_message)}</div>
         ${c.non_lu_admin ? `<div class="mb-nl">${c.non_lu_admin}</div>` : `<span class="mb-tag ${c.mode}">${c.mode==='ia'?'IA':'TOI'}</span>`}</div>
     </div>`).join('') : '<div class="vide">Aucune discussion ici.</div>';
+  pgMbCopier();
 }
 async function mbTesterIA(btn){
   btn.disabled = true; btn.textContent = '…';
@@ -1017,7 +1092,7 @@ setInterval(mbSuivre, 5000);
 /* ======== ÉCRANS PLEINS & CLAVIER IPHONE (17/10/2026) ========
    Le fond est figé pendant qu'un écran plein est ouvert et l'écran suit la
    zone visible (au-dessus du clavier) : plus rien ne transparaît derrière. */
-const ECRANS = ['mb-ecran','dt-ecran','pv-ecran','mt-ecran','af-ecran'];
+const ECRANS = ['mb-ecran','dt-ecran','pv-ecran','mt-ecran'];
 let VERROU_Y = null;
 function ecranOuvert(){ return ECRANS.map(i => $(i)).find(e => e && e.classList.contains('ouvert')); }
 function ecranAjuster(){
@@ -1331,39 +1406,8 @@ function dtPush(){
 setInterval(() => { if(JETON) chargerCandidatures(true); }, 60000);
 document.addEventListener('visibilitychange', () => { if(!document.hidden && JETON) chargerCandidatures(true); });
 
-function basculerModele(){
-  const m = $('c-modele').value;
-  $('c-champs-pct').style.display = m === 'pct' ? '' : 'none';
-  $('c-champs-fixe').style.display = m === 'fixe' ? '' : 'none';
-}
 
-async function configurerCode(){
-  const email = $('c-email').value.trim(), code = $('c-code').value.trim();
-  if(!email || !code){ $('msg-code').textContent = 'Email et code requis.'; return; }
-  const m = $('c-modele').value;
-  const corps = { action:'config_code', email, code,
-    reduc_mois: $('c-reduc-mois').value ? parseInt($('c-reduc-mois').value) : null,
-    reduc_3mois: $('c-reduc-3mois').value ? parseInt($('c-reduc-3mois').value) : null };
-  if(m === 'pct'){ corps.pct = parseInt($('c-pct').value) || 35; }
-  if(m === 'fixe'){
-    corps.com_mois = parseInt($('c-com-mois').value) || 3000;
-    corps.com_3mois = parseInt($('c-com-3mois').value) || 6000;
-  }
-  const r = await admin(corps);
-  $('msg-code').textContent = (r && r.resultat) ? String(r.resultat) : (r.erreur || 'Erreur');
-  // candidature d'origine → onglet « Partenaires »
-  if(r && !r.erreur && window.CD_EN_COURS){
-    await majCandidature(window.CD_EN_COURS, 'partenaire', null, true);
-    window.CD_EN_COURS = null;
-  }
-}
 
-async function cloturer(){
-  const r = await admin({ action:'cloturer_semaine' });
-  $('msg-retraits').textContent = r.ok
-    ? `Semaine clôturée — ${r.push_envoyes} push envoyées à ${r.personnes} affilié(s) payé(s).`
-    : (r.erreur || 'Erreur');
-}
 
 async function notifierTous(){
   const titre = $('n-titre').value.trim(), corps = $('n-corps').value.trim();
@@ -1651,7 +1695,7 @@ function preuvesDepuisLien(){
 sessionExistante().then(ok => { if(ok){ const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); } });
 
 /* ================= ESPACE PARTENAIRE (19/10) ================= */
-let EP = null, EP_TAB = 'accueil', EP_PER = '30', EP_FIL = 'tous', RT = null;
+let EP = null, EP_TAB = 'accueil', EP_PER = '30', EP_FIL = 'tous', RT = null, EP_DEB = null, EP_FIN = null;
 const EP_RES = { tt:'TikTok', ig:'Instagram', fb:'Facebook', yt:'YouTube', sc:'Snapchat', x:'X (Twitter)', tg:'Telegram', wa:'WhatsApp', autre:'Autre' };
 const EP_RES_IC = { tt:'TT', ig:'IG', fb:'FB', yt:'YT', sc:'SC', x:'X', tg:'TG', wa:'WA', autre:'•' };
 const epEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1730,6 +1774,8 @@ function epSerie(n, debut, fin){
 }
 function epPeriode(){
   const now = new Date();
+  if(EP_PER === 'jour') return epSerie(1);
+  if(EP_PER === 'perso' && EP_DEB) return epSerie(0, new Date(EP_DEB + 'T12:00:00'), EP_FIN ? new Date(EP_FIN + 'T12:00:00') : now);
   if(EP_PER === '7') return epSerie(7);
   if(EP_PER === '30') return epSerie(30);
   if(EP_PER === 'mois') return epSerie(0, new Date(now.getFullYear(), now.getMonth(), 1), now);
@@ -1854,7 +1900,7 @@ function epStats(){
   const mx = Math.max(1, ...barres);
   const abo = T.abonnes + T.reabos;
   const pc = (a,b) => b ? (a/b*100).toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %' : '—';
-  const per = [['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']];
+  const per = [['jour',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']].concat(EP_DEB ? [['perso', 'Du ' + epJ(EP_DEB + 'T12:00:00') + (EP_FIN ? ' au ' + epJ(EP_FIN + 'T12:00:00') : '')]] : []);
   const lignes = s.slice().reverse().filter(x => x.clics || x.inscrits || x.abonnes || x.reabos || x.commission);
   return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';epTab('stats')">${l}</button>`).join('')}</div>
     <div class="ep-tuiles">
@@ -2105,24 +2151,22 @@ function afMsg(t, ok){ const m = $('af-msg'); if(!m) return; m.className = 'af-m
 async function afPush(user_id, titre, corps){ try{ await admin({ action:'push_user', user_id, titre, corps }); }catch(e){} }
 
 function afOuvrir(onglet){
-  $('af-ecran').classList.add('ouvert');
-  history.pushState({ af: 1 }, '');
   if(onglet) AF_ONG = onglet;
   AF_DET = null;
-  afCharger();
+  onglet_('affilies');
+  if(AF) afRendre(); else afCharger();
 }
-function afFermer(){ $('af-ecran').classList.remove('ouvert'); AF_DET = null; }
 window.addEventListener('popstate', e => {
-  if(!$('af-ecran').classList.contains('ouvert')) return;
-  if(AF_DET && !(e.state && e.state.afd)){ AF_DET = null; afRendre(); return; }
-  if(!(e.state && (e.state.af || e.state.afd))) afFermer();
+  if(AF_DET && !(e.state && e.state.afd)){ AF_DET = null; afRendre(); }
 });
 
 async function afCharger(){
+  CL.data = null;
   try{ AF = await rpc('admin_aff_liste'); }
   catch(e){ $('af-corps').innerHTML = `<div class="vide" style="margin:12px">Erreur : ${afE(e.message)}<br>As-tu lancé partenaires.sql ?</div>`; return; }
   afResume();
-  afRendre();
+  if(AF_DET){ AF_DET.p = AF.partenaires.find(p => p.user_id === AF_DET.uid) || AF_DET.p; afRendreDetail(); } else afRendre();
+  if(typeof majAccueil === 'function') majAccueil();
 }
 function afResume(){
   if(!AF) return;
@@ -2135,14 +2179,14 @@ function afResume(){
 
 function afRendre(){
   if(AF_DET) return afRendreDetail();
-  $('af-titre').textContent = 'Affiliés';
-  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, affilies: AF.partenaires.filter(p => p.statut === 'actif').length,
-              retraits: AF.retraits.filter(x => x.statut === 'demande').length };
+  $('af-titre').textContent = AF_ONG === 'reglages' ? 'Réglages affiliés' : 'Affiliés';
+  $('af-ret').hidden = true;
+  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length };
   $('af-onglets').style.display = '';
-  $('af-onglets').innerHTML = [['demandes','Demandes'],['affilies','Affiliés'],['retraits','Retraits'],['reglages','Réglages']]
+  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits']]
     .map(([k, l]) => `<button class="${AF_ONG === k ? 'actif' : ''}" onclick="AF_ONG='${k}';afRendre()">${l}${n[k] ? `<b>${n[k]}</b>` : ''}</button>`).join('');
-  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, affilies: afAffilies, retraits: afRetraits, reglages: afReglages })[AF_ONG]();
-  $('af-corps').scrollTop = 0;
+  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages })[AF_ONG]();
+  window.scrollTo(0, 0);
 }
 
 /* ---------- demandes ---------- */
@@ -2261,33 +2305,41 @@ function afAffilies(){
 function afFiltrerListe(){ const q = AF_Q.toLowerCase(); document.querySelectorAll('#af-liste .af-part').forEach(e => e.style.display = e.textContent.toLowerCase().includes(q) ? '' : 'none'); }
 
 /* ---------- détail d'un affilié : son espace, comme il le voit ---------- */
-async function afDetail(uid){
-  AF_DET = { uid, p: AF.partenaires.find(p => p.user_id === uid), ep: null };
-  AF_DET_ONG = 'gerer';
+async function afDetail(uid, depuis){
+  AF_DET = { uid, p: AF.partenaires.find(p => p.user_id === uid), ep: null, depuis: depuis || 'liste' };
+  AF_DET_ONG = 'stats';
+  if(depuis === 'classement'){ EP_PER = { jour:'jour', '7':'7', mois:'mois', '30':'30', tout:'tout', dates:'perso' }[CL.per]; EP_DEB = CL.deb; EP_FIN = CL.fin; }
+  else EP_PER = '30';
+  window.scrollTo(0, 0);
   history.pushState({ afd: 1 }, '');
   afRendreDetail();
   try{ AF_DET.ep = await rpc('admin_aff_detail', { p_user: uid }); }catch(e){ AF_DET.ep = { statut:'erreur' }; }
   if(AF_DET && AF_DET.uid === uid) afRendreDetail();
 }
-function epTab(t){ AF_DET_ONG = t; afRendreDetail(); }   // les boutons de l'espace partenaire (périodes, filtres) appellent epTab
+function epTab(t){ if(!AF_DET) return; AF_DET_ONG = t; afRendreDetail(); }   // les boutons de l'espace partenaire (périodes, filtres) appellent epTab
 function afRendreDetail(){
   const p = AF_DET.p, ep = AF_DET.ep;
-  $('af-titre').textContent = p.code;
+  $('af-titre').textContent = 'Profil affilié';
+  $('af-ret').hidden = false;
   $('af-onglets').style.display = 'none';
-  const ong = [['gerer','Gérer'],['accueil','Aperçu'],['stats','Stats'],['filleuls','Filleuls'],['retraits','Retraits']];
+  const ong = [['stats','Stats'],['filleuls','Filleuls'],['retraits','Retraits'],['gerer','Gérer']];
   let corps;
   if(AF_DET_ONG === 'gerer') corps = afGerer(p);
+  else if(AF_DET_ONG === 'retraits') corps = afRetraitsDe(p.user_id);
   else if(!ep) corps = `<div class="vide" style="margin:0 12px">Chargement…</div>`;
-  else if(ep.statut !== 'actif') corps = `<div class="vide" style="margin:0 12px">Espace visible seulement quand l'affilié est actif (là : ${afE(p.statut)}).</div>`;
-  else {
-    EP = ep;
-    corps = AF_DET_ONG === 'accueil' ? epHero(false) + `<div class="ep-sec"><h2>7 derniers jours</h2></div><div class="ep-bloc">${epSerie(7).reverse().map((x, i) => epLigneJour(x, i === 0)).join('')}</div>` + epNiveau()
-          : AF_DET_ONG === 'stats' ? epStats()
-          : AF_DET_ONG === 'filleuls' ? epFilleuls()
-          : afRetraitsDe(p.user_id);
-  }
-  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>
-    <div class="af-sous" style="padding-top:2px">${ong.map(([k, l]) => `<button class="${AF_DET_ONG === k ? 'actif' : ''}" onclick="epTab('${k}')">${l}</button>`).join('')}</div>` + corps;
+  else if(ep.statut !== 'actif') corps = `<div class="vide" style="margin:0 12px">Stats visibles seulement quand l'affilié est actif (là : ${afE(p.statut)}).</div>`;
+  else { EP = ep; corps = AF_DET_ONG === 'stats' ? epStats() : epFilleuls(); }
+  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + afProfilTete(p) +
+    `<div class="af-tabs2">${ong.map(([k, l]) => `<button class="${AF_DET_ONG === k ? 'actif' : ''}" onclick="epTab('${k}')">${l}</button>`).join('')}</div>` + corps;
+}
+function afProfilTete(p){
+  const rangs = clRangs(p.user_id);
+  const ini = (p.code || '?').slice(0, 2);
+  const pays = afPays(p.pays);
+  return `<div class="pf-carte">
+      <div class="pf-l1"><div class="pf-bad">${afE(ini)}</div><div style="min-width:0"><b>${afE(p.code)}</b><div>${afE(p.email)}${pays ? ' · ' + pays.dr + ' ' + afE(pays.nom) : ''}${p.valide_le ? ' · depuis le ' + new Date(p.valide_le).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : ''}</div></div></div>
+      <div class="pf-rk">${rangs.map(r => `<span>${r}</span>`).join('')}<span class="pct">★ ${p.pct} %${p.pct_perso ? ' fixe' : ''}</span>${p.statut !== 'actif' ? `<span class="ko">${afE(p.statut)}</span>` : ''}</div>
+    </div>`;
 }
 function afGerer(p){
   const pro = p.pro_jusqua && new Date(p.pro_jusqua) > new Date();
@@ -2443,6 +2495,161 @@ async function afSauverReg(b){
     afMsg(r.msg, r.ok);
   }catch(e){ afMsg(e.message); }
   b.disabled = false;
+}
+
+
+/* ---------- classement ---------- */
+let CL = { per:'mois', deb:null, fin:null, pays:'tous', crit:'commissions', data:null, cle:'' };
+const clIso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function clBornes(){
+  const t = new Date(), auj = clIso(t), moins = n => clIso(new Date(t.getTime() - n * 864e5));
+  return { jour:[auj, auj], '7':[moins(6), auj], mois:[clIso(new Date(t.getFullYear(), t.getMonth(), 1)), auj], '30':[moins(29), auj], tout:[null, auj], dates:[CL.deb, CL.fin || auj] }[CL.per];
+}
+const CL_PER = [['jour',"Aujourd'hui"],['7','7 j'],['mois','Ce mois'],['30','30 j'],['tout','Tout'],['dates','Dates']];
+const CL_LIB = { jour:"aujourd'hui", '7':'sur 7 j', mois:'ce mois', '30':'sur 30 j', tout:'au total', dates:'sur la période' };
+const CL_CRIT = [['commissions','Commissions'],['abonnements','Abonnés'],['clics','Clics'],['conversion','Conversion']];
+async function clCharger(){
+  const [d, f] = clBornes(), cle = d + '|' + f;
+  if(CL.data && CL.cle === cle) return CL.data;
+  try{ CL.data = await rpc('admin_aff_classement', { p_debut: d, p_fin: f }); CL.cle = cle; }
+  catch(e){ CL.data = []; CL.cle = cle; afMsg(e.message); }
+  return CL.data;
+}
+function clValeur(x){
+  if(CL.crit === 'conversion') return x.clics >= 10 ? x.abonnements / x.clics : -1;
+  return Number(x[CL.crit]) || 0;
+}
+function clFmt(x){
+  const v = clValeur(x);
+  if(CL.crit === 'conversion') return v < 0 ? ['—', 'moins de 10 clics'] : [(v * 100).toLocaleString('fr-FR', { maximumFractionDigits: 1 }) + ' %', x.abonnements + ' / ' + x.clics + ' clics'];
+  if(CL.crit === 'commissions') return [afF(v), 'F'];
+  return [afF(v), CL.crit === 'abonnements' ? 'abonnés' : 'clics'];
+}
+function clTrie(liste){ return liste.slice().sort((a, b) => clValeur(b) - clValeur(a) || b.commissions - a.commissions); }
+function clRangs(uid){
+  if(!CL.data || !AF_DET || AF_DET.depuis !== 'classement') return [];
+  const crit = CL.crit; CL.crit = 'commissions';
+  const g = clTrie(CL.data.filter(x => x.commissions > 0));
+  const moi = CL.data.find(x => x.user_id === uid);
+  const r = [];
+  const med = n => n === 1 ? '🥇 1er' : n === 2 ? '🥈 2e' : n === 3 ? '🥉 3e' : n + 'e';
+  const i = g.findIndex(x => x.user_id === uid);
+  if(i >= 0) r.push(med(i + 1) + ' ' + CL_LIB[CL.per]);
+  if(moi && moi.pays){ const j = g.filter(x => x.pays === moi.pays).findIndex(x => x.user_id === uid); const pp = afPays(moi.pays); if(j >= 0 && pp) r.push(med(j + 1) + ' ' + pp.nom); }
+  CL.crit = crit;
+  return r;
+}
+function clChoix(k, v){
+  CL[k] = v;
+  if(k === 'per' && v === 'dates' && !CL.deb){ const t = new Date(); CL.deb = clIso(new Date(t.getFullYear(), t.getMonth(), 1)); CL.fin = clIso(t); }
+  afRendre();
+}
+function afClassement(){
+  const [d, f] = clBornes();
+  if(!CL.data || CL.cle !== d + '|' + f){ clCharger().then(() => { if(AF_ONG === 'classement' && !AF_DET) afRendre(); }); return `<div class="vide" style="margin:0 12px">Chargement du classement…</div>`; }
+  const tous = CL.data;
+  const paysDispo = [...new Set(tous.map(x => x.pays).filter(Boolean))];
+  const L = clTrie(tous.filter(x => CL.pays === 'tous' || x.pays === CL.pays));
+  const actifs = L.filter(x => clValeur(x) > 0), max = Math.max(1, ...actifs.map(clValeur));
+  const tot = L.reduce((a, x) => ({ c: a.c + x.commissions, ab: a.ab + x.abonnements, ca: a.ca + x.ca }), { c:0, ab:0, ca:0 });
+  const pays = x => { const p = afPays(x.pays); return p ? p.dr : '🌍'; };
+  const pod = (x, n) => x ? `<div class="cl-pod p${n}" onclick="afDetail('${x.user_id}','classement')"><div class="r">${n}</div><b>${afE(x.code)}</b><div class="v">${clFmt(x)[0]}</div><span>${pays(x)} · ${x.abonnements} abonné${x.abonnements > 1 ? 's' : ''}</span></div>` : '<div></div>';
+  const ligne = (x, i) => { const [v, u] = clFmt(x), val = clValeur(x);
+    return `<div class="cl-rang ${val > 0 ? '' : 'zero'}" onclick="afDetail('${x.user_id}','classement')"><div class="n">${i + 1}</div>
+      <div class="t"><b>${afE(x.code)}</b><div>${pays(x)} · ${x.abonnements} abonné${x.abonnements > 1 ? 's' : ''} · ${afF(x.clics)} clics · ${afF(x.inscrits)} inscrits</div>
+      <div class="bar"><i style="width:${val > 0 ? Math.max(3, val / max * 100) : 0}%"></i></div></div>
+      <div class="v"><b>${v}</b><span>${u}</span></div></div>`; };
+  const podium = actifs.length >= 3 ? `<div class="cl-podium">${pod(actifs[1], 2)}${pod(actifs[0], 1)}${pod(actifs[2], 3)}</div>` : '';
+  const reste = actifs.length >= 3 ? L.slice(3) : L;
+  return `<div class="cl-chips">${CL_PER.map(([k, l]) => `<button class="${CL.per === k ? 'actif' : ''}" onclick="clChoix('per','${k}')">${k === 'dates' ? '📅 ' : ''}${l}</button>`).join('')}</div>
+    ${CL.per === 'dates' ? `<div class="cl-dates"><input type="date" value="${CL.deb || ''}" onchange="CL.deb=this.value;CL.data=null;afRendre()"><span>→</span><input type="date" value="${CL.fin || ''}" onchange="CL.fin=this.value;CL.data=null;afRendre()"></div>` : ''}
+    <div class="cl-chips"><button class="${CL.pays === 'tous' ? 'actif' : ''}" onclick="clChoix('pays','tous')">🌍 Tous</button>${paysDispo.map(c => { const p = afPays(c); return `<button class="${CL.pays === c ? 'actif' : ''}" onclick="clChoix('pays','${c}')">${p ? p.dr + ' ' + afE(p.nom) : afE(c)}</button>`; }).join('')}</div>
+    <div class="cl-seg">${CL_CRIT.map(([k, l]) => `<button class="${CL.crit === k ? 'actif' : ''}" onclick="clChoix('crit','${k}')">${l}</button>`).join('')}</div>
+    <div class="cl-tot"><div><b>${afF(tot.c)} F</b><span>Commissions</span></div><div><b>${tot.ab}</b><span>Abonnements</span></div><div><b>${afF(tot.ca)} F</b><span>Encaissé via eux</span></div></div>
+    ${L.length ? podium + reste.map((x, i) => ligne(x, i + (actifs.length >= 3 ? 3 : 0))).join('') : `<div class="vide" style="margin:0 12px">Aucun affilié ${CL.pays !== 'tous' ? 'dans ce pays' : ''}.</div>`}`;
+}
+
+/* ======== ADMIN v2 : navigation par onglets (19/10/2026) ======== */
+let ONGLET = 'accueil';
+function onglet_(k){
+  ONGLET = k;
+  document.querySelectorAll('.pg').forEach(p => p.classList.toggle('actif', p.id === 'pg-' + k));
+  document.querySelectorAll('.adm-nav button').forEach(b => b.classList.toggle('a', b.dataset.o === k));
+  try{ localStorage.setItem('aura90_admin_onglet', k); }catch(e){}
+  window.scrollTo(0, 0);
+}
+function onglet(k){
+  if(k === 'affilies' && AF_DET){ AF_DET = null; if(AF) afRendre(); }
+  if(k === 'affilies' && AF && ONGLET === 'affilies' && !AF_DET){ AF_ONG = AF_ONG === 'reglages' ? 'demandes' : AF_ONG; afRendre(); }
+  onglet_(k);
+  if(k === 'messages') chargerMessagerie(true);
+}
+function adminPret(){
+  document.body.classList.add('co');
+  let o = 'accueil'; try{ o = localStorage.getItem('aura90_admin_onglet') || 'accueil'; }catch(e){}
+  onglet_(['accueil','messages','affilies','contenu','plus'].includes(o) ? o : 'accueil');
+  dtCharger().then(majAccueil).catch(() => {});
+  majAccueil();
+  setInterval(() => { if(!document.hidden && ONGLET === 'accueil') afCharger(); }, 120000);
+}
+
+const IC = {
+  aff: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M17 11v6M14 14h6"/></svg>',
+  ret: '<svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M7 15h3"/></svg>',
+  msg: '<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  ok:  '<svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>'
+};
+function majAccueil(){
+  const z = $('acc-todo'); if(!z) return;
+  const j = new Date();
+  $('acc-date').textContent = j.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, c => c.toUpperCase()) + ' · à jour à ' + j.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+  const items = [];
+  if(AF){
+    const d = AF.demandes.filter(x => x.statut === 'en_attente');
+    if(d.length){ const top = d.slice().sort((a, b) => (b.abonnes || 0) - (a.abonnes || 0))[0];
+      items.push(`<div class="todo or" onclick="afOuvrir('demandes')"><div class="ic">${IC.aff}</div><div class="t"><b>${d.length} demande${d.length > 1 ? 's' : ''} partenaire</b><span>${echap(top.email)}${top.abonnes ? ' · ' + top.abonnes.toLocaleString('fr-FR') + ' abonnés' : ''}</span></div><div class="n">${d.length}</div></div>`); }
+    const r = AF.retraits.filter(x => x.statut === 'demande');
+    if(r.length){ const s = r.reduce((a, x) => a + x.montant, 0), moy = [...new Set(r.map(x => x.crypto ? x.crypto + ' ' + x.reseau : (x.moyen || 'Wave')))].join(', ');
+      items.push(`<div class="todo vert" onclick="afOuvrir('retraits')"><div class="ic">${IC.ret}</div><div class="t"><b>${r.length} retrait${r.length > 1 ? 's' : ''} à envoyer</b><span>${s.toLocaleString('fr-FR')} F · ${echap(moy)}</span></div><div class="n">${r.length}</div></div>`); }
+  }
+  const mt = MB_CONVS.filter(c => c.a_traiter), nl = MB_CONVS.filter(c => c.non_lu_admin > 0);
+  if(mt.length) items.push(`<div class="todo rose" onclick="MB_FILTRE='traiter';onglet('messages');afficherMessagerie()"><div class="ic">${IC.msg}</div><div class="t"><b>${mt.length} discussion${mt.length > 1 ? 's' : ''} à traiter</b><span>${echap(mt[0].dernier_texte || mt[0].email || '')}</span></div><div class="n">${mt.length}</div></div>`);
+  else if(nl.length) items.push(`<div class="todo rose" onclick="MB_FILTRE='nonlus';onglet('messages');afficherMessagerie()"><div class="ic">${IC.msg}</div><div class="t"><b>${nl.length} message${nl.length > 1 ? 's' : ''} non lu${nl.length > 1 ? 's' : ''}</b><span>${echap(nl[0].dernier_texte || '')}</span></div><div class="n">${nl.length}</div></div>`);
+  $('acc-nb').textContent = items.length ? items.length : '';
+  z.innerHTML = items.join('') || `<div class="todo calme">${IC.ok.replace('<svg', '<svg style="width:18px;height:18px;stroke:var(--aura1);fill:none;stroke-width:2"')} Rien à traiter pour l'instant</div>`;
+  // badges du menu
+  const nAf = AF ? AF.demandes.filter(x => x.statut === 'en_attente').length + AF.retraits.filter(x => x.statut === 'demande').length : 0;
+  $('nb-aff').textContent = nAf || '';
+  $('nb-msg').textContent = mt.length || nl.length || '';
+  // revenus du mois
+  if(typeof DT !== 'undefined' && DT && DT.paiements){
+    const P = paiementsOk().filter(p => p._d);
+    const deb = new Date(j.getFullYear(), j.getMonth(), 1), debP = new Date(j.getFullYear(), j.getMonth() - 1, 1);
+    const finP = new Date(debP.getTime() + (j - deb));
+    const mois = P.filter(p => p._d >= deb), prec = P.filter(p => p._d >= debP && p._d <= finP);
+    const som = l => l.reduce((a, p) => a + p._m, 0);
+    const ev = som(prec) ? Math.round((som(mois) - som(prec)) / som(prec) * 100) : null;
+    const jours = []; for(let i = 13; i >= 0; i--){ const d = new Date(j.getFullYear(), j.getMonth(), j.getDate() - i); jours.push({ d, v: som(P.filter(p => p._d.toDateString() === d.toDateString())) }); }
+    const mx = Math.max(1, ...jours.map(x => x.v));
+    const nomMois = j.toLocaleDateString('fr-FR', { month:'long' });
+    $('acc-hero').innerHTML = `<div class="acc-hero" onclick="dtOuvrir('revenus')"><small>Revenus de ${nomMois}</small>
+      <div class="g">${som(mois).toLocaleString('fr-FR')} <span>F</span></div>
+      <div class="ev" style="color:${ev === null || ev >= 0 ? 'var(--aura1)' : 'var(--ko)'}">${ev === null ? '' : (ev >= 0 ? '▲ +' : '▼ ') + ev + ' % vs même période le mois dernier · '}${mois.length} paiement${mois.length > 1 ? 's' : ''}</div>
+      <div class="acc-spark">${jours.map(x => `<i style="height:${x.v ? Math.max(6, x.v / mx * 100) : 2}%;${x.v ? '' : 'opacity:.25'}" title="${x.d.toLocaleDateString('fr-FR')} : ${x.v.toLocaleString('fr-FR')} F"></i>`).join('')}</div>
+      <div class="acc-axe"><span>${jours[0].d.toLocaleDateString('fr-FR', { day:'numeric', month:'short' })}</span><span>aujourd'hui</span></div></div>`;
+  }
+}
+
+/* messagerie affichée dans l'onglet Messages ; une discussion s'ouvre en plein écran */
+function pgMbOuvrir(id){
+  $('mb-ecran').classList.add('ouvert');
+  mbOuvrir(id);
+}
+function pgMbCopier(){
+  const f = $('pg-mb-filtres'), l = $('pg-mb-liste');
+  if(f) f.innerHTML = $('mb-filtres').innerHTML;
+  if(l) l.innerHTML = $('mb-liste').innerHTML.replace(/onclick="mbOuvrir\(/g, 'onclick="pgMbOuvrir(');
+  majAccueil();
 }
 
 </script>
