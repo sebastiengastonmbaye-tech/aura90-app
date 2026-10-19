@@ -373,6 +373,17 @@ html.ep-bloque,html.ep-bloque body{overflow:hidden}
 .ep-suivi div{flex:1;font-size:10.5px;color:var(--sourdine);text-align:center}
 .ep-suivi i{display:block;height:4px;border-radius:9px;background:var(--ligne);margin-bottom:6px}
 .ep-suivi .f i{background:var(--aura1)}.ep-suivi .f{color:var(--texte)}
+
+.ep-gbloc{position:relative;overflow:visible}
+.ep-graph{touch-action:pan-y;cursor:crosshair;padding-top:56px!important;height:166px!important}
+.ep-graph i.sel{background:linear-gradient(180deg,#fff,var(--aura1))!important;opacity:1!important}
+.ep-bulle{position:absolute;top:8px;left:8px;z-index:3;min-width:150px;max-width:240px;padding:8px 10px;border-radius:12px;background:var(--surface2);border:1px solid rgba(61,232,200,.45);box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;font-size:12px;line-height:1.35}
+.ep-bulle b{display:block;font-size:11.5px;color:var(--sourdine);font-weight:700}
+.ep-bulle .ep-v{display:block;font:800 15px 'JetBrains Mono',monospace;margin:2px 0}
+.ep-bulle small{display:block;color:var(--sourdine);font-size:11px}
+.ep-dates{display:flex;align-items:center;gap:8px;margin:-4px 16px 12px}
+.ep-dates input{flex:1;min-width:0;margin:0;padding:10px 12px;border-radius:11px;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-family:inherit;font-size:13px;color-scheme:dark}
+.ep-dates span{color:var(--sourdine)}
 /* ----- Affiliés (19/10/2026) ----- */
 .af-pad{padding:0 12px}
 .af-carte{background:var(--surface);border:1px solid var(--ligne);border-radius:16px;padding:14px;margin:0 12px 10px}
@@ -510,6 +521,7 @@ body:not(.co) .adm-nav{display:none}
 .carte-tiktok{margin-bottom:8px}
 #pg-affilies .ep-sec h2{font-size:14px;letter-spacing:0;text-transform:none;color:var(--texte);margin:0;font-weight:800}
 #pg-affilies .ep-sec span{text-transform:none;letter-spacing:0}
+#pg-affilies .ep-dates{margin:-4px 0 12px}
 </style>
 </head>
 <body>
@@ -665,23 +677,7 @@ body:not(.co) .adm-nav{display:none}
   <button onclick="notifierTous()">Envoyer à tout le monde</button>
   <div class="msg" id="msg-notif"></div>
 
-  <div class="pg-lab" id="candidatures">Candidatures (page partenaire) <b id="cd-badge"></b></div>
-  <div class="cd-onglets" id="cd-onglets"></div>
-  <input id="cd-cherche" placeholder="Rechercher un nom, un numéro, un réseau…" oninput="afficherCandidatures()">
-  <div id="zone-candidatures"><div class="vide">Chargement…</div></div>
-  <div class="msg" id="msg-cand"></div>
 
-  <div class="cd-modal" id="cd-modal" onclick="if(event.target===this)fermerModal()">
-    <div class="cd-boite">
-      <h3 id="cd-m-titre">Message WhatsApp</h3>
-      <p id="cd-m-sous">Modifie si besoin, puis ouvre WhatsApp : le message sera déjà écrit.</p>
-      <textarea id="cd-m-texte"></textarea>
-      <div class="ligne-btn">
-        <button class="cd-wa" onclick="envoyerWhatsApp()">💬 Ouvrir WhatsApp</button>
-        <button class="gris" onclick="fermerModal()">Annuler</button>
-      </div>
-    </div>
-  </div>
 
     <div class="ligne-btn" style="margin-top:22px"><button class="gris" style="flex:1" onclick="location.href='./'">‹ Revenir à l'app</button></div>
   </section>
@@ -713,7 +709,7 @@ async function sessionExistante(){
     $('login').style.display = 'none';
     $('panel').style.display = 'block';
     $('qui').textContent = 'Connecté : ' + (s.email || '');
-    afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie(); adminPret();
+    afficherStats(t); afCharger(); chargerMessagerie(); adminPret();
     return true;
   }catch(e){ JETON = null; return false; }
 }
@@ -734,7 +730,7 @@ async function connecter(){
   $('login').style.display = 'none';
   $('panel').style.display = 'block';
   $('qui').textContent = 'Connecté : ' + $('email').value.trim();
-  afficherStats(t); afCharger(); chargerCandidatures(); chargerMessagerie(); adminPret(); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
+  afficherStats(t); afCharger(); chargerMessagerie(); adminPret(); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
 }
 
 async function admin(corps){
@@ -1406,7 +1402,7 @@ function dtPush(){
 }
 
 // rafraîchissement automatique (plus besoin du bouton)
-setInterval(() => { if(JETON) chargerCandidatures(true); }, 60000);
+
 document.addEventListener('visibilitychange', () => { if(!document.hidden && JETON) chargerCandidatures(true); });
 
 
@@ -1782,6 +1778,7 @@ function epPeriode(){
   const now = new Date();
   if(EP_PER === 'jour') return epSerie(1);
   if(EP_PER === 'perso' && EP_DEB) return epSerie(0, new Date(EP_DEB + 'T12:00:00'), EP_FIN ? new Date(EP_FIN + 'T12:00:00') : now);
+  if(EP_PER === 'perso') return epSerie(0, new Date(now.getFullYear(), now.getMonth(), 1), now);
   if(EP_PER === '7') return epSerie(7);
   if(EP_PER === '30') return epSerie(30);
   if(EP_PER === 'mois') return epSerie(0, new Date(now.getFullYear(), now.getMonth(), 1), now);
@@ -1897,18 +1894,39 @@ function epAccueil(){
     epNiveau();
 }
 
+let EP_BARRES = [];
+const iso1 = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+function epBulle(ev, g){
+  if(!EP_BARRES.length) return;
+  const r = g.getBoundingClientRect();
+  let x = (ev.clientX - r.left) / r.width; if(document.documentElement.dir === 'rtl') x = 1 - x;
+  const i = Math.min(EP_BARRES.length - 1, Math.max(0, Math.floor(x * EP_BARRES.length)));
+  const b = EP_BARRES[i], bulle = g.parentNode.querySelector('.ep-bulle');
+  g.querySelectorAll('i').forEach((e, k) => e.classList.toggle('sel', k === i));
+  const j = d => new Date(d + 'T12:00:00').toLocaleDateString(epLoc(), { weekday: b.deb === b.fin ? 'short' : undefined, day:'numeric', month:'short' });
+  bulle.innerHTML = `<b>${b.deb === b.fin ? j(b.deb) : j(b.deb) + ' → ' + j(b.fin)}</b><span class="ep-v">${epM(b.com)}</span><small>${b.ab} abonnement${b.ab>1?'s':''} · ${b.cl} clic${b.cl>1?'s':''} · ${b.ins} inscrit${b.ins>1?'s':''}</small>`;
+  bulle.hidden = false;
+  const bar = g.children[i].getBoundingClientRect(), p = g.parentNode.getBoundingClientRect();
+  const w = bulle.offsetWidth, cx = bar.left + bar.width / 2 - p.left;
+  bulle.style.left = Math.min(p.width - w - 8, Math.max(8, cx - w / 2)) + 'px';
+}
 function epStats(){
   const s = epPeriode();
   const T = s.reduce((a,x)=>{ for(const k in x) if(k!=='jour') a[k]=(a[k]||0)+x[k]; return a; }, {});
   const max = Math.max(1, ...s.map(x=>x.commission));
   const pas = Math.max(1, Math.ceil(s.length / 31));
-  const barres = []; for(let i=0;i<s.length;i+=pas){ const g = s.slice(i,i+pas); barres.push(g.reduce((a,x)=>a+x.commission,0)/g.length); }
+  // barres : un jour (ou un groupe de jours sur une longue période) ; toucher une barre affiche ses chiffres
+  EP_BARRES = []; for(let i=0;i<s.length;i+=pas){ const g = s.slice(i,i+pas);
+    EP_BARRES.push({ deb:g[0].jour, fin:g[g.length-1].jour, com:g.reduce((a,x)=>a+x.commission,0), ab:g.reduce((a,x)=>a+x.abonnes+x.reabos,0), cl:g.reduce((a,x)=>a+x.clics,0), ins:g.reduce((a,x)=>a+x.inscrits,0) }); }
+  const barres = EP_BARRES.map(b => b.com);
   const mx = Math.max(1, ...barres);
   const abo = T.abonnes + T.reabos;
   const pc = (a,b) => b ? (a/b*100).toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %' : '—';
-  const per = [['jour',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']].concat(EP_DEB ? [['perso', 'Du ' + epJ(EP_DEB + 'T12:00:00') + (EP_FIN ? ' au ' + epJ(EP_FIN + 'T12:00:00') : '')]] : []);
+  const per = [['jour',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout'],['perso','📅 Dates']];
   const lignes = s.slice().reverse().filter(x => x.clics || x.inscrits || x.abonnes || x.reabos || x.commission);
-  return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';epTab('stats')">${l}</button>`).join('')}</div>
+  const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';${k==='perso'?"if(!EP_DEB){const t=new Date();EP_DEB=iso1(new Date(t.getFullYear(),t.getMonth(),1));EP_FIN=iso1(t);}":''}epTab('stats')">${l}</button>`).join('')}</div>
+    ${EP_PER === 'perso' ? `<div class="ep-dates"><input type="date" value="${EP_DEB || ''}" max="${iso(new Date())}" onchange="EP_DEB=this.value||EP_DEB;if(EP_FIN&&EP_DEB>EP_FIN)EP_FIN=EP_DEB;epTab('stats')"><span>→</span><input type="date" value="${EP_FIN || ''}" max="${iso(new Date())}" onchange="EP_FIN=this.value||EP_FIN;if(EP_DEB&&EP_FIN<EP_DEB)EP_DEB=EP_FIN;epTab('stats')"></div>` : ''}
     <div class="ep-tuiles">
       <div><b class="ep-v">${epM(T.commission)}</b><span>Commissions</span></div>
       <div><b>${abo}</b><span>Abonnements (${T.abonnes} nouv. · ${T.reabos} réabo.)</span></div>
@@ -1916,7 +1934,7 @@ function epStats(){
       <div><b>${epF(T.inscrits)}</b><span>Inscriptions</span></div>
     </div>
     <div class="ep-sec"><h2>Commissions par jour</h2><span>${mo(T.paye)} payés par tes filleuls</span></div>
-    <div class="ep-bloc"><div class="ep-graph">${barres.map(v=>`<i style="height:${v ? Math.max(4, v/mx*100) : 2}%;${v?'':'opacity:.25'}"></i>`).join('')}</div>
+    <div class="ep-bloc ep-gbloc"><div class="ep-bulle" hidden></div><div class="ep-graph" onpointerdown="epBulle(event,this)" onpointermove="epBulle(event,this)">${barres.map(v=>`<i style="height:${v ? Math.max(4, v/mx*100) : 2}%;${v?'':'opacity:.25'}"></i>`).join('')}</div>
       <div class="ep-axe"><span>${epJ(s[0].jour+'T12:00:00')}</span><span>${epJ(s[s.length-1].jour+'T12:00:00')}</span></div></div>
     <div class="ep-sec"><h2>Entonnoir</h2><span>où tu perds du monde</span></div>
     <div class="ep-bloc" style="padding:14px 16px">
