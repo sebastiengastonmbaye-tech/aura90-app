@@ -1703,7 +1703,10 @@ const EP_RES = { tt:'TikTok', ig:'Instagram', fb:'Facebook', yt:'YouTube', sc:'S
 const EP_RES_IC = { tt:'TT', ig:'IG', fb:'FB', yt:'YT', sc:'SC', x:'X', tg:'TG', wa:'WA', autre:'•' };
 const epEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const epF = n => Math.round(Number(n)||0).toLocaleString('fr-FR');
-const epJ = d => new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+const epM = x => typeof mF === 'function' ? mF(x) : epF(x) + ' F';          // montant (F CFA) dans la devise de l'utilisateur
+const epLoc = () => typeof LOC !== 'undefined' ? LOC : 'fr-FR';
+const mo = x => `<span class="mo">${epM(x)}</span>`;
+const epJ = d => new Date(d).toLocaleDateString(epLoc(), { day:'numeric', month:'short' });
 const epCle = d => { const x = new Date(d); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); };
 
 async function epRpc(nom, corps){
@@ -1750,7 +1753,7 @@ async function chargerPartenaire(){
   EP = d;
   if(d.statut === 'actif'){
     const s7 = epSerie(7).reduce((a,x)=>a+x.commission,0);
-    z.innerHTML = `<button class="ep-carte" onclick="ouvrirEP('accueil')"><div class="ico">◆</div><div class="t"><b>Espace partenaire</b><span>Disponible ${epF(d.dispo)} F · 7 j : +${epF(s7)} F</span></div><span class="fl">›</span></button>`;
+    z.innerHTML = `<button class="ep-carte" onclick="ouvrirEP('accueil')"><div class="ico">◆</div><div class="t"><b>Espace partenaire</b><span>Disponible ${mo(d.dispo)} · 7 j : +${mo(s7)}</span></div><span class="fl">›</span></button>`;
   } else if(d.statut === 'demande'){
     z.innerHTML = `<div class="ep-etat"><b>Demande partenaire en cours d'examen</b>Envoyée le ${epJ(d.demande_le)}. Tu recevras une notification dès que ton compte partenaire est activé.</div>`;
   } else if(d.statut === 'suspendu'){
@@ -1831,15 +1834,15 @@ function epTab(t){
 
 function epHero(bouton){
   const ev = EP.gagne_prec > 0 ? Math.round((EP.gagne_mois - EP.gagne_prec) / EP.gagne_prec * 100) : null;
-  const mois = new Date().toLocaleDateString('fr-FR', { month:'long' });
+  const mois = new Date().toLocaleDateString(epLoc(), { month:'long' });
   return `<div class="ep-hero">
     <small>Disponible au retrait</small>
-    <div class="ep-gros">${epF(EP.dispo)} <span>F CFA</span></div>
+    <div class="ep-gros">${typeof mGros === 'function' ? mGros(EP.dispo) : epF(EP.dispo) + ' <span>F CFA</span>'}</div>
     <div class="ep-sous">
       ${EP.en_cours > 0
-        ? `<div><b class="ep-o">${epF(EP.en_cours)} F</b><span>Retrait en cours<br>de versement</span></div>`
-        : `<div><b class="ep-o">${epF(EP.deblocage)} F</b><span>En cours de déblocage${EP.deblocage_date ? '<br>dès le ' + new Date(EP.deblocage_date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : ''}</span></div>`}
-      <div><b>${epF(EP.gagne_mois)} F</b><span>Gagné en ${mois}${ev !== null ? `<br><span class="${ev>=0?'ep-v':'ep-o'}" style="display:inline">${ev>=0?'▲ +':'▼ '}${ev} % vs mois dernier</span>` : ''}</span></div>
+        ? `<div><b class="ep-o">${epM(EP.en_cours)}</b><span>Retrait en cours<br>de versement</span></div>`
+        : `<div><b class="ep-o">${epM(EP.deblocage)}</b><span>En cours de déblocage${EP.deblocage_date ? '<br>dès le ' + new Date(EP.deblocage_date).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'}) : ''}</span></div>`}
+      <div><b>${epM(EP.gagne_mois)}</b><span>Gagné en ${mois}${ev !== null ? `<br><span class="${ev>=0?'ep-v':'ep-o'}" style="display:inline">${ev>=0?'▲ +':'▼ '}${ev} % vs mois dernier</span>` : ''}</span></div>
     </div>
     ${bouton ? epBoutonRetrait() : ''}
     <div class="ep-info">Une commission se débloque ${EP.reglages.delai_jours} jours après le paiement de ton filleul. Avant, elle est « en cours de déblocage ».</div>
@@ -1848,7 +1851,7 @@ function epHero(bouton){
 function epBoutonRetrait(){
   const R = EP.reglages;
   if(EP.en_cours > 0) return `<button class="ep-btn" disabled>Retrait en cours de versement</button>`;
-  if(EP.dispo < R.min_retrait) return `<button class="ep-btn" disabled>Retrait dès ${epF(R.min_retrait)} F</button>`;
+  if(EP.dispo < R.min_retrait) return `<button class="ep-btn" disabled>Retrait dès ${mo(R.min_retrait)}</button>`;
   if(!EP.jour_retrait_ok) return `<button class="ep-btn" disabled>Demande de retrait le lundi</button>`;
   return `<button class="ep-btn" onclick="ouvrirRetrait()">Demander un retrait</button>`;
 }
@@ -1856,16 +1859,16 @@ function epBoutonRetrait(){
 function epLigneJour(x, ouvert){
   const auj = x.jour === epCle(new Date());
   const d = new Date(x.jour + 'T12:00:00');
-  const nom = auj ? "Aujourd'hui" : d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
+  const nom = auj ? "Aujourd'hui" : d.toLocaleDateString(epLoc(), { weekday:'short', day:'numeric', month:'short' });
   const ab = x.abonnes + x.reabos;
-  return `<div class="ep-lig ${ouvert?'ouv':''}" onclick="this.classList.toggle('ouv')"><div class="d">${nom}<small>${ab} abonnement${ab>1?'s':''} · ${x.clics} clic${x.clics>1?'s':''}</small></div><div class="v ${x.commission>0?'ep-v':'ep-s'}">${x.commission>0?'+':''}${epF(x.commission)}</div><div class="ch">⌄</div></div>
+  return `<div class="ep-lig ${ouvert?'ouv':''}" onclick="this.classList.toggle('ouv')"><div class="d">${nom}<small>${ab} abonnement${ab>1?'s':''} · ${x.clics} clic${x.clics>1?'s':''}</small></div><div class="v ${x.commission>0?'ep-v':'ep-s'}">${x.commission>0?'+':''}${epM(x.commission)}</div><div class="ch">⌄</div></div>
     <div class="ep-det">
       <div class="ep-kv"><span>Clics sur tes liens</span><b>${x.clics}</b></div>
       <div class="ep-kv"><span>Inscriptions</span><b>${x.inscrits}</b></div>
       <div class="ep-kv"><span>Nouveaux abonnés</span><b>${x.abonnes}</b></div>
       <div class="ep-kv"><span>Réabonnements</span><b>${x.reabos}</b></div>
-      <div class="ep-kv"><span>Payé par tes filleuls</span><b>${epF(x.paye)} F</b></div>
-      <div class="ep-kv"><span>Ta commission</span><b class="ep-v">${epF(x.commission)} F</b></div>
+      <div class="ep-kv"><span>Payé par tes filleuls</span><b>${epM(x.paye)}</b></div>
+      <div class="ep-kv"><span>Ta commission</span><b class="ep-v">${epM(x.commission)}</b></div>
     </div>`;
 }
 
@@ -1888,7 +1891,7 @@ function epAccueil(){
   const s7 = epSerie(7).reverse();
   const tot = s7.reduce((a,x)=>a+x.commission,0);
   return epHero(true) +
-    `<div class="ep-sec"><h2>7 derniers jours</h2><span class="ep-v">+${epF(tot)} F</span></div>
+    `<div class="ep-sec"><h2>7 derniers jours</h2><span class="ep-v">+${epM(tot)}</span></div>
      <div class="ep-bloc">${s7.map((x,i)=>epLigneJour(x, i===0)).join('')}
        <button class="ep-lien-b" onclick="epTab('stats')">Voir toutes mes stats ›</button></div>` +
     epNiveau();
@@ -1907,12 +1910,12 @@ function epStats(){
   const lignes = s.slice().reverse().filter(x => x.clics || x.inscrits || x.abonnes || x.reabos || x.commission);
   return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';epTab('stats')">${l}</button>`).join('')}</div>
     <div class="ep-tuiles">
-      <div><b class="ep-v">${epF(T.commission)} F</b><span>Commissions</span></div>
+      <div><b class="ep-v">${epM(T.commission)}</b><span>Commissions</span></div>
       <div><b>${abo}</b><span>Abonnements (${T.abonnes} nouv. · ${T.reabos} réabo.)</span></div>
       <div><b>${epF(T.clics)}</b><span>Clics</span></div>
       <div><b>${epF(T.inscrits)}</b><span>Inscriptions</span></div>
     </div>
-    <div class="ep-sec"><h2>Commissions par jour</h2><span>${epF(T.paye)} F payés par tes filleuls</span></div>
+    <div class="ep-sec"><h2>Commissions par jour</h2><span>${mo(T.paye)} payés par tes filleuls</span></div>
     <div class="ep-bloc"><div class="ep-graph">${barres.map(v=>`<i style="height:${v ? Math.max(4, v/mx*100) : 2}%;${v?'':'opacity:.25'}"></i>`).join('')}</div>
       <div class="ep-axe"><span>${epJ(s[0].jour+'T12:00:00')}</span><span>${epJ(s[s.length-1].jour+'T12:00:00')}</span></div></div>
     <div class="ep-sec"><h2>Entonnoir</h2><span>où tu perds du monde</span></div>
@@ -1924,7 +1927,7 @@ function epStats(){
     </div>
     <div class="ep-sec"><h2>Détail par jour</h2><span>jours avec activité</span></div>
     <div class="ep-bloc">${lignes.length ? `<table class="ep-tab"><tr><th>Jour</th><th>Clics</th><th>Inscr.</th><th>Abon.</th><th>Commission</th></tr>
-      ${lignes.map(x=>`<tr><td>${new Date(x.jour+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</td><td>${x.clics}</td><td>${x.inscrits}</td><td>${x.abonnes + x.reabos}</td><td class="${x.commission?'ep-v':''}">${epF(x.commission)}</td></tr>`).join('')}</table>`
+      ${lignes.map(x=>`<tr><td>${new Date(x.jour+'T12:00:00').toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'})}</td><td>${x.clics}</td><td>${x.inscrits}</td><td>${x.abonnes + x.reabos}</td><td class="${x.commission?'ep-v':''}">${epM(x.commission)}</td></tr>`).join('')}</table>`
       : `<div class="ep-vide" style="margin:14px;border:0">Aucune activité sur cette période.</div>`}</div>`;
 }
 
@@ -1940,7 +1943,7 @@ function epFilleuls(){
     if(f.etat === 'actif'){
       const j = Math.ceil((new Date(f.fin) - Date.now())/864e5);
       info = `${f.formule === '3mois' ? '3 mois' : '1 mois'} · ${j <= 7 ? 'expire dans ' + j + ' j' : "jusqu'au " + epJ(f.fin)}${f.paiements > 1 ? ' · ' + f.paiements + ' paiements' : ''}${src}`;
-      pill = j <= 7 ? `<span class="ep-pill att">À relancer</span>` : `<span class="ep-pill ok">+${epF(f.gains)} F</span>`;
+      pill = j <= 7 ? `<span class="ep-pill att">À relancer</span>` : `<span class="ep-pill ok">+${epM(f.gains)}</span>`;
     } else if(f.etat === 'expire'){
       info = `Abonnement terminé${f.fin ? ' le ' + epJ(f.fin) : ''}${src}`; pill = `<span class="ep-pill non">Expiré</span>`;
     } else {
@@ -1994,19 +1997,19 @@ function epLiens(){
 function epRetraits(){
   const R = EP.reglages;
   const L = EP.retraits || [];
-  const statut = r => r.statut === 'paye' ? `<span class="ep-pill ok">Envoyé le ${new Date(r.paye_le||r.demande_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</span>`
+  const statut = r => r.statut === 'paye' ? `<span class="ep-pill ok">Envoyé le ${new Date(r.paye_le||r.demande_le).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'})}</span>`
     : r.statut === 'refuse' ? `<span class="ep-pill ko">Refusé</span>` : `<span class="ep-pill att">En cours</span>`;
   const moyen = r => r.crypto ? `${epEsc(r.crypto)} · ${epEsc(r.reseau||'')}` : epEsc(r.moyen || 'Wave');
   return epHero(true) +
     `<div class="ep-sec"><h2>Comment ça marche</h2></div>
      <div class="ep-bloc" style="padding:4px 14px">
-       <div class="ep-kv"><span>Minimum</span><b>${epF(R.min_retrait)} F</b></div>
-       <div class="ep-kv"><span>Bitcoin et Ethereum</span><b>dès ${epF(R.min_crypto)} F</b></div>
+       <div class="ep-kv"><span>Minimum</span><b>${epM(R.min_retrait)}</b></div>
+       <div class="ep-kv"><span>Bitcoin et Ethereum</span><b>dès ${mo(R.min_crypto)}</b></div>
        <div class="ep-kv"><span>Demande</span><b>le lundi</b></div>
        <div class="ep-kv"><span>Montant</span><b>tout ton disponible</b></div>
      </div>
      <div class="ep-sec"><h2>Historique</h2><span>${L.length} retrait${L.length>1?'s':''}</span></div>
-     ${L.length ? `<div class="ep-bloc">${L.map(r=>`<div class="ep-res"><div class="t"><b style="font-family:'JetBrains Mono',monospace">${epF(r.montant)} F</b><div>${moyen(r)} · demandé le ${new Date(r.demande_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}${r.statut==='refuse' && r.motif ? ' · ' + epEsc(r.motif) : ''}</div></div>${statut(r)}</div>`).join('')}</div>`
+     ${L.length ? `<div class="ep-bloc">${L.map(r=>`<div class="ep-res"><div class="t"><b style="font-family:'JetBrains Mono',monospace">${epM(r.montant)}</b><div>${moyen(r)} · demandé le ${new Date(r.demande_le).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'})}${r.statut==='refuse' && r.motif ? ' · ' + epEsc(r.motif) : ''}</div></div>${statut(r)}</div>`).join('')}</div>`
        : `<div class="ep-vide">Aucun retrait pour l'instant.</div>`}`;
 }
 
@@ -2058,7 +2061,7 @@ async function epPrixCrypto(){
 }
 function ouvrirRetrait(){
   const R = EP.reglages, der = EP.dernier || {};
-  const pays = R.pays.find(p => p.c === (der.pays || EP.pays)) || R.pays[0];
+  const pays = R.pays.find(p => p.c === (der.pays || EP.pays || (typeof PAYS_U !== 'undefined' ? PAYS_U : ''))) || R.pays[0];
   RT = { pays: pays.c, mode: der.crypto || !pays.moyens.length ? 'crypto' : 'mm', moyen: pays.moyens.includes(der.moyen) ? der.moyen : pays.moyens[0],
          numero: der.numero || '', crypto: der.crypto || 'USDT', reseau: der.reseau || 'TRC20', adresse: der.adresse || '', adresse2: der.adresse || '', msg:'' };
   epRendreRetrait();
@@ -2089,7 +2092,7 @@ function epRendreRetrait(){
   const cr = R.cryptos.find(x=>x.c===RT.crypto);
   const mini = RT.mode === 'crypto' && ['BTC','ETH'].includes(RT.crypto) ? R.min_crypto : R.min_retrait;
   epVoile(`<h3>Demander un retrait</h3><p class="s">Tout ton disponible est versé en une fois.</p>
-    <div class="ep-montant"><b>${epF(EP.dispo)} F CFA</b><span>${epEsc(conv.txt)}</span></div>
+    <div class="ep-montant"><b>${epM(EP.dispo)}</b><span>${epEsc(conv.txt)}</span></div>
     <div class="ep-ch"><label>Pays</label><select onchange="epRtMaj('pays',this.value)">${R.pays.map(x=>`<option value="${x.c}" ${x.c===RT.pays?'selected':''}>${x.dr} ${epEsc(x.nom)}</option>`).join('')}</select></div>
     <div class="ep-ch"><label>Recevoir par</label><div class="ep-choix">
       ${p.moyens.map(m=>`<button class="${RT.mode==='mm'&&RT.moyen===m?'a':''}" onclick="RT.mode='mm';epRtMaj('moyen','${epEsc(m)}')">${epEsc(m)}</button>`).join('')}
@@ -2102,7 +2105,7 @@ function epRendreRetrait(){
       <div class="ep-ch"><label>Adresse de ton portefeuille ${epEsc(RT.crypto)} (${epEsc(RT.reseau)})</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle ton adresse" value="${epEsc(RT.adresse)}" oninput="RT.adresse=this.value.trim()"></div>
       <div class="ep-ch"><label>Confirme l'adresse</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle-la une 2e fois" value="${epEsc(RT.adresse2)}" oninput="RT.adresse2=this.value.trim()"></div>
       <div class="ep-alerte">Vérifie que ton adresse est bien sur le réseau ${epEsc(RT.reseau)}. Un envoi vers une mauvaise adresse ou un mauvais réseau est perdu.</div>`}
-    ${EP.dispo < mini ? `<div class="ep-alerte">Minimum ${epF(mini)} F pour ce moyen de retrait.</div>` : ''}
+    ${EP.dispo < mini ? `<div class="ep-alerte">Minimum ${mo(mini)} pour ce moyen de retrait.</div>` : ''}
     <button class="ep-btn" style="margin-top:16px" id="rt-go" ${EP.dispo < mini ? 'disabled' : ''} onclick="envoyerRetrait()">Envoyer ma demande</button>
     <div class="ep-msg" id="rt-msg">${RT.msg || ''}</div>
     <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>`);
@@ -2122,7 +2125,7 @@ async function envoyerRetrait(){
   $('rt-go').disabled = true;
   const res = await epRpc('demander_retrait_v2', corps);
   if(res && res.ok){
-    epVoile(`<h3>Demande envoyée ✓</h3><p class="s">${epF(res.montant)} F · ${RT.mode==='crypto' ? epEsc(RT.crypto + ' · ' + RT.reseau) : epEsc(RT.moyen)}</p>
+    epVoile(`<h3>Demande envoyée ✓</h3><p class="s">${mo(res.montant)} · ${RT.mode==='crypto' ? epEsc(RT.crypto + ' · ' + RT.reseau) : epEsc(RT.moyen)}</p>
       <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>
       <p class="s" style="margin-top:14px">Tu reçois une notification dès que l'argent est envoyé.</p>
       <button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
@@ -2141,7 +2144,8 @@ function ouvrirDemandeP(){
   const res = ['TikTok','Instagram','Facebook','YouTube','Snapchat','X (Twitter)','Telegram','Chaîne WhatsApp','Autre réseau'];
   const opt = (l, vide) => (vide ? `<option value="">${vide}</option>` : '') + l.map(x=>`<option>${x}</option>`).join('');
   epVoile(`<h3>Devenir partenaire</h3><p class="s">Partage AURA90 à ta communauté et touche une commission sur chaque abonnement. On étudie ta demande et on te répond rapidement.</p>
-    <div class="ep-ch"><label>Pays</label><select id="dp-pays">${P.filter(x=>x.c!=='XX').map(x=>`<option value="${x.c}">${x.dr} ${epEsc(x.nom)}</option>`).join('')}<option value="XX">🌍 Autre pays</option></select></div>
+    <div class="ep-ch"><label>Pays</label><select id="dp-pays">${(() => { const moi = typeof PAYS_U !== 'undefined' ? PAYS_U : 'SN'; const dans = P.some(x => x.c === moi);
+      return P.filter(x=>x.c!=='XX').map(x=>`<option value="${x.c}" ${x.c === moi ? 'selected' : ''}>${x.dr} ${epEsc(x.nom)}</option>`).join('') + `<option value="XX" ${dans ? '' : 'selected'}>🌍 Autre pays</option>`; })()}</select></div>
     <div class="ep-ch"><label>Ton réseau principal</label><select id="dp-res">${opt(res)}</select></div>
     <div class="ep-ch"><label>Lien de ton compte (ou nom du groupe)</label><input id="dp-lien" autocapitalize="off" placeholder="ex. tiktok.com/@toncompte"></div>
     <div class="ep-ch"><label>Nombre d'abonnés / membres</label><input id="dp-ab" inputmode="numeric" placeholder="ex. 12 000"></div>
