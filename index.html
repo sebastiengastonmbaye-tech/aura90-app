@@ -590,8 +590,11 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 /* feuilles (retrait, demande) */
 .ep-voile{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
 .ep-voile.actif{display:flex}
-.ep-feuille{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-top:1px solid var(--ligne)}
-.ep-poi{width:40px;height:4px;border-radius:9px;background:var(--ligne);margin:0 auto 14px}
+.ep-feuille{width:100%;max-width:520px;max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;transition:transform .15s;background:var(--surface);border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-top:1px solid var(--ligne)}
+.ep-tete{position:sticky;top:-10px;z-index:2;background:var(--surface);margin:-10px -18px 6px;padding:10px 18px 4px;display:flex;justify-content:center;touch-action:none}
+.ep-poi{width:40px;height:4px;border-radius:9px;background:var(--ligne);margin:4px auto 10px}
+.ep-x{position:absolute;right:12px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-size:15px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+html.ep-bloque,html.ep-bloque body{overflow:hidden}
 .ep-feuille h3{font-size:17px;margin:0}
 .ep-feuille p.s{font-size:12.5px;color:var(--sourdine);margin:4px 0 0}
 .ep-ch{margin-top:12px}.ep-ch label{font-size:11.5px;color:var(--sourdine);display:block;margin-bottom:6px}
@@ -609,7 +612,19 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .ep-suivi div{flex:1;font-size:10.5px;color:var(--sourdine);text-align:center}
 .ep-suivi i{display:block;height:4px;border-radius:9px;background:var(--ligne);margin-bottom:6px}
 .ep-suivi .f i{background:var(--aura1)}.ep-suivi .f{color:var(--texte)}
+.lig .m-fin,.vh-sel .lig .m-fin{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sourdine);background:var(--surface2);border:1px solid var(--ligne);border-radius:6px;padding:1px 6px;margin-left:2px;vertical-align:1px}
+.lig .m-sc{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--texte);background:rgba(61,232,200,.1);border:1px solid rgba(61,232,200,.35);border-radius:7px;padding:1px 8px;margin-left:6px;letter-spacing:.04em;vertical-align:0}
 
+/* ===== Défilement natif de la page (19/10) =====
+   Avant : le corps faisait 100 % de l'écran et chaque page défilait « à l'intérieur ».
+   Sur iPhone, le geste partait parfois sur le corps au lieu de la page → défilement bloqué.
+   Maintenant c'est la page entière qui défile, comme un site normal. */
+html{height:auto;min-height:100%;overflow:visible}
+body{height:auto;min-height:100%;display:block;overflow-x:hidden}
+@supports (height:100dvh){ html,body{height:auto} body{min-height:100dvh} }
+#app{flex:none;display:block;overflow:visible}
+#app > .haut{position:sticky;top:0;z-index:40;background:var(--nuit)}
+.page{flex:none;overflow:visible;-webkit-overflow-scrolling:auto;overscroll-behavior:auto}
 /* ---------- compte / abo ---------- */
 .offre{gap:10px}
 .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--ligne);flex-shrink:0;position:relative}
@@ -1146,9 +1161,13 @@ function labelDate(d){
 }
 
 /* ================= NAVIGATION ================= */
+const DEFIL = {};
 function allerPage(p){
+  const avant = document.querySelector('.page.active');
+  if(avant) DEFIL[avant.id] = window.scrollY;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   $('page-'+p).classList.add('active');
+  window.scrollTo(0, avant && avant.id === 'page-'+p ? window.scrollY : (DEFIL['page-'+p] || 0));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('actif', b.dataset.page===p));
   if(p === 'palmares') animerPalmares();
   if(p === 'accueil') cascade('#zone-matchs .match');
@@ -1261,7 +1280,7 @@ function lancerAnalyse(id){
   et.innerHTML = `
     <div class="etape" id="et1"><span class="num">01</span><div class="txt">Répartition des issues — <b>1 : ${p.p1}%</b> · <b>N : ${p.pn}%</b> · <b>2 : ${p.p2}%</b><small>calculée sur la forme pondérée des deux équipes</small></div></div>
     <div class="etape" id="et2"><span class="num">02</span><div class="txt">Tendance de buts — <b>+2,5 : ${p.po25}%</b> · <b>BTTS : ${p.btts}%</b><small>issue de la matrice complète des scores</small></div></div>
-    <div class="etape" id="et3"><span class="num">03</span><div class="txt"><b>121 scénarios</b> de score évalués — tête de liste : <b>${p.scores_top3}</b><small>tous les marchés dérivés du même calcul</small></div></div>`;
+    <div class="etape" id="et3"><span class="num">03</span><div class="txt"><b>121 scénarios</b> de match simulés<small>tous les marchés dérivés du même calcul</small></div></div>`;
 
   const anneau=$('anneau'), CIRC=534;
   const conf = Math.max(0, Math.min(100, p.confiance))/100;
@@ -1307,11 +1326,6 @@ function montrerFiche(p){
       <div class="m-haut"><span class="m-lbl"><svg class="ic"><use href="#i-duo"/></svg><span>Les deux équipes marquent<small>marché BTTS</small></span></span><span class="m-val">${p.btts>=50?'OUI':'NON'} · ${p.btts>=50?p.btts:100-p.btts}%</span></div>
       <div class="m-barre"><i data-w="${p.btts>=50?p.btts:100-p.btts}"></i></div>
     </div>
-    <div class="marche">
-      <div class="m-haut"><span class="m-lbl"><svg class="ic"><use href="#i-grille"/></svg><span>Scores les plus probables<small>121 scénarios simulés</small></span></span></div>
-      <div class="scores-ligne">${String(p.scores_top3).split('·').map((s,i)=>`<div class="score-cap${i===0?' top':''}">${s.trim()}${i===0?'<small>le + probable</small>':'<small>&nbsp;</small>'}</div>`).join('')}</div>
-    </div>
-    
     <button class="lien-retour" onclick="fermerAnalyse()">← Analyser une autre rencontre</button>`;
   $('fiche').classList.add('actif');
   setTimeout(()=>{ document.querySelectorAll('#fiche .m-barre i').forEach(b=>{ b.style.width = (b.dataset.w||0)+'%'; }); }, 80);
@@ -1877,9 +1891,12 @@ const CATS = [
 let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'montante', COUPONS_CHARGES = false, JOUR_ACTIF = 'auj';
 
 // score final du match s'il est connu, sinon le tiret habituel (19/10/2026)
-function vsScore(s){
-  const sc = s && s.score ? String(s.score).replace(/[^0-9\-: ]/g,'').trim() : '';
-  return sc ? `<span class="vs fin">${sc}</span>` : `<span class="vs">–</span>`;
+const scoreDe = s => s && s.score ? String(s.score).replace(/[^0-9\-: ]/g,'').trim() : '';
+// match terminé : plus de score entre les équipes (il cassait l'alignement), il passe dans la ligne du haut
+function vsScore(s){ return scoreDe(s) ? '' : `<span class="vs">–</span>`; }
+function heureOuFin(s){
+  const sc = scoreDe(s);
+  return sc ? ` · <span class="m-fin">Terminé</span><span class="m-sc">${sc}</span>` : (s.heure ? ' · ' + String(s.heure).slice(0,5) : '');
 }
 function ecuMini(url, nom){
   return url ? `<img class="ecu-m" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
@@ -2151,7 +2168,7 @@ function carteScore(c){
     <div class="cp-corps" style="padding-top:12px">
       <div class="cp-sel" style="border-top:0;padding-top:4px">
         <div class="g">
-          <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(s0.date_match):''}${s0.heure?' · '+String(s0.heure).slice(0,5):''} ${etat}</div>
+          <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(s0.date_match):''}${heureOuFin(s0)} ${etat}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s0.logo_dom, s0.dom)}<b>${s0.dom}</b></span>
             ${vsScore(s0)}
@@ -2188,7 +2205,7 @@ function carteCoupon(c, ouvert){
       ${sels.map(s=>`
         <div class="cp-sel ${s.resultat||''}">
           <div class="g">
-            <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+            <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${heureOuFin(s)}</div>
             <div class="duel">
               <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
               ${vsScore(s)}
@@ -2370,7 +2387,7 @@ async function ficheCase(el, cid, n, mise, gain, jour, statut){
     zone.outerHTML = (sels && sels.length) ? sels.map(s=>`
       <div class="cp-sel">
         <div class="g">
-          <div class="lig">${s.ligue||''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+          <div class="lig">${s.ligue||''}${heureOuFin(s)}</div>
           <div class="duel"><span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>${vsScore(s)}<span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span></div>
           <div class="pick ${s.resultat||''}"><span class="fl">${s.resultat==='gagne'?'✓':s.resultat==='perdu'?'✗':'▸'}</span>${s.selection}</div>
         </div>
@@ -2395,7 +2412,7 @@ async function voirPalier(cid, el){
     box.innerHTML = sels.map(s=>`
       <div class="cp-sel">
         <div class="g">
-          <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
+          <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${heureOuFin(s)}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
             ${vsScore(s)}
@@ -2615,17 +2632,17 @@ function ouvrirEP(tab){
       <nav class="ep-nav">${EP_NAV.map(([k,l,svg])=>`<button data-t="${k}" onclick="epTab('${k}')"><svg viewBox="0 0 24 24">${svg}</svg>${l}</button>`).join('')}</nav>`;
     document.body.appendChild(el);
   }
-  el.classList.add('actif'); document.body.style.overflow = 'hidden';
+  el.classList.add('actif'); epVerrou(true);
   try{ history.pushState({ ep:1 }, ''); }catch(e){}
   epTab(tab || 'accueil');
 }
 function fermerEP(retour){
   const el = $('ep'); if(!el || !el.classList.contains('actif')) return;
-  el.classList.remove('actif'); document.body.style.overflow = '';
+  el.classList.remove('actif'); epVerrou(false);
   if(!retour){ try{ if(history.state && history.state.ep) history.back(); }catch(e){} }
   chargerPartenaire();
 }
-window.addEventListener('popstate', () => { if($('ep')?.classList.contains('actif')) fermerEP(true); });
+window.addEventListener('popstate', e => { if($('ep-voile')?.classList.contains('actif')) return; if(e.state && e.state.ep) return; if($('ep')?.classList.contains('actif')) fermerEP(true); });
 
 async function epRecharger(){ const d = await epRpc('espace_partenaire'); if(d && d.statut === 'actif'){ EP = d; epTab(EP_TAB); } }
 
@@ -2821,13 +2838,40 @@ function epRetraits(){
 }
 
 /* ---- feuille : demande de retrait ---- */
+// fond figé derrière un écran plein ou une feuille (même verrou que la messagerie sur iPhone)
+const EP_VERROUS = new Set();
+function epVerrou(on, cle = 'ep'){
+  if(on) EP_VERROUS.add(cle); else EP_VERROUS.delete(cle);
+  const actif = EP_VERROUS.size > 0;
+  if(typeof verrouPage === 'function') verrouPage(actif);
+  else document.body.style.overflow = actif ? 'hidden' : '';
+}
 function epVoile(html){
   let v = $('ep-voile');
-  if(!v){ v = document.createElement('div'); v.id = 'ep-voile'; v.className = 'ep-voile'; v.onclick = e => { if(e.target === v) epFermerVoile(); }; document.body.appendChild(v); }
-  v.innerHTML = `<div class="ep-feuille"><div class="ep-poi"></div>${html}</div>`;
+  if(!v){
+    v = document.createElement('div'); v.id = 'ep-voile'; v.className = 'ep-voile';
+    v.onclick = e => { if(e.target === v) epFermerVoile(); };
+    document.body.appendChild(v);
+  }
+  const deja = v.classList.contains('actif');
+  v.innerHTML = `<div class="ep-feuille"><div class="ep-tete"><div class="ep-poi"></div><button class="ep-x" onclick="epFermerVoile()" aria-label="Fermer">✕</button></div>${html}</div>`;
   v.classList.add('actif');
+  epVerrou(true, 'voile');
+  if(!deja){ try{ history.pushState({ epv: 1 }, ''); }catch(e){} }
+  // glisser vers le bas depuis le haut de la feuille pour fermer
+  const f = v.querySelector('.ep-feuille'), t = v.querySelector('.ep-tete');
+  let y0 = null;
+  t.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive:true });
+  t.addEventListener('touchmove', e => { if(y0 === null) return; const dy = e.touches[0].clientY - y0; if(dy > 0) f.style.transform = `translateY(${dy}px)`; }, { passive:true });
+  t.addEventListener('touchend', e => { const dy = (e.changedTouches[0].clientY - (y0 ?? 0)); f.style.transform = ''; y0 = null; if(dy > 90) epFermerVoile(); });
 }
-function epFermerVoile(){ $('ep-voile')?.classList.remove('actif'); }
+function epFermerVoile(depuisRetour){
+  const v = $('ep-voile'); if(!v || !v.classList.contains('actif')) return;
+  v.classList.remove('actif');
+  epVerrou(false, 'voile');
+  if(!depuisRetour){ try{ if(history.state && history.state.epv) history.back(); }catch(e){} }
+}
+window.addEventListener('popstate', () => { if($('ep-voile')?.classList.contains('actif')) epFermerVoile(true); });
 
 let EP_PRIX = null;
 async function epPrixCrypto(){
@@ -3158,8 +3202,8 @@ function vhCarte(c, i){
   const sels = vhSels(c);
   const ligne = (x, cache) => `
     <div class="vh-sel${cache ? ' vh-cache' : ''}"><div style="min-width:0">
-      <div class="lig">${vhEsc(x.ligue || '')}${x.heure ? ' · ' + String(x.heure).slice(0,5) : ''}</div>
-      <div class="vh-duel">${ecuMini(x.logo_dom, x.dom)}${vhEsc(x.dom)} <span class="vh-sc">${x.score ? vhEsc(x.score) : '–'}</span> ${vhEsc(x.ext)}${ecuMini(x.logo_ext, x.ext)}</div>
+      <div class="lig">${vhEsc(x.ligue || '')}${heureOuFin(x)}</div>
+      <div class="vh-duel">${ecuMini(x.logo_dom, x.dom)}${vhEsc(x.dom)} <span class="vh-sc">–</span> ${vhEsc(x.ext)}${ecuMini(x.logo_ext, x.ext)}</div>
       <div class="vh-pick">✓ ${vhEsc(x.selection)}</div></div>
       <div class="vh-co">${vhCote(x.cote)}</div></div>`;
   const cote = c.categorie === 'score' ? (sels[0] ? sels[0].cote : c.cote_totale) : c.cote_totale;
@@ -3257,7 +3301,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-19-6';
+const APP_VERSION = '2026-10-19-7';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;

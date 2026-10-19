@@ -351,8 +351,11 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 /* feuilles (retrait, demande) */
 .ep-voile{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
 .ep-voile.actif{display:flex}
-.ep-feuille{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-top:1px solid var(--ligne)}
-.ep-poi{width:40px;height:4px;border-radius:9px;background:var(--ligne);margin:0 auto 14px}
+.ep-feuille{width:100%;max-width:520px;max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;transition:transform .15s;background:var(--surface);border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-top:1px solid var(--ligne)}
+.ep-tete{position:sticky;top:-10px;z-index:2;background:var(--surface);margin:-10px -18px 6px;padding:10px 18px 4px;display:flex;justify-content:center;touch-action:none}
+.ep-poi{width:40px;height:4px;border-radius:9px;background:var(--ligne);margin:4px auto 10px}
+.ep-x{position:absolute;right:12px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-size:15px;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+html.ep-bloque,html.ep-bloque body{overflow:hidden}
 .ep-feuille h3{font-size:17px;margin:0}
 .ep-feuille p.s{font-size:12.5px;color:var(--sourdine);margin:4px 0 0}
 .ep-ch{margin-top:12px}.ep-ch label{font-size:11.5px;color:var(--sourdine);display:block;margin-bottom:6px}
@@ -1802,17 +1805,17 @@ function ouvrirEP(tab){
       <nav class="ep-nav">${EP_NAV.map(([k,l,svg])=>`<button data-t="${k}" onclick="epTab('${k}')"><svg viewBox="0 0 24 24">${svg}</svg>${l}</button>`).join('')}</nav>`;
     document.body.appendChild(el);
   }
-  el.classList.add('actif'); document.body.style.overflow = 'hidden';
+  el.classList.add('actif'); epVerrou(true);
   try{ history.pushState({ ep:1 }, ''); }catch(e){}
   epTab(tab || 'accueil');
 }
 function fermerEP(retour){
   const el = $('ep'); if(!el || !el.classList.contains('actif')) return;
-  el.classList.remove('actif'); document.body.style.overflow = '';
+  el.classList.remove('actif'); epVerrou(false);
   if(!retour){ try{ if(history.state && history.state.ep) history.back(); }catch(e){} }
   chargerPartenaire();
 }
-window.addEventListener('popstate', () => { if($('ep')?.classList.contains('actif')) fermerEP(true); });
+window.addEventListener('popstate', e => { if($('ep-voile')?.classList.contains('actif')) return; if(e.state && e.state.ep) return; if($('ep')?.classList.contains('actif')) fermerEP(true); });
 
 async function epRecharger(){ const d = await epRpc('espace_partenaire'); if(d && d.statut === 'actif'){ EP = d; epTab(EP_TAB); } }
 
@@ -2008,13 +2011,40 @@ function epRetraits(){
 }
 
 /* ---- feuille : demande de retrait ---- */
+// fond figé derrière un écran plein ou une feuille (même verrou que la messagerie sur iPhone)
+const EP_VERROUS = new Set();
+function epVerrou(on, cle = 'ep'){
+  if(on) EP_VERROUS.add(cle); else EP_VERROUS.delete(cle);
+  const actif = EP_VERROUS.size > 0;
+  if(typeof verrouPage === 'function') verrouPage(actif);
+  else document.body.style.overflow = actif ? 'hidden' : '';
+}
 function epVoile(html){
   let v = $('ep-voile');
-  if(!v){ v = document.createElement('div'); v.id = 'ep-voile'; v.className = 'ep-voile'; v.onclick = e => { if(e.target === v) epFermerVoile(); }; document.body.appendChild(v); }
-  v.innerHTML = `<div class="ep-feuille"><div class="ep-poi"></div>${html}</div>`;
+  if(!v){
+    v = document.createElement('div'); v.id = 'ep-voile'; v.className = 'ep-voile';
+    v.onclick = e => { if(e.target === v) epFermerVoile(); };
+    document.body.appendChild(v);
+  }
+  const deja = v.classList.contains('actif');
+  v.innerHTML = `<div class="ep-feuille"><div class="ep-tete"><div class="ep-poi"></div><button class="ep-x" onclick="epFermerVoile()" aria-label="Fermer">✕</button></div>${html}</div>`;
   v.classList.add('actif');
+  epVerrou(true, 'voile');
+  if(!deja){ try{ history.pushState({ epv: 1 }, ''); }catch(e){} }
+  // glisser vers le bas depuis le haut de la feuille pour fermer
+  const f = v.querySelector('.ep-feuille'), t = v.querySelector('.ep-tete');
+  let y0 = null;
+  t.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, { passive:true });
+  t.addEventListener('touchmove', e => { if(y0 === null) return; const dy = e.touches[0].clientY - y0; if(dy > 0) f.style.transform = `translateY(${dy}px)`; }, { passive:true });
+  t.addEventListener('touchend', e => { const dy = (e.changedTouches[0].clientY - (y0 ?? 0)); f.style.transform = ''; y0 = null; if(dy > 90) epFermerVoile(); });
 }
-function epFermerVoile(){ $('ep-voile')?.classList.remove('actif'); }
+function epFermerVoile(depuisRetour){
+  const v = $('ep-voile'); if(!v || !v.classList.contains('actif')) return;
+  v.classList.remove('actif');
+  epVerrou(false, 'voile');
+  if(!depuisRetour){ try{ if(history.state && history.state.epv) history.back(); }catch(e){} }
+}
+window.addEventListener('popstate', () => { if($('ep-voile')?.classList.contains('actif')) epFermerVoile(true); });
 
 let EP_PRIX = null;
 async function epPrixCrypto(){
