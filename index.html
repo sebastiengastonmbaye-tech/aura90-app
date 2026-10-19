@@ -509,6 +509,107 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .g-jours{display:flex;gap:4px;margin-top:4px;padding-left:5px}
 .g-jours span{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;color:var(--sourdine)}
 
+/* ---------- espace partenaire (19/10) ---------- */
+.ep-carte{margin:8px 16px;padding:14px;border-radius:18px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid transparent;background:linear-gradient(160deg,#0F1D24,#14172C) padding-box,linear-gradient(135deg,rgba(61,232,200,.55),rgba(139,124,255,.55)) border-box;width:calc(100% - 32px);text-align:left;color:var(--texte);font-family:inherit}
+.ep-carte .ico{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--aura1),var(--aura2));display:flex;align-items:center;justify-content:center;color:#05201B;font-weight:900;font-size:16px;flex-shrink:0}
+.ep-carte .t{flex:1;min-width:0}.ep-carte .t b{font-size:14.5px;display:block}.ep-carte .t span{font-size:12px;color:var(--sourdine);display:block;margin-top:3px}
+.ep-carte .fl{color:var(--aura1);font-weight:800}
+.ep-etat{margin:8px 16px;padding:14px;border-radius:16px;background:rgba(255,200,107,.07);border:1px solid rgba(255,200,107,.3);font-size:12.5px;line-height:1.45;color:var(--sourdine)}
+.ep-etat b{color:#FFC86B;display:block;margin-bottom:2px}
+#ep{position:fixed;inset:0;z-index:900;background:var(--nuit);display:none;flex-direction:column}
+#ep.actif{display:flex}
+#ep .ep-haut{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 10px;flex-shrink:0}
+#ep .ep-ret{width:36px;height:36px;border-radius:11px;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#ep .ep-haut h1{font-family:'Unbounded',sans-serif;font-size:15px;margin:0;flex:1}
+.ep-niv{font-size:11px;font-weight:800;padding:5px 10px;border-radius:99px;color:#2A1B00;background:linear-gradient(135deg,#FFD98A,#F2A93B);font-family:'JetBrains Mono',monospace}
+#ep .ep-corps{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:110px}
+.ep-nav{position:absolute;left:0;right:0;bottom:0;display:flex;background:rgba(10,15,24,.97);border-top:1px solid var(--ligne);padding:8px 4px calc(env(safe-area-inset-bottom,0px) + 10px);backdrop-filter:blur(10px)}
+.ep-nav button{flex:1;background:none;border:none;color:var(--sourdine);font-family:inherit;font-size:10.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0}
+.ep-nav button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ep-nav button.a{color:var(--aura1)}
+.ep-hero{margin:6px 16px 0;padding:18px;border-radius:24px;border:1px solid transparent;background:radial-gradient(220px 160px at 100% 0%,rgba(139,124,255,.28),transparent 70%) padding-box,radial-gradient(220px 160px at 0% 100%,rgba(61,232,200,.20),transparent 70%) padding-box,linear-gradient(160deg,#0F1D24,#14172C) padding-box,linear-gradient(135deg,rgba(61,232,200,.6),rgba(139,124,255,.6)) border-box}
+.ep-hero small{color:var(--sourdine);font-size:12px}
+.ep-gros{font:800 34px 'JetBrains Mono',monospace;letter-spacing:-.03em;margin:4px 0 2px;line-height:1.1}
+.ep-gros span{font-size:14px;color:var(--sourdine)}
+.ep-sous{display:flex;gap:10px;margin:14px 0}
+.ep-sous div{flex:1;padding:10px 12px;border-radius:14px;background:rgba(7,11,18,.45);border:1px solid rgba(255,255,255,.05);min-width:0}
+.ep-sous b{display:block;font:700 15px 'JetBrains Mono',monospace}
+.ep-sous span{font-size:11px;color:var(--sourdine);line-height:1.35;display:block;margin-top:3px}
+.ep-btn{width:100%;border:none;border-radius:14px;padding:13px;font-weight:800;font-size:14px;font-family:inherit;color:#05201B;background:linear-gradient(135deg,var(--aura1),var(--aura2));cursor:pointer}
+.ep-btn[disabled]{opacity:.45;cursor:default}
+.ep-btn.gris{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne)}
+.ep-info{font-size:11.5px;color:var(--sourdine);line-height:1.45;margin-top:10px}
+.ep-sec{margin:22px 16px 10px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ep-sec h2{font-size:15px;margin:0}.ep-sec span{font-size:12px;color:var(--sourdine);text-align:right}
+.ep-bloc{margin:0 16px;border-radius:20px;background:var(--surface);border:1px solid var(--ligne);overflow:hidden}
+.ep-lig{display:flex;align-items:center;gap:10px;padding:13px 14px;border-top:1px solid var(--ligne);cursor:pointer}
+.ep-lig:first-child{border-top:0}
+.ep-lig .d{flex:1;font-size:13.5px;min-width:0}.ep-lig .d small{display:block;font-size:11px;color:var(--sourdine);margin-top:2px}
+.ep-lig .v{font:700 14px 'JetBrains Mono',monospace}
+.ep-lig .ch{color:var(--sourdine);font-size:12px;width:14px;text-align:center;transition:transform .2s}
+.ep-lig.ouv .ch{transform:rotate(180deg)}
+.ep-det{padding:2px 14px 10px;background:rgba(61,232,200,.03);display:none}
+.ep-lig.ouv + .ep-det{display:block}
+.ep-kv{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px dashed var(--ligne)}
+.ep-kv:last-child{border:0}.ep-kv span{color:var(--sourdine)}.ep-kv b{font-family:'JetBrains Mono',monospace}
+.ep-lien-b{display:block;margin:10px 14px 12px;padding:11px;border-radius:12px;border:1px solid rgba(61,232,200,.35);color:var(--aura1);font-size:13px;font-weight:700;text-align:center;background:none;width:calc(100% - 28px);font-family:inherit;cursor:pointer}
+.ep-v{color:var(--aura1)}.ep-o{color:#FFC86B}.ep-s{color:var(--sourdine)}
+.ep-per{display:flex;gap:6px;margin:0 16px 12px;flex-wrap:wrap}
+.ep-per button{font-size:12px;padding:7px 11px;border-radius:9px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);font-family:inherit;font-weight:700;cursor:pointer}
+.ep-per button.a{color:var(--texte);border-color:rgba(61,232,200,.5);background:rgba(61,232,200,.08)}
+.ep-tuiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 16px}
+.ep-tuiles div{padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne)}
+.ep-tuiles b{display:block;font:800 19px 'JetBrains Mono',monospace}.ep-tuiles span{font-size:11px;color:var(--sourdine)}
+.ep-graph{display:flex;align-items:flex-end;gap:3px;height:110px;padding:14px 14px 6px}
+.ep-graph i{flex:1;border-radius:4px 4px 1px 1px;background:linear-gradient(180deg,var(--aura1),rgba(61,232,200,.25));min-height:2px}
+.ep-axe{display:flex;justify-content:space-between;padding:0 14px 12px;font-size:10px;color:var(--sourdine);font-family:'JetBrains Mono',monospace}
+.ep-et{display:grid;grid-template-columns:72px 1fr 54px;align-items:center;gap:10px;margin:7px 0}
+.ep-et span{font-size:12px;color:var(--sourdine)}.ep-et .bar{height:26px;border-radius:9px;background:var(--surface2);overflow:hidden}
+.ep-et .bar i{display:block;height:100%;border-radius:9px}.ep-et b{font:700 14px 'JetBrains Mono',monospace;text-align:right}
+.ep-tab{width:100%;border-collapse:collapse;font-size:11.5px}
+.ep-tab th{color:var(--sourdine);font-weight:600;text-align:right;padding:9px 8px;border-bottom:1px solid var(--ligne)}
+.ep-tab td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--ligne);font-family:'JetBrains Mono',monospace}
+.ep-tab th:first-child,.ep-tab td:first-child{text-align:left}
+.ep-res{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--ligne)}
+.ep-res:first-child{border-top:0}
+.ep-ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;background:var(--surface2);flex-shrink:0}
+.ep-av{width:34px;height:34px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--sourdine);flex-shrink:0;text-transform:uppercase}
+.ep-res .t{flex:1;min-width:0}.ep-res .t b{font-size:13.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ep-res .t div{font-size:11.5px;color:var(--sourdine);margin-top:2px}
+.ep-cp{font-size:11px;font-weight:800;padding:7px 10px;border-radius:9px;border:1px solid var(--ligne);color:var(--aura1);background:none;font-family:inherit;cursor:pointer;flex-shrink:0}
+.ep-pill{font-size:10.5px;font-weight:800;padding:4px 8px;border-radius:7px;white-space:nowrap;flex-shrink:0}
+.ep-pill.ok{color:var(--aura1);background:rgba(61,232,200,.1)}.ep-pill.att{color:#FFC86B;background:rgba(255,200,107,.1)}.ep-pill.non{color:var(--sourdine);background:var(--surface2)}.ep-pill.ko{color:var(--ko);background:rgba(255,122,158,.1)}
+.ep-prog{height:8px;border-radius:9px;background:var(--surface2);overflow:hidden;margin:10px 0 6px}
+.ep-prog i{display:block;height:100%;background:linear-gradient(90deg,#F2A93B,#FFD98A)}
+.ep-pal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.ep-pal div{text-align:center;padding:10px 4px;border-radius:12px;background:var(--surface2);font-size:11px;color:var(--sourdine)}
+.ep-pal b{display:block;font:800 17px 'JetBrains Mono',monospace;color:var(--texte)}
+.ep-pal .c{outline:1.5px solid #F2A93B;background:rgba(242,169,59,.08)}
+.ep-vide{margin:0 16px;padding:18px;border-radius:16px;border:1px dashed var(--ligne);text-align:center;color:var(--sourdine);font-size:12.5px;line-height:1.5}
+.ep-code{margin:0 16px 10px;display:flex;align-items:center;gap:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px dashed rgba(61,232,200,.4)}
+.ep-code .t{flex:1}.ep-code small{font-size:11px;color:var(--sourdine)}.ep-code b{display:block;font:800 20px 'JetBrains Mono',monospace;color:var(--aura1);letter-spacing:.06em}
+/* feuilles (retrait, demande) */
+.ep-voile{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+.ep-voile.actif{display:flex}
+.ep-feuille{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 24px);border-top:1px solid var(--ligne)}
+.ep-poi{width:40px;height:4px;border-radius:9px;background:var(--ligne);margin:0 auto 14px}
+.ep-feuille h3{font-size:17px;margin:0}
+.ep-feuille p.s{font-size:12.5px;color:var(--sourdine);margin:4px 0 0}
+.ep-ch{margin-top:12px}.ep-ch label{font-size:11.5px;color:var(--sourdine);display:block;margin-bottom:6px}
+.ep-ch input,.ep-ch select{width:100%;padding:12px 14px;border-radius:12px;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-size:14px;font-family:inherit;-webkit-appearance:none;appearance:none}
+.ep-ch select{background-image:linear-gradient(45deg,transparent 50%,var(--sourdine) 50%),linear-gradient(135deg,var(--sourdine) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.ep-choix{display:flex;gap:8px;flex-wrap:wrap}
+.ep-choix button{flex:1 1 30%;padding:11px 6px;border-radius:12px;background:var(--surface2);border:1px solid var(--ligne);font-size:13px;color:var(--sourdine);font-family:inherit;font-weight:700;cursor:pointer}
+.ep-choix button.a{color:var(--texte);border-color:rgba(61,232,200,.6);background:rgba(61,232,200,.08)}
+.ep-montant{margin:14px 0 4px;padding:14px;border-radius:16px;background:var(--surface2);text-align:center}
+.ep-montant b{display:block;font:800 28px 'JetBrains Mono',monospace}
+.ep-montant span{font-size:11.5px;color:var(--sourdine);display:block;margin-top:4px}
+.ep-alerte{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,107,122,.08);border:1px solid rgba(255,107,122,.3);font-size:11.5px;color:#FFB3BB;line-height:1.4}
+.ep-msg{font-size:12.5px;margin-top:10px;line-height:1.4}
+.ep-suivi{display:flex;gap:6px;margin-top:16px}
+.ep-suivi div{flex:1;font-size:10.5px;color:var(--sourdine);text-align:center}
+.ep-suivi i{display:block;height:4px;border-radius:9px;background:var(--ligne);margin-bottom:6px}
+.ep-suivi .f i{background:var(--aura1)}.ep-suivi .f{color:var(--texte)}
+
 /* ---------- compte / abo ---------- */
 .offre{gap:10px}
 .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--ligne);flex-shrink:0;position:relative}
@@ -845,6 +946,7 @@ const CONFIG = {
       <button id="btn-admin" class="carte-admin" style="display:none" onclick="location.href='admin.html'">
         🛠️ <span>Panneau d'administration</span> <b>›</b>
       </button>
+      <div id="zone-partenaire"></div>
       <div id="statut-acces"></div>
       </div>
       <div class="offre star" style="cursor:pointer" onclick="choisirFormule('mois',8000,'1 mois',this)">
@@ -873,15 +975,11 @@ const CONFIG = {
       <div class="champ"><button style="flex:1" id="btn-push" onclick="activerPush()">🔔 Activer les notifications</button></div>
       <div id="msg-push"></div>
 
-      <div class="section-titre"><svg class="ic"><use href="#i-duo"/></svg> Parrainage — 1 000 à 2 000 F par filleul VIP</div>
-      <div id="zone-parrainage"><div class="chargement">…</div></div>
-
       <button class="lien-retour" onclick="deconnecter()">Se déconnecter (<span id="profil-email"></span>)</button>
     </div>
 
     <div id="pied-app" style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:18px 0 2px">
-      <button class="lien-retour" style="display:inline;width:auto;margin:0;font-size:11px" onclick="location.href='partenaire.html'">💼 Devenir partenaire</button>
-      <span style="color:var(--sourdine);font-size:11px" id="sep-guide-ios" hidden>·</span>
+      <span id="sep-guide-ios" hidden></span>
       <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📲 Installer l'app</button>
     </div>
 
@@ -1496,7 +1594,7 @@ function majCompte(){
   if(co){ chargerParrainage(); chargerNotifs(); majBoutonPush(); }
   else {
     $('btn-cloche').style.display='none';
-    $('zone-parrainage').innerHTML='';
+    $('zone-partenaire').innerHTML='';
     $('statut-acces').innerHTML='';
   }
   $('bloc-auth').style.display = co ? 'none' : '';
@@ -1905,18 +2003,19 @@ function afficherCategorie(cle){
     b.classList.toggle('actif', CATS[i].cle===cle);
     if(CATS[i].cle===cle) b.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'nearest' });
   });
+  // titre AVANT tout le reste : il doit toujours dire de quel jour on parle (19/10/2026)
+  const t = $('cp-titre'), st = $('cp-sous');
+  if(t && st){
+    const dem = new Date(Date.now() + 864e5).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+    t.textContent = JOUR_ACTIF === 'auj' ? 'Coupons du jour' : 'Coupons de demain';
+    st.textContent = JOUR_ACTIF === 'auj'
+      ? 'Combinés prêts à jouer, construits ce matin par le moteur.'
+      : `Pour les matchs de ${dem} — déjà disponibles.`;
+  }
   if(cle === 'montante'){ afficherMontante(); return; }
   if(cle === 'live'){ afficherLive(); return; }
 
   const liste = couponsDuJour().filter(c => c.categorie === cle && (SELECTIONS[c.id]||[]).length);
-
-  const t = $('cp-titre'), st = $('cp-sous');
-  if(t && st){
-    t.textContent = JOUR_ACTIF === 'auj' ? 'Coupons du jour' : 'Coupons de demain';
-    st.textContent = JOUR_ACTIF === 'auj'
-      ? 'Combinés prêts à jouer, construits ce matin par le moteur.'
-      : 'Déjà disponibles — à jouer dès maintenant.';
-  }
 
   if(!liste.length){
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
@@ -2408,121 +2507,446 @@ function ouvrirNotifs(){
 }
 function fermerNotifs(){ $('panneau-notifs').classList.remove('actif'); }
 
-/* ================= PARRAINAGE ================= */
-async function chargerParrainage(){
-  const z = $('zone-parrainage'); if(!z || !estConnecte()) return;
-  try{
-    let r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/stats_parrainage', {
-      method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
-      body:'{}'
-    });
-    if(r.status === 401 && await rafraichirSession()){
-      r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/stats_parrainage', {
-        method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access }, body:'{}'
-      });
-    }
-    const s = await r.json();
-    if(!s.code){
-      z.innerHTML = `
-        <div class="avert" style="text-align:left;margin-top:0">Crée ton code (4 à 10 lettres/chiffres). Tu gagnes <b style="color:var(--aura1)">uniquement quand ton filleul paie son abonnement VIP</b> : 1 000 F (mois) ou 2 000 F (3 mois) — et lui bénéficie de la même réduction. Retrait dès 5 000 F.</div>
-        <div class="champ">
-          <input id="nouveau-code" placeholder="TONCODE" maxlength="10" style="text-transform:uppercase" autocomplete="off">
-          <button onclick="creerCode()">Créer</button>
-        </div>
-        <div id="msg-parr"></div>`;
-      return;
-    }
-    const lien = location.origin + location.pathname + '?ref=' + s.code;
-    try{ if(s.code) localStorage.setItem('aura90_moncode', s.code); }catch(e){}
-    // graphe 14 jours
-    const jours = {};
-    (s.gains_jour||[]).forEach(g=>{ jours[g.jour] = { v: g.total, f: g.filleuls }; });
-    let barres='', labels='', max=1;
-    const serie=[];
-    for(let i=13;i>=0;i--){
-      const d = new Date(); d.setDate(d.getDate()-i);
-      const k = d.toISOString().slice(0,10);
-      const x = jours[k] || { v:0, f:0 };
-      serie.push({ j:d.getDate(), v:x.v, f:x.f });
-      max = Math.max(max, x.v);
-    }
-    serie.forEach(x=>{
-      barres += `<div class="gcol">${x.f ? `<span class="gf">${x.f}</span>` : ''}<div class="gb" style="height:${x.v ? Math.max(6, x.v/max*88) : 2}%" title="${x.v} F · ${x.f} filleul(s)"></div></div>`;
-      labels += `<span>${x.j}</span>`;
-    });
-    const fmtF = n => n >= 1000 ? (n/1000).toLocaleString('fr-FR',{maximumFractionDigits:1}) + 'k' : n;
-    const dispo = s.gains_dispo||0;
-    const retraits = (s.retraits||[]).slice(0,4).map(x=>`
-      <div class="histo-item"><div class="p">${x.montant.toLocaleString('fr-FR')} F<small>${new Date(x.demande_le).toLocaleDateString('fr-FR')}</small></div>
-      <span class="puce ${x.statut==='paye'?'ok':'att'}">${x.statut==='paye'?'✓ PAYÉ':'MARDI'}</span></div>`).join('');
-    z.innerHTML = `
-      <div class="parr-lien" onclick="copierTexte('${s.code}', this)"><span class="lbl">TON CODE</span><span class="val">${s.code}</span></div>
-      <div class="parr-lien" onclick="copierTexte('${lien}', this)"><span class="lbl">TON LIEN</span><span class="val">${lien.replace('https://','')}</span></div>
-      <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" onclick="partagerInvitation('${s.code}')">📤 Inviter et gagner</button></div>
-      <div class="parr-tuiles">
-        <div class="tuile"><div class="v" style="color:var(--aura1)">${dispo.toLocaleString('fr-FR')} F</div><div class="l">Disponible</div></div>
-        <div class="tuile"><div class="v">${(s.gains_total||0).toLocaleString('fr-FR')} F</div><div class="l">Gains totaux</div></div>
-        <div class="tuile"><div class="v">${s.filleuls_mois||0}</div><div class="l">Filleuls · mois</div></div>
-        <div class="tuile"><div class="v">${s.filleuls_3mois||0}</div><div class="l">Filleuls · 3 mois</div></div>
-      </div>
-      <div class="graphe"><div class="g-titre">Gains (F) et filleuls · 14 derniers jours</div>
-        <div class="g-flex">
-          <div class="g-axe"><span>${max > 1 ? fmtF(max) : ''}</span><span>${max > 1 ? fmtF(Math.round(max/2)) : ''}</span><span>0</span></div>
-          <div class="g-corps"><div class="g-barres">${barres}</div><div class="g-jours">${labels}</div></div>
-        </div></div>
-      ${(function(){
-        const lundi = new Date().getDay() === 1;
-        if(dispo >= 5000 && lundi) return `<div class="champ"><input id="num-retrait" placeholder="Numéro Wave pour le versement" inputmode="tel"><button onclick="demanderRetrait()">Effectuer ma demande — ${dispo.toLocaleString('fr-FR')} F</button></div>`;
-        if(dispo >= 5000) return `<div class="avert">💰 <b style="color:var(--aura1)">${dispo.toLocaleString('fr-FR')} F disponibles</b> — les demandes de retrait s'ouvrent chaque <b>lundi</b>, versement le mardi.</div>`;
-        return `<div class="avert">Retrait dès 5 000 F disponibles (gains débloqués 7 jours après chaque paiement). Demandes le lundi, versement le mardi.</div>`;
-      })()}
-      <div id="msg-parr"></div>
-      ${retraits}`;
-  }catch(e){ z.innerHTML = ''; }
+/* ================= ESPACE PARTENAIRE (19/10) ================= */
+let EP = null, EP_TAB = 'accueil', EP_PER = '30', EP_FIL = 'tous', RT = null;
+const EP_RES = { tt:'TikTok', ig:'Instagram', fb:'Facebook', yt:'YouTube', sc:'Snapchat', x:'X (Twitter)', tg:'Telegram', wa:'WhatsApp', autre:'Autre' };
+const EP_RES_IC = { tt:'TT', ig:'IG', fb:'FB', yt:'YT', sc:'SC', x:'X', tg:'TG', wa:'WA', autre:'•' };
+const epEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const epF = n => Math.round(Number(n)||0).toLocaleString('fr-FR');
+const epJ = d => new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+const epCle = d => { const x = new Date(d); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0'); };
+
+async function epRpc(nom, corps){
+  const appel = () => fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/' + nom, {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
+    body: JSON.stringify(corps || {})
+  });
+  let r = await appel();
+  if(r.status === 401 && await rafraichirSession()) r = await appel();
+  return r.ok ? r.json() : null;
 }
 
-async function partagerInvitation(code){
-  const lien = location.origin + location.pathname + '?ref=' + code;
-  const texte = "⚡ Je te recommande AURA90 — l'IA qui analyse chaque match de foot et publie ses pronos AVANT les matchs. Palmarès public, impossible à truquer.\n\n🎁 Inscris-toi avec mon code " + code + " : tu as jusqu'à 2 000 F de réduction sur ton abonnement VIP.\n\n👉 " + lien;
-  if(navigator.share){
-    try{ await navigator.share({ title: 'AURA90', text: texte }); }catch(e){}
+/* ---- lien ?ref=CODE&s=reseau : clic compté, filleul noté à la connexion ---- */
+(function(){
+  const q = new URLSearchParams(location.search);
+  const r = q.get('ref'), s = (q.get('s') || '').toLowerCase().replace(/[^a-z]/g,'').slice(0,12);
+  if(!r || !/^[A-Za-z0-9]{4,10}$/.test(r)) return;
+  try{
+    localStorage.setItem('aura90_ref', r.toUpperCase());
+    localStorage.setItem('aura90_ref_src', s || 'autre');
+    let v = localStorage.getItem('aura90_visiteur');
+    if(!v){ v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); localStorage.setItem('aura90_visiteur', v); }
+    fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/noter_clic', {
+      method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+CONFIG.SUPABASE_KEY },
+      body: JSON.stringify({ p_code: r.toUpperCase(), p_source: s || 'autre', p_visiteur: v })
+    }).catch(()=>{});
+  }catch(e){}
+})();
+async function noterFilleul(){
+  try{
+    const c = localStorage.getItem('aura90_ref');
+    if(!c || localStorage.getItem('aura90_ref_note') === c) return;
+    const res = await epRpc('noter_filleul', { p_code: c, p_source: localStorage.getItem('aura90_ref_src') || 'autre' });
+    if(res) localStorage.setItem('aura90_ref_note', c);
+  }catch(e){}
+}
+
+/* ---- carte dans l'onglet Compte ---- */
+async function chargerPartenaire(){
+  const z = $('zone-partenaire'); if(!z || !estConnecte()) return;
+  noterFilleul();
+  const d = await epRpc('espace_partenaire');
+  if(!d){ z.innerHTML = ''; return; }
+  EP = d;
+  if(d.statut === 'actif'){
+    const s7 = epSerie(7).reduce((a,x)=>a+x.commission,0);
+    z.innerHTML = `<button class="ep-carte" onclick="ouvrirEP('accueil')"><div class="ico">◆</div><div class="t"><b>Espace partenaire</b><span>Disponible ${epF(d.dispo)} F · 7 j : +${epF(s7)} F</span></div><span class="fl">›</span></button>`;
+  } else if(d.statut === 'demande'){
+    z.innerHTML = `<div class="ep-etat"><b>Demande partenaire en cours d'examen</b>Envoyée le ${epJ(d.demande_le)}. Tu recevras une notification dès que ton compte partenaire est activé.</div>`;
+  } else if(d.statut === 'suspendu'){
+    z.innerHTML = `<div class="ep-etat"><b>Compte partenaire suspendu</b>Écris-nous depuis la messagerie pour en savoir plus.</div>`;
   } else {
-    navigator.clipboard?.writeText(texte).then(()=>{
-      $('msg-parr').innerHTML = '<div class="avert" style="color:var(--aura1)">Message d\'invitation copié ✓ — colle-le où tu veux.</div>';
-    });
+    const p = (d.paliers||[]).map(x=>x.pct);
+    z.innerHTML = (d.statut === 'refuse' ? `<div class="ep-etat"><b>Demande non retenue</b>${epEsc(d.motif || 'Tu peux refaire une demande plus tard.')}</div>` : '') +
+      `<button class="ep-carte" onclick="ouvrirDemandeP()"><div class="ico">◆</div><div class="t"><b>Devenir partenaire</b><span>Gagne ${p.length ? Math.min(...p)+' % à '+Math.max(...p)+' %' : 'une commission'} sur chaque abonnement</span></div><span class="fl">›</span></button>`;
   }
 }
+function chargerParrainage(){ return chargerPartenaire(); }   // ancien nom
 
-function copierTexte(t, el){
-  navigator.clipboard?.writeText(t).then(()=>{
-    const v = el.querySelector('.val'); const s = v.textContent;
-    v.textContent = 'Copié ✓'; setTimeout(()=>{ v.textContent = s; }, 1400);
-  });
+/* ---- séries de jours ---- */
+function epSerie(n, debut, fin){
+  const m = {}; (EP?.jours||[]).forEach(j => m[j.jour] = j);
+  const out = [];
+  const f = fin ? new Date(fin) : new Date();
+  const d0 = debut ? new Date(debut) : new Date(f.getTime() - (n-1)*864e5);
+  for(let d = new Date(d0); d <= f; d = new Date(d.getTime() + 864e5)){
+    const k = epCle(d), x = m[k] || {};
+    out.push({ jour:k, clics:+x.clics||0, inscrits:+x.inscrits||0, abonnes:+x.abonnes||0, reabos:+x.reabos||0, paye:+x.paye||0, commission:+x.commission||0 });
+  }
+  return out;
+}
+function epPeriode(){
+  const now = new Date();
+  if(EP_PER === '7') return epSerie(7);
+  if(EP_PER === '30') return epSerie(30);
+  if(EP_PER === 'mois') return epSerie(0, new Date(now.getFullYear(), now.getMonth(), 1), now);
+  if(EP_PER === 'prec') return epSerie(0, new Date(now.getFullYear(), now.getMonth()-1, 1), new Date(now.getFullYear(), now.getMonth(), 0));
+  const js = EP?.jours||[]; const premier = js.length ? js[js.length-1].jour : epCle(now);
+  return epSerie(0, new Date(premier+'T12:00:00'), now);
 }
 
-async function creerCode(){
-  const c = $('nouveau-code').value.trim().toUpperCase();
-  const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/creer_code', {
-    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
-    body: JSON.stringify({ nouveau: c })
-  });
-  const res = await r.json();
-  const msgs = { OK:'', FORMAT:'4 à 10 lettres ou chiffres, sans espace.', PRIS:'Ce code est déjà pris — essaie une variante.', DEJA_UN_CODE:'Tu as déjà un code.' };
-  if(res === 'OK'){ chargerParrainage(); }
-  else $('msg-parr').innerHTML = `<div class="avert" style="color:var(--ko)">${msgs[res]||'Erreur — réessaie.'}</div>`;
+/* ---- écran plein ---- */
+const EP_NAV = [
+  ['accueil','Accueil','<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'],
+  ['stats','Stats','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
+  ['filleuls','Filleuls','<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14c2.4.2 4 1.8 4.6 4.5"/>'],
+  ['liens','Liens','<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>'],
+  ['retraits','Retraits','<rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M7 15h3"/>']
+];
+function ouvrirEP(tab){
+  if(!EP || EP.statut !== 'actif') return;
+  let el = $('ep');
+  if(!el){
+    el = document.createElement('div'); el.id = 'ep';
+    el.innerHTML = `<div class="ep-haut"><button class="ep-ret" onclick="fermerEP()" aria-label="Retour">‹</button><h1 id="ep-titre">Espace partenaire</h1><span class="ep-niv" id="ep-niv"></span></div>
+      <div class="ep-corps" id="ep-corps"></div>
+      <nav class="ep-nav">${EP_NAV.map(([k,l,svg])=>`<button data-t="${k}" onclick="epTab('${k}')"><svg viewBox="0 0 24 24">${svg}</svg>${l}</button>`).join('')}</nav>`;
+    document.body.appendChild(el);
+  }
+  el.classList.add('actif'); document.body.style.overflow = 'hidden';
+  try{ history.pushState({ ep:1 }, ''); }catch(e){}
+  epTab(tab || 'accueil');
+}
+function fermerEP(retour){
+  const el = $('ep'); if(!el || !el.classList.contains('actif')) return;
+  el.classList.remove('actif'); document.body.style.overflow = '';
+  if(!retour){ try{ if(history.state && history.state.ep) history.back(); }catch(e){} }
+  chargerPartenaire();
+}
+window.addEventListener('popstate', () => { if($('ep')?.classList.contains('actif')) fermerEP(true); });
+
+async function epRecharger(){ const d = await epRpc('espace_partenaire'); if(d && d.statut === 'actif'){ EP = d; epTab(EP_TAB); } }
+
+function epTab(t){
+  EP_TAB = t;
+  document.querySelectorAll('#ep .ep-nav button').forEach(b => b.classList.toggle('a', b.dataset.t === t));
+  $('ep-niv').textContent = '★ ' + EP.pct + ' %';
+  $('ep-titre').textContent = { accueil:'Espace partenaire', stats:'Mes stats', filleuls:'Mes filleuls', liens:'Mes liens', retraits:'Mes retraits' }[t];
+  const c = $('ep-corps');
+  c.innerHTML = ({ accueil: epAccueil, stats: epStats, filleuls: epFilleuls, liens: epLiens, retraits: epRetraits })[t]();
+  c.scrollTop = 0;
 }
 
-async function demanderRetrait(){
-  const num = $('num-retrait').value.trim();
-  if(num.replace(/[^0-9]/g,'').length < 7){ $('msg-parr').innerHTML = `<div class="avert" style="color:var(--ko)">Entre le numéro Wave qui recevra le versement.</div>`; return; }
-  const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/demander_retrait', {
-    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+SESSION.access },
-    body: JSON.stringify({ numero: num })
-  });
-  const res = await r.json();
-  if(res.ok){ $('msg-parr').innerHTML = `<div class="avert" style="color:var(--aura1)">Retrait de ${res.montant.toLocaleString('fr-FR')} F enregistré — versement mardi prochain.</div>`; chargerParrainage(); }
-  else if(res.raison === 'JOUR') $('msg-parr').innerHTML = `<div class="avert" style="color:var(--ko)">Les demandes de retrait s'ouvrent le lundi.</div>`;
-  else $('msg-parr').innerHTML = `<div class="avert" style="color:var(--ko)">Solde insuffisant (minimum 5 000 F).</div>`;
+function epHero(bouton){
+  const ev = EP.gagne_prec > 0 ? Math.round((EP.gagne_mois - EP.gagne_prec) / EP.gagne_prec * 100) : null;
+  const mois = new Date().toLocaleDateString('fr-FR', { month:'long' });
+  return `<div class="ep-hero">
+    <small>Disponible au retrait</small>
+    <div class="ep-gros">${epF(EP.dispo)} <span>F CFA</span></div>
+    <div class="ep-sous">
+      ${EP.en_cours > 0
+        ? `<div><b class="ep-o">${epF(EP.en_cours)} F</b><span>Retrait en cours<br>de versement</span></div>`
+        : `<div><b class="ep-o">${epF(EP.deblocage)} F</b><span>En cours de déblocage${EP.deblocage_date ? '<br>dès le ' + new Date(EP.deblocage_date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : ''}</span></div>`}
+      <div><b>${epF(EP.gagne_mois)} F</b><span>Gagné en ${mois}${ev !== null ? `<br><span class="${ev>=0?'ep-v':'ep-o'}" style="display:inline">${ev>=0?'▲ +':'▼ '}${ev} % vs mois dernier</span>` : ''}</span></div>
+    </div>
+    ${bouton ? epBoutonRetrait() : ''}
+    <div class="ep-info">Une commission se débloque ${EP.reglages.delai_jours} jours après le paiement de ton filleul. Avant, elle est « en cours de déblocage ».</div>
+  </div>`;
+}
+function epBoutonRetrait(){
+  const R = EP.reglages;
+  if(EP.en_cours > 0) return `<button class="ep-btn" disabled>Retrait en cours de versement</button>`;
+  if(EP.dispo < R.min_retrait) return `<button class="ep-btn" disabled>Retrait dès ${epF(R.min_retrait)} F</button>`;
+  if(!EP.jour_retrait_ok) return `<button class="ep-btn" disabled>Demande de retrait le lundi</button>`;
+  return `<button class="ep-btn" onclick="ouvrirRetrait()">Demander un retrait</button>`;
+}
+
+function epLigneJour(x, ouvert){
+  const auj = x.jour === epCle(new Date());
+  const d = new Date(x.jour + 'T12:00:00');
+  const nom = auj ? "Aujourd'hui" : d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
+  const ab = x.abonnes + x.reabos;
+  return `<div class="ep-lig ${ouvert?'ouv':''}" onclick="this.classList.toggle('ouv')"><div class="d">${nom}<small>${ab} abonnement${ab>1?'s':''} · ${x.clics} clic${x.clics>1?'s':''}</small></div><div class="v ${x.commission>0?'ep-v':'ep-s'}">${x.commission>0?'+':''}${epF(x.commission)}</div><div class="ch">⌄</div></div>
+    <div class="ep-det">
+      <div class="ep-kv"><span>Clics sur tes liens</span><b>${x.clics}</b></div>
+      <div class="ep-kv"><span>Inscriptions</span><b>${x.inscrits}</b></div>
+      <div class="ep-kv"><span>Nouveaux abonnés</span><b>${x.abonnes}</b></div>
+      <div class="ep-kv"><span>Réabonnements</span><b>${x.reabos}</b></div>
+      <div class="ep-kv"><span>Payé par tes filleuls</span><b>${epF(x.paye)} F</b></div>
+      <div class="ep-kv"><span>Ta commission</span><b class="ep-v">${epF(x.commission)} F</b></div>
+    </div>`;
+}
+
+function epNiveau(){
+  const pal = (EP.paliers||[]).slice().sort((a,b)=>a.seuil-b.seuil);
+  const suiv = pal.find(p => p.pct > EP.pct);
+  const prec = pal.filter(p => p.pct <= EP.pct).pop() || pal[0];
+  const prog = suiv ? Math.min(100, Math.round((EP.abonnes_mois - (prec?.seuil||0)) / Math.max(1, suiv.seuil - (prec?.seuil||0)) * 100)) : 100;
+  return `<div class="ep-sec"><h2>Ton pourcentage</h2><span>${EP.pct_perso ? 'taux personnalisé' : 'selon tes abonnements du mois'}</span></div>
+    <div class="ep-bloc" style="padding:16px">
+      <b style="font-size:14px">${EP.pct} % sur chaque abonnement</b>
+      ${EP.pct_perso ? '' : `<div class="ep-prog"><i style="width:${Math.max(3,prog)}%"></i></div>
+      <div style="font-size:12px;color:var(--sourdine)">${EP.abonnes_mois} abonnement${EP.abonnes_mois>1?'s':''} ce mois${suiv ? ` — encore <b style="color:var(--texte)">${Math.max(0, suiv.seuil - EP.abonnes_mois)}</b> pour passer à ${suiv.pct} %` : ' — tu es au niveau maximum'}</div>
+      <div class="ep-pal">${pal.map(p=>`<div class="${p.pct===EP.pct?'c':''}"><b>${p.pct} %</b>${p.seuil ? p.seuil+' abonnements' : 'Départ'}</div>`).join('')}</div>
+      <div class="ep-info">Abonnements payés par tes filleuls (nouveaux et réabonnements). Ton taux est gardé tout le mois suivant.</div>`}
+    </div>`;
+}
+
+function epAccueil(){
+  const s7 = epSerie(7).reverse();
+  const tot = s7.reduce((a,x)=>a+x.commission,0);
+  return epHero(true) +
+    `<div class="ep-sec"><h2>7 derniers jours</h2><span class="ep-v">+${epF(tot)} F</span></div>
+     <div class="ep-bloc">${s7.map((x,i)=>epLigneJour(x, i===0)).join('')}
+       <button class="ep-lien-b" onclick="epTab('stats')">Voir toutes mes stats ›</button></div>` +
+    epNiveau();
+}
+
+function epStats(){
+  const s = epPeriode();
+  const T = s.reduce((a,x)=>{ for(const k in x) if(k!=='jour') a[k]=(a[k]||0)+x[k]; return a; }, {});
+  const max = Math.max(1, ...s.map(x=>x.commission));
+  const pas = Math.max(1, Math.ceil(s.length / 31));
+  const barres = []; for(let i=0;i<s.length;i+=pas){ const g = s.slice(i,i+pas); barres.push(g.reduce((a,x)=>a+x.commission,0)/g.length); }
+  const mx = Math.max(1, ...barres);
+  const abo = T.abonnes + T.reabos;
+  const pc = (a,b) => b ? (a/b*100).toLocaleString('fr-FR',{maximumFractionDigits:1}) + ' %' : '—';
+  const per = [['7','7 jours'],['30','30 jours'],['mois','Ce mois'],['prec','Mois dernier'],['tout','Tout']];
+  const lignes = s.slice().reverse().filter(x => x.clics || x.inscrits || x.abonnes || x.reabos || x.commission);
+  return `<div class="ep-per" style="margin-top:6px">${per.map(([k,l])=>`<button class="${EP_PER===k?'a':''}" onclick="EP_PER='${k}';epTab('stats')">${l}</button>`).join('')}</div>
+    <div class="ep-tuiles">
+      <div><b class="ep-v">${epF(T.commission)} F</b><span>Commissions</span></div>
+      <div><b>${abo}</b><span>Abonnements (${T.abonnes} nouv. · ${T.reabos} réabo.)</span></div>
+      <div><b>${epF(T.clics)}</b><span>Clics</span></div>
+      <div><b>${epF(T.inscrits)}</b><span>Inscriptions</span></div>
+    </div>
+    <div class="ep-sec"><h2>Commissions par jour</h2><span>${epF(T.paye)} F payés par tes filleuls</span></div>
+    <div class="ep-bloc"><div class="ep-graph">${barres.map(v=>`<i style="height:${v ? Math.max(4, v/mx*100) : 2}%;${v?'':'opacity:.25'}"></i>`).join('')}</div>
+      <div class="ep-axe"><span>${epJ(s[0].jour+'T12:00:00')}</span><span>${epJ(s[s.length-1].jour+'T12:00:00')}</span></div></div>
+    <div class="ep-sec"><h2>Entonnoir</h2><span>où tu perds du monde</span></div>
+    <div class="ep-bloc" style="padding:14px 16px">
+      <div class="ep-et"><span>Clics</span><div class="bar"><i style="width:100%;background:rgba(139,124,255,.5)"></i></div><b>${epF(T.clics)}</b></div>
+      <div class="ep-et"><span>Inscrits</span><div class="bar"><i style="width:${T.clics ? Math.min(100, T.inscrits/T.clics*100) : (T.inscrits?100:0)}%;background:rgba(91,168,245,.6)"></i></div><b>${epF(T.inscrits)}</b></div>
+      <div class="ep-et"><span>Abonnés</span><div class="bar"><i style="width:${T.clics ? Math.min(100, T.abonnes/T.clics*100) : (T.abonnes?100:0)}%;background:var(--aura1)"></i></div><b>${epF(T.abonnes)}</b></div>
+      <div class="ep-info">${pc(T.inscrits, T.clics)} des clics s'inscrivent · ${pc(T.abonnes, T.inscrits)} des inscrits s'abonnent</div>
+    </div>
+    <div class="ep-sec"><h2>Détail par jour</h2><span>jours avec activité</span></div>
+    <div class="ep-bloc">${lignes.length ? `<table class="ep-tab"><tr><th>Jour</th><th>Clics</th><th>Inscr.</th><th>Abon.</th><th>Commission</th></tr>
+      ${lignes.map(x=>`<tr><td>${new Date(x.jour+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</td><td>${x.clics}</td><td>${x.inscrits}</td><td>${x.abonnes + x.reabos}</td><td class="${x.commission?'ep-v':''}">${epF(x.commission)}</td></tr>`).join('')}</table>`
+      : `<div class="ep-vide" style="margin:14px;border:0">Aucune activité sur cette période.</div>`}</div>`;
+}
+
+function epFilleuls(){
+  const L = EP.filleuls || [];
+  const bientot = f => f.etat === 'actif' && f.fin && (new Date(f.fin) - Date.now()) < 7*864e5;
+  const n = { tous:L.length, abonnes:L.filter(f=>f.etat==='actif').length, relance:L.filter(bientot).length, inscrits:L.filter(f=>f.etat==='inscrit').length, expires:L.filter(f=>f.etat==='expire').length };
+  const filtre = { tous:()=>true, abonnes:f=>f.etat==='actif', relance:bientot, inscrits:f=>f.etat==='inscrit', expires:f=>f.etat==='expire' }[EP_FIL];
+  const liste = L.filter(filtre);
+  const ligne = f => {
+    const src = f.source ? ' · via ' + (EP_RES[f.source] || f.source) : '';
+    let info, pill;
+    if(f.etat === 'actif'){
+      const j = Math.ceil((new Date(f.fin) - Date.now())/864e5);
+      info = `${f.formule === '3mois' ? '3 mois' : '1 mois'} · ${j <= 7 ? 'expire dans ' + j + ' j' : "jusqu'au " + epJ(f.fin)}${f.paiements > 1 ? ' · ' + f.paiements + ' paiements' : ''}${src}`;
+      pill = j <= 7 ? `<span class="ep-pill att">À relancer</span>` : `<span class="ep-pill ok">+${epF(f.gains)} F</span>`;
+    } else if(f.etat === 'expire'){
+      info = `Abonnement terminé${f.fin ? ' le ' + epJ(f.fin) : ''}${src}`; pill = `<span class="ep-pill non">Expiré</span>`;
+    } else {
+      info = `Inscrit le ${epJ(f.inscrit_le)} · pas encore abonné${src}`; pill = `<span class="ep-pill non">Inscrit</span>`;
+    }
+    return `<div class="ep-res"><div class="ep-av">${epEsc((f.email||'?')[0])}</div><div class="t"><b>${epEsc(f.email)}</b><div>${info}</div></div>${pill}</div>`;
+  };
+  const filt = [['tous','Tous'],['abonnes','Abonnés'],['relance','À relancer'],['inscrits','Inscrits'],['expires','Expirés']];
+  return `<div class="ep-tuiles" style="margin-top:6px;margin-bottom:12px">
+      <div><b class="ep-v">${n.abonnes}</b><span>Abonnés actifs</span></div>
+      <div><b class="ep-o">${n.relance}</b><span>Expirent sous 7 jours</span></div>
+    </div>
+    <div class="ep-per">${filt.map(([k,l])=>`<button class="${EP_FIL===k?'a':''}" onclick="EP_FIL='${k}';epTab('filleuls')">${l} · ${n[k]}</button>`).join('')}</div>
+    ${liste.length ? `<div class="ep-bloc">${liste.slice(0,300).map(ligne).join('')}</div>` : `<div class="ep-vide">${L.length ? 'Personne dans cette catégorie.' : 'Tes filleuls apparaîtront ici dès leur inscription avec ton lien ou ton code.'}</div>`}
+    <div class="ep-info" style="margin:12px 16px 0">Adresses masquées pour protéger tes filleuls. « À relancer » : leur abonnement se termine bientôt, un petit message peut les faire se réabonner.</div>`;
+}
+
+function epLien(s){ return location.origin + location.pathname + '?ref=' + EP.code + (s ? '&s=' + s : ''); }
+function epCopier(t, b){
+  const fin = () => { const o = b.textContent; b.textContent = 'COPIÉ ✓'; setTimeout(()=>{ b.textContent = o; }, 1400); };
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(fin).catch(()=>{});
+}
+async function epPartager(s){
+  const lien = epLien(s);
+  const texte = "⚡ AURA90 analyse chaque match de foot avec un moteur statistique et publie ses pronos AVANT les matchs, avec un palmarès public vérifié.\n\nInscris-toi avec mon code " + EP.code + " pour avoir une réduction sur l'abonnement.\n\n👉 " + lien + "\n\n18+ · Analyses, jamais une promesse de gains.";
+  if(navigator.share){ try{ await navigator.share({ title:'AURA90', text: texte }); }catch(e){} }
+  else navigator.clipboard?.writeText(texte);
+}
+async function epReseaux(liste){
+  EP.reseaux = liste; epTab('liens');
+  await epRpc('partenaire_reseaux', { p_reseaux: liste });
+}
+function epLiens(){
+  const src = {}; (EP.sources||[]).forEach(s => src[s.source] = s);
+  const mes = (EP.reseaux && EP.reseaux.length) ? EP.reseaux : [];
+  const st = k => { const s = src[k] || {}; return `${epF(s.clics||0)} clics · ${epF(s.inscrits||0)} inscrits · ${epF(s.abonnes||0)} abonnés`; };
+  const dispo = Object.keys(EP_RES).filter(k => k !== 'autre' && !mes.includes(k));
+  return `<div class="ep-code" style="margin-top:6px"><div class="t"><small>Ton code (réduction pour tes filleuls)</small><b>${epEsc(EP.code)}</b></div><button class="ep-cp" onclick="epCopier('${epEsc(EP.code)}',this)">COPIER</button></div>
+    <div class="ep-sec"><h2>Tes liens par réseau</h2><span>à mettre une fois en bio ou en description</span></div>
+    <div class="ep-bloc">
+      ${mes.map(k=>`<div class="ep-res"><div class="ep-ic">${EP_RES_IC[k]||'•'}</div><div class="t"><b>${EP_RES[k]||epEsc(k)}</b><div>${st(k)}</div></div><button class="ep-cp" onclick="epCopier('${epLien(k)}',this)">COPIER</button></div>`).join('')}
+      <div class="ep-res"><div class="ep-ic">★</div><div class="t"><b>Lien général</b><div>Pour tout le reste · ${st('autre')}</div></div><button class="ep-cp" onclick="epCopier('${epLien('')}',this)">COPIER</button></div>
+    </div>
+    ${dispo.length ? `<div class="ep-sec"><h2>Ajouter un réseau</h2><span>pour savoir lequel te rapporte</span></div>
+    <div class="ep-per">${dispo.map(k=>`<button onclick="epReseaux(${epEsc(JSON.stringify([...mes, k]))})">+ ${EP_RES[k]}</button>`).join('')}</div>` : ''}
+    ${mes.length ? `<div class="ep-per">${mes.map(k=>`<button onclick="epReseaux(${epEsc(JSON.stringify(mes.filter(x=>x!==k)))})" style="opacity:.7">− ${EP_RES[k]||k}</button>`).join('')}</div>` : ''}
+    <div style="margin:16px"><button class="ep-btn" onclick="epPartager('')">Partager mon invitation</button></div>
+    <div class="ep-info" style="margin:0 16px">Chaque réseau a son lien : tu vois ainsi d'où viennent tes clics, tes inscrits et tes abonnés. Tu le crées une seule fois.</div>`;
+}
+
+function epRetraits(){
+  const R = EP.reglages;
+  const L = EP.retraits || [];
+  const statut = r => r.statut === 'paye' ? `<span class="ep-pill ok">Envoyé le ${new Date(r.paye_le||r.demande_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}</span>`
+    : r.statut === 'refuse' ? `<span class="ep-pill ko">Refusé</span>` : `<span class="ep-pill att">En cours</span>`;
+  const moyen = r => r.crypto ? `${epEsc(r.crypto)} · ${epEsc(r.reseau||'')}` : epEsc(r.moyen || 'Wave');
+  return epHero(true) +
+    `<div class="ep-sec"><h2>Comment ça marche</h2></div>
+     <div class="ep-bloc" style="padding:4px 14px">
+       <div class="ep-kv"><span>Minimum</span><b>${epF(R.min_retrait)} F</b></div>
+       <div class="ep-kv"><span>Bitcoin et Ethereum</span><b>dès ${epF(R.min_crypto)} F</b></div>
+       <div class="ep-kv"><span>Demande</span><b>le lundi</b></div>
+       <div class="ep-kv"><span>Montant</span><b>tout ton disponible</b></div>
+     </div>
+     <div class="ep-sec"><h2>Historique</h2><span>${L.length} retrait${L.length>1?'s':''}</span></div>
+     ${L.length ? `<div class="ep-bloc">${L.map(r=>`<div class="ep-res"><div class="t"><b style="font-family:'JetBrains Mono',monospace">${epF(r.montant)} F</b><div>${moyen(r)} · demandé le ${new Date(r.demande_le).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'})}${r.statut==='refuse' && r.motif ? ' · ' + epEsc(r.motif) : ''}</div></div>${statut(r)}</div>`).join('')}</div>`
+       : `<div class="ep-vide">Aucun retrait pour l'instant.</div>`}`;
+}
+
+/* ---- feuille : demande de retrait ---- */
+function epVoile(html){
+  let v = $('ep-voile');
+  if(!v){ v = document.createElement('div'); v.id = 'ep-voile'; v.className = 'ep-voile'; v.onclick = e => { if(e.target === v) epFermerVoile(); }; document.body.appendChild(v); }
+  v.innerHTML = `<div class="ep-feuille"><div class="ep-poi"></div>${html}</div>`;
+  v.classList.add('actif');
+}
+function epFermerVoile(){ $('ep-voile')?.classList.remove('actif'); }
+
+let EP_PRIX = null;
+async function epPrixCrypto(){
+  if(EP_PRIX) return EP_PRIX;
+  try{
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether,bitcoin,ethereum,solana&vs_currencies=usd');
+    const j = await r.json();
+    EP_PRIX = { USDT:j.tether?.usd, BTC:j.bitcoin?.usd, ETH:j.ethereum?.usd, SOL:j.solana?.usd };
+  }catch(e){ EP_PRIX = {}; }
+  return EP_PRIX;
+}
+function ouvrirRetrait(){
+  const R = EP.reglages, der = EP.dernier || {};
+  const pays = R.pays.find(p => p.c === (der.pays || EP.pays)) || R.pays[0];
+  RT = { pays: pays.c, mode: der.crypto || !pays.moyens.length ? 'crypto' : 'mm', moyen: pays.moyens.includes(der.moyen) ? der.moyen : pays.moyens[0],
+         numero: der.numero || '', crypto: der.crypto || 'USDT', reseau: der.reseau || 'TRC20', adresse: der.adresse || '', adresse2: der.adresse || '', msg:'' };
+  epRendreRetrait();
+  epPrixCrypto().then(() => { if($('ep-voile')?.classList.contains('actif') && RT) epRendreRetrait(); });
+}
+function epRtMaj(k, v){
+  RT[k] = v;
+  if(k === 'pays'){ const p = EP.reglages.pays.find(x=>x.c===v); RT.moyen = p.moyens[0]; if(!p.moyens.length) RT.mode = 'crypto'; }
+  if(k === 'crypto'){ const c = EP.reglages.cryptos.find(x=>x.c===v); RT.reseau = c.reseaux[0]; }
+  epRendreRetrait();
+}
+function epRtConversion(){
+  const R = EP.reglages, m = EP.dispo, p = R.pays.find(x=>x.c===RT.pays);
+  if(RT.mode === 'crypto'){
+    const usd = R.pays.find(x=>x.devise==='USD');
+    const prix = EP_PRIX && EP_PRIX[RT.crypto];
+    if(!usd || !prix) return { txt: 'Converti au cours du jour au moment de l\'envoi', devise: RT.crypto, local: null, taux: null };
+    const q = m * usd.taux / prix;
+    const dec = RT.crypto === 'BTC' ? 6 : RT.crypto === 'ETH' ? 5 : RT.crypto === 'SOL' ? 3 : 2;
+    return { txt: `≈ ${q.toLocaleString('fr-FR',{maximumFractionDigits:dec})} ${RT.crypto} au cours du jour`, devise: RT.crypto, local: +q.toFixed(dec), taux: +(usd.taux/prix).toPrecision(6) };
+  }
+  if(!p || p.taux === 1) return { txt: `${p ? p.nom : ''} · franc CFA`, devise: p?.devise || 'XOF', local: m, taux: 1 };
+  const q = m * p.taux;
+  return { txt: `≈ ${q.toLocaleString('fr-FR',{maximumFractionDigits: p.devise==='USD'?2:0})} ${p.devise} (indicatif)`, devise: p.devise, local: +q.toFixed(2), taux: p.taux };
+}
+function epRendreRetrait(){
+  const R = EP.reglages, p = R.pays.find(x=>x.c===RT.pays), conv = epRtConversion();
+  const cr = R.cryptos.find(x=>x.c===RT.crypto);
+  const mini = RT.mode === 'crypto' && ['BTC','ETH'].includes(RT.crypto) ? R.min_crypto : R.min_retrait;
+  epVoile(`<h3>Demander un retrait</h3><p class="s">Tout ton disponible est versé en une fois.</p>
+    <div class="ep-montant"><b>${epF(EP.dispo)} F CFA</b><span>${epEsc(conv.txt)}</span></div>
+    <div class="ep-ch"><label>Pays</label><select onchange="epRtMaj('pays',this.value)">${R.pays.map(x=>`<option value="${x.c}" ${x.c===RT.pays?'selected':''}>${x.dr} ${epEsc(x.nom)}</option>`).join('')}</select></div>
+    <div class="ep-ch"><label>Recevoir par</label><div class="ep-choix">
+      ${p.moyens.map(m=>`<button class="${RT.mode==='mm'&&RT.moyen===m?'a':''}" onclick="RT.mode='mm';epRtMaj('moyen','${epEsc(m)}')">${epEsc(m)}</button>`).join('')}
+      <button class="${RT.mode==='crypto'?'a':''}" onclick="epRtMaj('mode','crypto')">Crypto</button></div></div>
+    ${RT.mode === 'mm' ? `
+      <div class="ep-ch"><label>Numéro ${epEsc(RT.moyen)}</label><input id="rt-num" inputmode="tel" placeholder="Numéro qui reçoit l'argent" value="${epEsc(RT.numero)}" oninput="RT.numero=this.value"></div>`
+    : `
+      <div class="ep-ch"><label>Monnaie</label><div class="ep-choix">${R.cryptos.map(c=>`<button class="${RT.crypto===c.c?'a':''}" onclick="epRtMaj('crypto','${c.c}')">${epEsc(c.nom)}</button>`).join('')}</div></div>
+      <div class="ep-ch"><label>Réseau</label><div class="ep-choix">${cr.reseaux.map(r=>`<button class="${RT.reseau===r?'a':''}" onclick="epRtMaj('reseau','${r}')">${epEsc(cr.nom)} · ${r}</button>`).join('')}</div></div>
+      <div class="ep-ch"><label>Adresse de ton portefeuille ${epEsc(RT.crypto)} (${epEsc(RT.reseau)})</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle ton adresse" value="${epEsc(RT.adresse)}" oninput="RT.adresse=this.value.trim()"></div>
+      <div class="ep-ch"><label>Confirme l'adresse</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle-la une 2e fois" value="${epEsc(RT.adresse2)}" oninput="RT.adresse2=this.value.trim()"></div>
+      <div class="ep-alerte">Vérifie que ton adresse est bien sur le réseau ${epEsc(RT.reseau)}. Un envoi vers une mauvaise adresse ou un mauvais réseau est perdu.</div>`}
+    ${EP.dispo < mini ? `<div class="ep-alerte">Minimum ${epF(mini)} F pour ce moyen de retrait.</div>` : ''}
+    <button class="ep-btn" style="margin-top:16px" id="rt-go" ${EP.dispo < mini ? 'disabled' : ''} onclick="envoyerRetrait()">Envoyer ma demande</button>
+    <div class="ep-msg" id="rt-msg">${RT.msg || ''}</div>
+    <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>`);
+}
+async function envoyerRetrait(){
+  const err = t => { RT.msg = `<span style="color:var(--ko)">${t}</span>`; $('rt-msg').innerHTML = RT.msg; };
+  let corps;
+  const conv = epRtConversion();
+  if(RT.mode === 'crypto'){
+    if(RT.adresse.length < 20) return err('Colle l\'adresse complète de ton portefeuille.');
+    if(RT.adresse !== RT.adresse2) return err('Les deux adresses ne sont pas identiques.');
+    corps = { p_pays: RT.pays, p_moyen: 'Crypto', p_numero: null, p_crypto: RT.crypto, p_reseau: RT.reseau, p_adresse: RT.adresse, p_devise: conv.devise, p_montant_local: conv.local, p_taux: conv.taux };
+  } else {
+    if(String(RT.numero).replace(/[^0-9]/g,'').length < 7) return err('Entre le numéro qui recevra l\'argent.');
+    corps = { p_pays: RT.pays, p_moyen: RT.moyen, p_numero: RT.numero, p_crypto: null, p_reseau: null, p_adresse: null, p_devise: conv.devise, p_montant_local: conv.local, p_taux: conv.taux };
+  }
+  $('rt-go').disabled = true;
+  const res = await epRpc('demander_retrait_v2', corps);
+  if(res && res.ok){
+    epVoile(`<h3>Demande envoyée ✓</h3><p class="s">${epF(res.montant)} F · ${RT.mode==='crypto' ? epEsc(RT.crypto + ' · ' + RT.reseau) : epEsc(RT.moyen)}</p>
+      <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>
+      <p class="s" style="margin-top:14px">Tu reçois une notification dès que l'argent est envoyé.</p>
+      <button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
+    epRecharger();
+    return;
+  }
+  $('rt-go').disabled = false;
+  const m = { JOUR:'Les demandes de retrait se font le lundi.', EN_COURS:'Tu as déjà un retrait en cours de versement.', SEUIL:'Disponible insuffisant pour ce moyen de retrait.',
+              NUMERO:'Numéro invalide.', ADRESSE:'Adresse ou réseau invalide.', PARTENAIRE:'Compte partenaire inactif.' };
+  err(m[res?.raison] || 'Erreur — réessaie dans un instant.');
+}
+
+/* ---- feuille : devenir partenaire ---- */
+function ouvrirDemandeP(){
+  const P = EP?.pays || [];
+  const res = ['TikTok','Instagram','Facebook','YouTube','Snapchat','X (Twitter)','Telegram','Chaîne WhatsApp','Autre réseau'];
+  const opt = (l, vide) => (vide ? `<option value="">${vide}</option>` : '') + l.map(x=>`<option>${x}</option>`).join('');
+  epVoile(`<h3>Devenir partenaire</h3><p class="s">Partage AURA90 à ta communauté et touche une commission sur chaque abonnement. On étudie ta demande et on te répond rapidement.</p>
+    <div class="ep-ch"><label>Pays</label><select id="dp-pays">${P.filter(x=>x.c!=='XX').map(x=>`<option value="${x.c}">${x.dr} ${epEsc(x.nom)}</option>`).join('')}<option value="XX">🌍 Autre pays</option></select></div>
+    <div class="ep-ch"><label>Ton réseau principal</label><select id="dp-res">${opt(res)}</select></div>
+    <div class="ep-ch"><label>Lien de ton compte (ou nom du groupe)</label><input id="dp-lien" autocapitalize="off" placeholder="ex. tiktok.com/@toncompte"></div>
+    <div class="ep-ch"><label>Nombre d'abonnés / membres</label><input id="dp-ab" inputmode="numeric" placeholder="ex. 12 000"></div>
+    <div class="ep-ch"><label>Un 2e réseau (facultatif)</label><select id="dp-res2">${opt(res, 'Aucun')}</select></div>
+    <div class="ep-ch"><label>Lien du 2e compte (facultatif)</label><input id="dp-lien2" autocapitalize="off" placeholder="Lien ou nom"></div>
+    <div class="ep-ch"><label>WhatsApp pour te contacter</label><input id="dp-wa" inputmode="tel" placeholder="Avec l'indicatif, ex. +221 77…"></div>
+    <button class="ep-btn" style="margin-top:16px" id="dp-go" onclick="envoyerDemandeP()">Envoyer ma demande</button>
+    <div class="ep-msg" id="dp-msg"></div>
+    <p class="s" style="margin-top:10px;font-size:11px">Réservé aux 18 ans et plus. AURA90 fournit des analyses, jamais une promesse de gains : ta communication doit le respecter.</p>`);
+}
+async function envoyerDemandeP(){
+  const v = id => ($(id)?.value || '').trim();
+  const err = t => { $('dp-msg').innerHTML = `<span style="color:var(--ko)">${t}</span>`; };
+  if(!v('dp-lien')) return err('Indique le lien de ton compte.');
+  if(v('dp-wa').replace(/[^0-9]/g,'').length < 8) return err('Indique ton numéro WhatsApp.');
+  $('dp-go').disabled = true;
+  const res = await epRpc('demander_partenariat', { p_pays: v('dp-pays'), p_reseau: v('dp-res'), p_lien: v('dp-lien'), p_reseau2: v('dp-res2') || null,
+    p_lien2: v('dp-lien2') || null, p_abonnes: parseInt(v('dp-ab').replace(/[^0-9]/g,'')) || null, p_whatsapp: v('dp-wa') });
+  if(res && (res.ok || res.raison === 'EN_COURS')){
+    epVoile(`<h3>Demande envoyée ✓</h3><p class="s">On étudie ton profil et on te recontacte. Tu recevras une notification dès que ton espace partenaire est activé.</p><button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
+    chargerPartenaire(); return;
+  }
+  $('dp-go').disabled = false;
+  err(res?.raison === 'DEJA' ? 'Tu es déjà partenaire.' : 'Erreur — réessaie dans un instant.');
 }
 
 /* ================= ONBOARDING ================= */
@@ -2831,7 +3255,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-19-4';
+const APP_VERSION = '2026-10-19-6';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
