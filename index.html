@@ -8,6 +8,36 @@
 #maj-app span{flex:1}
 #maj-app button{border:none;border-radius:10px;padding:9px 14px;font-weight:800;font-family:inherit;color:var(--nuit);background:linear-gradient(135deg,var(--aura1),var(--aura2));cursor:pointer;white-space:nowrap}
 .lv-stats{margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sourdine);letter-spacing:.02em}
+
+/* ====== 2 PASTILLES DE L'ACCUEIL (19/10/2026, option B) ====== */
+.pastilles{margin:4px 16px 18px;display:flex;flex-direction:column;gap:8px}
+.pastilles #zone-valides:empty{display:none}
+.rb{position:relative;overflow:hidden;display:flex;align-items:center;gap:16px;padding:16px 16px 16px 14px;border-radius:22px;cursor:pointer;
+  border:1px solid transparent;
+  background:
+    radial-gradient(140px 110px at 100% 0%,rgba(139,124,255,.22),transparent 70%) padding-box,
+    radial-gradient(160px 120px at 0% 100%,rgba(61,232,200,.16),transparent 70%) padding-box,
+    linear-gradient(150deg,#0F1D24 0%,#121827 55%,#151530 100%) padding-box,
+    linear-gradient(135deg,rgba(61,232,200,.55),rgba(61,232,200,.08) 40%,rgba(139,124,255,.10) 60%,rgba(139,124,255,.55)) border-box;
+  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.04)}
+.rb:active{transform:scale(.99)}
+.rb-anneau{position:relative;width:78px;height:78px;flex:0 0 78px;border-radius:50%;box-shadow:0 0 22px rgba(61,232,200,.12)}
+.rb-anneau svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rb-fond{fill:none;stroke:rgba(255,255,255,.07);stroke-width:7}
+.rb-val{fill:none;stroke:url(#rb-grad);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+.rb-anneau .gros{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--texte);letter-spacing:-.03em}
+.rb-txt{flex:1;min-width:0}
+.rb-txt b{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.01em}
+.rb-txt small{display:block;margin-top:4px;font-size:12px;line-height:1.4;color:var(--sourdine)}
+.rb-f{color:var(--sourdine);font-size:20px;opacity:.6}
+.vh-ligne{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:16px;cursor:pointer;
+  background:linear-gradient(90deg,rgba(61,232,200,.07),rgba(20,29,43,.9) 45%) ,var(--surface);border:1px solid var(--ligne)}
+.vh-ligne:active{border-color:rgba(61,232,200,.4)}
+.vh-pt{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--aura1);box-shadow:0 0 0 3px rgba(61,232,200,.15),0 0 10px rgba(61,232,200,.6)}
+.vh-ligne b{font-size:13.5px;white-space:nowrap}
+.vh-ligne span{flex:1;min-width:0;text-align:right;color:var(--sourdine);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vh-ligne em{font-style:normal;color:var(--sourdine);opacity:.6;font-size:16px}
+.cp-sel .duel .vs.fin{color:var(--texte);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--surface2);border:1px solid var(--ligne)}
 </style>
 <meta name="theme-color" content="#070B12">
 <link rel="manifest" href="manifest.json">
@@ -727,11 +757,21 @@ const CONFIG = {
 
   <!-- ============ ACCUEIL ============ -->
   <div class="page active" id="page-accueil">
-    <div class="bandeau" onclick="allerPage('palmares')">
-      <div><div class="gros" id="bandeau-chiffre">…</div><small id="bandeau-sous">chargement du palmarès</small></div>
-      <div class="fleche">›</div>
+    <div class="pastilles">
+      <div class="rb" onclick="allerPage('palmares')">
+        <div class="rb-anneau">
+          <svg viewBox="0 0 80 80" aria-hidden="true">
+            <defs><linearGradient id="rb-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3DE8C8"/><stop offset="1" stop-color="#8B7CFF"/></linearGradient></defs>
+            <circle cx="40" cy="40" r="34" class="rb-fond"/>
+            <circle cx="40" cy="40" r="34" class="rb-val" id="rb-val"/>
+          </svg>
+          <div class="gros" id="bandeau-chiffre">…</div>
+        </div>
+        <div class="rb-txt"><b>Réussite vérifiée</b><small id="bandeau-sous">chargement du palmarès</small></div>
+        <div class="rb-f">›</div>
+      </div>
+      <div id="zone-valides"></div>
     </div>
-    <div id="zone-valides"></div>
     <div id="zone-mdj"></div>
 
     <div id="zone-matchs"><div class="chargement">CONNEXION AU MOTEUR…</div></div>
@@ -1030,11 +1070,13 @@ async function charger(){
     // palmarès global
     const g = (await sb('palmares_global?select=*'))[0] || {};
     if(g.pronos_verifies > 0){
-      setCount($('bandeau-chiffre'), g.reussite_pct, 1, ' %');
-      $('bandeau-sous').textContent = `de réussite vérifiée · ${g.pronos_verifies} pronos`;
+      setCount($('bandeau-chiffre'), g.reussite_pct, 1, '%');
+      $('bandeau-sous').textContent = `${g.pronos_verifies} pronos contrôlés après match`;
+      anneauReussite(g.reussite_pct);
     } else {
-      setCount($('bandeau-chiffre'), g.pronos_publies||0, 0, ' pronos');
-      $('bandeau-sous').textContent = 'publiés · vérification en cours';
+      setCount($('bandeau-chiffre'), g.pronos_publies||0, 0, '');
+      $('bandeau-sous').textContent = 'pronos publiés · vérification en cours';
+      anneauReussite(0);
     }
     afficherAccueil();
     chargerPalmares(g);
@@ -1044,6 +1086,13 @@ async function charger(){
 }
 
 let MDJ = null;           // match du jour (gratuit)
+// anneau de réussite de l'accueil (se remplit en douceur)
+function anneauReussite(v){
+  const c = $('rb-val'); if(!c) return;
+  const L = 2 * Math.PI * 34, x = Math.max(0, Math.min(100, Number(v) || 0));
+  c.style.strokeDasharray = L; c.style.strokeDashoffset = L;
+  requestAnimationFrame(() => setTimeout(() => { c.style.strokeDashoffset = L * (1 - x / 100); }, 60));
+}
 function afficherAccueil(){
   if(!PRONOS.length){
     $('zone-mdj').innerHTML='';
@@ -1729,6 +1778,11 @@ const CATS = [
 ];
 let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'montante', COUPONS_CHARGES = false, JOUR_ACTIF = 'auj';
 
+// score final du match s'il est connu, sinon le tiret habituel (19/10/2026)
+function vsScore(s){
+  const sc = s && s.score ? String(s.score).replace(/[^0-9\-: ]/g,'').trim() : '';
+  return sc ? `<span class="vs fin">${sc}</span>` : `<span class="vs">–</span>`;
+}
 function ecuMini(url, nom){
   return url ? `<img class="ecu-m" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
              : `<span class="ecu-m sans">${(nom||'?').slice(0,1)}</span>`;
@@ -1789,7 +1843,7 @@ async function chargerCoupons(){
     MONTANTE = Array.isArray(mt) ? mt : [];
     if(COUPONS.length){
       const ids = COUPONS.map(c=>c.id).join(',');
-      const sels = await sbUser(`coupon_selections?coupon_id=in.(${ids})&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,confiance,resultat`);
+      const sels = await sbUser(`coupon_selections?coupon_id=in.(${ids})&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,confiance,resultat,score`).catch(()=>sbUser(`coupon_selections?coupon_id=in.(${ids})&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,confiance,resultat`));
       SELECTIONS = {};
       (sels||[]).forEach(s=>{ (SELECTIONS[s.coupon_id] = SELECTIONS[s.coupon_id] || []).push(s); });
     }
@@ -2001,7 +2055,7 @@ function carteScore(c){
           <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(s0.date_match):''}${s0.heure?' · '+String(s0.heure).slice(0,5):''} ${etat}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s0.logo_dom, s0.dom)}<b>${s0.dom}</b></span>
-            <span class="vs">–</span>
+            ${vsScore(s0)}
             <span class="eq">${ecuMini(s0.logo_ext, s0.ext)}<b>${s0.ext}</b></span>
           </div>
           <div class="se-scores">
@@ -2038,7 +2092,7 @@ function carteCoupon(c, ouvert){
             <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
             <div class="duel">
               <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
-              <span class="vs">–</span>
+              ${vsScore(s)}
               <span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span>
             </div>
             <div class="pick"><span class="fl">▸</span>${s.selection}</div>
@@ -2212,13 +2266,13 @@ async function ficheCase(el, cid, n, mise, gain, jour, statut){
     <div class="h"><span>${fmtF(mise)} F → ${fmtF(gain)} F${usdH(gain)}</span><span>cote ${(gain/mise).toFixed(2)}</span></div><div class="lv-msg">Chargement…</div></div>`;
   try{
     let sels = SELECTIONS[cid];
-    if(!sels || !sels.length) sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat`);
+    if(!sels || !sels.length) sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat,score`);
     const zone = box.querySelector('.lv-msg'); if(!zone) return;
     zone.outerHTML = (sels && sels.length) ? sels.map(s=>`
       <div class="cp-sel">
         <div class="g">
           <div class="lig">${s.ligue||''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
-          <div class="duel"><span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span><span class="vs">–</span><span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span></div>
+          <div class="duel"><span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>${vsScore(s)}<span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span></div>
           <div class="pick ${s.resultat||''}"><span class="fl">${s.resultat==='gagne'?'✓':s.resultat==='perdu'?'✗':'▸'}</span>${s.selection}</div>
         </div>
         <div class="c">${Number(s.cote).toFixed(2)}</div>
@@ -2236,7 +2290,7 @@ async function voirPalier(cid, el){
   try{
     let sels = SELECTIONS[cid];
     if(!sels || !sels.length){
-      sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat`);
+      sels = await sbUser(`coupon_selections?coupon_id=eq.${cid}&order=id.asc&select=coupon_id,ligue,dom,ext,date_match,heure,logo_dom,logo_ext,marche,selection,cote,resultat,score`);
     }
     if(!sels || !sels.length){ box.innerHTML = `<div class="lv-msg">Détail indisponible pour ce palier.</div>`; return; }
     box.innerHTML = sels.map(s=>`
@@ -2245,7 +2299,7 @@ async function voirPalier(cid, el){
           <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${s.heure?' · '+String(s.heure).slice(0,5):''}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
-            <span class="vs">–</span>
+            ${vsScore(s)}
             <span class="eq">${ecuMini(s.logo_ext, s.ext)}<b>${s.ext}</b></span>
           </div>
           <div class="pick ${s.resultat||''}"><span class="fl">${s.resultat==='gagne'?'✓':s.resultat==='perdu'?'✗':'▸'}</span>${s.selection}</div>
@@ -2759,9 +2813,9 @@ async function vhBandeau(){
     const vus = new Set(), noms = [];
     for(const c of l){ if(vus.has(c.categorie)) continue; vus.add(c.categorie);
       noms.push((VH_NOMS[c.categorie] || c.categorie).replace(/^\S+\s/, '') + (c.palier ? ' palier ' + c.palier : ' ' + vhCote(c.cote_totale))); }
-    $('zone-valides').innerHTML = `<div class="vh-bandeau" onclick="ouvrirValides()">
-      <div style="font-size:22px">✅</div>
-      <div class="t"><b>Validé hier</b><span>${vhEsc(noms.join(' · '))}</span></div><div class="f">›</div></div>`;
+    $('zone-valides').innerHTML = `<div class="vh-ligne" onclick="ouvrirValides()">
+      <i class="vh-pt"></i><b>Validé hier</b>
+      <span>${vhEsc(noms.map(n => n.replace(/ palier /i, ' P')).join(' · '))}</span><em>›</em></div>`;
   }catch(e){}
 }
 vhBandeau();
@@ -2777,7 +2831,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-18-4';
+const APP_VERSION = '2026-10-19-4';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
