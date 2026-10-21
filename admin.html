@@ -249,6 +249,36 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .mt-sel .r{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700}
 .mt-sel.ok .r{color:var(--aura1)} .mt-sel.ko .r{color:var(--ko)} .mt-sel.ko{background:rgba(255,122,158,.06)}
 
+
+/* ----- Historique : tous les coupons d'un jour (21/10/2026) ----- */
+#hj-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:63;background:var(--nuit);display:none;justify-content:center}
+#hj-ecran.ouvert{display:flex}
+#hj-boite{width:100%;max-width:560px;height:100%;display:flex;flex-direction:column}
+.hj-date{display:flex;gap:8px;align-items:center;padding:10px 12px 0}
+.hj-date button{flex:0 0 42px;height:42px;padding:0;margin:0;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);font-size:20px;font-weight:800}
+.hj-date button:disabled{opacity:.3}
+.hj-date input{flex:1;margin:0;height:42px;text-align:center;font-weight:800;color-scheme:dark}
+.hj-jour{text-align:center;font-size:12px;color:var(--sourdine);padding:6px 12px 0;text-transform:capitalize}
+#hj-corps{flex:1;overflow-y:auto;padding:12px 12px calc(40px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}
+.hj-groupe{font:800 11px 'JetBrains Mono',monospace;color:var(--sourdine);text-transform:uppercase;letter-spacing:.06em;margin:16px 2px 8px}
+.hj-groupe:first-child{margin-top:4px}
+.hj-c{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.hj-c.ok{border-color:rgba(61,232,200,.45)}
+.hj-c.ko{border-color:rgba(255,122,158,.4)}
+.hj-t{display:flex;gap:10px;align-items:center;padding:11px 13px;cursor:pointer}
+.hj-t .g{flex:1;min-width:0}
+.hj-t .n{font-weight:800;font-size:13.5px}
+.hj-t .s{font-size:11px;color:var(--sourdine);margin-top:2px}
+.hj-t .co{font:800 15px 'JetBrains Mono',monospace;white-space:nowrap}
+.hj-t .e{font:800 10.5px 'JetBrains Mono',monospace;padding:5px 7px;border-radius:8px;white-space:nowrap}
+.hj-c.ok .e{background:rgba(61,232,200,.14);color:var(--aura1)}
+.hj-c.ko .e{background:rgba(255,122,158,.14);color:var(--ko)}
+.hj-c.en .e{background:rgba(255,180,84,.14);color:#FFB454}
+.hj-m{display:none;padding:0 13px 8px}
+.hj-c.voir .hj-m{display:block}
+.hj-m .mt-sel .q b{font-weight:700}
+.hj-m .sc{font-family:'JetBrains Mono',monospace;color:var(--texte);margin:0 4px}
+
 /* ----- Preuves v2 (15/10/2026) : écran plein, catégories, paliers ----- */
 #pv-ecran{position:fixed;top:0;left:0;right:0;height:100%;overscroll-behavior:none;padding-top:env(safe-area-inset-top,0px);box-sizing:border-box;z-index:62;background:var(--nuit);display:none;justify-content:center}
 #pv-ecran.ouvert{display:flex}
@@ -647,6 +677,32 @@ body:not(.co) .adm-nav{display:none}
     </div>
     <span class="fl">›</span>
   </a>
+
+  <a class="carte-tiktok" href="#" onclick="hjOuvrir();return false">
+    <div>
+      <div class="t">📅 Historique — coupons d'un jour</div>
+      <div class="s">Tous les coupons publiés un jour donné : validés et perdus</div>
+    </div>
+    <span class="fl">›</span>
+  </a>
+
+  <!-- écran Historique -->
+  <div id="hj-ecran">
+    <div id="hj-boite">
+      <div class="mb-barre">
+        <button class="mb-fleche" onclick="history.back()">‹</button>
+        <div class="mb-titre">Historique des coupons</div>
+      </div>
+      <div class="hj-date">
+        <button onclick="hjDecaler(-1)" aria-label="Jour précédent">‹</button>
+        <input type="date" id="hj-input" onchange="hjCharger(this.value)">
+        <button id="hj-suiv" onclick="hjDecaler(1)" aria-label="Jour suivant">›</button>
+      </div>
+      <div class="hj-jour" id="hj-jour"></div>
+      <div class="pv-cats" id="hj-filtres"></div>
+      <div id="hj-corps"><div class="vide">Chargement…</div></div>
+    </div>
+  </div>
 
   <!-- écran Montantes -->
   <div id="mt-ecran">
@@ -1103,7 +1159,7 @@ setInterval(mbSuivre, 5000);
 /* ======== ÉCRANS PLEINS & CLAVIER IPHONE (17/10/2026) ========
    Le fond est figé pendant qu'un écran plein est ouvert et l'écran suit la
    zone visible (au-dessus du clavier) : plus rien ne transparaît derrière. */
-const ECRANS = ['mb-ecran','dt-ecran','pv-ecran','mt-ecran'];
+const ECRANS = ['mb-ecran','dt-ecran','pv-ecran','mt-ecran','hj-ecran'];
 let VERROU_Y = null;
 function ecranOuvert(){ return ECRANS.map(i => $(i)).find(e => e && e.classList.contains('ouvert')); }
 function ecranAjuster(){
@@ -1664,6 +1720,92 @@ function mtAfficher(){
     </div>`;
   }).join('');
   $('mt-corps').innerHTML = h;
+}
+
+/* ======== HISTORIQUE : TOUS LES COUPONS D'UN JOUR (21/10/2026) ========
+   Choix d'une date (hier au plus tard) → tous les coupons publiés par le
+   moteur ce jour-là, validés ET perdus, avec le détail des matchs. */
+let HJ_JOUR = null, HJ_FILTRE = 'tous', HJ_DATA = null;
+const hjIso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function hjHier(){ const d = new Date(); d.setDate(d.getDate() - 1); return hjIso(d); }
+function hjOuvrir(){
+  $('hj-ecran').classList.add('ouvert');
+  history.pushState({ hj: 1 }, '');
+  $('hj-input').max = hjHier();
+  hjCharger(HJ_JOUR || hjHier());
+}
+function hjFermer(){ $('hj-ecran').classList.remove('ouvert'); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.hj) && $('hj-ecran').classList.contains('ouvert')) hjFermer(); });
+function hjDecaler(n){
+  const d = new Date((HJ_JOUR || hjHier()) + 'T12:00:00'); d.setDate(d.getDate() + n);
+  hjCharger(hjIso(d));
+}
+async function hjCharger(jour){
+  const max = hjHier();
+  if(!jour) return;
+  if(jour > max) jour = max;
+  HJ_JOUR = jour; $('hj-input').value = jour; $('hj-input').max = max;
+  $('hj-suiv').disabled = jour >= max;
+  $('hj-jour').textContent = jourFr(jour);
+  $('hj-filtres').innerHTML = '';
+  $('hj-corps').innerHTML = '<div class="vide">Chargement…</div>';
+  try{
+    const cps = await rest(`coupons?jour=eq.${jour}&categorie=neq.tiktok&order=categorie.asc,numero.asc&select=id,jour,categorie,numero,cote_totale,nb_matchs,statut`);
+    const ids = cps.map(c => c.id);
+    const [sels, mts] = await Promise.all([
+      pvSelections(ids),
+      ids.length ? rest(`montante?coupon_id=in.(${ids.join(',')})&select=coupon_id,type,serie,palier,mise,gain_vise`).catch(() => []) : []
+    ]);
+    if(jour !== HJ_JOUR) return;            // l'utilisateur a changé de jour entre-temps
+    HJ_DATA = { cps, sels, mts };
+    hjAfficher();
+  }catch(e){ $('hj-corps').innerHTML = '<div class="vide">Impossible de charger (' + echap(e.message) + ').</div>'; }
+}
+function hjFiltre(f){ HJ_FILTRE = f; hjAfficher(); $('hj-corps').scrollTop = 0; }
+function hjAfficher(){
+  const { cps, sels, mts } = HJ_DATA;
+  const z = $('hj-corps');
+  const etat = c => c.statut === 'gagne' ? 'ok' : c.statut === 'perdu' ? 'ko' : 'en';
+  const nb = { tous: cps.length, ok: cps.filter(c => etat(c) === 'ok').length, ko: cps.filter(c => etat(c) === 'ko').length, en: cps.filter(c => etat(c) === 'en').length };
+  const filtres = [['tous','Tous'], ['ok','✓ Validés'], ['ko','✗ Perdus']].concat(nb.en ? [['en','⏳ Non vérifiés']] : []);
+  if(!nb[HJ_FILTRE] && HJ_FILTRE !== 'tous') HJ_FILTRE = 'tous';
+  $('hj-filtres').innerHTML = filtres.map(([k, n]) => `<button class="${k === HJ_FILTRE ? 'actif' : ''}" onclick="hjFiltre('${k}')">${n}<b>${nb[k]}</b></button>`).join('');
+  if(!cps.length){ z.innerHTML = '<div class="vide">Aucun coupon publié ce jour-là.</div>'; return; }
+
+  let h = `<div class="mt-bilan" style="grid-template-columns:repeat(3,1fr)">
+    <div><b>${nb.tous}</b><span>Publiés</span></div>
+    <div><b style="color:var(--aura1)">${nb.ok}</b><span>Validés</span></div>
+    <div><b style="color:var(--ko)">${nb.ko}</b><span>Perdus</span></div>
+  </div>`;
+  const ordre = ['montante','turbo','score','sure','confiance','fun','grosses','nuit'];
+  const liste = cps.filter(c => HJ_FILTRE === 'tous' || etat(c) === HJ_FILTRE)
+    .sort((a, b) => ((ordre.indexOf(a.categorie) + 99) % 99) - ((ordre.indexOf(b.categorie) + 99) % 99) || a.numero - b.numero);
+  let groupe = null;
+  h += liste.map(c => {
+    const ss = sels.filter(x => x.coupon_id === c.id), mt = mts.find(m => m.coupon_id === c.id), e = etat(c);
+    let tete = '';
+    if(c.categorie !== groupe){ groupe = c.categorie; tete = `<div class="hj-groupe">${CAT_NOMS[c.categorie] || echap(c.categorie)}</div>`; }
+    const nom = mt ? `Série ${mt.serie} · palier ${mt.palier}` : c.categorie === 'score' ? 'Score exact' : 'Coupon #' + (c.numero || 1);
+    const perdants = ss.filter(x => x.resultat === 'perdu').length;
+    const sous = (c.categorie === 'score' ? 'Score exact' : (c.nb_matchs || ss.length) + ' match' + ((c.nb_matchs || ss.length) > 1 ? 's' : ''))
+      + (e === 'ko' && c.categorie !== 'score' && perdants ? ` · ${perdants} perdu${perdants > 1 ? 's' : ''}` : '')
+      + (mt ? ` · ${F(mt.mise)} F → ${F(mt.gain_vise)} F` : '');
+    const matchs = ss.map(m => {
+      const r = m.resultat === 'gagne' ? 'ok' : m.resultat === 'perdu' ? 'ko' : '';
+      return `<div class="mt-sel ${r}"><div class="q"><b>${echap(m.dom)}</b>${m.score ? `<span class="sc">${echap(m.score)}</span>` : ' – '}<b>${echap(m.ext)}</b>
+        <small>${echap(m.selection || '')} · ${echap(m.ligue || '')}${m.heure ? ' · ' + String(m.heure).slice(0, 5) : ''}</small></div>
+        <div class="r">${m.cote ? Number(m.cote).toFixed(2) : ''} ${r === 'ok' ? '✓' : r === 'ko' ? '✗' : '…'}</div></div>`;
+    }).join('');
+    return tete + `<div class="hj-c ${e}${e === 'ko' ? ' voir' : ''}">
+      <div class="hj-t" onclick="this.parentElement.classList.toggle('voir')">
+        <div class="g"><div class="n">${nom}</div><div class="s">${sous}</div></div>
+        <div class="co">${Number(c.cote_totale || 0).toFixed(2)}</div>
+        <span class="e">${e === 'ok' ? '✓ VALIDÉ' : e === 'ko' ? '✗ PERDU' : '⏳'}</span>
+      </div>
+      <div class="hj-m">${matchs || '<div class="mt-sel"><div class="q"><small>Matchs indisponibles</small></div></div>'}</div>
+    </div>`;
+  }).join('');
+  z.innerHTML = h + (liste.length ? '' : '<div class="vide">Aucun coupon dans ce filtre.</div>');
 }
 
 /* ---------- vue « Par jour » (l'ancienne vue) ---------- */
