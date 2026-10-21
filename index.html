@@ -2834,6 +2834,7 @@ function ouvrirNotifs(){
   const lienPreuve = n => {
     const v = /valides=(\d{4}-\d{2}-\d{2})/.exec(n.lien || '');
     if(v) return `onclick="fermerNotifs();ouvrirValides('${v[1]}')" style="cursor:pointer"`;
+    if(/offres=1/.test(n.lien || '')) return `onclick="fermerNotifs();allerOffres()" style="cursor:pointer"`;
     if(!EST_ADMIN || !/valid/i.test(n.titre || '')) return '';
     const j = (String(n.corps || '').match(/\d{4}-\d{2}-\d{2}/) || [new Date(n.cree_le).toISOString().slice(0,10)])[0];
     return `onclick="location.href='admin.html#preuves=${j}'" style="cursor:pointer"`;
@@ -3531,6 +3532,15 @@ async function msCompteur(){
   if(d && !d.erreur) msPastille(d.non_lu || 0);
 }
 setTimeout(msCompteur, 4000);
+// arrivée depuis une relance de paiement (?offres=1) : page Compte, sur les offres
+function allerOffres(){
+  allerPage('compte');
+  setTimeout(() => { const o = document.querySelector('.offre'); if(o) o.scrollIntoView({behavior:'smooth', block:'center'}); }, 400);
+}
+if(/[?&]offres=1/.test(location.search)){
+  history.replaceState(null, '', location.pathname);
+  setTimeout(allerOffres, 1200);
+}
 // arrivée depuis une notification de la messagerie (?messages=1 ou #messages)
 if(/[?&]messages=1/.test(location.search) || location.hash === '#messages'){
   history.replaceState(null, '', location.pathname);
@@ -3666,7 +3676,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-21-2';
+const APP_VERSION = '2026-10-21-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
