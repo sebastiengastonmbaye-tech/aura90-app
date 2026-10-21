@@ -315,6 +315,54 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 #nt-carte .b button{margin:0;border-radius:12px;padding:11px 10px;font:800 13px 'Manrope',sans-serif;cursor:pointer}
 #nt-carte .oui{flex:1;border:none;color:var(--nuit);background:linear-gradient(135deg,var(--aura1),var(--aura2))}
 #nt-carte .non{flex:0 0 auto;background:none;border:1px solid var(--ligne);color:var(--sourdine)}
+/* ----- Guide de l'app (21/10/2026) ----- */
+.carte-guide{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:0 16px 12px;box-sizing:border-box;padding:13px 14px;border-radius:16px;border:1px solid var(--ligne);background:linear-gradient(135deg,rgba(61,232,200,.08),rgba(122,140,255,.08));color:var(--texte);text-align:left;cursor:pointer;font:inherit}
+.carte-guide .ic-g{flex:0 0 38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--surface2)}
+.carte-guide .g{flex:1;min-width:0}
+.carte-guide b{display:block;font-size:13.5px}
+.carte-guide small{display:block;font-size:11.5px;color:var(--sourdine);margin-top:2px}
+.carte-guide .fl{color:var(--sourdine);font-size:18px}
+.mt-aide{display:block;width:100%;margin:0 0 12px;padding:9px;border-radius:11px;border:1px dashed var(--ligne);background:none;color:var(--aura1);font:700 12px 'Manrope',sans-serif;cursor:pointer}
+#gd-ecran{position:fixed;inset:0;z-index:85;background:var(--nuit);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#gd-ecran.ouvert{display:flex}
+.gd-barre{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--ligne)}
+.gd-barre button{background:var(--surface);border:1px solid var(--ligne);color:var(--texte);border-radius:11px;width:38px;height:38px;font-size:20px;padding:0;margin:0;cursor:pointer}
+.gd-barre h2{margin:0;font-size:17px}
+#gd-index{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;border-bottom:1px solid var(--ligne);scrollbar-width:none;flex:0 0 auto}
+#gd-index::-webkit-scrollbar{display:none}
+#gd-index button{flex:0 0 auto;margin:0;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);border-radius:99px;padding:7px 11px;font:700 11.5px 'Manrope',sans-serif;white-space:nowrap;cursor:pointer}
+#gd-corps{flex:1;overflow-y:auto;padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain;max-width:600px;width:100%;margin:0 auto;box-sizing:border-box}
+.gd-intro{color:var(--sourdine);font-size:13px;margin:0 0 6px}
+.gd-sec{padding:16px 0;border-bottom:1px solid var(--ligne)}
+.gd-sec h3{display:flex;gap:9px;align-items:center;margin:0 0 10px;font-size:15.5px}
+.gd-x{font-size:13.5px;line-height:1.6;color:var(--texte)}
+.gd-x b{color:var(--aura1)}
+.gd-go{margin:12px 0 0;padding:9px 14px;border-radius:11px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);font:800 12.5px 'Manrope',sans-serif;cursor:pointer}
+.gd-fin{text-align:center;padding:22px 0 0;color:var(--sourdine);font-size:13px}
+.gd-ill{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;padding:12px;margin:0 0 12px}
+.gd-match{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px dashed var(--ligne);font-size:12.5px}
+.gd-match:last-child{border-bottom:0}
+.gd-match>div{flex:1;display:flex;flex-direction:column;gap:3px}
+.gd-signe{font:800 9.5px 'JetBrains Mono',monospace;color:#FFD36E;background:rgba(255,211,110,.12);border-radius:6px;padding:3px 6px}
+.gd-h{font:700 11px 'JetBrains Mono',monospace;color:var(--sourdine)}
+.gd-cp-t{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:6px}
+.gd-cp-t span{font:800 15px 'JetBrains Mono',monospace;color:var(--aura1)}
+.gd-sel{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px dashed var(--ligne);font-size:12px}
+.gd-sel small{display:block;color:var(--sourdine);font-size:11px;margin-top:2px}
+.gd-sel b{font-family:'JetBrains Mono',monospace}
+.gd-esc{display:flex;align-items:flex-end;gap:6px;height:124px}
+.gd-m{flex:1;border-radius:9px 9px 4px 4px;background:var(--surface2);border:1px solid var(--ligne);display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:5px 2px;box-sizing:border-box;min-width:0}
+.gd-m b{font:800 12px 'JetBrains Mono',monospace}
+.gd-m small{font-size:8.5px;color:var(--sourdine);white-space:nowrap;overflow:hidden;max-width:100%}
+.gd-m.ok{background:rgba(61,232,200,.16);border-color:rgba(61,232,200,.55)}
+.gd-m.ok b{color:var(--aura1)}
+.gd-m.en{border-color:#FFB454}
+.gd-m.en b{color:#FFB454}
+.gd-m.fin{background:linear-gradient(180deg,rgba(255,211,110,.18),transparent);border-style:dashed}
+.gd-leg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font-size:10.5px;color:var(--sourdine)}
+.gd-leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;background:var(--surface2);border:1px solid var(--ligne);vertical-align:-1px}
+.gd-leg i.ok{background:rgba(61,232,200,.5)} .gd-leg i.en{border-color:#FFB454}
+.ms-lien{display:inline-block;margin:6px 0 2px;padding:7px 11px;border-radius:10px;border:1px solid rgba(61,232,200,.5);background:rgba(61,232,200,.1);color:var(--aura1);font:800 12px 'Manrope',sans-serif;cursor:pointer;white-space:normal;text-align:left}
 #ins-bandeau{position:fixed;z-index:44;left:50%;transform:translate(-50%,140%);bottom:calc(74px + env(safe-area-inset-bottom,0px));width:calc(100% - 24px);max-width:496px;
   display:flex;align-items:center;gap:10px;padding:9px 10px 9px 12px;border-radius:14px;background:var(--surface2);border:1px solid rgba(61,232,200,.35);
   box-shadow:0 8px 24px rgba(0,0,0,.45);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
@@ -994,6 +1042,7 @@ const CONFIG = {
   <div class="page" id="page-compte">
     <div class="abo-tete"><h2>Chaque match.<br>Chaque verdict.</h2><p>Analyse illimitée sur toutes les compétitions couvertes.</p></div>
     <div id="zone-reglages"></div>
+    <button class="carte-guide" onclick="ouvrirGuide()"><span class="ic-g">📖</span><span class="g"><b id="gd-carte-t">Comment marche AURA90 ?</b><small id="gd-carte-s">Le guide de chaque section, montantes comprises</small></span><span class="fl">›</span></button>
 
     <!-- ----- non connecté ----- -->
     <div id="bloc-auth">
@@ -1073,6 +1122,11 @@ const CONFIG = {
     <div class="carte-install" id="carte-install"></div>
   </div>
   <div class="ins-fleche" id="ins-fleche">⬇️</div>
+  <div id="gd-ecran">
+    <div class="gd-barre"><button onclick="history.back()" aria-label="Retour">‹</button><h2 id="gd-titre">Guide</h2></div>
+    <div id="gd-index"></div>
+    <div id="gd-corps"></div>
+  </div>
   <div id="nt-carte" role="dialog" aria-live="polite">
     <div class="h">
       <div class="ic">🔔</div>
@@ -1506,6 +1560,26 @@ function animerPalmares(){
 }
 function badgeCls(b){ return b==='Très sûr'?'b-tres':b==='Sûr'?'b-sur':b==='Équilibré'?'b-equ':'b-aud'; }
 function badgeIco(b){ return b==='Très sûr'?'i-cadenas':b==='Sûr'?'i-bouclier':b==='Équilibré'?'i-balance':'i-eclair'; }
+/* ---------- heures dans le fuseau du téléphone (21/10/2026) ----------
+   Le moteur enregistre les matchs à l'heure de Dakar (UTC). On les affiche à
+   l'heure de l'endroit où se trouve la personne (horloge du téléphone) :
+   18:45 à Paris, 17:45 à Douala, 16:45 à Dakar pour le même match.
+   Si le match tombe un autre jour en heure locale, le jour est ajouté. */
+const pad2 = n => String(n).padStart(2, '0');
+function hLoc(jour, heure){
+  if(!heure) return '';
+  const hm = String(heure).slice(0, 5);
+  if(!/^\d{1,2}:\d{2}$/.test(hm)) return hm;
+  const j = /^\d{4}-\d{2}-\d{2}/.test(String(jour || '')) ? String(jour).slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const d = new Date(`${j}T${hm.padStart(5, '0')}:00Z`);
+  if(isNaN(d)) return hm;
+  const loc = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  const jl = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  return jl === j ? loc : `${loc} (${d.toLocaleDateString(LOC, { weekday: 'short' })})`;
+}
+// « 5h » (heure de Dakar) dans le fuseau du téléphone : 7h à Paris, 6h à Douala
+const hPub = () => { const n = new Date(), d = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), 5, 0)); return d.getHours() + 'h' + (d.getMinutes() ? pad2(d.getMinutes()) : ''); };
+
 function labelDate(d){
   const auj = new Date(); auj.setHours(0,0,0,0);
   const dm = new Date(d+'T00:00:00');
@@ -1568,7 +1642,7 @@ function anneauReussite(v){
 function afficherAccueil(){
   if(!PRONOS.length){
     $('zone-mdj').innerHTML='';
-    $('zone-matchs').innerHTML = `<div class="vide">Aucun match analysé pour les prochains jours.<br>Le moteur publie chaque nuit à 5h — reviens bientôt.</div>`;
+    $('zone-matchs').innerHTML = `<div class="vide">Aucun match analysé pour les prochains jours.<br>Le moteur publie chaque nuit à ${hPub()} — reviens bientôt.</div>`;
     return;
   }
   // match du jour = le plus confiant de la date la plus proche
@@ -1578,10 +1652,10 @@ function afficherAccueil(){
   $('zone-mdj').innerHTML = `
     <div class="section-titre"><svg class="ic"><use href="#i-etoile"/></svg> Match du jour · gratuit</div>
     <div class="mdj">
-      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(MDJ.date_match)}${MDJ.heure ? ' · '+MDJ.heure : ''}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
+      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(MDJ.date_match)}${MDJ.heure ? ' · '+hLoc(MDJ.date_match, MDJ.heure) : ''}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
       <div class="duel">
         <div class="camp">${ecu(MDJ.logo_dom, MDJ.dom)}<div class="nom">${MDJ.dom}</div></div>
-        <div class="heure-c"><b>${MDJ.heure || '—'}</b>UTC</div>
+        <div class="heure-c"><b>${MDJ.heure ? hLoc(MDJ.date_match, MDJ.heure).slice(0, 5) : '—'}</b></div>
         <div class="camp">${ecu(MDJ.logo_ext, MDJ.ext)}<div class="nom">${MDJ.ext}</div></div>
       </div>
       <button class="bouton-aura" onclick="lancerAnalyse(${MDJ.id})"><svg class="ic" style="width:15px;height:15px"><use href="#i-eclair"/></svg> Lancer l'analyse</button>
@@ -1605,7 +1679,7 @@ function afficherAccueil(){
             <div class="eq">${ecu(p.logo_dom,p.dom,true)}${p.dom}</div>
             <div class="eq">${ecu(p.logo_ext,p.ext,true)}${p.ext}</div>
           </div>
-          <div class="heure">${p.signe?'<span class="sceau-signe sceau-mini">⚡ SIGNÉ</span>':''}<span>${p.heure||''}</span></div>
+          <div class="heure">${p.signe?'<span class="sceau-signe sceau-mini">⚡ SIGNÉ</span>':''}<span>${hLoc(p.date_match, p.heure)}</span></div>
           <div class="cadenas ${libre?'libre':''}"><svg class="ic"><use href="#${libre?'i-eclair':'i-cadenas'}"/></svg></div>
         </div>`;
       });
@@ -1626,7 +1700,7 @@ function lancerAnalyse(id){
 
   $('overlay').classList.add('actif');
   $('ov-duel').innerHTML = `${ecu(p.logo_dom,p.dom,true)}<div class="vs">${p.dom} — ${p.ext}</div>${ecu(p.logo_ext,p.ext,true)}`;
-  $('ov-comp').textContent = `${p.ligue.toUpperCase()} · ${labelDate(p.date_match)}${p.heure?' · '+p.heure:''}`;
+  $('ov-comp').textContent = `${p.ligue.toUpperCase()} · ${labelDate(p.date_match)}${p.heure?' · '+hLoc(p.date_match, p.heure):''}`;
   $('ov-anneau-zone').style.display='';
   $('fiche').classList.remove('actif');
   $('fiche').innerHTML='';
@@ -2235,6 +2309,186 @@ function fermerBandeau(plusTard){
   if(plusTard) LS.set('aura90_install_vu', String(Date.now()));
 }
 
+/* ================= GUIDE DE L'APP + LIENS INTERNES (21/10/2026) =================
+   • Guide (Compte → « Guide de l'app ») : chaque section expliquée, avec des
+     illustrations dessinées dans le style de l'app (toujours à jour, traduites).
+   • allerVers('coupons/montante') : ouvre n'importe quelle section de l'app.
+     Utilisé par les liens ?aller=… et par les liens que l'IA met dans le chat
+     au format [Texte](aura90:coupons/montante). */
+const GD_TXT = {
+  titre: { fr: "Guide de l'app", en: 'App guide', ar: 'دليل التطبيق' },
+  intro: { fr: "Tout ce qu'il faut savoir pour bien utiliser AURA90, en 2 minutes.", en: 'Everything you need to use AURA90 well, in 2 minutes.', ar: 'كل ما تحتاج معرفته لاستخدام AURA90 جيدًا، في دقيقتين.' },
+  ouvrir: { fr: 'Ouvrir', en: 'Open', ar: 'فتح' },
+  carte_t: { fr: 'Comment marche AURA90 ?', en: 'How does AURA90 work?', ar: 'كيف يعمل AURA90؟' },
+  carte_s: { fr: 'Le guide de chaque section, montantes comprises', en: 'A guide to every section, step series included', ar: 'دليل لكل قسم، بما في ذلك السلاسل التصاعدية' },
+  aide_mt: { fr: 'Comment marche une montante ?', en: 'How does a step series work?', ar: 'كيف تعمل السلسلة التصاعدية؟' },
+  question: { fr: "Une question ? Écris-nous dans la messagerie, on te répond.", en: 'A question? Write to us in the chat, we will answer.', ar: 'لديك سؤال؟ راسلنا في المحادثة وسنرد عليك.' },
+  ecrire: { fr: 'Écrire un message', en: 'Send a message', ar: 'أرسل رسالة' },
+};
+const gdT = k => (GD_TXT[k] || {})[LANGUE] || (GD_TXT[k] || {}).fr || '';
+
+// petites illustrations dans le style de l'app (pas d'image à charger)
+const GD_ILL = {
+  accueil: () => `<div class="gd-ill"><div class="gd-match"><div><b>Lille</b><b>Galatasaray</b></div><span class="gd-signe">⚡ SIGNÉ</span><span class="gd-h">${hLoc(new Date().toISOString().slice(0,10), '16:45')}</span></div>
+    <div class="gd-match"><div><b>Real Madrid</b><b>Getafe</b></div><span class="gd-h">${hLoc(new Date().toISOString().slice(0,10), '19:00')}</span></div></div>`,
+  coupon: () => `<div class="gd-ill"><div class="gd-cp"><div class="gd-cp-t"><b>🎯 Confiance</b><span>4.80</span></div>
+    <div class="gd-sel"><span>Lille – Galatasaray<small>▸ Lille ou nul</small></span><b>1.60</b></div>
+    <div class="gd-sel"><span>Inter – Lecce<small>▸ Inter gagne</small></span><b>3.00</b></div></div></div>`,
+  montante: () => {
+    const p = [10000, 15000, 22500, 33500, 50000];
+    return `<div class="gd-ill"><div class="gd-esc">${p.map((v, i) => `<div class="gd-m ${i < 3 ? 'ok' : i === 3 ? 'en' : ''}" style="height:${38 + i * 16}px"><b>${i + 1}</b><small>${mGros(v)}</small></div>`).join('')}<div class="gd-m fin" style="height:118px"><b>🏆</b><small>…10</small></div></div>
+    <div class="gd-leg"><span><i class="ok"></i>${{ fr: 'validé', en: 'won', ar: 'ناجح' }[LANGUE] || 'validé'}</span><span><i class="en"></i>${{ fr: 'palier du jour', en: "today's step", ar: 'مرحلة اليوم' }[LANGUE] || 'palier du jour'}</span><span><i></i>${{ fr: 'à venir', en: 'upcoming', ar: 'قادمة' }[LANGUE] || 'à venir'}</span></div></div>`;
+  },
+  live: () => `<div class="gd-ill"><div class="gd-cp"><div class="gd-cp-t"><b>🔴 LIVE · 63'</b><span>2.15</span></div>
+    <div class="gd-sel"><span>PSG 1 – 0 Lyon<small>▸ Plus de 1,5 but</small></span><b>1.45</b></div>
+    <div class="gd-sel"><span>Milan 0 – 0 Roma<small>▸ Milan ou nul</small></span><b>1.48</b></div></div></div>`,
+};
+
+// sections du guide : id, icône, titre, texte (HTML simple), illustration, bouton vers la section
+const GD_SECTIONS = [
+  { id: 'accueil', ico: '⚡', ill: 'accueil', aller: 'accueil',
+    t: { fr: 'Accueil : les analyses du jour', en: "Home: today's analyses", ar: 'الرئيسية: تحليلات اليوم' },
+    x: {
+      fr: `Chaque nuit, le moteur d'AURA90 analyse les matchs des grands championnats et des coupes d'Europe. <b>Le match du jour est gratuit</b> pour tout le monde. Touche un match pour voir l'analyse complète : probabilités, forme des équipes, verdict du moteur.<br><br>Le badge <b>⚡ SIGNÉ</b> veut dire que le moteur est très sûr de lui sur ce match. Les heures sont affichées à l'heure de ton téléphone.`,
+      en: `Every night, the AURA90 engine analyses matches from the major leagues and European cups. <b>The match of the day is free</b> for everyone. Tap a match to see the full analysis: probabilities, team form, the engine's verdict.<br><br>The <b>⚡ SIGNED</b> badge means the engine is very confident about that match. Times are shown in your phone's time zone.`,
+      ar: `كل ليلة، يحلل محرك AURA90 مباريات الدوريات الكبرى والكؤوس الأوروبية. <b>مباراة اليوم مجانية</b> للجميع. المس أي مباراة لترى التحليل الكامل: الاحتمالات، مستوى الفريقين، وحكم المحرك.<br><br>شارة <b>⚡ موقّع</b> تعني أن المحرك واثق جدًا من هذه المباراة. الأوقات معروضة حسب توقيت هاتفك.`,
+    } },
+  { id: 'palmares', ico: '📊', aller: 'palmares',
+    t: { fr: 'Palmarès : tous les résultats, sans tri', en: 'Track record: every result, unfiltered', ar: 'السجل: كل النتائج دون انتقاء' },
+    x: {
+      fr: `Chaque prono est enregistré <b>avant le match</b> et ne peut plus être modifié. Après le match, il est vérifié automatiquement : gagné ou perdu, tout reste affiché. C'est la preuve que les chiffres d'AURA90 sont réels.`,
+      en: `Every prediction is recorded <b>before the match</b> and can no longer be changed. After the match it is checked automatically: won or lost, everything stays visible. It's the proof that AURA90's numbers are real.`,
+      ar: `كل توقع يُسجَّل <b>قبل المباراة</b> ولا يمكن تعديله بعد ذلك. بعد المباراة يُتحقق منه تلقائيًا: ربح أو خسارة، كل شيء يبقى ظاهرًا. هذا دليل على أن أرقام AURA90 حقيقية.`,
+    } },
+  { id: 'coupons', ico: '🎟️', ill: 'coupon', aller: 'coupons/confiance',
+    t: { fr: 'Coupons : les combinés du jour', en: "Combos: today's accumulators", ar: 'القسائم: تركيبات اليوم' },
+    x: {
+      fr: `Chaque matin à ${hPub()}, le moteur construit ses combinés avec ses meilleures sélections. Choisis <b>Aujourd'hui</b> ou <b>Demain</b> en haut, puis une catégorie :<br>• <b>🎯 Confiance</b> : quelques matchs solides, cote moyenne.<br>• <b>🎲 Fun</b> : plus de matchs, cote plus haute, plus risqué.<br>• <b>🌙 Nuit</b> : les matchs des Amériques, joués pendant la nuit.<br><br>La cote affichée est une cote prudente du marché. <b>Joue tôt</b> : elle peut baisser avant le match. Le bouton <b>Copier</b> te donne le coupon pour le rejouer sur ton site.`,
+      en: `Every morning at ${hPub()}, the engine builds its combos from its best picks. Choose <b>Today</b> or <b>Tomorrow</b> at the top, then a category:<br>• <b>🎯 Confidence</b>: a few solid matches, medium odds.<br>• <b>🎲 Fun</b>: more matches, higher odds, more risk.<br>• <b>🌙 Night</b>: matches in the Americas, played overnight.<br><br>The odds shown are a careful market price. <b>Play early</b>: odds can drop before kick-off. The <b>Copy</b> button gives you the combo to replay on your betting site.`,
+      ar: `كل صباح الساعة ${hPub()}، يبني المحرك تركيباته من أفضل اختياراته. اختر <b>اليوم</b> أو <b>غدًا</b> في الأعلى، ثم فئة:<br>• <b>🎯 الثقة</b>: مباريات قليلة وقوية، احتمال متوسط.<br>• <b>🎲 المرح</b>: مباريات أكثر، احتمال أعلى، مخاطرة أكبر.<br>• <b>🌙 الليل</b>: مباريات الأمريكتين التي تُلعب ليلًا.<br><br>الاحتمال المعروض سعر سوق حذر. <b>العب مبكرًا</b>: قد ينخفض قبل المباراة. زر <b>نسخ</b> يعطيك القسيمة لإعادة لعبها في موقعك.`,
+    } },
+  { id: 'montante', ico: '📈', ill: 'montante', aller: 'coupons/montante',
+    t: { fr: 'Montante : comment ça marche', en: 'Step series: how it works', ar: 'السلسلة التصاعدية: كيف تعمل' },
+    x: {
+      fr: `Une montante, c'est une série de coupons joués <b>l'un après l'autre</b>, en remisant à chaque fois tout ce que le palier précédent a rapporté.<br><br><b>1.</b> Tu démarres avec une petite mise (par exemple ${mF(10000)}) sur le <b>palier 1</b>, un coupon à cote basse (environ 1,40 à 1,80).<br><b>2.</b> Si le palier passe, tu remises <b>tout le gain</b> sur le palier suivant.<br><b>3.</b> Et ainsi de suite jusqu'au <b>palier 10</b> : la somme grossit à chaque étape.<br><b>4.</b> Si un palier perd, la série s'arrête. Tu perds seulement ta mise de départ, puis une nouvelle série repart à zéro.<br><br>Dans l'onglet Montante, les cases vertes sont les paliers validés et la case orange est le palier du jour, avec la mise et le gain visé.<br><br><b>Nos conseils :</b> démarre seulement avec une somme que tu acceptes de perdre, et tu peux <b>encaisser une partie en route</b> pour sécuriser tes gains.`,
+      en: `A step series is a run of combos played <b>one after another</b>, each time re-staking everything the previous step returned.<br><br><b>1.</b> You start with a small stake (for example ${mF(10000)}) on <b>step 1</b>, a low-odds combo (about 1.40 to 1.80).<br><b>2.</b> If the step wins, you re-stake <b>the whole return</b> on the next step.<br><b>3.</b> And so on up to <b>step 10</b>: the amount grows at every step.<br><b>4.</b> If a step loses, the series ends. You only lose your starting stake, then a new series starts from scratch.<br><br>In the Step series tab, green boxes are won steps and the orange box is today's step, with the stake and the target return.<br><br><b>Our advice:</b> only start with an amount you can afford to lose, and you can <b>cash out part of it along the way</b> to lock in winnings.`,
+      ar: `السلسلة التصاعدية هي مجموعة قسائم تُلعب <b>واحدة تلو الأخرى</b>، مع إعادة مراهنة كل ما ربحته المرحلة السابقة في كل مرة.<br><br><b>1.</b> تبدأ برهان صغير (مثلًا ${mF(10000)}) على <b>المرحلة 1</b>، قسيمة باحتمال منخفض (حوالي 1.40 إلى 1.80).<br><b>2.</b> إذا نجحت المرحلة، تعيد مراهنة <b>كل الربح</b> على المرحلة التالية.<br><b>3.</b> وهكذا حتى <b>المرحلة 10</b>: المبلغ يكبر في كل خطوة.<br><b>4.</b> إذا خسرت مرحلة، تتوقف السلسلة. تخسر فقط رهانك الأول، ثم تبدأ سلسلة جديدة من الصفر.<br><br>في تبويب السلسلة، المربعات الخضراء مراحل ناجحة والمربع البرتقالي مرحلة اليوم، مع الرهان والربح المستهدف.<br><br><b>نصائحنا:</b> ابدأ فقط بمبلغ تقبل خسارته، ويمكنك <b>سحب جزء من الربح في الطريق</b> لتأمين أرباحك.`,
+    } },
+  { id: 'turbo', ico: '🚀', aller: 'coupons/turbo',
+    t: { fr: 'Montante Turbo : plus courte, plus risquée', en: 'Turbo series: shorter, riskier', ar: 'السلسلة التوربو: أقصر وأكثر مخاطرة' },
+    x: {
+      fr: `Même principe que la montante, mais en <b>5 paliers</b> seulement, avec des coupons à cote plus haute (environ 1,90 à 2,60). L'objectif arrive plus vite, mais chaque palier est plus difficile. Les deux montantes ne jouent jamais le même match le même jour. Tu les trouves dans l'onglet Montante, avec le bouton <b>Turbo</b> en haut.`,
+      en: `Same idea as the step series, but in only <b>5 steps</b>, with higher-odds combos (about 1.90 to 2.60). The target comes faster, but each step is harder. The two series never use the same match on the same day. You'll find it in the Step series tab, with the <b>Turbo</b> button at the top.`,
+      ar: `نفس فكرة السلسلة التصاعدية، لكن في <b>5 مراحل</b> فقط، بقسائم ذات احتمال أعلى (حوالي 1.90 إلى 2.60). الهدف يأتي أسرع، لكن كل مرحلة أصعب. السلسلتان لا تستخدمان نفس المباراة في نفس اليوم. تجدها في تبويب السلسلة، بزر <b>توربو</b> في الأعلى.`,
+    } },
+  { id: 'live', ico: '🔴', ill: 'live', aller: 'coupons/live',
+    t: { fr: 'LIVE : des combinés pendant les matchs', en: 'LIVE: combos during matches', ar: 'مباشر: تركيبات أثناء المباريات' },
+    x: {
+      fr: `Pendant les matchs, touche <b>Générer</b> dans l'onglet LIVE : le moteur construit un combiné sur les matchs en cours, à partir du score, de la minute et des statistiques en direct. Un calcul par minute. Réservé aux membres PRO.`,
+      en: `During matches, tap <b>Generate</b> in the LIVE tab: the engine builds a combo on the matches in progress, using the live score, minute and stats. One calculation per minute. PRO members only.`,
+      ar: `أثناء المباريات، المس <b>إنشاء</b> في تبويب مباشر: يبني المحرك تركيبة على المباريات الجارية، اعتمادًا على النتيجة والدقيقة والإحصائيات المباشرة. حساب واحد كل دقيقة. للأعضاء PRO فقط.`,
+    } },
+  { id: 'pro', ico: '💎', aller: 'offres',
+    t: { fr: 'Abonnement PRO', en: 'PRO subscription', ar: 'اشتراك PRO' },
+    x: {
+      fr: `Le PRO débloque toutes les analyses, les coupons, les montantes et le LIVE. Choisis 1 mois ou 3 mois dans <b>Compte</b>, puis paie avec Wave, Orange Money ou le Mobile Money de ton pays : l'accès s'active tout seul. Si tu renouvelles avant la fin, les jours s'ajoutent à ta date de fin, tu ne perds rien. Un <b>code partenaire</b> te donne une réduction.`,
+      en: `PRO unlocks every analysis, the combos, the step series and LIVE. Pick 1 month or 3 months in <b>Account</b>, then pay with Wave, Orange Money or your country's Mobile Money: access turns on by itself. If you renew early, the days are added to your end date, you lose nothing. A <b>partner code</b> gives you a discount.`,
+      ar: `اشتراك PRO يفتح كل التحليلات والقسائم والسلاسل والمباشر. اختر شهرًا أو 3 أشهر في <b>الحساب</b>، ثم ادفع عبر Wave أو Orange Money أو Mobile Money في بلدك: يتفعّل الوصول تلقائيًا. إذا جددت مبكرًا تُضاف الأيام إلى تاريخ نهايتك، لا تخسر شيئًا. <b>رمز الشريك</b> يمنحك تخفيضًا.`,
+    } },
+  { id: 'notifications', ico: '🔔', aller: 'notifications',
+    t: { fr: 'Notifications', en: 'Notifications', ar: 'الإشعارات' },
+    x: {
+      fr: `Active-les pour être prévenu quand les coupons du jour sortent et quand une montante est validée. Sur <b>iPhone</b>, ajoute d'abord AURA90 à ton écran d'accueil (bouton Partager → « Sur l'écran d'accueil »), puis ouvre l'app depuis l'icône : c'est obligatoire chez Apple.`,
+      en: `Turn them on to be told when today's combos are out and when a step series is won. On <b>iPhone</b>, first add AURA90 to your home screen (Share button → "Add to Home Screen"), then open the app from the icon: Apple requires it.`,
+      ar: `فعّلها لتصلك تنبيهات عند صدور قسائم اليوم وعند نجاح سلسلة. على <b>آيفون</b>، أضف AURA90 أولًا إلى الشاشة الرئيسية (زر المشاركة ← «إضافة إلى الشاشة الرئيسية»)، ثم افتح التطبيق من الأيقونة: أبل تشترط ذلك.`,
+    } },
+  { id: 'reglages', ico: '🌍', aller: 'reglages',
+    t: { fr: 'Pays, devise et langue', en: 'Country, currency and language', ar: 'البلد والعملة واللغة' },
+    x: {
+      fr: `Dans <b>Compte</b>, tu choisis ton pays, la devise d'affichage et la langue (français, anglais, arabe). Les montants sont convertis à titre indicatif ; le paiement se fait toujours en francs CFA.`,
+      en: `In <b>Account</b>, choose your country, display currency and language (French, English, Arabic). Amounts are converted for information; payment is always in CFA francs.`,
+      ar: `في <b>الحساب</b>، اختر بلدك وعملة العرض واللغة (الفرنسية، الإنجليزية، العربية). المبالغ محوّلة للعلم فقط؛ الدفع يتم دائمًا بالفرنك الإفريقي.`,
+    } },
+  { id: 'messagerie', ico: '💬', aller: 'messagerie',
+    t: { fr: 'Messagerie : on répond à tes questions', en: 'Chat: we answer your questions', ar: 'المحادثة: نجيب عن أسئلتك' },
+    x: {
+      fr: `La bulle en bas de l'écran ouvre la messagerie. Notre assistante répond tout de suite, jour et nuit, et l'équipe AURA90 prend le relais si besoin. Paiement, abonnement, une section que tu ne comprends pas : demande !`,
+      en: `The bubble at the bottom of the screen opens the chat. Our assistant answers right away, day and night, and the AURA90 team steps in when needed. Payment, subscription, a section you don't understand: just ask!`,
+      ar: `الفقاعة أسفل الشاشة تفتح المحادثة. مساعدتنا تجيب فورًا ليلًا ونهارًا، وفريق AURA90 يتدخل عند الحاجة. الدفع، الاشتراك، قسم لا تفهمه: اسأل!`,
+    } },
+  { id: 'partenaire', ico: '🤝', aller: 'partenaire',
+    t: { fr: 'Devenir partenaire', en: 'Become a partner', ar: 'كن شريكًا' },
+    x: {
+      fr: `Tu as une communauté (TikTok, WhatsApp, Telegram…) ? Fais ta demande en bas de la page <b>Compte</b>. Une fois validé, tu reçois ton code et ton lien, et une commission sur chaque abonnement de tes filleuls.`,
+      en: `Got a community (TikTok, WhatsApp, Telegram…)? Apply at the bottom of the <b>Account</b> page. Once approved, you get your code and link, and a commission on every subscription from your referrals.`,
+      ar: `لديك جمهور (تيك توك، واتساب، تيليغرام…)؟ قدّم طلبك أسفل صفحة <b>الحساب</b>. بعد القبول تحصل على رمزك ورابطك، وعمولة على كل اشتراك من المنضمين عبرك.`,
+    } },
+];
+
+function ouvrirGuide(section){
+  const e = $('gd-ecran');
+  $('gd-titre').textContent = gdT('titre');
+  $('gd-index').innerHTML = GD_SECTIONS.map(s => `<button onclick="gdAller('${s.id}')">${s.ico} ${s.t[LANGUE] || s.t.fr}</button>`).join('');
+  $('gd-corps').innerHTML = `<p class="gd-intro">${gdT('intro')}</p>` + GD_SECTIONS.map(s => `
+    <section class="gd-sec" id="gd-${s.id}">
+      <h3><span>${s.ico}</span>${s.t[LANGUE] || s.t.fr}</h3>
+      ${s.ill && GD_ILL[s.ill] ? GD_ILL[s.ill]() : ''}
+      <div class="gd-x">${s.x[LANGUE] || s.x.fr}</div>
+      ${s.aller ? `<button class="gd-go" onclick="fermerGuide(true);allerVers('${s.aller}')">${gdT('ouvrir')} ›</button>` : ''}
+    </section>`).join('')
+    + `<div class="gd-fin"><p>${gdT('question')}</p><button class="bouton-aura" onclick="fermerGuide(true);allerVers('messagerie')">💬 ${gdT('ecrire')}</button></div>`;
+  e.classList.add('ouvert'); verrouPage(true);
+  history.pushState({ gd: 1 }, '');
+  $('gd-corps').scrollTop = 0;
+  if(section) setTimeout(() => gdAller(section), 80);
+}
+function gdAller(id){
+  const s = $('gd-' + id), c = $('gd-corps');
+  if(s && c) c.scrollTo({ top: s.offsetTop - c.offsetTop - 8, behavior: 'smooth' });
+}
+function fermerGuide(viaBouton){
+  if(!$('gd-ecran').classList.contains('ouvert')) return;
+  $('gd-ecran').classList.remove('ouvert'); verrouPage(false);
+  if(viaBouton && history.state && history.state.gd) history.back();
+}
+window.addEventListener('popstate', () => { if($('gd-ecran')?.classList.contains('ouvert')) { $('gd-ecran').classList.remove('ouvert'); verrouPage(false); } });
+
+/* ---------- aller à une section de l'app ---------- */
+const CIBLES = ['accueil', 'palmares', 'compte', 'offres', 'notifications', 'reglages', 'partenaire', 'messagerie', 'guide',
+  'coupons', 'coupons/montante', 'coupons/turbo', 'coupons/live', 'coupons/confiance', 'coupons/fun', 'coupons/nuit'];
+function allerVers(cible){
+  cible = String(cible || '').toLowerCase().replace(/^\/+|\/+$/g, '');
+  const [a, b] = cible.split('/');
+  if(a === 'guide') return ouvrirGuide(b || null);
+  if(a === 'messagerie') return estConnecte() ? ouvrirMessagerie() : allerPage('compte');
+  if(a === 'offres') return allerOffres();
+  if(a === 'accueil' || a === 'palmares' || a === 'compte') return allerPage(a);
+  const versBloc = id => { allerPage('compte'); setTimeout(() => { const x = $(id); if(x) x.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400); };
+  if(a === 'notifications') return versBloc('btn-push');
+  if(a === 'reglages') return versBloc('zone-reglages');
+  if(a === 'partenaire') return versBloc('zone-partenaire');
+  if(a === 'coupons'){
+    if(b === 'turbo'){ CAT_ACTIVE = 'montante'; MT_ONGLET = 'turbo'; }
+    else if(b && CATS.some(c => c.cle === b)){ CAT_ACTIVE = b; if(b === 'montante') MT_ONGLET = 'montante'; }
+    return allerPage('coupons');
+  }
+  allerPage('accueil');
+}
+// liens dans le chat : [Texte](aura90:coupons/montante) → bouton qui ouvre la section
+function msLiens(html){
+  return html.replace(/\[([^\]\n]{1,60})\]\(aura90:([a-z/]{3,30})\)/g, (t, txt, c) =>
+    CIBLES.includes(c) || /^guide\/[a-z]+$/.test(c) ? `<button class="ms-lien" onclick="msAller('${c}')">${txt} ›</button>` : txt);
+}
+function msAller(c){ fermerMessagerie(); setTimeout(() => allerVers(c), 150); }
+// lien direct : aura90.pages.dev/?aller=coupons/montante
+(function(){
+  const c = new URLSearchParams(location.search).get('aller');
+  if(!c) return;
+  history.replaceState(null, '', location.pathname);
+  setTimeout(() => allerVers(c), 1300);
+})();
+
+
 /* ================= COUPONS ================= */
 const CATS = [
   {cle:'live',      nom:'LIVE',         ico:'🔴'},
@@ -2249,9 +2503,9 @@ let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'montante', COUPO
 const scoreDe = s => s && s.score ? String(s.score).replace(/[^0-9\-: ]/g,'').trim() : '';
 // match terminé : plus de score entre les équipes (il cassait l'alignement), il passe dans la ligne du haut
 function vsScore(s){ return scoreDe(s) ? '' : `<span class="vs">–</span>`; }
-function heureOuFin(s){
+function heureOuFin(s, jour){
   const sc = scoreDe(s);
-  return sc ? ` · <span class="m-fin">Terminé</span><span class="m-sc">${sc}</span>` : (s.heure ? ' · ' + String(s.heure).slice(0,5) : '');
+  return sc ? ` · <span class="m-fin">Terminé</span><span class="m-sc">${sc}</span>` : (s.heure ? ' · ' + hLoc(s.date_match || jour, s.heure) : '');
 }
 function ecuMini(url, nom){
   return url ? `<img class="ecu-m" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
@@ -2391,7 +2645,7 @@ function afficherCategorie(cle){
 
   if(!liste.length){
     const quand = JOUR_ACTIF === 'auj' ? "aujourd'hui" : 'demain';
-    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » ${quand}.${cle==='nuit'?"<br>Les coupons de nuit couvrent les matchs des Amériques, de 22h à 7h.":"<br>Le moteur publie chaque matin à 5h — et prépare le lendemain en soirée."}</div>`;
+    $('zone-coupons').innerHTML = `<div class="vide">Pas de coupon « ${CATS.find(c=>c.cle===cle).nom} » ${quand}.${cle==='nuit'?"<br>Les coupons de nuit couvrent les matchs des Amériques, de 22h à 7h.":"<br>Le moteur publie chaque matin à ${hPub()} — et prépare le lendemain en soirée."}</div>`;
     return;
   }
 
@@ -2570,14 +2824,7 @@ function carteCoupon(c, ouvert){
           </div>
           <div class="c">${Number(s.cote).toFixed(2)}</div>
         </div>`).join('')}
-      <div class="cp-gain">
-        <div style="flex:0 0 42%">
-          <label>Ta mise (${symDevise()})</label>
-          <input type="number" inputmode="decimal" value="${miseDefaut()}" oninput="majGain(${c.id}, ${c.cote_totale}, this.value)">
-          <span class="usd-inline cp-usd" id="mise-usd-${c.id}">${enUSD(miseDefaut())}</span>
-        </div>
-        <div class="res"><label>Gain potentiel</label><b id="gain-${c.id}">${mD(miseDefaut()*c.cote_totale)}</b><span class="usd-inline cp-usd" id="gain-usd-${c.id}">${enUSD(miseDefaut()*c.cote_totale)}</span></div>
-      </div>
+      <!-- simulateur de mise retiré le 21/10/2026 : AURA90 est une app d'analyse, pas un bookmaker -->
       <div class="cp-actions">
         <button class="cp-copier" onclick="copierCoupon(${c.id})">Copier</button>
 
@@ -2642,7 +2889,7 @@ function afficherMontante(){
     return `<button class="${d.type===MT_ONGLET?'actif':''}" onclick="MT_ONGLET='${d.type}';afficherMontante()">
       <span>${d.ico} ${d.court}${joueCeJour(d.type)?'<i class="pt"></i>':''}</span><small>${etat.toUpperCase()}</small></button>`;
   }).join('');
-  $('zone-coupons').innerHTML = `<div class="mt-switch">${onglets}</div>` + blocMontante(MONTANTES_DEF.find(d=>d.type===MT_ONGLET));
+  $('zone-coupons').innerHTML = `<div class="mt-switch">${onglets}</div><button class="mt-aide" onclick="ouvrirGuide('montante')">❓ ${gdT('aide_mt')}</button>` + blocMontante(MONTANTES_DEF.find(d=>d.type===MT_ONGLET));
   setTimeout(()=>{ document.querySelectorAll('.mt-barre i').forEach(b=>{ b.style.width = b.dataset.pct + '%'; }); }, 120);
 }
 
@@ -3446,7 +3693,7 @@ const msHeure = d => new Date(d).toLocaleTimeString(LOC,{hour:'2-digit',minute:'
 const msEchap = t => String(t ?? '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
 function msBulle(m){
   const qui = m.auteur === 'admin' ? '<div class="qui">Équipe AURA90</div>' : '';
-  return `<div class="ms-m ${m.auteur} notranslate">${qui}${msEchap(m.texte)}<small>${msHeure(m.cree_le || Date.now())}</small></div>`;
+  return `<div class="ms-m ${m.auteur} notranslate">${qui}${m.auteur === 'user' ? msEchap(m.texte) : msLiens(msEchap(m.texte))}<small>${msHeure(m.cree_le || Date.now())}</small></div>`;
 }
 function msBas(){ const f = $('ms-fil'); f.scrollTop = f.scrollHeight; }
 function msAccueil(){
@@ -3600,7 +3847,7 @@ function vhCarte(c, i){
   const sels = vhSels(c);
   const ligne = (x, cache) => `
     <div class="vh-sel${cache ? ' vh-cache' : ''}"><div style="min-width:0">
-      <div class="lig">${vhEsc(x.ligue || '')}${heureOuFin(x)}</div>
+      <div class="lig">${vhEsc(x.ligue || '')}${heureOuFin(x, c.jour)}</div>
       <div class="vh-duel">${ecuMini(x.logo_dom, x.dom)}${vhEsc(x.dom)} <span class="vh-sc">–</span> ${vhEsc(x.ext)}${ecuMini(x.logo_ext, x.ext)}</div>
       <div class="vh-pick">✓ ${vhEsc(x.selection)}</div></div>
       <div class="vh-co">${vhCote(x.cote)}</div></div>`;
@@ -3699,7 +3946,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-21-4';
+const APP_VERSION = '2026-10-21-7';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -3808,6 +4055,7 @@ proposerNotifs();
 
 majCompte();
 majInstall();
+if($('gd-carte-t')){ $('gd-carte-t').textContent = gdT('carte_t'); $('gd-carte-s').textContent = gdT('carte_s'); $('gd-carte-t').closest('button').classList.add('notranslate'); }
 proposerInstall();
 charger();
 
