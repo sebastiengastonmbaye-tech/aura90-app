@@ -1566,7 +1566,7 @@ function badgeIco(b){ return b==='Très sûr'?'i-cadenas':b==='Sûr'?'i-bouclier
    18:45 à Paris, 17:45 à Douala, 16:45 à Dakar pour le même match.
    Si le match tombe un autre jour en heure locale, le jour est ajouté. */
 const pad2 = n => String(n).padStart(2, '0');
-function hLoc(jour, heure){
+function hLoc(jour, heure, sansJour){
   if(!heure) return '';
   const hm = String(heure).slice(0, 5);
   if(!/^\d{1,2}:\d{2}$/.test(hm)) return hm;
@@ -1575,7 +1575,14 @@ function hLoc(jour, heure){
   if(isNaN(d)) return hm;
   const loc = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
   const jl = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-  return jl === j ? loc : `${loc} (${d.toLocaleDateString(LOC, { weekday: 'short' })})`;
+  return jl === j || sansJour ? loc : `${loc} (${d.toLocaleDateString(LOC, { weekday: 'short' })})`;
+}
+// date du match dans le fuseau du téléphone (un match à 23h à Dakar tombe le lendemain à Paris)
+function dLoc(jour, heure){
+  if(!jour || !heure) return jour;
+  const hm = String(heure).slice(0, 5); if(!/^\d{1,2}:\d{2}$/.test(hm)) return jour;
+  const d = new Date(`${String(jour).slice(0, 10)}T${hm.padStart(5, '0')}:00Z`);
+  return isNaN(d) ? jour : `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 }
 // « 5h » (heure de Dakar) dans le fuseau du téléphone : 7h à Paris, 6h à Douala
 const hPub = () => { const n = new Date(), d = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), 5, 0)); return d.getHours() + 'h' + (d.getMinutes() ? pad2(d.getMinutes()) : ''); };
@@ -1652,7 +1659,7 @@ function afficherAccueil(){
   $('zone-mdj').innerHTML = `
     <div class="section-titre"><svg class="ic"><use href="#i-etoile"/></svg> Match du jour · gratuit</div>
     <div class="mdj">
-      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(MDJ.date_match)}${MDJ.heure ? ' · '+hLoc(MDJ.date_match, MDJ.heure) : ''}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
+      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(dLoc(MDJ.date_match, MDJ.heure))}${MDJ.heure ? ' · '+hLoc(MDJ.date_match, MDJ.heure, true) : ''}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
       <div class="duel">
         <div class="camp">${ecu(MDJ.logo_dom, MDJ.dom)}<div class="nom">${MDJ.dom}</div></div>
         <div class="heure-c"><b>${MDJ.heure ? hLoc(MDJ.date_match, MDJ.heure).slice(0, 5) : '—'}</b></div>
@@ -1700,7 +1707,7 @@ function lancerAnalyse(id){
 
   $('overlay').classList.add('actif');
   $('ov-duel').innerHTML = `${ecu(p.logo_dom,p.dom,true)}<div class="vs">${p.dom} — ${p.ext}</div>${ecu(p.logo_ext,p.ext,true)}`;
-  $('ov-comp').textContent = `${p.ligue.toUpperCase()} · ${labelDate(p.date_match)}${p.heure?' · '+hLoc(p.date_match, p.heure):''}`;
+  $('ov-comp').textContent = `${p.ligue.toUpperCase()} · ${labelDate(dLoc(p.date_match, p.heure))}${p.heure?' · '+hLoc(p.date_match, p.heure, true):''}`;
   $('ov-anneau-zone').style.display='';
   $('fiche').classList.remove('actif');
   $('fiche').innerHTML='';
@@ -2503,9 +2510,9 @@ let COUPONS = [], SELECTIONS = {}, MONTANTE = [], CAT_ACTIVE = 'montante', COUPO
 const scoreDe = s => s && s.score ? String(s.score).replace(/[^0-9\-: ]/g,'').trim() : '';
 // match terminé : plus de score entre les équipes (il cassait l'alignement), il passe dans la ligne du haut
 function vsScore(s){ return scoreDe(s) ? '' : `<span class="vs">–</span>`; }
-function heureOuFin(s, jour){
+function heureOuFin(s, jour, sansJour){
   const sc = scoreDe(s);
-  return sc ? ` · <span class="m-fin">Terminé</span><span class="m-sc">${sc}</span>` : (s.heure ? ' · ' + hLoc(s.date_match || jour, s.heure) : '');
+  return sc ? ` · <span class="m-fin">Terminé</span><span class="m-sc">${sc}</span>` : (s.heure ? ' · ' + hLoc(s.date_match || jour, s.heure, sansJour) : '');
 }
 function ecuMini(url, nom){
   return url ? `<img class="ecu-m" src="${url}" alt="" loading="lazy" onerror="this.style.display='none'">`
@@ -2777,7 +2784,7 @@ function carteScore(c){
     <div class="cp-corps" style="padding-top:12px">
       <div class="cp-sel" style="border-top:0;padding-top:4px">
         <div class="g">
-          <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(s0.date_match):''}${heureOuFin(s0)} ${etat}</div>
+          <div class="lig">${s0.ligue||''}${s0.date_match?' · '+jourCourt(dLoc(s0.date_match, s0.heure)):''}${heureOuFin(s0, null, !!s0.date_match)} ${etat}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s0.logo_dom, s0.dom)}<b>${s0.dom}</b></span>
             ${vsScore(s0)}
@@ -2814,7 +2821,7 @@ function carteCoupon(c, ouvert){
       ${sels.map(s=>`
         <div class="cp-sel ${s.resultat||''}">
           <div class="g">
-            <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${heureOuFin(s)}</div>
+            <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(dLoc(s.date_match, s.heure)):''}${heureOuFin(s, null, !!s.date_match)}</div>
             <div class="duel">
               <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
               ${vsScore(s)}
@@ -3014,7 +3021,7 @@ async function voirPalier(cid, el){
     box.innerHTML = sels.map(s=>`
       <div class="cp-sel">
         <div class="g">
-          <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(s.date_match):''}${heureOuFin(s)}</div>
+          <div class="lig">${s.ligue||''}${s.date_match?' · '+jourCourt(dLoc(s.date_match, s.heure)):''}${heureOuFin(s, null, !!s.date_match)}</div>
           <div class="duel">
             <span class="eq">${ecuMini(s.logo_dom, s.dom)}<b>${s.dom}</b></span>
             ${vsScore(s)}
@@ -3946,7 +3953,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-21-8';
+const APP_VERSION = '2026-10-22-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
