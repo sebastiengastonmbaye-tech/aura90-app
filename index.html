@@ -191,7 +191,13 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .ecu.petit{width:30px;height:30px;font-size:8px}
 .bouton-aura{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border:none;border-radius:12px;font-family:'Manrope';font-weight:800;font-size:14px;color:var(--nuit);background:linear-gradient(135deg,var(--aura1),var(--aura2));box-shadow:0 0 24px rgba(61,232,200,.35);cursor:pointer;animation:auraPulse 2.6s ease-in-out infinite}
 .comp-tete{display:flex;align-items:center;gap:8px;margin:12px 18px 6px}
-.comp-tete .nom-c{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--sourdine);text-transform:uppercase}
+.comp-tete .nom-c{font-size:10.5px;font-weight:600;letter-spacing:.08em;color:var(--sourdine);text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.comp-tete .nom-c::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--sourdine);opacity:.6}
+/* titre de jour (22/10/2026) : nettement distinct du nom de la compétition */
+.jour-titre{margin:26px 16px 10px;display:flex;align-items:center;gap:10px}
+.jour-titre span{font-size:15px;font-weight:800;letter-spacing:.03em;color:var(--texte);display:flex;align-items:center;gap:9px}
+.jour-titre span::before{content:'';width:4px;height:18px;border-radius:3px;background:linear-gradient(180deg,var(--aura1),var(--aura2))}
+.jour-titre::after{content:'';flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(61,232,200,.35),transparent)}
 .comp-tete .trait{flex:1;height:1px;background:var(--ligne)}
 .match{margin:0 16px 7px;padding:11px 12px;border-radius:13px;background:var(--surface);border:1px solid var(--ligne);display:grid;grid-template-columns:1fr auto auto;gap:11px;align-items:center;cursor:pointer}
 .match .paire{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -1671,9 +1677,9 @@ function afficherAccueil(){
   // liste groupée date → ligue
   let html = '';
   const parDate = {};
-  PRONOS.forEach(p=>{ if(p.id===MDJ.id) return; (parDate[p.date_match]=parDate[p.date_match]||[]).push(p); });
+  PRONOS.forEach(p=>{ if(p.id===MDJ.id) return; const dl = dLoc(p.date_match, p.heure); (parDate[dl]=parDate[dl]||[]).push(p); });
   Object.keys(parDate).sort().forEach(d=>{
-    html += `<div class="section-titre">${labelDate(d)}</div>`;
+    html += `<div class="jour-titre"><span>${labelDate(d)}</span></div>`;
     const parLigue = {};
     parDate[d].forEach(p=>{ (parLigue[p.ligue]=parLigue[p.ligue]||[]).push(p); });
     Object.keys(parLigue).sort().forEach(l=>{
@@ -1686,7 +1692,7 @@ function afficherAccueil(){
             <div class="eq">${ecu(p.logo_dom,p.dom,true)}${p.dom}</div>
             <div class="eq">${ecu(p.logo_ext,p.ext,true)}${p.ext}</div>
           </div>
-          <div class="heure">${p.signe?'<span class="sceau-signe sceau-mini">⚡ SIGNÉ</span>':''}<span>${hLoc(p.date_match, p.heure)}</span></div>
+          <div class="heure">${p.signe?'<span class="sceau-signe sceau-mini">⚡ SIGNÉ</span>':''}<span>${hLoc(p.date_match, p.heure, true)}</span></div>
           <div class="cadenas ${libre?'libre':''}"><svg class="ic"><use href="#${libre?'i-eclair':'i-cadenas'}"/></svg></div>
         </div>`;
       });
@@ -3953,7 +3959,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-22-1';
+const APP_VERSION = '2026-10-22-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
