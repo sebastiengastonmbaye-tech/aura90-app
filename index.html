@@ -3795,8 +3795,29 @@ function verrouPage(on){
   } else if(!on && VERROU_Y !== null){
     Object.assign(b.style, { position:'', top:'', left:'', right:'', overflow:'' });
     window.scrollTo(0, VERROU_Y); VERROU_Y = null;
+    setTimeout(() => window.recalerEcran && window.recalerEcran(), 300);
   }
 }
+/* iPhone (23/10/2026) : quand le clavier se ferme (chat, recherche de pays, connexion…),
+   Safari laisse parfois l'écran « décalé » : la barre du bas remonte au milieu de l'écran
+   et le haut passe sous l'heure. On force Safari à se recaler dès que le clavier disparaît,
+   quand l'app revient au premier plan et quand le téléphone tourne. */
+(function(){
+  const champActif = () => { const a = document.activeElement; return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName); };
+  const recaler = () => {
+    if (champActif() || (typeof VERROU_Y !== 'undefined' && VERROU_Y !== null)) return;   // clavier ouvert ou écran plein : on ne touche à rien
+    const y = window.scrollY;
+    window.scrollTo(0, y + 1); window.scrollTo(0, y);
+  };
+  let t = null;
+  const bientot = () => { clearTimeout(t); t = setTimeout(recaler, 260); };
+  document.addEventListener('focusout', bientot);
+  if (window.visualViewport) visualViewport.addEventListener('resize', () => { if (!champActif()) bientot(); });
+  window.addEventListener('orientationchange', bientot);
+  window.addEventListener('pageshow', bientot);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) bientot(); });
+  window.recalerEcran = recaler;
+})();
 function msViewport(){
   const v = window.visualViewport, p = $('ms-panneau');
   if(!v || !MS_OUVERT){ p.style.height = ''; p.style.top = ''; return; }
@@ -3959,7 +3980,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-23-1';
+const APP_VERSION = '2026-10-23-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
