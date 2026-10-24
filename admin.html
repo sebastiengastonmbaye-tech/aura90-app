@@ -299,7 +299,10 @@ button.gris{background:var(--surface2);color:var(--texte);border:1px solid var(-
 .pa-l .p{font-size:11.5px;color:var(--sourdine);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pa-l .sc{font:800 15px 'JetBrains Mono',monospace;white-space:nowrap}
 .pa-l .sc.nj{font-size:10.5px;color:var(--sourdine);font-weight:700}
-.pa-l img{width:20px;height:20px;object-fit:contain;flex:0 0 20px}
+.pa-logos{display:flex;flex-direction:column;gap:3px;flex:0 0 20px}
+.pa-logos img{width:20px;height:20px;object-fit:contain;display:block}
+.pa-l,.pa-modes button,.hj-date button,.pa-cherche button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.pa-l:active{background:var(--surface2)}
 /* fiche d'un match */
 #pa-fiche{position:fixed;inset:0;z-index:65;background:rgba(4,6,12,.72);display:none;align-items:flex-end;justify-content:center}
 #pa-fiche.ouvert{display:flex}
@@ -727,7 +730,7 @@ body:not(.co) .adm-nav{display:none}
     <span class="fl">›</span>
   </a>
 
-  <a class="carte-tiktok" href="#" onclick="paOuvrir();return false">
+  <a class="carte-tiktok" href="#" ontouchstart="paDonnees().catch(()=>{})" onclick="paOuvrir();return false">
     <div>
       <div class="t">📋 Pronos de l'Accueil — historique</div>
       <div class="s">Tous les pronos donnés un jour, ou sur une équipe, avec le score final</div>
@@ -752,9 +755,8 @@ body:not(.co) .adm-nav{display:none}
         <button id="pa-suiv" onclick="paDecaler(1)" aria-label="Jour suivant">›</button>
       </div>
       <div class="pa-cherche" id="pa-cherche" style="display:none">
-        <input id="pa-equipe" list="pa-equipes" placeholder="Équipe (ex. PSG, Lyon, Barcelona)" autocomplete="off"
-               onkeydown="if(event.key==='Enter')paEquipe(this.value)">
-        <datalist id="pa-equipes"></datalist>
+        <input id="pa-equipe" placeholder="Équipe (ex. PSG, Lyon, Barcelona)" autocomplete="off" autocorrect="off" spellcheck="false"
+               oninput="paSuggerer(this.value)" onkeydown="if(event.key==='Enter')paEquipe(this.value)">
         <button onclick="paEquipe($('pa-equipe').value)">Voir</button>
       </div>
       <div class="pa-info" id="pa-info"></div>
@@ -854,7 +856,7 @@ async function sessionExistante(){
     $('login').style.display = 'none';
     $('panel').style.display = 'block';
     $('qui').textContent = 'Connecté : ' + (s.email || '');
-    afficherStats(t); afCharger(); chargerMessagerie(); adminPret();
+    afficherStats(t); afCharger(); chargerMessagerie(); adminPret(); setTimeout(() => paDonnees().catch(() => {}), 2500);
     return true;
   }catch(e){ JETON = null; return false; }
 }
@@ -875,7 +877,7 @@ async function connecter(){
   $('login').style.display = 'none';
   $('panel').style.display = 'block';
   $('qui').textContent = 'Connecté : ' + $('email').value.trim();
-  afficherStats(t); afCharger(); chargerMessagerie(); adminPret(); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
+  afficherStats(t); afCharger(); chargerMessagerie(); adminPret(); setTimeout(() => paDonnees().catch(() => {}), 2500); { const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j); }
 }
 
 async function admin(corps){
@@ -1886,17 +1888,33 @@ function hjAfficher(){
 }
 
 
-/* ======== PRONOS DE L'ACCUEIL : HISTORIQUE (24/10/2026) ========
-   Revoir ce que l'app avait donné : par jour (date au choix) ou par équipe
-   (tous les pronos sur ce club). Fiche du match = l'analyse publiée + le
-   score final. Volontairement AUCUNE mention validé / perdu. */
-let PA_MODE = 'jour', PA_JOUR = null, PA_LISTE = [], PA_EQUIPES = null;
-const PA_CHAMPS = 'fixture_id,publie_le,date_match,heure,ligue,dom,ext,logo_dom,logo_ext,prono_principal,badge,confiance,prono_buts,code_buts,confiance_buts,scores_top3,btts,p1,pn,p2,po25,score_reel';
-const PA_ALIAS = { 'psg':'Paris Saint Germain', 'paris':'Paris Saint Germain', 'om':'Marseille', 'ol':'Lyon', 'barca':'Barcelona', 'barça':'Barcelona',
-  'real':'Real Madrid', 'atletico':'Atletico Madrid', 'atlético':'Atletico Madrid', 'man city':'Manchester City', 'city':'Manchester City',
-  'man united':'Manchester United', 'man utd':'Manchester United', 'united':'Manchester United', 'bayern':'Bayern München', 'inter':'Inter', 'juve':'Juventus',
+/* ======== PRONOS DE L'ACCUEIL : HISTORIQUE (24/10/2026, v2 rapide) ========
+   Revoir ce que l'app avait donné : par jour ou par équipe. Fiche du match =
+   l'analyse publiée + le score final. Volontairement AUCUNE mention validé / perdu.
+   v2 : tous les pronos sont chargés UNE fois à l'ouverture (~1 300 lignes), puis
+   jours, équipes et fiches s'affichent instantanément, sans aller-retour réseau. */
+let PA_MODE = 'jour', PA_JOUR = null, PA_LISTE = [], PA_TOUT = null, PA_EQUIPES = [], PA_CHARGE = null;
+const PA_CHAMPS = 'fixture_id,publie_le,date_match,heure,ligue,dom,ext,logo_dom,logo_ext,prono_principal,badge,confiance,prono_buts,confiance_buts,btts,p1,pn,p2,po25,score_reel';
+const PA_ALIAS = { 'psg':'Paris Saint Germain', 'paris':'Paris Saint Germain', 'om':'Marseille', 'ol':'Lyon', 'barca':'Barcelona',
+  'real':'Real Madrid', 'atletico':'Atletico Madrid', 'man city':'Manchester City', 'city':'Manchester City',
+  'man united':'Manchester United', 'man utd':'Manchester United', 'united':'Manchester United', 'bayern':'Bayern München', 'juve':'Juventus',
   'dortmund':'Borussia Dortmund', 'bvb':'Borussia Dortmund', 'spurs':'Tottenham', 'losc':'Lille', 'asse':'Saint Etienne' };
 const paSans = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+function paDonnees(){
+  if(PA_TOUT) return Promise.resolve(PA_TOUT);
+  if(PA_CHARGE) return PA_CHARGE;
+  PA_CHARGE = (async () => {
+    const tout = [];
+    for(let o = 0; o < 20000; o += 1000){                 // Supabase renvoie 1 000 lignes max par appel
+      const l = await rest(`pronos?select=${PA_CHAMPS}&order=date_match.desc,fixture_id.asc&limit=1000&offset=${o}`);
+      tout.push(...l); if(l.length < 1000) break;
+    }
+    PA_TOUT = tout;
+    PA_EQUIPES = [...new Set(tout.flatMap(x => [x.dom, x.ext]).filter(Boolean))].sort((x, y) => x.localeCompare(y, 'fr'));
+    return tout;
+  })().catch(e => { PA_CHARGE = null; throw e; });
+  return PA_CHARGE;
+}
 function paOuvrir(){
   $('pa-ecran').classList.add('ouvert');
   history.pushState({ pa: 1 }, '');
@@ -1908,15 +1926,20 @@ window.addEventListener('popstate', e => {
   if(!st.paf && $('pa-fiche').classList.contains('ouvert')) $('pa-fiche').classList.remove('ouvert');
   if(!st.pa && !st.paf && $('pa-ecran').classList.contains('ouvert')) $('pa-ecran').classList.remove('ouvert');
 });
-function paMode(m){
+async function paPret(){
+  if(PA_TOUT) return true;
+  $('pa-corps').innerHTML = '<div class="vide">Chargement des pronos…</div>';
+  try{ await paDonnees(); return true; }
+  catch(e){ $('pa-corps').innerHTML = '<div class="vide">Impossible de charger (' + echap(e.message) + ').</div>'; return false; }
+}
+async function paMode(m){
   PA_MODE = m;
   $('pa-m-jour').classList.toggle('actif', m === 'jour'); $('pa-m-eq').classList.toggle('actif', m === 'equipe');
   $('pa-date').style.display = m === 'jour' ? 'flex' : 'none'; $('pa-cherche').style.display = m === 'equipe' ? 'flex' : 'none';
-  if(m === 'jour') paJour(PA_JOUR || hjHier());
-  else{
-    $('pa-info').textContent = ''; $('pa-corps').innerHTML = '<div class="vide">Tape le nom d\'une équipe.</div>';
-    paChargerEquipes(); setTimeout(() => $('pa-equipe').focus(), 50);
-  }
+  if(m === 'jour'){ paJour(PA_JOUR || hjHier()); return; }
+  $('pa-info').textContent = '';
+  $('pa-corps').innerHTML = '<div class="vide">Tape le nom d\'une équipe.</div>';
+  if(await paPret() && PA_MODE === 'equipe' && !$('pa-equipe').value) $('pa-corps').innerHTML = '<div class="vide">Tape le nom d\'une équipe.</div>';
 }
 function paDecaler(n){ const d = new Date((PA_JOUR || hjHier()) + 'T12:00:00'); d.setDate(d.getDate() + n); paJour(hjIso(d)); }
 async function paJour(jour){
@@ -1924,37 +1947,31 @@ async function paJour(jour){
   if(!jour) return; if(jour > max) jour = max;
   PA_JOUR = jour; $('pa-input').value = jour; $('pa-suiv').disabled = jour >= max;
   $('pa-info').textContent = jourFr(jour);
-  $('pa-corps').innerHTML = '<div class="vide">Chargement…</div>';
-  try{
-    const l = await rest(`pronos?date_match=eq.${jour}&order=ligue.asc,heure.asc&select=${PA_CHAMPS}`);
-    if(jour !== PA_JOUR || PA_MODE !== 'jour') return;
-    PA_LISTE = l; paAfficher('ligue');
-  }catch(e){ $('pa-corps').innerHTML = '<div class="vide">Impossible de charger (' + echap(e.message) + ').</div>'; }
+  if(!(await paPret()) || PA_JOUR !== jour || PA_MODE !== 'jour') return;
+  PA_LISTE = PA_TOUT.filter(p => p.date_match === jour)
+    .sort((x, y) => String(x.ligue).localeCompare(String(y.ligue), 'fr') || String(x.heure || '').localeCompare(String(y.heure || '')));
+  paAfficher('ligue');
 }
-async function paChargerEquipes(){
-  if(PA_EQUIPES) return;
-  try{
-    const l = await rest('pronos?select=dom,ext&limit=10000');
-    PA_EQUIPES = [...new Set(l.flatMap(x => [x.dom, x.ext]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
-    $('pa-equipes').innerHTML = PA_EQUIPES.map(n => `<option value="${echap(n)}">`).join('');
-  }catch(e){ PA_EQUIPES = []; }
+function paSuggerer(v){
+  const q = paSans(PA_ALIAS[paSans(v)] || v);
+  if(!q || !PA_TOUT){ $('pa-corps').innerHTML = '<div class="vide">Tape le nom d\'une équipe.</div>'; $('pa-info').textContent = ''; return; }
+  const noms = PA_EQUIPES.filter(n => paSans(n).includes(q)).slice(0, 12);
+  $('pa-info').textContent = noms.length ? 'Touche une équipe' : '';
+  $('pa-corps').innerHTML = noms.length
+    ? noms.map(n => `<div class="pa-l" onclick="paEquipe(this.dataset.n)" data-n="${echap(n)}"><div class="g"><div class="n">${echap(n)}</div></div><span class="sc nj">›</span></div>`).join('')
+    : '<div class="vide">Aucune équipe trouvée.</div>';
 }
 async function paEquipe(saisie){
   saisie = String(saisie || '').trim(); if(!saisie) return;
-  await paChargerEquipes();
+  if(!(await paPret())) return;
   const q = paSans(PA_ALIAS[paSans(saisie)] || saisie);
   let noms = PA_EQUIPES.filter(n => paSans(n) === q);
-  if(!noms.length) noms = PA_EQUIPES.filter(n => paSans(n).includes(q));
-  if(!noms.length){ $('pa-info').textContent = ''; $('pa-corps').innerHTML = '<div class="vide">Aucune équipe trouvée pour « ' + echap(saisie) + ' ».</div>'; return; }
-  if(noms.length > 6){ $('pa-info').textContent = noms.length + ' équipes correspondent — précise le nom.'; $('pa-corps').innerHTML = noms.map(n => `<div class="pa-l" onclick="paEquipe('${echap(n).replace(/'/g, "\\'")}')"><div class="g"><div class="n">${echap(n)}</div></div></div>`).join(''); return; }
-  $('pa-info').textContent = noms.join(' · ');
-  $('pa-corps').innerHTML = '<div class="vide">Chargement…</div>';
-  try{
-    const filtre = noms.map(n => `dom.eq.${encodeURIComponent('"' + n + '"')},ext.eq.${encodeURIComponent('"' + n + '"')}`).join(',');
-    const l = await rest(`pronos?or=(${filtre})&order=date_match.desc,heure.desc&limit=300&select=${PA_CHAMPS}`);
-    PA_LISTE = l; $('pa-info').textContent = noms.join(' · ') + ' — ' + l.length + ' prono' + (l.length > 1 ? 's' : '');
-    paAfficher('date');
-  }catch(e){ $('pa-corps').innerHTML = '<div class="vide">Impossible de charger (' + echap(e.message) + ').</div>'; }
+  if(!noms.length){ paSuggerer(saisie); return; }
+  $('pa-equipe').value = noms[0]; $('pa-equipe').blur();
+  PA_LISTE = PA_TOUT.filter(p => noms.includes(p.dom) || noms.includes(p.ext))
+    .sort((x, y) => y.date_match.localeCompare(x.date_match) || String(y.heure || '').localeCompare(String(x.heure || '')));
+  $('pa-info').textContent = noms[0] + ' — ' + PA_LISTE.length + ' prono' + (PA_LISTE.length > 1 ? 's' : '');
+  paAfficher('date'); $('pa-corps').scrollTop = 0;
 }
 function paHeure(p){   // heure API = UTC → heure locale du téléphone
   if(!p.heure) return '';
@@ -1962,6 +1979,7 @@ function paHeure(p){   // heure API = UTC → heure locale du téléphone
   return isNaN(d) ? String(p.heure).slice(0, 5) : d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
 }
 function paScore(p){ return p.score_reel ? String(p.score_reel).replace('-', ' – ') : ''; }
+const paLogo = u => u ? `<img src="${echap(u)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : '<img alt="" style="visibility:hidden">';
 function paAfficher(groupePar){
   const z = $('pa-corps');
   if(!PA_LISTE.length){ z.innerHTML = '<div class="vide">' + (groupePar === 'ligue' ? 'Aucun prono donné ce jour-là.' : 'Aucun prono sur cette équipe.') + '</div>'; return; }
@@ -1974,6 +1992,7 @@ function paAfficher(groupePar){
     const sc = paScore(p);
     return tete + `<div class="pa-l" onclick="paFiche(${i})">
       <span class="h">${groupePar === 'ligue' ? paHeure(p) : jourFr(p.date_match, true).split(' ').slice(1).join(' ')}</span>
+      <div class="pa-logos">${paLogo(p.logo_dom)}${paLogo(p.logo_ext)}</div>
       <div class="g"><div class="n">${echap(p.dom)} – ${echap(p.ext)}</div>
         <div class="p">${echap(p.prono_principal || '')}${groupePar === 'date' ? ' · ' + echap(p.ligue || '') : ''}</div></div>
       <span class="sc ${sc ? '' : 'nj'}">${sc || 'pas joué'}</span>
@@ -1982,7 +2001,6 @@ function paAfficher(groupePar){
 }
 function paFiche(i){
   const p = PA_LISTE[i]; if(!p) return;
-  const logo = u => u ? `<img src="${echap(u)}" alt="" onerror="this.style.visibility='hidden'">` : '';
   const pc = v => v == null ? '–' : Math.round(Number(v)) + ' %';
   const barre = (lab, v) => `<div class="pa-barre"><span>${lab}</span><i><b style="width:${Math.max(0, Math.min(100, Number(v) || 0))}%"></b></i><span>${pc(v)}</span></div>`;
   const sc = paScore(p);
@@ -1990,9 +2008,9 @@ function paFiche(i){
   $('pa-fiche-c').innerHTML = `
     <div class="pa-meta">${echap(p.ligue || '')} · ${jourFr(p.date_match, true)}${p.heure ? ' · ' + paHeure(p) : ''}</div>
     <div class="pa-eq">
-      <div class="e">${logo(p.logo_dom)}<span>${echap(p.dom)}</span></div>
+      <div class="e">${paLogo(p.logo_dom)}<span>${echap(p.dom)}</span></div>
       <div class="s ${sc ? '' : 'nj'}">${sc || 'pas encore<br>joué'}</div>
-      <div class="e">${logo(p.logo_ext)}<span>${echap(p.ext)}</span></div>
+      <div class="e">${paLogo(p.logo_ext)}<span>${echap(p.ext)}</span></div>
     </div>
     ${sc ? '<div class="pa-meta" style="margin-top:4px">score final</div>' : ''}
     <div class="pa-bloc"><div class="t">Verdict donné par l'app</div>
@@ -2002,7 +2020,6 @@ function paFiche(i){
     <div class="pa-bloc"><div class="t">Buts</div>
       <div class="pa-verdict" style="font-size:15px">${echap(p.prono_buts || '')}<small>confiance ${pc(p.confiance_buts)}</small></div>
       ${barre('+2,5', p.po25)}${barre('BTTS', p.btts)}</div>
-    ${p.scores_top3 ? `<div class="pa-bloc"><div class="t">Scores les plus probables</div><div style="font:800 15px 'JetBrains Mono',monospace">${echap(p.scores_top3)}</div></div>` : ''}
     <div class="pa-meta" style="margin-top:14px">publié le ${echap(publie)}</div>
     <button class="pa-fermer" onclick="history.back()">Fermer</button>`;
   $('pa-fiche').classList.add('ouvert');
