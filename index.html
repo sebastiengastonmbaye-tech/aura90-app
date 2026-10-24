@@ -1761,7 +1761,7 @@ function montrerFiche(p){
       ${p.signe ? '<div style="margin-top:8px"><span class="sceau-signe">⚡ PRONO SIGNÉ AURA90</span></div>' : ''}
     </div>
     <div class="marche">
-      <div class="m-haut"><span class="m-lbl"><svg class="ic"><use href="#i-ballon"/></svg><span>${p.prono_buts}<small>marché +/− 2,5 buts</small></span></span><span class="m-val">${p.confiance_buts}%</span></div>
+      <div class="m-haut"><span class="m-lbl"><svg class="ic"><use href="#i-ballon"/></svg><span>${p.prono_buts}<small>marché +/− ${p.code_buts==='U3.5'?'3,5':'2,5'} buts</small></span></span><span class="m-val">${p.confiance_buts}%</span></div>
       <div class="m-barre"><i data-w="${p.confiance_buts}"></i></div>
     </div>
     <div class="marche">
@@ -3980,7 +3980,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-23-2';
+const APP_VERSION = '2026-10-24-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
