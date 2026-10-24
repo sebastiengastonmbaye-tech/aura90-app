@@ -2390,9 +2390,9 @@ const GD_SECTIONS = [
   { id: 'turbo', ico: '🚀', aller: 'coupons/turbo',
     t: { fr: 'Montante Turbo : plus courte, plus risquée', en: 'Turbo series: shorter, riskier', ar: 'السلسلة التوربو: أقصر وأكثر مخاطرة' },
     x: {
-      fr: `Même principe que la montante, mais en <b>5 paliers</b> seulement, avec des coupons à cote plus haute (environ 1,90 à 2,60). L'objectif arrive plus vite, mais chaque palier est plus difficile. Les deux montantes ne jouent jamais le même match le même jour. Tu les trouves dans l'onglet Montante, avec le bouton <b>Turbo</b> en haut.`,
-      en: `Same idea as the step series, but in only <b>5 steps</b>, with higher-odds combos (about 1.90 to 2.60). The target comes faster, but each step is harder. The two series never use the same match on the same day. You'll find it in the Step series tab, with the <b>Turbo</b> button at the top.`,
-      ar: `نفس فكرة السلسلة التصاعدية، لكن في <b>5 مراحل</b> فقط، بقسائم ذات احتمال أعلى (حوالي 1.90 إلى 2.60). الهدف يأتي أسرع، لكن كل مرحلة أصعب. السلسلتان لا تستخدمان نفس المباراة في نفس اليوم. تجدها في تبويب السلسلة، بزر <b>توربو</b> في الأعلى.`,
+      fr: `Même principe que la montante, mais en <b>6 paliers</b> seulement, avec des coupons à cote un peu plus haute (environ 1,75 à 1,90). L'objectif arrive plus vite, mais chaque palier est un peu plus difficile. Les deux montantes ne jouent jamais le même match le même jour. Tu les trouves dans l'onglet Montante, avec le bouton <b>Turbo</b> en haut.`,
+      en: `Same idea as the step series, but in only <b>6 steps</b>, with slightly higher-odds combos (about 1.75 to 1.90). The target comes faster, but each step is a bit harder. The two series never use the same match on the same day. You'll find it in the Step series tab, with the <b>Turbo</b> button at the top.`,
+      ar: `نفس فكرة السلسلة التصاعدية، لكن في <b>6 مراحل</b> فقط، بقسائم ذات احتمال أعلى قليلًا (حوالي 1.75 إلى 1.90). الهدف يأتي أسرع، لكن كل مرحلة أصعب. السلسلتان لا تستخدمان نفس المباراة في نفس اليوم. تجدها في تبويب السلسلة، بزر <b>توربو</b> في الأعلى.`,
     } },
   { id: 'live', ico: '🔴', ill: 'live', aller: 'coupons/live',
     t: { fr: 'LIVE : des combinés pendant les matchs', en: 'LIVE: combos during matches', ar: 'مباشر: تركيبات أثناء المباريات' },
@@ -2877,12 +2877,13 @@ function copierCoupon(id){
 
 const MONTANTES_DEF = [
   { type:'montante', nom:'MONTANTE',       court:'Montante', ico:'📈', paliers:10 },
-  { type:'turbo',    nom:'MONTANTE TURBO', court:'Turbo',    ico:'⚡', paliers:5  },
+  { type:'turbo',    nom:'MONTANTE TURBO', court:'Turbo',    ico:'⚡', paliers:6  },
 ];
 let MT_ONGLET = null;
 // la série n°6 de la Montante, lancée avant le passage à 10 paliers, garde ses 12 paliers
-const paliersSerie = (def, serie) => (def.type === 'montante' && serie <= 6) ? 12 : def.paliers;
-// Formats actuels (Montante 12 paliers, Turbo 5 paliers) depuis le 29/09/2026 :
+// la Turbo passe à 6 paliers (cote 1,75–1,90) à partir de la série n°6 ; les séries 1 à 5 en avaient 5
+const paliersSerie = (def, serie) => (def.type === 'montante' && serie <= 6) ? 12 : (def.type === 'turbo' && serie <= 5) ? 5 : def.paliers;
+// Formats (Montante 12 paliers, Turbo 5 paliers) depuis le 29/09/2026 ; Turbo 6 paliers dès la série n°6 (24/10/2026) :
 // l'historique et le record ne comptent que les séries démarrées à partir de cette date
 // (plus la série en cours, qui continue avec les nouvelles règles).
 const DEBUT_FORMATS = '2026-09-29';
@@ -2916,7 +2917,7 @@ function blocMontante(def){
       <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
         <div class="t">${def.nom} — ${N} PALIERS</div>
         <div class="v">${mF(MISE_DEPART)}${usdH(MISE_DEPART)}</div>
-        <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,90–2,60 · objectif ≈ ' + mF(300000) + ' en 5 paliers' : 'Paliers à cote 1,40–1,80'}</div>
+        <div class="s">${def.type==='turbo' ? 'Paliers à cote 1,75–1,90 · objectif ≈ ' + mF(360000) + ' en 6 paliers' : 'Paliers à cote 1,40–1,80'}</div>
       </div>
       <div class="mt-info">La première série démarre dès que le moteur trouve un coupon à sa main. Même exigence d'analyse que les pronos signés.</div>
       <div class="mt-etiq">PARCOURS DE LA SÉRIE</div>
@@ -3980,7 +3981,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-24-1';
+const APP_VERSION = '2026-10-24-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
