@@ -1507,7 +1507,7 @@ function majNotePaiement(){
   z.textContent = m && CFA ? T('Paiement par ¤, Mobile Money ou carte bancaire.').replace('¤', m)
     : m ? T('Paiement en francs CFA par ¤ ou carte bancaire · prix en ¤ donnés à titre indicatif.').replace('¤', m).replace('¤', DEVISE)
     : CFA ? T('Paiement par Wave, Orange Money, Mobile Money ou carte bancaire.')
-    : T('Paiement par carte bancaire (Visa, Mastercard), débité en francs CFA · prix en ¤ donnés à titre indicatif.').replace('¤', DEVISE);
+    : T('Paiement par Mobile Money ou carte bancaire en euros (Visa, Mastercard) · prix en ¤ donnés à titre indicatif.').replace('¤', DEVISE);
 }
 
 /* ================= ÉTAT ================= */
@@ -2126,7 +2126,7 @@ const FONCTIONS_PAIEMENT = ['saspay-init', 'whop-init'];
 //   'test' → bouton visible UNIQUEMENT pour les comptes test (le temps de tester)
 //   'tous' → bouton visible pour tout le monde
 //   'non'  → bouton masqué
-var CARTE_EURO = 'test';
+var CARTE_EURO = 'tous';
 const COMPTES_TEST_CARTE = ['pronosgalsen@gmail.com','xeusprosbet@gmail.com','xeuswinner@gmail.com','prosxeus@gmail.com','sportfull783@gmail.com','sebastiengastonmbaye@gmail.com'];
 var CARTE_BANCAIRE_ACTIVE = CARTE_EURO === 'tous';
 function carteVisible(){
@@ -4022,7 +4022,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-25-2';
+const APP_VERSION = '2026-10-25-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
