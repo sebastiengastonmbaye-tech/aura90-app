@@ -1106,8 +1106,9 @@ const CONFIG = {
         </div>
         <div id="msg-promo"></div>
         <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" id="btn-payer-sp" onclick="payerMaintenant('mobile')">📱 Wave, Orange Money, Mobile Money</button></div>
-        <div class="champ"><button class="bouton-carte" id="btn-payer-carte" onclick="payerMaintenant('carte')">💳 Carte bancaire (Visa, Mastercard)</button></div>
-        <div class="avert">Paiement sécurisé. Mobile Money : Wave, Orange Money ou le Mobile Money de ton pays. Carte bancaire : Visa ou Mastercard, depuis n'importe quel pays. Ton accès PRO s'active automatiquement.</div>
+        <div class="champ" id="champ-carte" style="display:none"><button class="bouton-carte" id="btn-payer-carte" onclick="payerMaintenant('carte')">💳 Carte bancaire (Visa, Mastercard)</button></div>
+        <div class="avert" id="avert-carte" style="display:none">Paiement sécurisé. Mobile Money : Wave, Orange Money ou le Mobile Money de ton pays. Carte bancaire : Visa ou Mastercard, depuis n'importe quel pays. Ton accès PRO s'active automatiquement.</div>
+        <div class="avert" id="avert-mobile">Paiement sécurisé via SasPay : Wave, Orange Money ou le Mobile Money de ton pays. Ton accès PRO s'active automatiquement.</div>
       </div>
       <div id="msg-acces"></div>
 
@@ -1494,6 +1495,14 @@ const MOYENS_PAYS = { SN:'Wave, Orange Money, Free Money', CI:'Wave, Orange Mone
 function majNotePaiement(){
   const z = document.getElementById('note-paiement'); if (!z) return;
   const m = MOYENS_PAYS[PAYS_U];
+  if (typeof CARTE_BANCAIRE_ACTIVE === 'undefined' || !CARTE_BANCAIRE_ACTIVE) {   // sans carte : textes d'origine
+    if (!CFA && !DEV_OK) { z.textContent = T('Paiement par Wave, Orange Money ou le Mobile Money de ton pays.'); return; }
+    z.textContent = m && CFA ? T('Paiement par ¤ ou le Mobile Money de ton pays.').replace('¤', m)
+      : m ? T('Paiement en francs CFA par ¤ · prix en ¤ donnés à titre indicatif.').replace('¤', m).replace('¤', DEVISE)
+      : CFA ? T('Paiement par Wave, Orange Money ou le Mobile Money de ton pays.')
+      : T('Paiement en francs CFA par Mobile Money (Afrique de l\'Ouest et du Centre) · prix en ¤ donnés à titre indicatif.').replace('¤', DEVISE);
+    return;
+  }
   if (!CFA && !DEV_OK) { z.textContent = T('Paiement par Mobile Money ou carte bancaire (Visa, Mastercard).'); return; }
   z.textContent = m && CFA ? T('Paiement par ¤, Mobile Money ou carte bancaire.').replace('¤', m)
     : m ? T('Paiement en francs CFA par ¤ ou carte bancaire · prix en ¤ donnés à titre indicatif.').replace('¤', m).replace('¤', DEVISE)
@@ -2109,6 +2118,16 @@ async function verifierCodePromo(){
 // Paiement : SasPay (mobile money) + Bictorys (carte bancaire, 24/10/2026)
 const TXT_PAYER = '📱 Wave, Orange Money, Mobile Money', TXT_CARTE = '💳 Carte bancaire (Visa, Mastercard)';
 const FONCTIONS_PAIEMENT = ['saspay-init', 'bictorys-init'];
+// CARTE BANCAIRE (Bictorys) : bouton masqué tant que le compte Bictorys n'est pas validé
+// en production (25/10/2026). Passer à true pour l'afficher à tous.
+var CARTE_BANCAIRE_ACTIVE = false;
+(function(){ if(!CARTE_BANCAIRE_ACTIVE) return;
+  const go = () => {
+    ['champ-carte','avert-carte'].forEach(id => { const e = document.getElementById(id); if(e) e.style.display = ''; });
+    const m = document.getElementById('avert-mobile'); if(m) m.style.display = 'none';
+  };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
 async function payerMaintenant(mode){
   if(!FORMULE) return;
   const carte = mode === 'carte';
@@ -3991,7 +4010,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-24-3';
+const APP_VERSION = '2026-10-25-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
