@@ -552,7 +552,8 @@ body.co .tuiles{grid-template-columns:1fr 1fr}
 body.co .tuile{text-align:left;padding:12px 13px}
 body.co .tuile .v{font-size:18px;color:var(--texte)}
 body.co .tuile .l{font-size:10px;letter-spacing:.03em;text-transform:none;font-weight:600}
-.adm-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;background:rgba(10,15,24,.96);border-top:1px solid var(--ligne);padding:7px 4px calc(8px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.adm-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;background:#0A0F18;border-top:1px solid var(--ligne);padding:7px 4px calc(8px + env(safe-area-inset-bottom,0px));-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);will-change:transform;-webkit-backface-visibility:hidden}
+html.nav-cachee .adm-nav{visibility:hidden}
 .adm-nav .in{display:flex;width:100%;max-width:680px}
 .adm-nav button{flex:1;background:none;border:none;border-radius:0;color:var(--sourdine);font-size:10.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 0;position:relative}
 .adm-nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1266,6 +1267,48 @@ if(window.visualViewport){
 }
 $('mb-texte').addEventListener('focus', () => setTimeout(() => { ecranAjuster(); $('mb-fil').scrollTop = 1e9; }, 300));
 $('mb-texte').addEventListener('input', e => { const t = e.target; t.style.height = '44px'; t.style.height = Math.min(t.scrollHeight, 130) + 'px'; });
+
+
+/* ======== BARRE DU BAS STABLE SUR IPHONE (25/10/2026) ========
+   Sur iPhone, après l'ouverture du clavier (réponse à un message, recherche…),
+   Safari garde parfois la page décalée : la barre « fixée en bas » se retrouvait
+   au milieu de l'écran. On la recale en permanence sur le bas de la zone visible,
+   on la cache pendant que le clavier est ouvert et on remet la page d'aplomb
+   dès que le clavier se ferme. */
+let NAV_HMAX = 0, NAV_RAF = 0;
+function navAjuster(){
+  NAV_RAF = 0;
+  const nav = document.querySelector('.adm-nav'), v = window.visualViewport;
+  if(!nav) return;
+  if(!v){ nav.style.transform = ''; return; }
+  NAV_HMAX = Math.max(NAV_HMAX, v.height);
+  const champ = document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  const clavier = champ && v.height < NAV_HMAX - 150;
+  document.documentElement.classList.toggle('nav-cachee', clavier);
+  if(clavier){ nav.style.transform = ''; return; }
+  // décalage entre le bas de la zone réellement visible et le bas où Safari a posé la barre
+  const ecart = Math.round(v.offsetTop + v.height - window.innerHeight);
+  nav.style.transform = Math.abs(ecart) > 1 && Math.abs(ecart) < 600 ? `translate3d(0,${ecart}px,0)` : 'translate3d(0,0,0)';
+}
+function navPlanifier(){ if(!NAV_RAF) NAV_RAF = requestAnimationFrame(navAjuster); }
+if(window.visualViewport){
+  visualViewport.addEventListener('resize', navPlanifier);
+  visualViewport.addEventListener('scroll', navPlanifier);
+}
+window.addEventListener('scroll', navPlanifier, { passive:true });
+window.addEventListener('resize', () => { NAV_HMAX = 0; navPlanifier(); });
+window.addEventListener('orientationchange', () => { NAV_HMAX = 0; setTimeout(navAjuster, 350); });
+window.addEventListener('pageshow', navPlanifier);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) setTimeout(navAjuster, 150); });
+document.addEventListener('focusin', navPlanifier);
+document.addEventListener('focusout', () => setTimeout(() => {
+  const a = document.activeElement;
+  if(!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) && !ecranOuvert()){
+    window.scrollTo(window.scrollX, window.scrollY);   // remet la page d'aplomb après le clavier
+  }
+  navAjuster();
+}, 120));
+navAjuster();
 
 /* ======== DÉTAIL DES STATISTIQUES (15/10/2026) ========
    Chaque tuile de la vue d'ensemble s'ouvre sur un écran détaillé
@@ -3008,6 +3051,7 @@ function onglet_(k){
   document.querySelectorAll('.adm-nav button').forEach(b => b.classList.toggle('a', b.dataset.o === k));
   try{ localStorage.setItem('aura90_admin_onglet', k); }catch(e){}
   window.scrollTo(0, 0);
+  setTimeout(navAjuster, 60);
 }
 function onglet(k){
   if(k === 'affilies' && AF_DET){ AF_DET = null; if(AF) afRendre(); }
