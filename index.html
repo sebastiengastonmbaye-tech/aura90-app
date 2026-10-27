@@ -2483,14 +2483,6 @@ const GD_SECTIONS = [
       ar: `الفقاعة أسفل الشاشة تفتح المحادثة. مساعدتنا تجيب فورًا ليلًا ونهارًا، وفريق AURA90 يتدخل عند الحاجة. يمكنك طرح أي سؤال عن التطبيق أو اشتراكك.`,
       es: `La burbuja de abajo abre la mensajería. Nuestro asistente responde al instante, de día y de noche, y el equipo de AURA90 interviene cuando hace falta. Puedes preguntar lo que quieras sobre la app o tu suscripción.`,
     } },
-  { id: 'partenaire', ico: '🤝', aller: 'partenaire',
-    t: { fr: 'Devenir partenaire', en: 'Become a partner', ar: 'كن شريكًا' , es: "Hazte socio" },
-    x: {
-      fr: `Tu as une communauté (TikTok, WhatsApp, Telegram…) ? Fais ta demande en bas de la page <b>Compte</b>. Une fois validé, tu reçois ton code et ton lien, et une commission sur chaque abonnement de tes filleuls.`,
-      en: `Got a community (TikTok, WhatsApp, Telegram…)? Apply at the bottom of the <b>Account</b> page. Once approved, you get your code and link, and a commission on every subscription from your referrals.`,
-      ar: `لديك جمهور (تيك توك، واتساب، تيليغرام…)؟ قدّم طلبك أسفل صفحة <b>الحساب</b>. بعد القبول تحصل على رمزك ورابطك، وعمولة على كل اشتراك من المنضمين عبرك.`,
-      es: `¿Tienes una comunidad (TikTok, WhatsApp, Telegram…)? Envía tu solicitud al final de la página <b>Cuenta</b>. Una vez aceptado, recibes tu código y tu enlace, y una comisión por cada suscripción de tus referidos.`,
-    } },
 ];
 
 function ouvrirGuide(section){
@@ -3264,9 +3256,8 @@ async function chargerPartenaire(){
   } else if(d.statut === 'suspendu'){
     z.innerHTML = `<div class="ep-etat"><b>Compte partenaire suspendu</b>Écris-nous depuis la messagerie pour en savoir plus.</div>`;
   } else {
-    const p = (d.paliers||[]).map(x=>x.pct);
-    z.innerHTML = (d.statut === 'refuse' ? `<div class="ep-etat"><b>Demande non retenue</b>${epEsc(d.motif || 'Tu peux refaire une demande plus tard.')}</div>` : '') +
-      `<button class="ep-carte" onclick="ouvrirDemandeP()"><div class="ico">◆</div><div class="t"><b>Devenir partenaire</b><span>Gagne ${p.length ? Math.min(...p)+' % à '+Math.max(...p)+' %' : 'une commission'} sur chaque abonnement</span></div><span class="fl">›</span></button>`;
+    // 27/10/2026 : plus de demande en libre-service — Babs contacte lui-même les partenaires
+    z.innerHTML = '';
   }
 }
 function chargerParrainage(){ return chargerPartenaire(); }   // ancien nom
@@ -3777,7 +3768,6 @@ function msAccueil(){
       <button onclick="msSugg(this)">Comment payer avec Wave ?</button>
       <button onclick="msSugg(this)">C'est quoi un prono signé ?</button>
       <button onclick="msSugg(this)">Comment marche la Montante ?</button>
-      <button onclick="msSugg(this)">Devenir partenaire</button>
     </div></div>`;
 }
 function msSugg(b){ $('ms-texte').value = b.textContent; envoyerMessage(); }
@@ -4042,7 +4032,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-27-1';
+const APP_VERSION = '2026-10-27-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
