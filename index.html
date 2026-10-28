@@ -3216,6 +3216,71 @@ async function epRpc(nom, corps){
   return r.ok ? r.json() : null;
 }
 
+/* ---- SUIVI DES LIENS PAR RÉSEAU + PRÉSENCE EN LIGNE (28/10/2026) ----
+   · Lien aura90.app/?s=tiktok (ou youtube, insta, whatsapp…) ; sans ?s=, le réseau
+     est deviné d'après la page d'origine. Le 1er réseau de la personne est gardé 30 jours.
+   · Une visite par jour et par réseau est comptée (noter_visite) ; à la connexion,
+     le compte est relié à ce réseau (lier_source) → inscrits et VIP par réseau dans l'admin.
+   · Toutes les 60 s tant que l'app est ouverte : signal « en ligne » (battement).
+   · Les liens partenaires (?ref=CODE) gardent leur propre suivi. */
+const SUIVI_VIS = (() => {
+  let v = LS.get('aura90_visiteur');
+  if(!v){ v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); LS.set('aura90_visiteur', v); }
+  return v;
+})();
+const SUIVI_ALIAS = { instagram:'insta', ig:'insta', yt:'youtube', tt:'tiktok', wa:'whatsapp', fb:'facebook', snap:'snapchat', tg:'telegram', twitter:'x' };
+function suiviSourceDuLien(){
+  const q = new URLSearchParams(location.search);
+  if(q.get('ref')) return null;
+  let s = (q.get('s') || q.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20);
+  if(!s){
+    try{
+      const h = document.referrer ? new URL(document.referrer).hostname : '';
+      if(h && h !== location.hostname){
+        s = /tiktok/.test(h) ? 'tiktok' : /instagram/.test(h) ? 'insta' : /youtu/.test(h) ? 'youtube'
+          : /facebook|fb\.com/.test(h) ? 'facebook' : /whatsapp|wa\.me/.test(h) ? 'whatsapp'
+          : /snapchat/.test(h) ? 'snapchat' : /t\.me|telegram/.test(h) ? 'telegram'
+          : /(^|\.)t\.co$|twitter|x\.com/.test(h) ? 'x' : /google\./.test(h) ? 'google' : /bing\./.test(h) ? 'bing' : 'autre-site';
+      }
+    }catch(e){}
+  }
+  s = SUIVI_ALIAS[s] || s;
+  return s && s.length >= 2 ? s : null;
+}
+(function(){
+  const s = suiviSourceDuLien(); if(!s) return;
+  let ancien = null; try{ ancien = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
+  if(!ancien || Date.now() - ancien.t > 30 * 864e5) LS.set('aura90_src', JSON.stringify({ s, t: Date.now() }));
+  fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/noter_visite', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+CONFIG.SUPABASE_KEY },
+    body: JSON.stringify({ p_source: s, p_visiteur: SUIVI_VIS })
+  }).catch(()=>{});
+})();
+async function suiviBattement(){
+  if(document.hidden) return;
+  const page = ((document.querySelector('.page.active') || {}).id || '').replace('page-', '') || 'accueil';
+  const corps = JSON.stringify({ p_visiteur: SUIVI_VIS, p_page: page });
+  const envoyer = jeton => fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/battement', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+jeton }, body: corps });
+  try{
+    if(estConnecte()){
+      let r = await envoyer(SESSION.access);
+      if(r.status === 401 && await rafraichirSession()) r = await envoyer(SESSION.access);
+      // compte relié au réseau d'arrivée (une seule fois)
+      let src = null; try{ src = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
+      if(src && src.s && LS.get('aura90_src_lie') !== (SESSION.email || '1')){
+        const res = await epRpc('lier_source', { p_source: src.s, p_visiteur: SUIVI_VIS });
+        if(res) LS.set('aura90_src_lie', SESSION.email || '1');
+      }
+    } else {
+      await envoyer(CONFIG.SUPABASE_KEY);
+    }
+  }catch(e){}
+}
+setTimeout(suiviBattement, 3000);
+setInterval(suiviBattement, 60000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) suiviBattement(); });
+
 /* ---- lien ?ref=CODE&s=reseau : clic compté, filleul noté à la connexion ---- */
 (function(){
   const q = new URLSearchParams(location.search);
@@ -4032,7 +4097,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-27-2';
+const APP_VERSION = '2026-10-28-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;

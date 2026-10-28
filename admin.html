@@ -4,7 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-<style>a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;pointer-events:none!important;font:inherit!important}</style>
+<style>a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;pointer-events:none!important;font:inherit!important}
+/* ===== EN LIGNE + LIENS PAR RÉSEAU (28/10/2026) ===== */
+.live{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);cursor:pointer;margin:0 0 10px}
+.live .pt{width:10px;height:10px;border-radius:50%;background:#2EE59D;box-shadow:0 0 0 0 rgba(46,229,157,.6);animation:pulse 1.8s infinite;flex:0 0 10px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,229,157,.55)}70%{box-shadow:0 0 0 9px rgba(46,229,157,0)}100%{box-shadow:0 0 0 0 rgba(46,229,157,0)}}
+.live .n{font:800 22px 'JetBrains Mono',monospace}.live .t{flex:1;min-width:0}.live .t b{display:block;font-size:13px}.live .t span{font-size:11.5px;color:var(--sourdine)}
+#sl-voile{position:fixed;inset:0;z-index:70;background:var(--nuit);display:none;flex-direction:column}
+#sl-voile.ouvert{display:flex}
+#sl-voile .haut{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 10px;border-bottom:1px solid var(--ligne)}
+#sl-voile .haut b{flex:1;font-size:16px}
+#sl-corps{flex:1;overflow-y:auto;padding:14px 14px calc(30px + env(safe-area-inset-bottom,0px));max-width:680px;width:100%;margin:0 auto;overscroll-behavior:contain}
+.sl-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.sl-kpi div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:11px;text-align:center}
+.sl-kpi b{display:block;font:800 20px 'JetBrains Mono',monospace}.sl-kpi span{font-size:10.5px;color:var(--sourdine)}
+.sl-chips{display:flex;gap:6px;margin:0 0 12px}.sl-chips button{flex:1;padding:8px 0;font-size:12px;border-radius:10px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine)}
+.sl-chips button.a{color:var(--texte);border-color:rgba(61,232,200,.5);background:rgba(61,232,200,.08)}
+.sl-t{width:100%;border-collapse:collapse;font-size:13px}.sl-t th{font-size:10px;color:var(--sourdine);text-transform:uppercase;letter-spacing:.04em;text-align:right;padding:6px 4px}.sl-t th:first-child,.sl-t td:first-child{text-align:left}
+.sl-t td{padding:10px 4px;border-top:1px solid var(--ligne);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px}.sl-t td:first-child{font-family:inherit;font-weight:800}
+.sl-t small{display:block;color:var(--sourdine);font-size:10px}
+.sl-lien{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ligne);border-radius:12px;margin:7px 0;background:var(--surface)}
+.sl-lien span{flex:1;min-width:0;font:12px 'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl-lien button{padding:7px 11px;font-size:12px}
+.sl-pers{padding:9px 0;border-top:1px solid var(--ligne);display:flex;justify-content:space-between;gap:8px;font-size:13px}.sl-pers span{color:var(--sourdine);font-size:11.5px}
+</style>
 <meta name="robots" content="noindex">
 <title>AURA90' — Administration</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -632,6 +654,9 @@ body:not(.co) .adm-nav{display:none}
   <section class="pg actif" id="pg-accueil">
     <div class="pg-haut"><h1>AURA<span class="neuf0">90</span> · Admin</h1><button class="pg-btn" onclick="location.href='./'">App ›</button></div>
     <div class="pg-sous" id="acc-date"></div>
+    <div class="live" id="live-carte" onclick="slOuvrir('live')"><div class="pt"></div><div class="n" id="live-n">…</div>
+      <div class="t"><b>En ligne maintenant</b><span id="live-det">chargement…</span></div><b style="color:var(--sourdine)">›</b></div>
+    <a class="carte-tiktok" href="#" style="margin-bottom:6px" onclick="slOuvrir('sources');return false"><div><div class="t">📈 Mes liens & réseaux</div><div class="s">Clics, inscrits et VIP rapportés par TikTok, YouTube, Insta…</div></div><b>›</b></a>
     <div class="pg-lab">À traiter <b id="acc-nb"></b></div>
     <div id="acc-todo"><div class="todo calme">Chargement…</div></div>
     <div class="pg-lab">Ce mois</div>
@@ -839,6 +864,10 @@ body:not(.co) .adm-nav{display:none}
   </div></nav>
 </div>
 
+
+<!-- ===== écran : en ligne / liens par réseau (28/10/2026) ===== -->
+<div id="sl-voile"><div class="haut"><button class="mb-fleche" onclick="slFermer()">‹</button><b id="sl-titre"></b>
+<button class="gris" style="padding:8px 11px;font-size:12px" onclick="slRendre()">↻</button></div><div id="sl-corps"></div></div>
 <script>
 const SUPABASE_URL = "https://nzsvmqyiukxzsfjprpiy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW";
@@ -3043,6 +3072,65 @@ function afClassement(){
     ${L.length ? podium + reste.map((x, i) => ligne(x, i + (actifs.length >= 3 ? 3 : 0))).join('') : `<div class="vide" style="margin:0 12px">Aucun affilié ${CL.pays !== 'tous' ? 'dans ce pays' : ''}.</div>`}`;
 }
 
+
+
+/* ======== EN LIGNE MAINTENANT + LIENS PAR RÉSEAU (28/10/2026) ======== */
+const SL_SITE = 'https://aura90.app';
+const SL_RESEAUX = [['tiktok','🎵 TikTok'],['youtube','▶️ YouTube'],['insta','📸 Instagram'],['whatsapp','💬 WhatsApp'],
+  ['facebook','📘 Facebook'],['snapchat','👻 Snapchat'],['telegram','✈️ Telegram'],['x','𝕏 X / Twitter']];
+const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites' });
+let SL_VUE = 'live', SL_JOURS = 30, SL_LIVE = null;
+const slF = n => Number(n || 0).toLocaleString('fr-FR');
+const slE = t => String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function liveMaj(){
+  try{
+    SL_LIVE = await rpc('admin_en_ligne');
+    const d = SL_LIVE || {};
+    $('live-n').textContent = d.total ?? 0;
+    $('live-det').textContent = `${d.vip || 0} VIP · ${d.non_vip || 0} non VIP · ${d.sans_compte || 0} sans compte`;
+    if(SL_VUE === 'live' && $('sl-voile').classList.contains('ouvert')) slRendre(true);
+  }catch(e){ $('live-det').textContent = 'indisponible (suivi_liens.sql exécuté ?)'; }
+}
+setInterval(() => { if(!document.hidden && document.body.classList.contains('co') && (ONGLET === 'accueil' || $('sl-voile').classList.contains('ouvert'))) liveMaj(); }, 20000);
+setTimeout(() => { if(document.body.classList.contains('co')) liveMaj(); }, 1500);
+function slOuvrir(vue){ SL_VUE = vue; $('sl-voile').classList.add('ouvert'); slRendre(); }
+function slFermer(){ $('sl-voile').classList.remove('ouvert'); }
+function slCopier(t, b){ navigator.clipboard?.writeText(t).then(() => { const x = b.textContent; b.textContent = 'Copié ✓'; setTimeout(() => b.textContent = x, 1400); }); }
+async function slRendre(silencieux){
+  const c = $('sl-corps');
+  if(SL_VUE === 'live'){
+    $('sl-titre').textContent = 'En ligne maintenant';
+    if(!silencieux){ c.innerHTML = '<div class="vide">Chargement…</div>'; await liveMaj(); }
+    const d = SL_LIVE || {};
+    const pers = l => (l || []).length ? l.map(x => `<div class="sl-pers"><b>${slE(x.email)}</b><span>${slE(x.page || '')}</span></div>`).join('') : '<div class="vide">Personne</div>';
+    const pages = Object.entries(d.pages || {}).sort((a, b) => b[1] - a[1]).map(([p, n]) => `${slE(p)} : ${n}`).join(' · ');
+    c.innerHTML = `<div class="sl-kpi"><div><b>${d.vip || 0}</b><span>VIP</span></div><div><b>${d.non_vip || 0}</b><span>Non VIP</span></div><div><b>${d.sans_compte || 0}</b><span>Sans compte</span></div></div>
+      <div class="pg-sous" style="margin:0 0 12px">Actifs dans les 2 dernières minutes · mise à jour toutes les 20 s${pages ? '<br>Pages : ' + pages : ''}</div>
+      <div class="pg-lab">VIP en ligne</div>${pers(d.liste_vip)}
+      <div class="pg-lab" style="margin-top:16px">Non VIP en ligne</div>${pers(d.liste_non_vip)}`;
+    return;
+  }
+  $('sl-titre').textContent = 'Mes liens & réseaux';
+  if(!silencieux) c.innerHTML = '<div class="vide">Chargement…</div>';
+  let L = [];
+  try{ L = await rpc('admin_sources', { p_jours: SL_JOURS }) || []; }
+  catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(suivi_liens.sql exécuté ?)</div>`; return; }
+  const tot = L.reduce((a, x) => ({ clics: a.clics + x.clics, inscrits: a.inscrits + x.inscrits, vip: a.vip + x.vip, ca: a.ca + Number(x.ca) }), { clics: 0, inscrits: 0, vip: 0, ca: 0 });
+  const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
+  c.innerHTML = `<div class="sl-chips">${[[7,'7 jours'],[30,'30 jours'],[90,'90 jours'],[0,'Tout']].map(([j, l]) =>
+      `<button class="${SL_JOURS === j ? 'a' : ''}" onclick="SL_JOURS=${j};slRendre()">${l}</button>`).join('')}</div>
+    <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${slF(tot.ca)} F</span></div></div>
+    ${L.length ? `<table class="sl-t"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th><th>Encaissé</th></tr>
+      ${L.map(x => `<tr><td>${slE(SL_NOMS[x.source] || x.source)}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
+        <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${slF(x.ca)} F</td></tr>`).join('')}</table>
+      <div class="pg-sous" style="margin-top:8px">Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
+      : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
+    <div class="pg-lab" style="margin-top:20px">Tes liens à mettre dans tes bios</div>
+    ${SL_RESEAUX.map(([k, l]) => { const u = `${SL_SITE}/?s=${k}`;
+      return `<div class="sl-lien"><b style="font-size:12.5px;white-space:nowrap">${l}</b><span>${u.replace('https://', '')}</span><button class="gris" onclick="slCopier('${u}', this)">Copier</button></div>`; }).join('')}
+    <div class="pg-sous" style="margin-top:8px">Pour un autre réseau ou une campagne : ajoute <b>?s=nom</b> à la fin du lien (ex. aura90.app/?s=tiktok2). Les visites venant de Google et des autres sites sont reconnues toutes seules.</div>`;
+}
+
 /* ======== ADMIN v2 : navigation par onglets (19/10/2026) ======== */
 let ONGLET = 'accueil';
 function onglet_(k){
@@ -3065,6 +3153,7 @@ function adminPret(){
   onglet_(['accueil','messages','affilies','contenu','plus'].includes(o) ? o : 'accueil');
   dtCharger().then(majAccueil).catch(() => {});
   majAccueil();
+  liveMaj();
   setInterval(() => { if(!document.hidden && ONGLET === 'accueil') afCharger(); }, 120000);
 }
 
