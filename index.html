@@ -1608,6 +1608,15 @@ function majNotePaiement(){
 
 /* ================= ÉTAT ================= */
 let PRONOS = [];          // pronos à venir
+// TEST DU 28/10/2026 uniquement : ce soir-là, l'accueil montre directement les pronos de demain.
+// Dès le 29/10, plus aucun effet (l'accueil fonctionne comme avant). Ligne à supprimer quand tu veux.
+const BASCULE_DEMAIN_LE = '2026-10-28';
+function pronosAccueil(){
+  const d = new Date(), auj = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  if(auj !== BASCULE_DEMAIN_LE) return PRONOS;
+  const L = PRONOS.filter(p => String(p.date_match).slice(0, 10) > auj);
+  return L.length ? L : PRONOS;
+}
 let SESSION = JSON.parse(localStorage.getItem('aura90_session') || 'null') || { access:null, refresh:null, email:null, fin:null };
 function sauverSession(){ localStorage.setItem('aura90_session', JSON.stringify(SESSION)); }
 const estConnecte = () => !!SESSION.access;
@@ -1772,14 +1781,15 @@ function majCtaPro(){
   const el = $('cta-pro'); if(!el) return;
   const page = ((document.querySelector('.page.active') || {}).id || '');
   const of = typeof offreActive === 'function' && offreActive() && !estAbonne();
-  const ok = of ? page !== 'page-compte' : page === 'page-accueil' && !estDeverrouille() && PRONOS.length > 1;
+  const AV = pronosAccueil();
+  const ok = of ? page !== 'page-compte' : page === 'page-accueil' && !estDeverrouille() && AV.length > 1;
   if(of){
     $('cta-t').innerHTML = `🎁 −${OFFRE.pct} % ${T('sur AURA90 PRO')} · <span class="of-chrono">${chronoTxt()}</span>`;
     $('cta-s').textContent = T('Code') + ' ' + OFFRE.code + ' · ' + T('appliqué automatiquement');
   } else if(ok){
-    const d0 = dLoc(PRONOS[0].date_match, PRONOS[0].heure);
-    const jour = PRONOS.filter(p => dLoc(p.date_match, p.heure) === d0 && (!MDJ || p.id !== MDJ.id));
-    const n = jour.length || (PRONOS.length - 1), sg = jour.filter(p => p.signe).length;
+    const d0 = dLoc(AV[0].date_match, AV[0].heure);
+    const jour = AV.filter(p => dLoc(p.date_match, p.heure) === d0 && (!MDJ || p.id !== MDJ.id));
+    const n = jour.length || (AV.length - 1), sg = jour.filter(p => p.signe).length;
     const demain = labelDate(d0) === 'DEMAIN';
     $('cta-t').textContent = T(`🔓 Débloquer les ${n} analyses ${demain ? 'de demain' : 'du jour'}`);
     $('cta-s').textContent = sg ? T(`dont ${sg} signées ⚡ · voir les offres`) : T('Voir les offres');
@@ -1788,14 +1798,15 @@ function majCtaPro(){
   document.body.classList.toggle('cta-on', ok);
 }
 function afficherAccueil(){
-  if(!PRONOS.length){
+  const AV = pronosAccueil();
+  if(!AV.length){
     $('zone-mdj').innerHTML='';
     $('zone-matchs').innerHTML = `<div class="vide">Aucun match analysé pour les prochains jours.<br>Le moteur publie chaque nuit à ${hPub()} — reviens bientôt.</div>`;
     return;
   }
   // match du jour = le plus confiant de la date la plus proche
-  const d0 = PRONOS[0].date_match;
-  MDJ = PRONOS.filter(p=>p.date_match===d0).sort((a,b)=>b.confiance-a.confiance)[0];
+  const d0 = AV[0].date_match;
+  MDJ = AV.filter(p=>p.date_match===d0).sort((a,b)=>b.confiance-a.confiance)[0];
 
   // 28/10/2026 : carte compacte — en-tête, duel sur une ligne, verdict, lien
   $('zone-mdj').innerHTML = `
@@ -1815,7 +1826,7 @@ function afficherAccueil(){
   // liste groupée date → ligue
   let html = '';
   const parDate = {};
-  PRONOS.forEach(p=>{ if(p.id===MDJ.id) return; const dl = dLoc(p.date_match, p.heure); (parDate[dl]=parDate[dl]||[]).push(p); });
+  AV.forEach(p=>{ if(p.id===MDJ.id) return; const dl = dLoc(p.date_match, p.heure); (parDate[dl]=parDate[dl]||[]).push(p); });
   Object.keys(parDate).sort().forEach(d=>{
     html += `<div class="jour-titre"><span>${labelDate(d)}</span></div>`;
     const parLigue = {};
@@ -4407,7 +4418,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-28-8';
+const APP_VERSION = '2026-10-28-9';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
