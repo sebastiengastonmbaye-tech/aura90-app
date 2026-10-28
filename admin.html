@@ -28,6 +28,7 @@
 .sl-lien span{flex:1;min-width:0;font:12px 'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sl-lien button{padding:7px 11px;font-size:12px}
 .sl-pers{padding:9px 0;border-top:1px solid var(--ligne);display:flex;justify-content:space-between;gap:8px;font-size:13px}.sl-pers span{color:var(--sourdine);font-size:11.5px}
+.dev-select{padding:7px 8px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:700 12px inherit;max-width:110px}
 </style>
 <meta name="robots" content="noindex">
 <title>AURA90' — Administration</title>
@@ -654,7 +655,7 @@ body:not(.co) .adm-nav{display:none}
 <div id="panel">
   <!-- ===== ACCUEIL ===== -->
   <section class="pg actif" id="pg-accueil">
-    <div class="pg-haut"><h1>AURA<span class="neuf0">90</span> · Admin</h1><button class="pg-btn" onclick="location.href='./'">App ›</button></div>
+    <div class="pg-haut"><h1>AURA<span class="neuf0">90</span> · Admin</h1><select class="dev-select" aria-label="Devise" onchange="devChoisir(this.value)"></select><button class="pg-btn" onclick="location.href='./'">App ›</button></div>
     <div class="pg-sous" id="acc-date"></div>
     <div class="live" id="live-carte" onclick="slOuvrir('live')"><div class="pt"></div><div class="n" id="live-n">…</div>
       <div class="t"><b>En ligne maintenant</b><span id="live-det">chargement…</span></div><b style="color:var(--sourdine)">›</b></div>
@@ -876,6 +877,53 @@ const SUPABASE_KEY = "sb_publishable_awuEoyd5PGtUz_bKUfeEWA_M1OPhBoW";
 let JETON = null;
 const $ = id => document.getElementById(id);
 
+/* ======== DEVISE D'AFFICHAGE DU TABLEAU DE BORD (28/10/2026) ========
+   Tous les montants sont stockés en F CFA. On choisit ici la devise affichée
+   (F CFA, euro, dollar…). Euro : taux fixe 655,957. Autres : cours du jour
+   (open.er-api.com, gardé 12 h), avec un taux de secours sans réseau. */
+const DEVISES = [
+  ['XOF', 'F CFA', 1], ['EUR', '€', 1 / 655.957], ['USD', '$', 1 / 570], ['GBP', '£', 1 / 765],
+  ['CAD', '$ CA', 1 / 415], ['CHF', 'CHF', 1 / 700], ['MAD', 'DH', 1 / 61], ['NGN', '₦', 2.7], ['GHS', 'GH₵', 1 / 38]
+];
+let DEV = (() => { try{ return localStorage.getItem('aura90_admin_devise') || 'XOF'; }catch(e){ return 'XOF'; } })();
+let DEV_TAUX = Object.fromEntries(DEVISES.map(([c, , t]) => [c, t]));
+(async function(){
+  try{
+    let c = JSON.parse(localStorage.getItem('aura90_admin_taux') || 'null');
+    if(!c || Date.now() - c.t > 12 * 3600e3){
+      const r = await fetch('https://open.er-api.com/v6/latest/XOF'); const j = await r.json();
+      if(j && j.rates){ c = { t: Date.now(), rates: j.rates }; localStorage.setItem('aura90_admin_taux', JSON.stringify(c)); }
+    }
+    if(c && c.rates) for(const [k] of DEVISES) if(k !== 'XOF' && k !== 'EUR' && c.rates[k]) DEV_TAUX[k] = c.rates[k];
+    if(DEV !== 'XOF' && DEV !== 'EUR') devRafraichir();
+  }catch(e){}
+})();
+const devSym = () => (DEVISES.find(d => d[0] === DEV) || DEVISES[0])[1];
+const devConv = n => (Number(n) || 0) * (DEV_TAUX[DEV] || 1);
+// nombre seul dans la devise choisie
+function mNum(n){
+  const v = devConv(n);
+  if(DEV === 'XOF' || DEV === 'NGN') return Math.round(v).toLocaleString('fr-FR');
+  const dec = Math.abs(v) < 1000 && Math.round(v * 100) % 100 ? 2 : 0;
+  return v.toLocaleString('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+// montant complet : « 12 000 F », « 18,29 € », « 21 $ »…
+function mD(n){ return mNum(n) + ' ' + (DEV === 'XOF' ? 'F' : devSym()); }
+function devChoisir(c){
+  DEV = c; try{ localStorage.setItem('aura90_admin_devise', c); }catch(e){}
+  devRafraichir();
+}
+function devRafraichir(){
+  document.querySelectorAll('.dev-select').forEach(x => x.value = DEV);
+  try{ if(LAST_STATS) afficherStats(LAST_STATS); }catch(e){}
+  try{ majAccueil(); }catch(e){}
+  try{ if(typeof AF !== 'undefined' && AF) afRendre(); }catch(e){}
+  try{ if(typeof DT_VUE !== 'undefined' && DT_VUE && getComputedStyle($('dt-ecran')).display !== 'none') dtRendre(DT_VUE); }catch(e){}
+  try{ if($('sl-voile') && $('sl-voile').classList.contains('ouvert')) slRendre(); }catch(e){}
+  try{ if(typeof mtAfficher === 'function' && $('mt-ecran') && getComputedStyle($('mt-ecran')).display !== 'none') mtAfficher(); }catch(e){}
+}
+const devOptions = () => DEVISES.map(([c, sym]) => `<option value="${c}" ${c === DEV ? 'selected' : ''}>${c === 'XOF' ? 'F CFA' : c + ' ' + sym}</option>`).join('');
+
 // Si l'utilisateur est déjà connecté dans l'application (même domaine),
 // on reprend sa session : plus besoin de retaper email et mot de passe.
 async function sessionExistante(){
@@ -920,7 +968,9 @@ async function admin(corps){
   return r.json();
 }
 
+let LAST_STATS = null;
 function afficherStats(s){
+  LAST_STATS = s;
   if(!s || s.erreur || s.message){
     $('tuiles').innerHTML = '<div class="vide">Erreur stats : ' + (s && (s.erreur||s.message) || 'réponse vide') + '</div>';
     return;
@@ -929,12 +979,12 @@ function afficherStats(s){
   const T = [
     [s.utilisateurs,'Utilisateurs'], [s.abonnes_actifs,'VIP actifs'],
     [s.vip_mois,'VIP mois'], [s.vip_3mois,'VIP 3 mois'],
-    [F(s.revenu_total)+' F','Revenu total'], [F(s.revenu_30j)+' F','Revenu 30 j'],
+    [mD(s.revenu_total),'Revenu total'], [mD(s.revenu_30j),'Revenu 30 j'],
     [s.paiements_30j,'Paiements 30 j'],
     [s.actifs_jour,'Actifs jour'], [s.actifs_semaine,'Actifs semaine'],
     [s.actifs_mois,'Actifs mois'], [s.actifs_annee,'Actifs année'],
-    [s.affilies,'Affiliés'], [F(s.commissions_total)+' F','Commissions dues'],
-    [s.retraits_attente + ' · ' + F(s.retraits_attente_montant)+' F','Retraits en attente'],
+    [s.affilies,'Affiliés'], [mD(s.commissions_total),'Commissions dues'],
+    [s.retraits_attente + ' · ' + mD(s.retraits_attente_montant),'Retraits en attente'],
     [s.push_abonnes,'Abonnés push'],
   ];
   $('tuiles').innerHTML = T.map(x=>{ const k = DT_TUILES[x[1]];
@@ -1367,7 +1417,7 @@ function dateDe(o, noms){
   for(const k of cles){ d = new Date(o[k]); if(!isNaN(d)) return d; }
   return null;
 }
-const fF = n => Math.round(n || 0).toLocaleString('fr-FR') + ' F';
+const fF = n => mD(n);
 const fD = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'2-digit'}) : '—';
 const fDH = d => d ? d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
 const jours = d => d ? Math.floor((Date.now() - d) / JOUR) : null;
@@ -1540,8 +1590,8 @@ function dtRevenus(){
   const fideles = Object.values(parUser).filter(n => n > 1).length;
   const tous = (DT.paiements || []).length;
   return kpi([[fF(s(p)),'Revenu total', p.length + ' paiements'], [fF(s(p30)),'Revenu 30 j', p30.length + ' paiements'], [fF(s(p7)),'Revenu 7 j', p7.length + ' paiements'], [fF(panier),'Panier moyen', fideles + ' client(s) ont repayé']])
-    + bloc('Revenus par jour · 30 jours', barres(parJour(p, 30, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
-    + bloc('Revenus par mois', barres(parMois(p, 6, x => x._m), v => Math.round(v).toLocaleString('fr-FR')))
+    + bloc('Revenus par jour · 30 jours', barres(parJour(p, 30, x => devConv(x._m)), v => Math.round(v).toLocaleString('fr-FR')))
+    + bloc('Revenus par mois', barres(parMois(p, 6, x => devConv(x._m)), v => Math.round(v).toLocaleString('fr-FR')))
     + bloc('Répartition des formules', `<div class="dt-repart"><div><b>${pm.length}</b><span>1 mois · ${fF(s(pm))}</span></div><div><b>${p3.length}</b><span>3 mois · ${fF(s(p3))}</span></div></div>`)
     + bloc('Moyens de paiement', `<div class="dt-repart">${[...new Set(p.map(x => moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech'))].sort().map(m => { const l = p.filter(x => (moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech') === m); return `<div><b>${l.length}</b><span>${m} · ${fF(s(l))}</span></div>`; }).join('') || '<div><span>Aucun paiement</span></div>'}</div>`)
     + saspayEnAttente()
@@ -1589,7 +1639,7 @@ function dtAffilies(){
     const code = String(champ(a, ['code','code_parrain']) || '').toUpperCase();
     const ventes = p.filter(x => String(champ(x, ['code','code_parrain','ref','code_promo']) || '').toUpperCase() === code && code);
     const com = Number(champ(a, ['commissions','commission_totale','solde','gains','total_commissions'])) || 0;
-    const modele = a.pct ? a.pct + ' %' : (a.commission_mois ? `${a.commission_mois} / ${a.commission_3mois} F` : 'standard');
+    const modele = a.pct ? a.pct + ' %' : (a.commission_mois ? `${mD(a.commission_mois)} / ${mD(a.commission_3mois)}` : 'standard');
     return { email: emailDe(a), code, ventes: ventes.length, ca: ventes.reduce((s,x)=>s+x._m,0), com, modele, d: dateDe(a) };
   }).sort((a,b) => b.ventes - a.ventes || b.ca - a.ca);
   const actifs = lignes.filter(l => l.ventes > 0);
@@ -1681,7 +1731,7 @@ function cartePreuve(c, ss, mt){
       </div>
       <div class="pv-cote"><b>${coteAff.toFixed(2)}</b><span class="pv-tampon">✓ VALIDÉ</span></div>
     </div>
-    ${mt ? `<div class="pv-mt">Série ${mt.serie} · palier ${mt.palier} · ${F(mt.mise)} F → ${F(mt.gain_vise)} F</div>` : ''}
+    ${mt ? `<div class="pv-mt">Série ${mt.serie} · palier ${mt.palier} · ${mD(mt.mise)} → ${mD(mt.gain_vise)}</div>` : ''}
     ${lignes}
     <div class="pv-pied"><span>${c.categorie==='score' ? 'Score exact trouvé' : (ss.length + ' match' + (ss.length>1?'s':'') + ' · tous gagnés')}</span><span>aura90.app</span></div>
   </div>`;
@@ -1781,7 +1831,7 @@ async function pvMontante(typ){
    Chaque série palier par palier (validés ET perdus), avec mise, cote, gain
    et le détail des matchs : on voit tout de suite quel match a fait perdre. */
 let MT_TYPE = 'montante', MT_DATA = null;
-const mtF = n => Math.round(n || 0).toLocaleString('fr-FR') + ' F';
+const mtF = n => mD(n);
 function mtOuvrir(){
   $('mt-ecran').classList.add('ouvert');
   history.pushState({ mt: 1 }, '');
@@ -1942,7 +1992,7 @@ function hjAfficher(){
     const perdants = ss.filter(x => x.resultat === 'perdu').length;
     const sous = (c.categorie === 'score' ? 'Score exact' : (c.nb_matchs || ss.length) + ' match' + ((c.nb_matchs || ss.length) > 1 ? 's' : ''))
       + (e === 'ko' && c.categorie !== 'score' && perdants ? ` · ${perdants} perdu${perdants > 1 ? 's' : ''}` : '')
-      + (mt ? ` · ${F(mt.mise)} F → ${F(mt.gain_vise)} F` : '');
+      + (mt ? ` · ${mD(mt.mise)} → ${mD(mt.gain_vise)}` : '');
     const matchs = ss.map(m => {
       const r = m.resultat === 'gagne' ? 'ok' : m.resultat === 'perdu' ? 'ko' : '';
       return `<div class="mt-sel ${r}"><div class="q"><b>${echap(m.dom)}</b>${m.score ? `<span class="sc">${echap(m.score)}</span>` : ' – '}<b>${echap(m.ext)}</b>
@@ -2145,7 +2195,7 @@ const EP_RES = { tt:'TikTok', ig:'Instagram', fb:'Facebook', yt:'YouTube', sc:'S
 const EP_RES_IC = { tt:'TT', ig:'IG', fb:'FB', yt:'YT', sc:'SC', x:'X', tg:'TG', wa:'WA', autre:'•' };
 const epEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const epF = n => Math.round(Number(n)||0).toLocaleString('fr-FR');
-const epM = x => typeof mF === 'function' ? mF(x) : epF(x) + ' F';          // montant (F CFA) dans la devise de l'utilisateur
+const epM = x => mD(x);          // montant (F CFA) dans la devise de l'utilisateur
 const epLoc = () => typeof LOC !== 'undefined' ? LOC : 'fr-FR';
 const mo = x => `<span class="mo">${epM(x)}</span>`;
 const epJ = d => new Date(d).toLocaleDateString(epLoc(), { day:'numeric', month:'short' });
@@ -2280,7 +2330,7 @@ function epHero(bouton){
   const mois = new Date().toLocaleDateString(epLoc(), { month:'long' });
   return `<div class="ep-hero">
     <small>Disponible au retrait</small>
-    <div class="ep-gros">${typeof mGros === 'function' ? mGros(EP.dispo) : epF(EP.dispo) + ' <span>F CFA</span>'}</div>
+    <div class="ep-gros">${mD(EP.dispo)}</div>
     <div class="ep-sous">
       ${EP.en_cours > 0
         ? `<div><b class="ep-o">${epM(EP.en_cours)}</b><span>Retrait en cours<br>de versement</span></div>`
@@ -2678,7 +2728,7 @@ function afResume(){
   const d = AF.demandes.filter(x => x.statut === 'en_attente').length, r = AF.retraits.filter(x => x.statut === 'demande');
   const somme = r.reduce((a, x) => a + x.montant, 0);
   $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
-  $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + afF(somme) + ' F)' : '']
+  $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + mD(somme) + ')' : '']
     .filter(Boolean).join(' · ') || AF.partenaires.filter(p => p.statut === 'actif').length + ' affiliés actifs · rien à traiter';
 }
 
@@ -2800,8 +2850,8 @@ function afAffilies(){
   const ligne = p => `<div class="af-part" onclick="afDetail('${p.user_id}')">
       <div class="code">${afE(p.code)}</div>
       <div class="t"><b>${afE(p.email)}</b><div>${p.pct} %${p.pct_perso ? ' fixe' : ''} · ${p.clics_30} clics 30 j · ${p.abonnes_actifs} VIP actifs${p.pro_jusqua && new Date(p.pro_jusqua) > new Date() && p.pro_formule === 'offert' ? ' · PRO offert' : ''}</div></div>
-      <div class="r"><b>${afF(p.com_mois)} F</b><span>ce mois${p.dispo ? ' · ' + afF(p.dispo) + ' dispo' : ''}</span></div></div>`;
-  return `<div class="af-tot"><div><b>${act.length}</b><span>Actifs</span></div><div><b>${tot.abo}</b><span>VIP via eux</span></div><div><b>${afF(tot.com)}</b><span>Commissions mois</span></div></div>
+      <div class="r"><b>${mD(p.com_mois)}</b><span>ce mois${p.dispo ? ' · ' + mD(p.dispo) + ' dispo' : ''}</span></div></div>`;
+  return `<div class="af-tot"><div><b>${act.length}</b><span>Actifs</span></div><div><b>${tot.abo}</b><span>VIP via eux</span></div><div><b>${mD(tot.com)}</b><span>Commissions mois</span></div></div>
     <div class="af-sous">${filt.map(([k, l]) => `<button class="${AF_FIL === k ? 'actif' : ''}" onclick="AF_FIL='${k}';afRendre()">${l} · ${k === 'tous' ? P.length : P.filter(p => p.statut === k).length}</button>`).join('')}</div>
     <div class="af-pad"><input placeholder="Rechercher un email ou un code…" value="${afE(AF_Q)}" oninput="AF_Q=this.value;afFiltrerListe()"></div>
     <div id="af-liste">${L.length ? L.map(ligne).join('') : `<div class="vide" style="margin:0 12px">Personne ici.</div>`}</div>
@@ -2855,10 +2905,10 @@ function afGerer(p){
         <span class="af-pill ${p.statut === 'actif' ? 'ok' : p.statut === 'suspendu' ? 'att' : 'non'}">${{ actif:'Actif', suspendu:'Suspendu', desactive:'Désactivé' }[p.statut]}</span></div>
       <div class="af-kv">
         <span>Taux actuel</span><b>${p.pct} %${p.pct_perso ? ' (fixe)' : ' (paliers)'}</b>
-        <span>Ce mois</span><b>${p.abonnements_mois} VIP payés · ${afF(p.com_mois)} F</b>
-        <span>Total</span><b>${afF(p.ca_total)} F encaissés · ${afF(p.com_total)} F de commissions</b>
+        <span>Ce mois</span><b>${p.abonnements_mois} VIP payés · ${mD(p.com_mois)}</b>
+        <span>Total</span><b>${mD(p.ca_total)} encaissés · ${mD(p.com_total)} de commissions</b>
         <span>Filleuls</span><b>${p.inscrits} inscrits · ${p.abonnes_actifs} VIP actifs</b>
-        <span>Disponible</span><b>${afF(p.dispo)} F${p.en_cours ? ' · ' + afF(p.en_cours) + ' F en cours de versement' : ''}</b>
+        <span>Disponible</span><b>${mD(p.dispo)}${p.en_cours ? ' · ' + mD(p.en_cours) + ' en cours de versement' : ''}</b>
       </div>
     </div>
     <div class="af-titre">Réglages de l'affilié</div>
@@ -2911,7 +2961,7 @@ function afCarteRetrait(r){
     ? `<span>À envoyer</span><b>≈ ${Number(r.montant_local).toLocaleString('fr-FR', { maximumFractionDigits: 6 })} ${afE(r.devise)}${crypto ? ' (cours au moment de la demande)' : ''}</b>` : '';
   const cible = crypto ? r.adresse : r.numero;
   return `<div class="af-carte ${r.statut === 'demande' ? 'neuf' : ''}">
-    <div class="af-l1"><div><div class="af-gros">${afF(r.montant)} F</div><div class="af-meta">${afE(r.email)}${r.code ? ' · ' + afE(r.code) : ''} · demandé le ${afD(r.demande_le)}</div></div>
+    <div class="af-l1"><div><div class="af-gros">${mD(r.montant)}</div><div class="af-meta">${afE(r.email)}${r.code ? ' · ' + afE(r.code) : ''} · demandé le ${afD(r.demande_le)}</div></div>
       <span class="af-pill ${r.statut === 'demande' ? 'att' : r.statut === 'paye' ? 'ok' : 'ko'}">${r.statut === 'demande' ? 'À envoyer' : r.statut === 'paye' ? 'Envoyé ' + new Date(r.paye_le).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' }) : 'Refusé'}</span></div>
     <div class="af-kv">
       <span>Pays</span><b>${pays ? pays.dr + ' ' + afE(pays.nom) : afE(r.pays || '—')}</b>
@@ -2930,7 +2980,7 @@ function afRetraits(){
   const f = [['demande','À envoyer'],['paye','Envoyés'],['refuse','Refusés']];
   const L = R.filter(r => r.statut === AF_RT);
   const somme = R.filter(r => r.statut === 'demande').reduce((a, r) => a + r.montant, 0);
-  return `${somme ? `<div class="af-tot" style="grid-template-columns:1fr 1fr"><div><b>${afF(somme)} F</b><span>À envoyer</span></div><div><b>${R.filter(r => r.statut === 'demande').length}</b><span>Demandes</span></div></div>` : ''}
+  return `${somme ? `<div class="af-tot" style="grid-template-columns:1fr 1fr"><div><b>${mD(somme)}</b><span>À envoyer</span></div><div><b>${R.filter(r => r.statut === 'demande').length}</b><span>Demandes</span></div></div>` : ''}
     <div class="af-sous">${f.map(([k, l]) => `<button class="${AF_RT === k ? 'actif' : ''}" onclick="AF_RT='${k}';afRendre()">${l} · ${R.filter(r => r.statut === k).length}</button>`).join('')}</div>
     ${L.length ? L.map(afCarteRetrait).join('') : `<div class="vide" style="margin:0 12px">${AF_RT === 'demande' ? 'Aucun retrait à envoyer.' : 'Rien ici (90 derniers jours).'}</div>`}`;
 }
@@ -3070,7 +3120,7 @@ function afClassement(){
     ${CL.per === 'dates' ? `<div class="cl-dates"><input type="date" value="${CL.deb || ''}" onchange="CL.deb=this.value;CL.data=null;afRendre()"><span>→</span><input type="date" value="${CL.fin || ''}" onchange="CL.fin=this.value;CL.data=null;afRendre()"></div>` : ''}
     <div class="cl-chips"><button class="${CL.pays === 'tous' ? 'actif' : ''}" onclick="clChoix('pays','tous')">🌍 Tous</button>${paysDispo.map(c => { const p = afPays(c); return `<button class="${CL.pays === c ? 'actif' : ''}" onclick="clChoix('pays','${c}')">${p ? p.dr + ' ' + afE(p.nom) : afE(c)}</button>`; }).join('')}</div>
     <div class="cl-seg">${CL_CRIT.map(([k, l]) => `<button class="${CL.crit === k ? 'actif' : ''}" onclick="clChoix('crit','${k}')">${l}</button>`).join('')}</div>
-    <div class="cl-tot"><div><b>${afF(tot.c)} F</b><span>Commissions</span></div><div><b>${tot.ab}</b><span>VIP payés</span></div><div><b>${afF(tot.ca)} F</b><span>Encaissé via eux</span></div></div>
+    <div class="cl-tot"><div><b>${mD(tot.c)}</b><span>Commissions</span></div><div><b>${tot.ab}</b><span>VIP payés</span></div><div><b>${mD(tot.ca)}</b><span>Encaissé via eux</span></div></div>
     ${L.length ? podium + reste.map((x, i) => ligne(x, i + (actifs.length >= 3 ? 3 : 0))).join('') : `<div class="vide" style="margin:0 12px">Aucun affilié ${CL.pays !== 'tous' ? 'dans ce pays' : ''}.</div>`}`;
 }
 
@@ -3138,10 +3188,10 @@ async function slRendre(silencieux){
       `<button class="${SL_PER === j ? 'a' : ''}" onclick="SL_PER='${j}';slRendre()">${l}</button>`).join('')}</div>
     ${SL_PER === 'dates' ? `<div class="sl-dates"><label>Début<input type="date" value="${SL_DEB}" onchange="SL_DEB=this.value;slRendre()"></label>
       <span>→</span><label>Fin<input type="date" value="${SL_FIN}" onchange="SL_FIN=this.value;slRendre()"></label></div>` : ''}
-    <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${slF(tot.ca)} F</span></div></div>
+    <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${mD(tot.ca)}</span></div></div>
     ${L.length ? `<table class="sl-t"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th><th>Encaissé</th></tr>
       ${L.map(x => `<tr><td>${slE(SL_NOMS[x.source] || x.source)}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
-        <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${slF(x.ca)} F</td></tr>`).join('')}</table>
+        <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
       <div class="pg-sous" style="margin-top:8px">Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
     <div class="pg-lab" style="margin-top:20px">Tes liens à mettre dans tes bios</div>
@@ -3168,6 +3218,7 @@ function onglet(k){
 }
 function adminPret(){
   document.body.classList.add('co');
+  document.querySelectorAll('.dev-select').forEach(x => x.innerHTML = devOptions());
   let o = 'accueil'; try{ o = localStorage.getItem('aura90_admin_onglet') || 'accueil'; }catch(e){}
   onglet_(['accueil','messages','affilies','contenu','plus'].includes(o) ? o : 'accueil');
   dtCharger().then(majAccueil).catch(() => {});
@@ -3193,7 +3244,7 @@ function majAccueil(){
       items.push(`<div class="todo or" onclick="afOuvrir('demandes')"><div class="ic">${IC.aff}</div><div class="t"><b>${d.length} demande${d.length > 1 ? 's' : ''} partenaire</b><span>${echap(top.email)}${top.abonnes ? ' · ' + top.abonnes.toLocaleString('fr-FR') + ' abonnés' : ''}</span></div><div class="n">${d.length}</div></div>`); }
     const r = AF.retraits.filter(x => x.statut === 'demande');
     if(r.length){ const s = r.reduce((a, x) => a + x.montant, 0), moy = [...new Set(r.map(x => x.crypto ? x.crypto + ' ' + x.reseau : (x.moyen || 'Wave')))].join(', ');
-      items.push(`<div class="todo vert" onclick="afOuvrir('retraits')"><div class="ic">${IC.ret}</div><div class="t"><b>${r.length} retrait${r.length > 1 ? 's' : ''} à envoyer</b><span>${s.toLocaleString('fr-FR')} F · ${echap(moy)}</span></div><div class="n">${r.length}</div></div>`); }
+      items.push(`<div class="todo vert" onclick="afOuvrir('retraits')"><div class="ic">${IC.ret}</div><div class="t"><b>${r.length} retrait${r.length > 1 ? 's' : ''} à envoyer</b><span>${mD(s)} · ${echap(moy)}</span></div><div class="n">${r.length}</div></div>`); }
   }
   const mt = MB_CONVS.filter(c => c.a_traiter), nl = MB_CONVS.filter(c => c.non_lu_admin > 0);
   if(mt.length) items.push(`<div class="todo rose" onclick="MB_FILTRE='traiter';onglet('messages');afficherMessagerie()"><div class="ic">${IC.msg}</div><div class="t"><b>${mt.length} discussion${mt.length > 1 ? 's' : ''} à traiter</b><span>${echap(mt[0].dernier_texte || mt[0].email || '')}</span></div><div class="n">${mt.length}</div></div>`);
@@ -3216,9 +3267,9 @@ function majAccueil(){
     const mx = Math.max(1, ...jours.map(x => x.v));
     const nomMois = j.toLocaleDateString('fr-FR', { month:'long' });
     $('acc-hero').innerHTML = `<div class="acc-hero" onclick="dtOuvrir('revenus')"><small>Revenus de ${nomMois}</small>
-      <div class="g">${som(mois).toLocaleString('fr-FR')} <span>F</span></div>
+      <div class="g">${mNum(som(mois))} <span>${DEV === 'XOF' ? 'F' : devSym()}</span></div>
       <div class="ev" style="color:${ev === null || ev >= 0 ? 'var(--aura1)' : 'var(--ko)'}">${ev === null ? '' : (ev >= 0 ? '▲ +' : '▼ ') + ev + ' % vs même période le mois dernier · '}${mois.length} paiement${mois.length > 1 ? 's' : ''}</div>
-      <div class="acc-spark">${jours.map(x => `<i style="height:${x.v ? Math.max(6, x.v / mx * 100) : 2}%;${x.v ? '' : 'opacity:.25'}" title="${x.d.toLocaleDateString('fr-FR')} : ${x.v.toLocaleString('fr-FR')} F"></i>`).join('')}</div>
+      <div class="acc-spark">${jours.map(x => `<i style="height:${x.v ? Math.max(6, x.v / mx * 100) : 2}%;${x.v ? '' : 'opacity:.25'}" title="${x.d.toLocaleDateString('fr-FR')} : ${mD(x.v)}"></i>`).join('')}</div>
       <div class="acc-axe"><span>${jours[0].d.toLocaleDateString('fr-FR', { day:'numeric', month:'short' })}</span><span>aujourd'hui</span></div></div>`;
   }
 }
