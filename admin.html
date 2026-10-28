@@ -3149,7 +3149,7 @@ function afClassement(){
 const SL_SITE = 'https://aura90.app';
 const SL_RESEAUX = [['tiktok','🎵 TikTok'],['youtube','▶️ YouTube'],['insta','📸 Instagram'],['whatsapp','💬 WhatsApp'],
   ['facebook','📘 Facebook'],['snapchat','👻 Snapchat'],['telegram','✈️ Telegram'],['x','𝕏 X / Twitter']];
-const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites' });
+const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites', email1:'✉️ Mail −10 %', email2:'✉️ Mail −15 %', email3:'✉️ Mail −20 %' });
 let SL_VUE = 'live', SL_PER = 'auj', SL_DEB = '', SL_FIN = '', SL_LIVE = null;
 // période choisie → [début, fin] (heure du téléphone : « aujourd'hui » = minuit → 23h59)
 function slPeriode(){
@@ -3259,7 +3259,10 @@ async function slRendre(silencieux){
   if(!silencieux) c.innerHTML = '<div class="vide">Chargement…</div>';
   let L = [];
   const [deb, fin] = slPeriode();
-  try{ L = await rpc('admin_sources', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }) || []; }
+  let RL = null;
+  try{ [L, RL] = await Promise.all([
+    rpc('admin_sources', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }).then(x => x || []),
+    rpc('admin_relances').catch(() => null)]); }
   catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(suivi_liens.sql exécuté ?)</div>`; return; }
   const tot = L.reduce((a, x) => ({ clics: a.clics + x.clics, inscrits: a.inscrits + x.inscrits, vip: a.vip + x.vip, ca: a.ca + Number(x.ca) }), { clics: 0, inscrits: 0, vip: 0, ca: 0 });
   const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
@@ -3273,6 +3276,11 @@ async function slRendre(silencieux){
         <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
       <div class="pg-sous" style="margin-top:8px">Touche un réseau pour voir ses inscrits et ses VIP · Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
+    ${RL ? `<div class="pg-lab" style="margin-top:20px">Emails de relance (inscrits non VIP)</div>
+      ${(RL.etapes || []).length ? `<table class="sl-t"><tr><th>Mail</th><th>Envoyés</th><th>Cliqués</th><th>Payés</th></tr>
+        ${RL.etapes.map(x => `<tr><td>${x.etape} · −${x.pct} %</td><td>${slF(x.envoyes)}</td><td>${slF(x.cliques)}<small>${pct(x.cliques, x.envoyes)}</small></td><td>${slF(x.payes)}<small>${pct(x.payes, x.envoyes)}</small></td></tr>`).join('')}</table>`
+        : '<div class="vide">Aucun email envoyé pour l\'instant.</div>'}
+      <div class="pg-sous" style="margin-top:8px">${slF(RL.envoyes_24h || 0)} envoyés ces dernières 24 h (90 max/jour) · ${slF(RL.desinscrits || 0)} désinscrit${RL.desinscrits > 1 ? 's' : ''} · Payés = a payé avant le mail suivant · tous chiffres, sans filtre de dates</div>` : ''}
     <div class="pg-lab" style="margin-top:20px">Tes liens à mettre dans tes bios</div>
     ${SL_RESEAUX.map(([k, l]) => { const u = `${SL_SITE}/?s=${k}`;
       return `<div class="sl-lien"><b style="font-size:12.5px;white-space:nowrap">${l}</b><span>${u.replace('https://', '')}</span><button class="gris" onclick="slCopier('${u}', this)">Copier</button></div>`; }).join('')}
