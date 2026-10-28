@@ -1710,7 +1710,7 @@ async function notifierTous(){
 
 /* ================= PREUVES : coupons validés ================= */
 const CAT_NOMS = { sure:'🛡️ Sûre', confiance:'🎯 Confiance', fun:'🎲 Fun', grosses:'🔥 Grosses cotes', nuit:'🌙 Nuit',
-                   montante:'📈 Montante', turbo:'⚡ Montante Turbo', score:'⚽ Score exact', tiktok:'🎬 Combiné TikTok' };
+                   montante:'📈 Montante 1', turbo:'📈 Montante 2', score:'⚽ Score exact', tiktok:'🎬 Combiné TikTok' };
 let PV_JOUR = null, PV_CACHE = {};
 const F = n => Math.round(n).toLocaleString('fr-FR');
 
@@ -1750,7 +1750,7 @@ function cartePreuve(c, ss, mt){
       </div>
       <div class="pv-cote"><b>${coteAff.toFixed(2)}</b><span class="pv-tampon">✓ VALIDÉ</span></div>
     </div>
-    ${mt ? `<div class="pv-mt">Série ${mt.serie} · palier ${mt.palier} · ${mD(mt.mise)} → ${mD(mt.gain_vise)}</div>` : ''}
+    ${mt ? `<div class="pv-mt">Série ${mt.serie >= 1001 ? mt.serie - 1000 : mt.serie} · palier ${mt.palier} · ${mD(mt.mise)} → ${mD(mt.gain_vise)}</div>` : ''}
     ${lignes}
     <div class="pv-pied"><span>${c.categorie==='score' ? 'Score exact trouvé' : (ss.length + ' match' + (ss.length>1?'s':'') + ' · tous gagnés')}</span><span>aura90.app</span></div>
   </div>`;
@@ -1758,7 +1758,7 @@ function cartePreuve(c, ss, mt){
 
 /* ---------- écran Preuves : onglets ---------- */
 const PV_ONGLETS = [
-  ['montante','📈 Montante'], ['turbo','⚡ Turbo'], ['sure','🛡️ Sûre'], ['confiance','🎯 Confiance'],
+  ['montante','📈 Montante 1'], ['m2','📈 Montante 2'], ['turbo_old','⚡ Ancienne Turbo'], ['sure','🛡️ Sûre'], ['confiance','🎯 Confiance'],
   ['fun','🎲 Fun'], ['nuit','🌙 Nuit'], ['jour','📅 Par jour'],
 ];
 let PV_ONGLET = 'montante', PV_COMPTES = {}, PV_LIMITE = 20;
@@ -1776,6 +1776,7 @@ async function pvCompter(){
     const l = await rest('coupons?statut=eq.gagne&categorie=neq.tiktok&select=categorie');
     PV_COMPTES = {}; l.forEach(x => PV_COMPTES[x.categorie] = (PV_COMPTES[x.categorie]||0) + 1);
     PV_COMPTES.jour = l.length;
+    delete PV_COMPTES.turbo;   // Montante 2 / ancienne Turbo : compteurs par série, pas par catégorie
   }catch(e){ PV_COMPTES = {}; }
 }
 function pvOnglets(){
@@ -1788,7 +1789,7 @@ function pvOnglet(k, jour){
   $('pv-corps').scrollTop = 0;
   $('pv-jours').style.display = k === 'jour' ? '' : 'none';
   if(k === 'jour') return chargerPreuves(jour);
-  if(k === 'montante' || k === 'turbo') return pvMontante(k);
+  if(k === 'montante' || k === 'm2' || k === 'turbo_old') return pvMontante(k);
   return pvCategorie(k);
 }
 
@@ -1810,11 +1811,20 @@ async function pvCategorie(cat){
   }catch(e){ z.innerHTML = '<div class="vide">Impossible de charger (' + e.message + ').</div>'; }
 }
 
+/* 28/10/2026 : Turbo remplacée par la Montante 2 (même clé « turbo » en base, séries ≥ 1001).
+   Trois vues : Montante 1 · Montante 2 · Ancienne Turbo (séries < 1001, archive). */
+const M2_DEPART = 1001;
+const MT_VUES = { montante: '📈 Montante 1', m2: '📈 Montante 2', turbo_old: '⚡ Ancienne Turbo' };
+const mtDeLaVue = (vue, p) => vue === 'montante' ? (p.type || 'montante') === 'montante'
+  : p.type === 'turbo' && (vue === 'm2' ? p.serie >= M2_DEPART : p.serie < M2_DEPART);
+const mtTotal = (vue, sn) => vue === 'montante' ? (sn <= 6 ? 12 : 10) : vue === 'm2' ? 6 : (sn <= 5 ? 5 : 6);
+const mtNum = (vue, sn) => vue === 'm2' ? sn - M2_DEPART + 1 : sn;
 /* montantes : par série (la plus récente d'abord), paliers dans l'ordre 1, 2, 3… */
 async function pvMontante(typ){
   const z = $('pv-zone'); z.innerHTML = '<div class="vide">Chargement…</div>';
   try{
-    const pal = await rest(`montante?type=eq.${typ}&order=serie.desc,palier.asc&select=type,serie,palier,coupon_id,mise,gain_vise,statut,jour`);
+    const pal = (await rest(`montante?type=eq.${typ === 'montante' ? 'montante' : 'turbo'}&order=serie.desc,palier.asc&select=type,serie,palier,coupon_id,mise,gain_vise,statut,jour`))
+      .filter(p => mtDeLaVue(typ, p));
     if(!pal.length){ z.innerHTML = '<div class="vide">Aucune série pour l\'instant.</div>'; return; }
     const series = {}; pal.forEach(p => (series[p.serie] = series[p.serie] || []).push(p));
     const ordre = Object.keys(series).map(Number).sort((a,b) => b - a).slice(0, Math.max(2, Math.ceil(PV_LIMITE / 10)));
@@ -1824,7 +1834,7 @@ async function pvMontante(typ){
       ids.length ? rest(`coupons?id=in.(${ids.join(',')})&select=id,jour,categorie,numero,cote_totale,nb_matchs`) : [],
       pvSelections(ids)
     ]);
-    const total = s => (typ === 'montante' ? (s <= 6 ? 12 : 10) : 5);
+    const total = s => mtTotal(typ, s);
     z.innerHTML = ordre.map(sn => {
       const ps = series[sn].sort((a,b) => a.palier - b.palier), n = total(sn);
       const ok = ps.filter(p => p.statut === 'gagne').length, perdu = ps.some(p => p.statut === 'perdu');
@@ -1837,7 +1847,7 @@ async function pvMontante(typ){
       }).join('');
       return `<div class="pv-serie">
         <div class="pv-serie-tete">
-          <div><div class="t">${typ === 'turbo' ? '⚡ Turbo' : '📈 Montante'} · série ${sn}</div><div class="s">${ok} / ${n} paliers validés · ${etat}</div></div>
+          <div><div class="t">${MT_VUES[typ]} · série ${mtNum(typ, sn)}</div><div class="s">${ok} / ${n} paliers validés · ${etat}</div></div>
           <div class="pv-paliers">${cases}</div>
         </div>
         ${cartes || '<div class="vide">Aucun palier validé dans cette série.</div>'}
@@ -1876,15 +1886,15 @@ function mtType(t){ MT_TYPE = t; mtAfficher(); $('mt-corps').scrollTop = 0; }
 
 function mtAfficher(){
   const { pal, cps, sels } = MT_DATA;
-  const nb = t => new Set(pal.filter(p => (p.type || 'montante') === t).map(p => p.serie)).size;
-  $('mt-types').innerHTML = [['montante','📈 Montante'],['turbo','⚡ Turbo']]
+  const nb = t => new Set(pal.filter(p => mtDeLaVue(t, p)).map(p => p.serie)).size;
+  $('mt-types').innerHTML = Object.entries(MT_VUES)
     .map(([k,n]) => `<button class="${k===MT_TYPE?'actif':''}" onclick="mtType('${k}')">${n}<b>${nb(k)}</b></button>`).join('');
 
   const series = {};
-  pal.filter(p => (p.type || 'montante') === MT_TYPE).forEach(p => (series[p.serie] = series[p.serie] || []).push(p));
+  pal.filter(p => mtDeLaVue(MT_TYPE, p)).forEach(p => (series[p.serie] = series[p.serie] || []).push(p));
   const nums = Object.keys(series).map(Number).sort((a,b) => b - a);
   if(!nums.length){ $('mt-corps').innerHTML = '<div class="vide">Aucune série pour l\'instant.</div>'; return; }
-  const total = sn => MT_TYPE === 'montante' ? (sn <= 6 ? 12 : 10) : 5;
+  const total = sn => mtTotal(MT_TYPE, sn);
 
   const infos = nums.map(sn => {
     const ps = series[sn].sort((a,b) => a.palier - b.palier), n = total(sn);
@@ -1933,7 +1943,7 @@ function mtAfficher(){
     }).join('');
     return `<div class="mt-serie ${x.etat}${k === 0 ? ' ouverte' : ''}">
       <div class="mt-st" onclick="this.parentElement.classList.toggle('ouverte')">
-        <div class="g"><div class="t">${MT_TYPE === 'turbo' ? '⚡ Turbo' : '📈 Montante'} · série ${x.sn}</div>
+        <div class="g"><div class="t">${MT_VUES[MT_TYPE]} · série ${mtNum(MT_TYPE, x.sn)}</div>
           <div class="s">${deb ? jourFr(deb, true) : ''}${fin && fin !== deb ? ' → ' + jourFr(fin, true) : ''} · ${x.ok.length}/${x.n} validés · ${resume}</div></div>
         ${badge}
       </div>
@@ -2007,7 +2017,7 @@ function hjAfficher(){
     const ss = sels.filter(x => x.coupon_id === c.id), mt = mts.find(m => m.coupon_id === c.id), e = etat(c);
     let tete = '';
     if(c.categorie !== groupe){ groupe = c.categorie; tete = `<div class="hj-groupe">${CAT_NOMS[c.categorie] || echap(c.categorie)}</div>`; }
-    const nom = mt ? `Série ${mt.serie} · palier ${mt.palier}` : c.categorie === 'score' ? 'Score exact' : 'Coupon #' + (c.numero || 1);
+    const nom = mt ? `Série ${mt.serie >= 1001 ? mt.serie - 1000 : mt.serie} · palier ${mt.palier}` : c.categorie === 'score' ? 'Score exact' : 'Coupon #' + (c.numero || 1);
     const perdants = ss.filter(x => x.resultat === 'perdu').length;
     const sous = (c.categorie === 'score' ? 'Score exact' : (c.nb_matchs || ss.length) + ' match' + ((c.nb_matchs || ss.length) > 1 ? 's' : ''))
       + (e === 'ko' && c.categorie !== 'score' && perdants ? ` · ${perdants} perdu${perdants > 1 ? 's' : ''}` : '')
