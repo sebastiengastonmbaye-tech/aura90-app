@@ -29,6 +29,20 @@
 .sl-lien button{padding:7px 11px;font-size:12px}
 .sl-pers{padding:9px 0;border-top:1px solid var(--ligne);display:flex;justify-content:space-between;gap:8px;font-size:13px}.sl-pers span{color:var(--sourdine);font-size:11.5px}
 .dev-select{padding:7px 8px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:700 12px inherit;max-width:110px}
+.sl-pers.clic,.sl-t tr.clic{cursor:pointer}.sl-pers.clic:active,.sl-t tr.clic:active{background:var(--surface2)}
+#fu-voile{position:fixed;inset:0;z-index:80;background:rgba(3,6,10,.72);display:none;align-items:flex-end;justify-content:center}
+#fu-voile.ouvert{display:flex}
+.fu-boite{width:100%;max-width:560px;max-height:90%;display:flex;flex-direction:column;background:var(--nuit);border:1px solid var(--ligne);border-bottom:none;border-radius:20px 20px 0 0}
+.fu-boite .haut{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--ligne)}.fu-boite .haut b{flex:1;font-size:15px}
+#fu-corps{overflow-y:auto;padding:14px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.fu-tete{display:flex;align-items:center;gap:12px;margin-bottom:12px}.fu-tete b{display:block;font-size:14.5px;word-break:break-all}
+.fu-av{width:42px;height:42px;flex:0 0 42px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110F;font-weight:900;display:flex;align-items:center;justify-content:center}
+.fu-badge{display:inline-block;margin-top:4px;font:800 10.5px 'JetBrains Mono',monospace;padding:3px 8px;border-radius:99px;background:var(--surface2);color:var(--sourdine)}.fu-badge.ok{color:#06110F;background:var(--aura1)}
+.fu-l{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--ligne);font-size:13px}.fu-l span{color:var(--sourdine);flex:0 0 auto}.fu-l b{text-align:right;font-weight:700}
+.plus-chiffres{grid-column:1/-1;margin-top:2px}.plus-chiffres summary{cursor:pointer;list-style:none;text-align:center;padding:10px;border:1px dashed var(--ligne);border-radius:12px;font-size:12.5px;font-weight:700;color:var(--sourdine)}
+.plus-chiffres summary::-webkit-details-marker{display:none}.plus-chiffres[open] summary{margin-bottom:8px}
+.plus-chiffres .tuiles{margin:0}
+.lien-retour{background:none;border:none;color:var(--sourdine);font:700 12.5px inherit;padding:4px 0;cursor:pointer}
 </style>
 <meta name="robots" content="noindex">
 <title>AURA90' — Administration</title>
@@ -869,6 +883,7 @@ body:not(.co) .adm-nav{display:none}
 
 
 <!-- ===== écran : en ligne / liens par réseau (28/10/2026) ===== -->
+<div id="fu-voile" onclick="if(event.target===this)ficheFermer()"><div class="fu-boite"><div class="haut"><button class="mb-fleche" onclick="ficheFermer()">‹</button><b>Fiche utilisateur</b></div><div id="fu-corps"></div></div></div>
 <div id="sl-voile"><div class="haut"><button class="mb-fleche" onclick="slFermer()">‹</button><b id="sl-titre"></b>
 <button class="gris" style="padding:8px 11px;font-size:12px" onclick="slRendre()">↻</button></div><div id="sl-corps"></div></div>
 <script>
@@ -975,20 +990,24 @@ function afficherStats(s){
     $('tuiles').innerHTML = '<div class="vide">Erreur stats : ' + (s && (s.erreur||s.message) || 'réponse vide') + '</div>';
     return;
   }
-  const F = n => (n||0).toLocaleString('fr-FR');
-  const T = [
+  // 28/10/2026 : 6 chiffres essentiels, le reste repliable
+  const T1 = [
     [s.utilisateurs,'Utilisateurs'], [s.abonnes_actifs,'VIP actifs'],
+    [mD(s.revenu_30j),'Revenu 30 j'], [mD(s.revenu_total),'Revenu total'],
+    [s.actifs_jour,'Actifs jour'], [s.paiements_30j,'Paiements 30 j'],
+  ];
+  const T2 = [
     [s.vip_mois,'VIP mois'], [s.vip_3mois,'VIP 3 mois'],
-    [mD(s.revenu_total),'Revenu total'], [mD(s.revenu_30j),'Revenu 30 j'],
-    [s.paiements_30j,'Paiements 30 j'],
-    [s.actifs_jour,'Actifs jour'], [s.actifs_semaine,'Actifs semaine'],
-    [s.actifs_mois,'Actifs mois'], [s.actifs_annee,'Actifs année'],
+    [s.actifs_semaine,'Actifs semaine'], [s.actifs_mois,'Actifs mois'], [s.actifs_annee,'Actifs année'],
     [s.affilies,'Affiliés'], [mD(s.commissions_total),'Commissions dues'],
-    [s.retraits_attente + ' · ' + mD(s.retraits_attente_montant),'Retraits en attente'],
+    [s.retraits_attente ? s.retraits_attente + ' · ' + mD(s.retraits_attente_montant) : 0,'Retraits en attente'],
     [s.push_abonnes,'Abonnés push'],
   ];
-  $('tuiles').innerHTML = T.map(x=>{ const k = DT_TUILES[x[1]];
-    return `<div class="tuile${k?' clic':''}" ${k?`onclick="dtOuvrir('${k}')"`:''}><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`; }).join('');
+  const tuile = x => { const k = DT_TUILES[x[1]];
+    return `<div class="tuile${k?' clic':''}" ${k?`onclick="dtOuvrir('${k}')"`:''}><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`; };
+  let ouvert = false; try{ ouvert = localStorage.getItem('aura90_admin_plus') === '1'; }catch(e){}
+  $('tuiles').innerHTML = T1.map(tuile).join('') +
+    `<details class="plus-chiffres" ${ouvert ? 'open' : ''} ontoggle="try{localStorage.setItem('aura90_admin_plus', this.open ? '1' : '0')}catch(e){}"><summary>Tous les chiffres</summary><div class="tuiles">${T2.map(tuile).join('')}</div></details>`;
 }
 
 
@@ -3161,14 +3180,74 @@ setInterval(() => { if(!document.hidden && document.body.classList.contains('co'
 setTimeout(() => { if(document.body.classList.contains('co')) liveMaj(); }, 1500);
 function slOuvrir(vue){ SL_VUE = vue; $('sl-voile').classList.add('ouvert'); slRendre(); }
 function slFermer(){ $('sl-voile').classList.remove('ouvert'); }
+/* ---- inscrits / VIP d'un lien ---- */
+let SL_SRC = null, SL_SRC_ONG = 'inscrits';
+async function slSource(src){
+  SL_SRC = src; SL_VUE = 'source'; SL_SRC_ONG = 'inscrits';
+  $('sl-titre').textContent = SL_NOMS[src] || src;
+  $('sl-corps').innerHTML = '<div class="vide">Chargement…</div>';
+  const [deb, fin] = slPeriode();
+  try{
+    SL_SRC_L = await rpc('admin_source_users', { p_source: src, p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }) || [];
+  }catch(e){ $('sl-corps').innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fiches_users.sql exécuté ?)</div>`; return; }
+  slSourceRendre();
+}
+let SL_SRC_L = [];
+function slSourceRendre(){
+  const [deb, fin] = slPeriode();
+  const dans = d => d && (!deb || new Date(d) >= deb) && (!fin || new Date(d) < fin);
+  const ins = SL_SRC_L.filter(x => dans(x.inscrit_le)), vip = SL_SRC_L.filter(x => x.vip);
+  const l = SL_SRC_ONG === 'vip' ? vip : ins;
+  const jd = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'2-digit' }) : '—';
+  $('sl-corps').innerHTML = `<button class="lien-retour" style="margin:0 0 10px" onclick="SL_VUE='sources';slRendre()">‹ Tous les réseaux</button>
+    <div class="sl-chips">
+      <button class="${SL_SRC_ONG === 'inscrits' ? 'a' : ''}" onclick="SL_SRC_ONG='inscrits';slSourceRendre()">Inscrits · ${ins.length}</button>
+      <button class="${SL_SRC_ONG === 'vip' ? 'a' : ''}" onclick="SL_SRC_ONG='vip';slSourceRendre()">VIP · ${vip.length}</button></div>
+    ${l.length ? l.map(x => `<div class="sl-pers clic" onclick="ficheUser('${slE(x.id)}')"><div><b>${slE(x.email)}</b>
+        <span style="display:block">inscrit le ${jd(x.inscrit_le)}${x.vip_le ? ' · VIP le ' + jd(x.vip_le) : ''}</span></div>
+        <span>${x.vip_actif ? '<b style="color:var(--aura1)">VIP</b>' : ''} ›</span></div>`).join('')
+      : `<div class="vide">Aucun ${SL_SRC_ONG === 'vip' ? 'VIP' : 'inscrit'} sur cette période.</div>`}`;
+}
+
+/* ---- fiche d'un utilisateur ---- */
+async function ficheUser(id){
+  if(!id || id === 'null'){ return; }
+  const v = $('fu-voile'); v.classList.add('ouvert');
+  $('fu-corps').innerHTML = '<div class="vide">Chargement…</div>';
+  let u;
+  try{ u = await rpc('admin_fiche_user', { p_user: id }); }
+  catch(e){ $('fu-corps').innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fiches_users.sql exécuté ?)</div>`; return; }
+  if(!u){ $('fu-corps').innerHTML = '<div class="vide">Compte introuvable.</div>'; return; }
+  const jd = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) + ' à ' + new Date(d).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) : '—';
+  const actif = u.vip_jusqua && new Date(u.vip_jusqua) > new Date();
+  const src = u.source ? (SL_NOMS[u.source.source] || u.source.source) + (u.source.nouveau ? '' : ' (déjà inscrit avant le clic)')
+            : u.parrain ? 'Lien partenaire · code ' + u.parrain.code + (u.parrain.reseau ? ' (' + u.parrain.reseau + ')' : '')
+            : 'Inconnu (inscrit avant le suivi des liens, ou venu en direct)';
+  const lig = (k, v2) => `<div class="fu-l"><span>${k}</span><b>${v2}</b></div>`;
+  $('fu-corps').innerHTML = `<div class="fu-tete"><div class="fu-av">${slE((u.email || '?')[0].toUpperCase())}</div><div><b>${slE(u.email)}</b>
+      <span class="fu-badge ${actif ? 'ok' : ''}">${actif ? 'VIP actif' : (u.premier_paiement ? 'Ancien VIP' : 'Non VIP')}</span></div></div>
+    ${lig('Inscrit le', jd(u.inscrit_le))}
+    ${lig('Arrivé par', slE(src))}
+    ${lig('Connexion', u.via === 'google' ? 'Google' : 'E-mail + mot de passe')}
+    ${lig('Devenu VIP le', u.premier_paiement ? jd(u.premier_paiement) : '—')}
+    ${lig('VIP jusqu\'au', u.vip_jusqua ? jd(u.vip_jusqua) : '—')}
+    ${lig('Total payé', mD(u.total_paye) + ' · ' + (u.paiements || []).length + ' paiement' + ((u.paiements || []).length > 1 ? 's' : ''))}
+    ${lig('Dernière activité', u.vu_le ? jd(u.vu_le) : (u.derniere_connexion ? jd(u.derniere_connexion) : '—'))}
+    ${u.pays || u.langue ? lig('Pays · langue', slE([u.pays, (u.langue || '').toUpperCase()].filter(Boolean).join(' · '))) : ''}
+    ${(u.paiements || []).length ? `<div class="pg-lab" style="margin-top:16px">Paiements</div>` + u.paiements.map(x =>
+        `<div class="sl-pers"><div><b>${mD(x.montant)}</b><span style="display:block">${slE(x.formule === '3mois' ? '3 mois' : '1 mois')} · ${slE(x.methode || '')}${x.code ? ' · code ' + slE(x.code) : ''}</span></div><span>${new Date(x.le).toLocaleDateString('fr-FR')}</span></div>`).join('') : ''}`;
+}
+function ficheFermer(){ $('fu-voile').classList.remove('ouvert'); }
+
 function slCopier(t, b){ navigator.clipboard?.writeText(t).then(() => { const x = b.textContent; b.textContent = 'Copié ✓'; setTimeout(() => b.textContent = x, 1400); }); }
 async function slRendre(silencieux){
   const c = $('sl-corps');
+  if(SL_VUE === 'source' && SL_SRC) return slSource(SL_SRC);
   if(SL_VUE === 'live'){
     $('sl-titre').textContent = 'En ligne maintenant';
     if(!silencieux){ c.innerHTML = '<div class="vide">Chargement…</div>'; await liveMaj(); }
     const d = SL_LIVE || {};
-    const pers = l => (l || []).length ? l.map(x => `<div class="sl-pers"><b>${slE(x.email)}</b><span>${slE(x.page || '')}</span></div>`).join('') : '<div class="vide">Personne</div>';
+    const pers = l => (l || []).length ? l.map(x => `<div class="sl-pers clic" onclick="ficheUser('${slE(x.id)}')"><b>${slE(x.email)}</b><span>${slE(x.page || '')} ›</span></div>`).join('') : '<div class="vide">Personne</div>';
     const pages = Object.entries(d.pages || {}).sort((a, b) => b[1] - a[1]).map(([p, n]) => `${slE(p)} : ${n}`).join(' · ');
     c.innerHTML = `<div class="sl-kpi"><div><b>${d.vip || 0}</b><span>VIP</span></div><div><b>${d.non_vip || 0}</b><span>Non VIP</span></div><div><b>${d.sans_compte || 0}</b><span>Sans compte</span></div></div>
       <div class="pg-sous" style="margin:0 0 12px">Actifs dans les 2 dernières minutes · mise à jour toutes les 20 s${pages ? '<br>Pages : ' + pages : ''}</div>
@@ -3190,9 +3269,9 @@ async function slRendre(silencieux){
       <span>→</span><label>Fin<input type="date" value="${SL_FIN}" onchange="SL_FIN=this.value;slRendre()"></label></div>` : ''}
     <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${mD(tot.ca)}</span></div></div>
     ${L.length ? `<table class="sl-t"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th><th>Encaissé</th></tr>
-      ${L.map(x => `<tr><td>${slE(SL_NOMS[x.source] || x.source)}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
+      ${L.map(x => `<tr class="clic" onclick="slSource('${slE(x.source)}')"><td>${slE(SL_NOMS[x.source] || x.source)} <span style="color:var(--sourdine)">›</span></td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
         <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
-      <div class="pg-sous" style="margin-top:8px">Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
+      <div class="pg-sous" style="margin-top:8px">Touche un réseau pour voir ses inscrits et ses VIP · Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
     <div class="pg-lab" style="margin-top:20px">Tes liens à mettre dans tes bios</div>
     ${SL_RESEAUX.map(([k, l]) => { const u = `${SL_SITE}/?s=${k}`;
