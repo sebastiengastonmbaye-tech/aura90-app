@@ -1384,7 +1384,7 @@ function miseDefaut(){
 function remplirMontants(){
   document.querySelectorAll('[data-m]').forEach(e => { e.textContent = (e.dataset.pre || '') + mF(+e.dataset.m) + (e.dataset.suf || ''); });
   document.querySelectorAll('.usd[data-xof]').forEach(e => {
-    const t = CFA ? enUSD(+e.dataset.xof) + ' US' : DEV_OK ? nbF(+e.dataset.xof) + ' F CFA' : '';
+    const t = CFA ? enUSD(+e.dataset.xof) + ' US' : (DEV_OK && MOYENS_PAYS[PAYS_U]) ? nbF(+e.dataset.xof) + ' F CFA' : '';   // F CFA seulement dans la zone Mobile Money
     e.textContent = t; e.style.display = t ? '' : 'none';
   });
 }
@@ -4188,7 +4188,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-28-4';
+const APP_VERSION = '2026-10-28-5';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
