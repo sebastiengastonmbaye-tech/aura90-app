@@ -3979,12 +3979,13 @@ else if(!localStorage.getItem('aura90_onboard')){
     const st = $('s-slogan'); if(st) st.style.opacity = 1;
     if(rapide){ sp.remove(); return; }
     sp.classList.add('boom');
-    setTimeout(()=>sp.classList.add('sortie'), 2600);
-    setTimeout(()=>sp.remove(), 3100);
+    setTimeout(()=>sp.classList.add('sortie'), VIENT_DE_LIEN ? 550 : 2600);   // arrivée par un lien : version courte
+    setTimeout(()=>sp.remove(), VIENT_DE_LIEN ? 1000 : 3100);
   }
   sp.addEventListener('click', ()=>terminer(true));
-  if(ANIM_OFF || VIENT_DE_LIEN){ $('s-slogan').style.opacity = 1; setTimeout(()=>terminer(true), VIENT_DE_LIEN ? 250 : 400); return; }
-  const t0 = performance.now() + 350, duree = 1600;
+  if(ANIM_OFF){ $('s-slogan').style.opacity = 1; setTimeout(()=>terminer(true), 400); return; }
+  // 28/10 : le compteur jusqu'à 90' revient pour tout le monde ; plus rapide pour ceux qui arrivent par un lien
+  const t0 = performance.now() + (VIENT_DE_LIEN ? 120 : 350), duree = VIENT_DE_LIEN ? 900 : 1600;
   requestAnimationFrame(function pas(t){
     if(fini) return;
     const p = Math.max(0, Math.min(1,(t-t0)/duree)), e = 1-Math.pow(1-p,2.2);
@@ -4282,7 +4283,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-28-6';
+const APP_VERSION = '2026-10-28-7';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
