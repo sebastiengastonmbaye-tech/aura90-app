@@ -937,6 +937,20 @@ html[dir=rtl] .ep-ret,html[dir=rtl] .mb-fleche,html[dir=rtl] .ms-retour{transfor
 .ms-pied textarea{flex:1;resize:none;height:46px;max-height:120px;line-height:1.35;overflow-y:hidden;background:var(--surface2);border:1px solid var(--ligne);border-radius:13px;padding:11px 12px;color:var(--texte);font:500 16px 'Manrope',sans-serif}
 .ms-pied button{width:46px;height:46px;align-self:flex-end;border:none;border-radius:13px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:var(--nuit);font-size:18px;font-weight:800;cursor:pointer}
 .ms-pied button:disabled{opacity:.5}
+
+/* ====== ACCUEIL ÉPURÉ (28/10/2026) ====== */
+#zone-valides{display:none!important}
+.pastilles{margin:10px 16px 14px}
+.rb{padding:10px 14px;gap:12px;border-radius:16px;box-shadow:none}
+.rb-anneau{width:46px;height:46px;flex:0 0 46px;box-shadow:none}
+.rb-fond,.rb-val{stroke-width:9}
+.rb-anneau .gros{font-size:10.5px;letter-spacing:-.04em}
+.rb-txt b{font-size:13.5px}.rb-txt small{font-size:11.5px;margin-top:2px}
+.mdj{padding:16px 16px 14px}
+.mdj .tag{text-align:center}
+.mdj-verdict{margin:12px 0 10px;padding:11px 12px}
+.mdj-verdict b{font-size:18px}
+#zone-mdj .section-titre{margin-top:6px}
 </style>
 </head>
 <body>
@@ -1028,7 +1042,7 @@ const CONFIG = {
         <div class="rb-txt"><b>Réussite vérifiée</b><small id="bandeau-sous">chargement du palmarès</small></div>
         <div class="rb-f">›</div>
       </div>
-      <div id="zone-valides"></div>
+      <div id="zone-valides" hidden></div>
     </div>
 
     <div id="zone-matchs"><div class="chargement">CONNEXION AU MOTEUR…</div></div>
@@ -1723,7 +1737,7 @@ function afficherAccueil(){
   $('zone-mdj').innerHTML = `
     <div class="section-titre"><svg class="ic"><use href="#i-etoile"/></svg> Match du jour · gratuit</div>
     <div class="mdj">
-      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(dLoc(MDJ.date_match, MDJ.heure))}${MDJ.heure ? ' · '+hLoc(MDJ.date_match, MDJ.heure, true) : ''}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
+      <div class="tag">${MDJ.ligue.toUpperCase()} · ${labelDate(dLoc(MDJ.date_match, MDJ.heure))}${MDJ.signe ? ' <span class="sceau-signe sceau-mini" style="margin-left:6px">⚡ SIGNÉ</span>' : ''}</div>
       <div class="duel">
         <div class="camp">${ecu(MDJ.logo_dom, MDJ.dom)}<div class="nom">${MDJ.dom}</div></div>
         <div class="heure-c"><b>${MDJ.heure ? hLoc(MDJ.date_match, MDJ.heure).slice(0, 5) : '—'}</b></div>
@@ -4151,7 +4165,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-28-2';
+const APP_VERSION = '2026-10-28-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
