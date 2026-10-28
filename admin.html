@@ -18,6 +18,8 @@
 .sl-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.sl-kpi div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:11px;text-align:center}
 .sl-kpi b{display:block;font:800 20px 'JetBrains Mono',monospace}.sl-kpi span{font-size:10.5px;color:var(--sourdine)}
 .sl-chips{display:flex;gap:6px;margin:0 0 12px}.sl-chips button{flex:1;padding:8px 0;font-size:12px;border-radius:10px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine)}
+.sl-dates{display:flex;align-items:flex-end;gap:8px;margin:0 0 12px}.sl-dates label{flex:1;font-size:11px;color:var(--sourdine)}.sl-dates input{width:100%;margin-top:4px;padding:9px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:13px inherit}.sl-dates span{padding-bottom:10px;color:var(--sourdine)}
+.sl-chips{gap:5px!important}.sl-chips button{font-size:11px!important;flex:1 1 auto!important;padding:8px 5px!important;white-space:nowrap}
 .sl-chips button.a{color:var(--texte);border-color:rgba(61,232,200,.5);background:rgba(61,232,200,.08)}
 .sl-t{width:100%;border-collapse:collapse;font-size:13px}.sl-t th{font-size:10px;color:var(--sourdine);text-transform:uppercase;letter-spacing:.04em;text-align:right;padding:6px 4px}.sl-t th:first-child,.sl-t td:first-child{text-align:left}
 .sl-t td{padding:10px 4px;border-top:1px solid var(--ligne);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px}.sl-t td:first-child{font-family:inherit;font-weight:800}
@@ -3079,7 +3081,21 @@ const SL_SITE = 'https://aura90.app';
 const SL_RESEAUX = [['tiktok','🎵 TikTok'],['youtube','▶️ YouTube'],['insta','📸 Instagram'],['whatsapp','💬 WhatsApp'],
   ['facebook','📘 Facebook'],['snapchat','👻 Snapchat'],['telegram','✈️ Telegram'],['x','𝕏 X / Twitter']];
 const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites' });
-let SL_VUE = 'live', SL_JOURS = 30, SL_LIVE = null;
+let SL_VUE = 'live', SL_PER = 'auj', SL_DEB = '', SL_FIN = '', SL_LIVE = null;
+// période choisie → [début, fin] (heure du téléphone : « aujourd'hui » = minuit → 23h59)
+function slPeriode(){
+  const minuit = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+  const auj = minuit(new Date()), demain = new Date(auj.getTime() + 864e5);
+  if(SL_PER === 'auj') return [auj, demain];
+  if(SL_PER === '7') return [new Date(auj.getTime() - 6 * 864e5), demain];
+  if(SL_PER === '30') return [new Date(auj.getTime() - 29 * 864e5), demain];
+  if(SL_PER === 'dates'){
+    const d = SL_DEB ? minuit(SL_DEB + 'T00:00') : null;
+    const f = SL_FIN ? new Date(minuit(SL_FIN + 'T00:00').getTime() + 864e5) : null;
+    return [d, f];
+  }
+  return [null, null];
+}
 const slF = n => Number(n || 0).toLocaleString('fr-FR');
 const slE = t => String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function liveMaj(){
@@ -3113,12 +3129,15 @@ async function slRendre(silencieux){
   $('sl-titre').textContent = 'Mes liens & réseaux';
   if(!silencieux) c.innerHTML = '<div class="vide">Chargement…</div>';
   let L = [];
-  try{ L = await rpc('admin_sources', { p_jours: SL_JOURS }) || []; }
+  const [deb, fin] = slPeriode();
+  try{ L = await rpc('admin_sources', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }) || []; }
   catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(suivi_liens.sql exécuté ?)</div>`; return; }
   const tot = L.reduce((a, x) => ({ clics: a.clics + x.clics, inscrits: a.inscrits + x.inscrits, vip: a.vip + x.vip, ca: a.ca + Number(x.ca) }), { clics: 0, inscrits: 0, vip: 0, ca: 0 });
   const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
-  c.innerHTML = `<div class="sl-chips">${[[7,'7 jours'],[30,'30 jours'],[90,'90 jours'],[0,'Tout']].map(([j, l]) =>
-      `<button class="${SL_JOURS === j ? 'a' : ''}" onclick="SL_JOURS=${j};slRendre()">${l}</button>`).join('')}</div>
+  c.innerHTML = `<div class="sl-chips">${[['auj',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['tout','Tout'],['dates','📅 Dates']].map(([j, l]) =>
+      `<button class="${SL_PER === j ? 'a' : ''}" onclick="SL_PER='${j}';slRendre()">${l}</button>`).join('')}</div>
+    ${SL_PER === 'dates' ? `<div class="sl-dates"><label>Début<input type="date" value="${SL_DEB}" onchange="SL_DEB=this.value;slRendre()"></label>
+      <span>→</span><label>Fin<input type="date" value="${SL_FIN}" onchange="SL_FIN=this.value;slRendre()"></label></div>` : ''}
     <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${slF(tot.ca)} F</span></div></div>
     ${L.length ? `<table class="sl-t"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th><th>Encaissé</th></tr>
       ${L.map(x => `<tr><td>${slE(SL_NOMS[x.source] || x.source)}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
