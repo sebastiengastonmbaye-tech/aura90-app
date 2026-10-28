@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://aura90.app/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://aura90.app/pronostics/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
-  <url><loc>https://aura90.app/palmares/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://aura90.app/pronostics/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://aura90.app/palmares/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://aura90.app/pronostic/bahia-chapecoense-sc-2026-07-17/</loc><lastmod>2026-07-17</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/fluminense-rb-bragantino-2026-07-17/</loc><lastmod>2026-07-17</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/mirassol-gremio-2026-07-17/</loc><lastmod>2026-07-17</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -1214,9 +1214,9 @@
   <url><loc>https://aura90.app/pronostic/sporting-cp-academico-viseu-2026-10-25/</loc><lastmod>2026-10-25</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/sevilla-osasuna-2026-10-26/</loc><lastmod>2026-10-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/santa-clara-benfica-2026-10-26/</loc><lastmod>2026-10-26</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostic/sassuolo-lazio-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostic/as-roma-cagliari-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostic/torino-como-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/sassuolo-lazio-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/as-roma-cagliari-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/torino-como-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/ac-milan-bologna-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/venezia-inter-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/parma-udinese-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
@@ -1290,31 +1290,40 @@
   <url><loc>https://aura90.app/pronostic/atalanta-parma-2026-11-02/</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/benfica-alverca-2026-11-02/</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/gil-vicente-vitoria-sc-2026-11-02/</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostic/bradford-peterborough-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostic/fleetwood-town-arsenal-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/bradford-peterborough-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/fleetwood-town-arsenal-2026-10-27/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/manchester-city-brighton-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/bournemouth-aston-villa-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/fulham-crystal-palace-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/sunderland-brentford-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/liverpool-chelsea-2026-10-28/</loc><lastmod>2026-10-28</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://aura90.app/pronostic/everton-newcastle-2026-10-29/</loc><lastmod>2026-10-29</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://aura90.app/pronostics/mls/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/argentine-liga-profesional/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/la-liga/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/ligue-des-nations/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/serie-a/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/eredivisie/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/premier-league/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/liga-portugal/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/ligue-1/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/bundesliga/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/bresil-serie-a/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/ligue-europa/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/suede-allsvenskan/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/ligue-des-champions/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/norvege-eliteserien/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/can-qualifications/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/jupiler-pro-league/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/super-lig/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://aura90.app/pronostics/efl-cup/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostic/shakhtar-donetsk-sporting-cp-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/galatasaray-vfb-stuttgart-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/manchester-united-as-roma-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/feyenoord-inter-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/bodo-glimt-lille-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/barcelona-aston-villa-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/atletico-madrid-bayern-munchen-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/villarreal-paris-saint-germain-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostic/lask-linz-slovan-bratislava-2026-11-03/</loc><lastmod>2026-11-03</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://aura90.app/pronostics/mls/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/argentine-liga-profesional/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/la-liga/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/ligue-des-nations/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/serie-a/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/eredivisie/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/premier-league/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/liga-portugal/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/ligue-1/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/bundesliga/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/bresil-serie-a/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/ligue-des-champions/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/ligue-europa/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/suede-allsvenskan/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/norvege-eliteserien/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/can-qualifications/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/jupiler-pro-league/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/super-lig/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aura90.app/pronostics/efl-cup/</loc><lastmod>2026-10-28</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
 </urlset>
