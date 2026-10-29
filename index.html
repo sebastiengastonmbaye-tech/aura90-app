@@ -1219,7 +1219,7 @@ const CONFIG = {
     </div>
 
     <div class="jeu-resp" id="pied-resp">Interdit aux moins de 18 ans. AURA90 fournit des analyses statistiques,<br>jamais une garantie de résultat.</div>
-    <nav class="liens-seo" style="margin:10px 16px 0;text-align:center;font-size:11.5px;line-height:2;opacity:.75"><a href="/pronostics/" style="color:var(--sourdine)">Pronostics du jour</a> · <a href="/palmares/" style="color:var(--sourdine)">Palmarès</a> · <a href="/pronostics/premier-league/" style="color:var(--sourdine)">Premier League</a> · <a href="/pronostics/la-liga/" style="color:var(--sourdine)">Liga</a> · <a href="/pronostics/ligue-1/" style="color:var(--sourdine)">Ligue 1</a> · <a href="/pronostics/serie-a/" style="color:var(--sourdine)">Serie A</a> · <a href="/pronostics/ligue-des-champions/" style="color:var(--sourdine)">Ligue des Champions</a></nav>
+    <nav class="liens-seo" style="margin:10px 16px 0;text-align:center;font-size:11.5px;line-height:2;opacity:.75"><a href="/pronostics/" style="color:var(--sourdine)">Pronostics du jour</a> · <a href="/?aller=palmares" onclick="event.preventDefault();allerPage('palmares');window.scrollTo(0,0)" style="color:var(--sourdine)">Palmarès</a> · <a href="/pronostics/premier-league/" style="color:var(--sourdine)">Premier League</a> · <a href="/pronostics/la-liga/" style="color:var(--sourdine)">Liga</a> · <a href="/pronostics/ligue-1/" style="color:var(--sourdine)">Ligue 1</a> · <a href="/pronostics/serie-a/" style="color:var(--sourdine)">Serie A</a> · <a href="/pronostics/ligue-des-champions/" style="color:var(--sourdine)">Ligue des Champions</a></nav>
   </div>
 
   <div id="panneau-install" onclick="if(event.target===this)fermerGuideInstall()">
@@ -2829,7 +2829,7 @@ function fermerGuide(viaBouton){
 window.addEventListener('popstate', () => { if($('gd-ecran')?.classList.contains('ouvert')) { $('gd-ecran').classList.remove('ouvert'); verrouPage(false); } });
 
 /* ---------- aller à une section de l'app ---------- */
-const CIBLES = ['accueil', 'palmares', 'compte', 'offres', 'notifications', 'reglages', 'partenaire', 'messagerie', 'guide',
+const CIBLES = ['accueil', 'mdj', 'palmares', 'compte', 'offres', 'notifications', 'reglages', 'partenaire', 'messagerie', 'guide',
   'coupons', 'coupons/montante', 'coupons/turbo', 'coupons/live', 'coupons/confiance', 'coupons/fun', 'coupons/nuit'];
 function allerVers(cible){
   cible = String(cible || '').toLowerCase().replace(/^\/+|\/+$/g, '');
@@ -2838,6 +2838,11 @@ function allerVers(cible){
   if(a === 'messagerie') return estConnecte() ? ouvrirMessagerie() : allerPage('compte');
   if(a === 'offres') return allerOffres();
   if(a === 'accueil' || a === 'palmares' || a === 'compte') return allerPage(a);
+  if(a === 'mdj'){   // 29/10 : ouvre directement l'analyse du match gratuit du jour
+    allerPage('accueil');
+    const essai = n => { if(MDJ) lancerAnalyse(MDJ.id); else if(n < 12) setTimeout(() => essai(n + 1), 500); };
+    return essai(0);
+  }
   if(a === 'match' && b){   // lien des pages Google : ouvre l'analyse du match (ou l'offre PRO)
     allerPage('accueil');
     const essai = n => { const p = PRONOS.find(x => String(x.fixture_id) === b);
@@ -4424,7 +4429,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-29-1';
+const APP_VERSION = '2026-10-29-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
