@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 <style>a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;pointer-events:none!important;font:inherit!important}#maj-app{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#0f1a24;border:1px solid var(--aura1);box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:13px;color:#e8f0f5}
 #maj-app span{flex:1}
@@ -728,12 +728,7 @@ html[dir=rtl] .ep-sl b{margin-left:0;margin-right:auto}
    Avant : le corps faisait 100 % de l'écran et chaque page défilait « à l'intérieur ».
    Sur iPhone, le geste partait parfois sur le corps au lieu de la page → défilement bloqué.
    Maintenant c'est la page entière qui défile, comme un site normal. */
-html{height:auto;min-height:100%;overflow:visible}
-body{height:auto;min-height:100%;display:block;overflow-x:hidden}
-@supports (height:100dvh){ html,body{height:auto} body{min-height:100dvh} }
-#app{flex:none;display:block;overflow:visible}
-#app > .haut{position:sticky;top:0;z-index:40;background:var(--nuit)}
-.page{flex:none;overflow:visible;-webkit-overflow-scrolling:auto;overscroll-behavior:auto}
+/* (bloc « page entière qui défile » retiré le 29/10/2026 : voir COQUE tout en bas) */
 /* ---------- langue · pays · devise (19/10) ---------- */
 .mo{white-space:nowrap}
 .rg-carte{margin:6px 16px 4px;width:calc(100% - 32px);display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);font-family:inherit;text-align:start;cursor:pointer}
@@ -1012,6 +1007,29 @@ html[dir=rtl] .ep-ret,html[dir=rtl] .mb-fleche,html[dir=rtl] .ms-retour{transfor
 .of-boite{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--ligne);border-radius:18px;padding:20px 18px 14px;text-align:center}
 .of-boite b{font-size:18px}.of-boite p{color:var(--sourdine);font-size:14px;line-height:1.55;margin:8px 0 14px}
 .of-boite button{width:100%;margin:0}
+
+/* ================= COQUE DE L'APP (29/10/2026) — correction DÉFINITIVE de la barre du bas =================
+   Le corps de la page ne défile JAMAIS : il est figé sur tout l'écran (position:fixed).
+   Chaque onglet (.page) défile à l'intérieur de la coque, et la barre du bas est un
+   élément normal posé en bas de la coque — plus un élément « fixed » que Safari
+   pouvait décaler après le clavier, un zoom ou l'ouverture d'un écran plein.
+   Valable iPhone, Android, Mac, PC : il n'y a plus rien à « recaler ». */
+html{height:100%;overflow:hidden;touch-action:pan-x pan-y}
+body{position:fixed;inset:0;height:auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;overscroll-behavior:none}
+#app{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
+#app > .haut{position:static;flex:none}
+.page{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;scrollbar-width:none;
+  padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.page::-webkit-scrollbar{display:none}
+.page.active{display:flex}
+.nav{position:static;flex:none;left:auto;right:auto;bottom:auto}
+body.cta-on #page-accueil{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+/* les éléments qui flottent au-dessus du contenu sont posés dans la coque (jamais sur la fenêtre) */
+#cta-pro{position:absolute;bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+#nt-carte,#ins-bandeau{position:absolute}
+#maj-app{position:absolute;left:12px;right:12px}
+#ms-bulle{position:absolute;right:14px}
+body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -1089,7 +1107,6 @@ const CONFIG = {
   <!-- ============ ACCUEIL ============ -->
   <div id="cta-pro" onclick="allerOffres()"><div class="t"><b id="cta-t"></b><small id="cta-s"></small></div><div class="go">›</div></div>
   <div class="page active" id="page-accueil">
-    <div id="zone-mdj"></div>
     <div class="pastilles">
       <div class="rb" onclick="allerPage('palmares')">
         <div class="rb-anneau">
@@ -1105,8 +1122,10 @@ const CONFIG = {
       </div>
       <div id="zone-valides" hidden></div>
     </div>
+    <div id="zone-mdj"></div>
 
     <div id="zone-matchs"><div class="chargement">CONNEXION AU MOTEUR…</div></div>
+    <nav class="liens-seo" style="margin:10px 16px 0;text-align:center;font-size:11.5px;line-height:2;opacity:.75"><a href="/pronostics/" style="color:var(--sourdine)">Pronostics du jour</a> · <a href="/?aller=palmares" onclick="event.preventDefault();allerPage('palmares');window.scrollTo(0,0)" style="color:var(--sourdine)">Palmarès</a> · <a href="/pronostics/premier-league/" style="color:var(--sourdine)">Premier League</a> · <a href="/pronostics/la-liga/" style="color:var(--sourdine)">Liga</a> · <a href="/pronostics/ligue-1/" style="color:var(--sourdine)">Ligue 1</a> · <a href="/pronostics/serie-a/" style="color:var(--sourdine)">Serie A</a> · <a href="/pronostics/ligue-des-champions/" style="color:var(--sourdine)">Ligue des Champions</a></nav>
   </div>
 
   <!-- ============ PALMARÈS ============ -->
@@ -1219,7 +1238,6 @@ const CONFIG = {
     </div>
 
     <div class="jeu-resp" id="pied-resp">Interdit aux moins de 18 ans. AURA90 fournit des analyses statistiques,<br>jamais une garantie de résultat.</div>
-    <nav class="liens-seo" style="margin:10px 16px 0;text-align:center;font-size:11.5px;line-height:2;opacity:.75"><a href="/pronostics/" style="color:var(--sourdine)">Pronostics du jour</a> · <a href="/?aller=palmares" onclick="event.preventDefault();allerPage('palmares');window.scrollTo(0,0)" style="color:var(--sourdine)">Palmarès</a> · <a href="/pronostics/premier-league/" style="color:var(--sourdine)">Premier League</a> · <a href="/pronostics/la-liga/" style="color:var(--sourdine)">Liga</a> · <a href="/pronostics/ligue-1/" style="color:var(--sourdine)">Ligue 1</a> · <a href="/pronostics/serie-a/" style="color:var(--sourdine)">Serie A</a> · <a href="/pronostics/ligue-des-champions/" style="color:var(--sourdine)">Ligue des Champions</a></nav>
   </div>
 
   <div id="panneau-install" onclick="if(event.target===this)fermerGuideInstall()">
@@ -1289,13 +1307,14 @@ const CONFIG = {
     <button data-page="coupons" onclick="allerPage('coupons')"><svg class="ic"><use href="#i-ticket"/></svg>Coupons</button>
     <button data-page="compte" onclick="allerPage('compte')"><svg class="ic"><use href="#i-user"/></svg>Compte</button>
   </div>
-</div>
-
-<!-- ================= MESSAGERIE ================= -->
-<button id="ms-bulle" onclick="ouvrirMessagerie()" aria-label="Messages">
+  <button id="ms-bulle" onclick="ouvrirMessagerie()" aria-label="Messages">
   <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg>
   <span class="pt" id="ms-pt"></span>
 </button>
+</div>
+
+<!-- ================= MESSAGERIE ================= -->
+
 <div id="vh-panneau">
   <div id="vh-boite">
     <div class="vh-tete"><button onclick="fermerValides()" aria-label="Retour">‹</button>
@@ -1722,10 +1741,11 @@ function labelDate(d){
 const DEFIL = {};
 function allerPage(p){
   const avant = document.querySelector('.page.active');
-  if(avant) DEFIL[avant.id] = window.scrollY;
+  if(avant) DEFIL[avant.id] = avant.scrollTop;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  $('page-'+p).classList.add('active');
-  window.scrollTo(0, avant && avant.id === 'page-'+p ? window.scrollY : (DEFIL['page-'+p] || 0));
+  const cible = $('page-'+p); cible.classList.add('active');
+  if(!(avant && avant.id === 'page-'+p)) cible.scrollTop = DEFIL['page-'+p] || 0;
+  window.scrollTo(0, 0);
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('actif', b.dataset.page===p));
   try{ majCtaPro(); }catch(e){}
   if(p === 'palmares') animerPalmares();
@@ -4234,34 +4254,23 @@ function msAjuster(){
   const h = Math.min(z.scrollHeight, 120); z.style.height = h + 'px';
   z.style.overflowY = z.scrollHeight > 120 ? 'auto' : 'hidden';
 }
-// Verrou de la page derrière un écran plein (iPhone : le clavier ne fait plus défiler le fond)
+// 29/10/2026 : le corps de la page est figé (voir la COQUE dans le style) → plus de verrou à poser.
 let VERROU_Y = null;
-function verrouPage(on){
-  const b = document.body;
-  if(on && VERROU_Y === null){
-    VERROU_Y = window.scrollY;
-    Object.assign(b.style, { position:'fixed', top: -VERROU_Y + 'px', left:'0', right:'0', overflow:'hidden' });
-  } else if(!on && VERROU_Y !== null){
-    Object.assign(b.style, { position:'', top:'', left:'', right:'', overflow:'' });
-    window.scrollTo(0, VERROU_Y); VERROU_Y = null;
-    setTimeout(() => window.recalerEcran && window.recalerEcran(), 300);
-  }
-}
-/* iPhone (23/10/2026) : quand le clavier se ferme (chat, recherche de pays, connexion…),
-   Safari laisse parfois l'écran « décalé » : la barre du bas remonte au milieu de l'écran
-   et le haut passe sous l'heure. On force Safari à se recaler dès que le clavier disparaît,
-   quand l'app revient au premier plan et quand le téléphone tourne. */
+function verrouPage(on){ /* conservé pour les appels existants : plus rien à faire */ }
+/* Sécurité : si un navigateur fait quand même glisser la fenêtre (clavier iPhone, zoom),
+   on la remet à zéro dès que le clavier se ferme. Avec un corps non défilable, ça suffit. */
 (function(){
   const champActif = () => { const a = document.activeElement; return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName); };
   const recaler = () => {
-    if (champActif() || (typeof VERROU_Y !== 'undefined' && VERROU_Y !== null)) return;   // clavier ouvert ou écran plein : on ne touche à rien
-    const y = window.scrollY;
-    window.scrollTo(0, y + 1); window.scrollTo(0, y);
+    if (champActif()) return;
+    if (window.scrollY || window.scrollX) window.scrollTo(0, 0);
+    if (window.visualViewport && (visualViewport.offsetTop || visualViewport.offsetLeft)) window.scrollTo(0, 0);
   };
   let t = null;
-  const bientot = () => { clearTimeout(t); t = setTimeout(recaler, 260); };
+  const bientot = () => { clearTimeout(t); t = setTimeout(recaler, 120); };
   document.addEventListener('focusout', bientot);
-  if (window.visualViewport) visualViewport.addEventListener('resize', () => { if (!champActif()) bientot(); });
+  if (window.visualViewport){ visualViewport.addEventListener('resize', bientot); visualViewport.addEventListener('scroll', bientot); }
+  window.addEventListener('scroll', bientot, { passive: true });
   window.addEventListener('orientationchange', bientot);
   window.addEventListener('pageshow', bientot);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) bientot(); });
@@ -4429,7 +4438,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-29-3';
+const APP_VERSION = '2026-10-29-4';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
