@@ -648,6 +648,14 @@ body:not(.co) .adm-nav{display:none}
 #pg-affilies .ep-sec h2{font-size:14px;letter-spacing:0;text-transform:none;color:var(--texte);margin:0;font-weight:800}
 #pg-affilies .ep-sec span{text-transform:none;letter-spacing:0}
 #pg-affilies .ep-dates{margin:-4px 0 12px}
+
+/* 29/10 : installations */
+#inst-carte{margin:10px 0 4px;padding:13px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne)}
+#inst-carte .inst-h{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:14px}
+#inst-carte .inst-h b{font:800 24px 'JetBrains Mono',monospace;color:var(--aura1)}
+#inst-carte .inst-pf{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--sourdine)}
+#inst-carte .inst-pf b{color:var(--texte)}
+#inst-carte .inst-s{margin-top:6px;font-size:11.5px;color:var(--sourdine);line-height:1.5}
 </style>
 </head>
 <body>
@@ -1006,11 +1014,26 @@ function afficherStats(s){
   const tuile = x => { const k = DT_TUILES[x[1]];
     return `<div class="tuile${k?' clic':''}" ${k?`onclick="dtOuvrir('${k}')"`:''}><div class="v">${x[0]??0}</div><div class="l">${x[1]}</div></div>`; };
   let ouvert = false; try{ ouvert = localStorage.getItem('aura90_admin_plus') === '1'; }catch(e){}
+  setTimeout(majInstallations, 0);
   $('tuiles').innerHTML = T1.map(tuile).join('') +
     `<details class="plus-chiffres" ${ouvert ? 'open' : ''} ontoggle="try{localStorage.setItem('aura90_admin_plus', this.open ? '1' : '0')}catch(e){}"><summary>Tous les chiffres</summary><div class="tuiles">${T2.map(tuile).join('')}</div></details>`;
 }
 
 
+
+/* ======== INSTALLATIONS DE L'APP (29/10/2026) ========
+   Appareils qui ont ouvert AURA90 depuis l'icône de l'écran d'accueil. */
+async function majInstallations(){
+  const t = $('tuiles'); if(!t) return;
+  let d = null; try{ d = await rpc('admin_installations'); }catch(e){ return; }
+  if(!d) return;
+  let c = $('inst-carte');
+  if(!c){ c = document.createElement('div'); c.id = 'inst-carte'; t.parentNode.insertBefore(c, t.nextSibling); }
+  const n = x => Number(x || 0).toLocaleString('fr-FR');
+  c.innerHTML = `<div class="inst-h"><span>📲 Installations de l'app</span><b>${n(d.total)}</b></div>
+    <div class="inst-pf"><span>🍎 iPhone <b>${n(d.iphone)}</b></span><span>🤖 Android <b>${n(d.android)}</b></span><span>💻 Ordinateur <b>${n(d.ordinateur)}</b></span></div>
+    <div class="inst-s">+${n(d.aujourdhui)} aujourd'hui · +${n(d.nouvelles_7j)} en 7 j · ${n(d.actives_7j)} ouvertes ces 7 derniers jours · ${n(d.avec_compte)} avec un compte · ${n(d.vip)} VIP</div>`;
+}
 
 /* ======== CANDIDATURES PARTENAIRES v2 (15/10/2026) ========
    Lecture/écriture par deux fonctions SQL réservées à l'admin

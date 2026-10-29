@@ -3625,6 +3625,17 @@ async function suiviBattement(){
 }
 setTimeout(suiviBattement, 3000);
 setInterval(suiviBattement, 60000);
+/* ---- installations (29/10/2026) : l'app ouverte depuis l'icône de l'écran d'accueil = installée ---- */
+function noterInstallation(){
+  const pf = estIOS() ? 'iphone' : estAndroid() ? 'android' : 'ordinateur';
+  fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/noter_installation', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + (SESSION.access || CONFIG.SUPABASE_KEY) },
+    body: JSON.stringify({ p_visiteur: SUIVI_VIS, p_plateforme: pf })
+  }).then(r => { if(r.status === 401 && SESSION.access) return rafraichirSession(); }).catch(()=>{});
+}
+if(estInstallee()) setTimeout(noterInstallation, 2500);
+document.addEventListener('visibilitychange', () => { if(!document.hidden && estInstallee()) noterInstallation(); });
+window.addEventListener('appinstalled', () => setTimeout(noterInstallation, 500));   // Android / ordinateur : juste après « Installer »
 document.addEventListener('visibilitychange', () => { if(!document.hidden) suiviBattement(); });
 
 /* ---- lien ?ref=CODE&s=reseau : clic compté, filleul noté à la connexion ---- */
@@ -4438,7 +4449,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-29-4';
+const APP_VERSION = '2026-10-29-5';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
