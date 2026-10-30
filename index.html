@@ -199,7 +199,8 @@ body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-
 .promo-bloc #msg-promo .avert{margin:0;text-align:start}
 .cta-zone{padding:16px 16px 0;display:flex;flex-direction:column;gap:9px}
 .cp-cta{all:unset;box-sizing:border-box;text-align:center;padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#061412;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 24px rgba(61,232,200,.3)}
-.cp-moyens,.cp-acces{text-align:center;font-size:11.5px;color:var(--sourdine);line-height:1.5}
+.cp-moyens{text-align:center;font-size:11.5px;color:var(--sourdine);line-height:1.5}
+.cp-acces{text-align:center;font-size:9.5px;color:var(--sourdine);opacity:.75;line-height:1.4;margin-top:-3px}
 .cp-cgu{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5;color:#A9B4C5;padding:2px 2px 0;cursor:pointer;border-radius:8px}
 .cp-cgu input{margin:2px 0 0;width:18px;height:18px;flex:none;accent-color:var(--aura1)}
 .cp-cgu a{color:var(--aura1)}
@@ -2672,11 +2673,11 @@ function prixAffiche(f){
   if(modeEuro()){
     const p = PRIX_EUR[f], pr = of ? Math.round(p * (100 - OFFRE.pct)) / 100 : p;
     return { txt: eur(pr), base: eur(p), reduit: of, barre: f === '3mois' ? eur(PRIX_EUR.mois * 3) : '',
-      sous: f === '3mois' ? T('soit') + ' ' + eur(pr / 3) + ' / ' + T('mois') : T('renouvelé chaque mois'), apres: OFFRE_LDC.apres.eur };
+      sous: f === '3mois' ? T('soit') + ' ' + eur(pr / 3) + ' / ' + T('mois') : '', apres: OFFRE_LDC.apres.eur };
   }
   const p = FORMULES[f][0], pr = of ? prixOffre(p) : p;
   return { txt: mF(pr), base: mF(p), reduit: of, barre: f === '3mois' ? mF(FORMULES.mois[0] * 3) : '',
-    sous: f === '3mois' ? T('soit') + ' ' + mF(Math.round(pr / 3 / 50) * 50) + ' / ' + T('mois') : T('renouvelé chaque mois'), apres: OFFRE_LDC.apres.xof };
+    sous: f === '3mois' ? T('soit') + ' ' + mF(Math.round(pr / 3 / 50) * 50) + ' / ' + T('mois') : '', apres: OFFRE_LDC.apres.xof };
 }
 function rendrePlans(){
   ['mois', '3mois'].forEach(f => {
@@ -4867,7 +4868,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-6';
+const APP_VERSION = '2026-10-30-8';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
