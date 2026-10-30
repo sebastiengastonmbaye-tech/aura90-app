@@ -870,7 +870,9 @@ html[dir=rtl] .ep-sl b{margin-left:0;margin-right:auto}
 .rg-l{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:none;border-top:1px solid var(--ligne);color:var(--texte);font-family:inherit;font-size:14px;text-align:start;cursor:pointer}
 .rg-l:first-child{border-top:0}
 .rg-l.a{background:rgba(61,232,200,.08)}
-.rg-l .d{font-size:20px}.rg-l .n{flex:1}.rg-l .c{font:600 11px 'JetBrains Mono',monospace;color:var(--sourdine)}
+.rg-l .d{font-size:20px;display:flex;align-items:center}
+img.dp{width:20px;height:15px;border-radius:2px;object-fit:cover;vertical-align:-2px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.rg-carte .t img.dp{width:16px;height:12px;vertical-align:-1px}.rg-l .n{flex:1}.rg-l .c{font:600 11px 'JetBrains Mono',monospace;color:var(--sourdine)}
 /* arabe : lecture de droite à gauche */
 html[lang=ar] body{font-family:'Noto Sans Arabic','Manrope',system-ui,sans-serif}
 html[dir=rtl] .ep-x{right:auto;left:12px}
@@ -1555,7 +1557,12 @@ if (LANGUE === 'ar') {
 }
 const NOMS_ES = (() => { try { return LANGUE === 'es' && Intl.DisplayNames ? new Intl.DisplayNames(['es'], { type: 'region' }) : null; } catch (e) { return null; } })();
 const nomPays = p => { if (!p) return ''; if (LANGUE === 'es') { try { const n = NOMS_ES && NOMS_ES.of(p.c); if (n && n !== p.c) return n; } catch (e) {} return p.en || p.fr; } return p[LANGUE] || p.fr; };
-const drapeau = c => /^[A-Z]{2}$/.test(c || '') ? String.fromCodePoint(...[...c].map(x => 0x1F1A5 + x.charCodeAt(0))) : '🌍';
+const drapeauEmoji = c => /^[A-Z]{2}$/.test(c || '') ? String.fromCodePoint(...[...c].map(x => 0x1F1A5 + x.charCodeAt(0))) : '🌍';
+const drapeau = c => /^[A-Z]{2}$/.test(c || '') ? `<img class="dp" src="https://flagcdn.com/w40/${c.toLowerCase()}.png" alt="" loading="lazy" onerror="this.outerHTML='${drapeauEmoji(c)}'">` : '🌍';
+// symbole de la devise (€, $, £, F CFA…) dans la langue de l'utilisateur
+function symboleDevise(d){
+  try{ const sy = (0).toLocaleString(LOC, { style: 'currency', currency: d, currencyDisplay: 'narrowSymbol' }).replace(/[\d.,]/g, '').replace(/[\s\u00a0\u202f]+/g, ' ').trim(); return sy && sy !== d ? sy : ''; }catch(e){ return ''; }
+}
 
 /* ---- taux de change (unités de la devise pour 1 F CFA) ---- */
 const TAUX_SECOURS = { XOF: 1, XAF: 1, EUR: 1 / 655.957, USD: 1 / 570, GBP: 1 / 760, CHF: 1 / 700, CAD: 1 / 415, MAD: 1 / 61, TND: 1 / 194,
@@ -1722,12 +1729,12 @@ function rendreReglages(){
     <div class="ep-ch"><label>${T('Langue')}</label><div class="ep-choix">
       ${[['fr', 'Français'], ['en', 'English'], ['es', 'Español'], ['ar', 'العربية']].map(([k, l]) => `<button class="${REG.langue === k ? 'a' : ''}" onclick="REG.langue='${k}';rendreReglages()">${l}</button>`).join('')}</div></div>
     <div class="ep-ch"><label>${T('Pays')}</label><button class="rg-pays" onclick="REG.vue='pays';REG.q='';rendreReglages()"><span>${drapeau(REG.pays)} ${epEsc(nomPays(p))}</span><span>›</span></button></div>
-    <div class="ep-ch"><label>${T('Devise')}</label><select onchange="REG.devise=this.value">${devs.map(d => `<option value="${d}" ${d === REG.devise ? 'selected' : ''}>${d} · ${epEsc(nomDev(d))}</option>`).join('')}</select></div>
-    <p class="s" style="margin-top:10px">${T('Les montants sont convertis au cours du jour, à titre indicatif. Le paiement reste en francs CFA.')}</p>
+    <div class="ep-ch"><label>${T('Devise')}</label><select onchange="REG.devise=this.value">${devs.map(d => `<option value="${d}" ${d === REG.devise ? 'selected' : ''}>${symboleDevise(d) ? symboleDevise(d) + ' · ' : ''}${d} · ${epEsc(nomDev(d))}</option>`).join('')}</select></div>
+    <p class="s" style="margin-top:10px">${MOYENS_PAYS[REG.pays] ? T('Paiement en francs CFA par Mobile Money ou carte bancaire. Les autres devises sont affichées à titre indicatif, au cours du jour.') : T('Paiement par carte bancaire en euros (18,99 € / mois, 44,99 € / 3 mois). Les autres devises sont affichées à titre indicatif, au cours du jour.')}</p>
     <button class="ep-btn" style="margin-top:16px" onclick="enregistrerReglages(this)">${T('Enregistrer')}</button>`);
 }
 function rgLignes(liste){
-  return liste.length ? liste.map(p => `<button class="rg-l ${p.c === REG.pays ? 'a' : ''}" onclick="choisirPays('${p.c}')"><span class="d">${drapeau(p.c)}</span><span class="n">${epEsc(nomPays(p))}</span><span class="c">${p.dev}</span></button>`).join('')
+  return liste.length ? liste.map(p => `<button class="rg-l ${p.c === REG.pays ? 'a' : ''}" onclick="choisirPays('${p.c}')"><span class="d">${drapeau(p.c)}</span><span class="n">${epEsc(nomPays(p))}</span><span class="c">${symboleDevise(p.dev) ? symboleDevise(p.dev) + ' ' : ''}${p.dev}</span></button>`).join('')
     : `<div class="ep-vide" style="margin:10px 0">${T('Aucun pays trouvé.')}</div>`;
 }
 function rgListe(){
@@ -1764,7 +1771,7 @@ async function chargerPreferences(){
 }
 function carteReglages(){
   const p = PAYS_PAR_CODE[PAYS_U];
-  return `<button class="rg-carte" onclick="ouvrirReglages()"><span class="i">🌐</span><span class="t"><b>${T('Langue, pays et devise')}</b><span>${{ fr: 'Français', en: 'English', ar: 'العربية', es: 'Español' }[LANGUE]} · ${drapeau(PAYS_U)} ${epEsc(nomPays(p))} · ${DEVISE}</span></span><span class="fl">›</span></button>`;
+  return `<button class="rg-carte" onclick="ouvrirReglages()"><span class="i">🌐</span><span class="t"><b>${T('Langue, pays et devise')}</b><span>${{ fr: 'Français', en: 'English', ar: 'العربية', es: 'Español' }[LANGUE]} · ${drapeau(PAYS_U)} ${epEsc(nomPays(p))} · ${symboleDevise(DEVISE) ? symboleDevise(DEVISE) + ' ' : ''}${DEVISE}</span></span><span class="fl">›</span></button>`;
 }
 
 function choisirLangueRapide(l){
@@ -4860,7 +4867,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-5';
+const APP_VERSION = '2026-10-30-6';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
