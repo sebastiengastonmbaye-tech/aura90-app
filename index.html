@@ -223,6 +223,8 @@ body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-
 .ps-boite .avert{font-size:10.5px}
 /* ================= ACCUEIL — drapeaux et filtre (30/10/2026) ================= */
 .comp-tete .nom-c img.dl{width:18px;height:13px;border-radius:2px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.m2-info img.dl{width:15px;height:11px;border-radius:2px;object-fit:cover;vertical-align:-1px;margin-right:2px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.flt-puces img.dl,.flt-chips img.dl{width:16px;height:12px}
 .comp-tete .nom-c:has(img.dl)::before{display:none}
 .flt-btn{all:unset;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;background:var(--surface);border:1px solid var(--aura1);color:var(--aura1);font-size:12px;font-weight:800;cursor:pointer;position:relative;flex:none}
 .flt-btn svg{width:14px;height:14px;fill:none;stroke:var(--aura1);stroke-width:2.2;stroke-linecap:round}
@@ -675,6 +677,9 @@ svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;strok
 .pc-haut{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .pc-meta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--sourdine);letter-spacing:.08em}
 .pc-match{font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pc-match .pc-eq{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.pc-match .ecu-m{width:22px;height:22px;padding:1px;box-sizing:border-box}
+.pc-match .ecu-m.sans{display:inline-flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--sourdine);font-size:10px;font-weight:800}
 .pc-score{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--texte);background:var(--surface2);border:1px solid var(--ligne);padding:2px 9px;border-radius:8px}
 .pc-prono{margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px}
 .pc-prono .p{color:var(--sourdine)}
@@ -2401,14 +2406,14 @@ async function chargerPalmares(g){
 const COUL_BADGE = {'Très sûr':'#3DE8C8','Sûr':'#FFB454','Équilibré':'#5BA8F5','Audacieux':'#A78BFF'};
 async function chargerHisto(ajouter){
   try{
-    const histo = await sb(`pronos?verifie=eq.true&signe=eq.true&order=date_match.desc,confiance.desc&limit=20&offset=${HISTO_OFFSET}&select=prono_principal,ligue,date_match,score_reel,prono_gagne,dom,ext,badge,confiance`);
+    const histo = await sb(`pronos?verifie=eq.true&signe=eq.true&order=date_match.desc,confiance.desc&limit=20&offset=${HISTO_OFFSET}&select=prono_principal,ligue,date_match,score_reel,prono_gagne,dom,ext,badge,confiance,logo_dom,logo_ext`);
     const cartes = histo.map(h=>`
       <div class="palm-carte">
         <div class="pc-haut">
           <span class="pc-meta">${new Date(h.date_match+'T00:00:00').toLocaleDateString(LOC,{day:'numeric',month:'short'}).toUpperCase()} · ${h.ligue.toUpperCase()}</span>
           <span class="puce ${h.prono_gagne?'ok':'ko'}">${h.prono_gagne?'✓ VALIDÉ':'✗ PERDU'}</span>
         </div>
-        <div class="pc-match">${h.dom} <span class="pc-score">${h.score_reel||'–'}</span> ${h.ext}</div>
+        <div class="pc-match"><span class="pc-eq">${ecuMini(h.logo_dom,h.dom)}${h.dom}</span><span class="pc-score">${h.score_reel||'–'}</span><span class="pc-eq">${h.ext}${ecuMini(h.logo_ext,h.ext)}</span></div>
         <div class="pc-prono">
           <span class="p">Prono : <b>${h.prono_principal}</b></span>
           <span class="pc-badge" style="color:${COUL_BADGE[h.badge]||'var(--sourdine)'}"><svg class="ic"><use href="#${badgeIco(h.badge)}"/></svg>${h.badge}</span>
@@ -4855,7 +4860,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-3';
+const APP_VERSION = '2026-10-30-5';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
