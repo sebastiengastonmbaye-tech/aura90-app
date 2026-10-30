@@ -1193,6 +1193,7 @@ body{position:fixed;top:0;left:0;right:0;bottom:auto;height:var(--coque,100dvh);
 .page::-webkit-scrollbar{display:none}
 .page.active{display:flex}
 .nav{position:static;flex:none;left:auto;right:auto;bottom:auto}
+body.clavier .nav,body.clavier #ms-bulle,body.clavier #cta-pro,body.clavier #ins-bandeau{display:none !important}
 body.cta-on #page-accueil{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
 /* les éléments qui flottent au-dessus du contenu sont posés dans la coque (jamais sur la fenêtre) */
 #cta-pro{position:absolute;bottom:calc(74px + env(safe-area-inset-bottom,0px))}
@@ -1558,13 +1559,18 @@ const CONFIG = {
   const r = document.documentElement;
   function maj(){
     const vv = window.visualViewport;
-    const h = Math.round(vv && vv.height ? vv.height : window.innerHeight);
+    // hauteur en pixels CSS de mise en page, quel que soit le zoom (vv.height est divisé par le zoom)
+    const h = Math.round(vv && vv.height ? vv.height * (vv.scale || 1) : window.innerHeight);
     if(h > 200) r.style.setProperty('--coque', h + 'px');
   }
   maj();
   if(window.visualViewport){ visualViewport.addEventListener('resize', maj); visualViewport.addEventListener('scroll', maj); }
   window.addEventListener('resize', maj); window.addEventListener('orientationchange', () => setTimeout(maj, 300)); window.addEventListener('pageshow', maj);
   let n = 0; const t = setInterval(() => { maj(); if(++n > 12) clearInterval(t); }, 250);
+  // clavier ouvert (champ de saisie actif) : on masque la barre du bas et la bulle pour laisser la place
+  const champ = el => el && (el.tagName === 'INPUT' && !/checkbox|radio|button|submit/.test(el.type) || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT');
+  document.addEventListener('focusin', e => { if(champ(e.target)) document.body.classList.add('clavier'); });
+  document.addEventListener('focusout', () => setTimeout(() => { if(!champ(document.activeElement)) document.body.classList.remove('clavier'); }, 80));
   document.addEventListener('DOMContentLoaded', () => {
     [document.documentElement, document.body, document.getElementById('app')].forEach(el => {
       if(!el) return;
@@ -2888,9 +2894,9 @@ function ouvrirPaiement(autre){
   const x = prixAffiche(FORMULE), lib = FORMULES[FORMULE][1];
   $('paie-libelle').innerHTML = `${lib} · ${x.reduit ? '<s style="opacity:.55;font-weight:500">' + x.base + '</s> ' : ''}${x.txt}`;
   majBoutonCarte();
-  const z = $('ps-boutons'), carte = $('champ-carte'), mob = carte.nextElementSibling;
+  const z = $('ps-boutons'), carte = $('champ-carte'), mob = $('btn-payer-sp').closest('.champ');
   const carteDabord = modeEuro() ? !autre : !!autre;
-  z.appendChild(carteDabord ? mob : carte);          // le moyen principal en premier
+  z.appendChild(carteDabord ? mob : carte);          // le moyen principal en premier (l'autre passe en dessous)
   $('zone-paiement').classList.add('on');
 }
 function fermerPaiement(){ $('zone-paiement').classList.remove('on'); }
@@ -4962,7 +4968,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-15';
+const APP_VERSION = '2026-10-30-16';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
