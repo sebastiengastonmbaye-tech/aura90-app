@@ -2253,7 +2253,7 @@ function majOffre(){
   const actif = offreActive() && !estAbonne();
   const plans = $('plans');
   let c = $('of-carte');
-  if(actif && plans){
+  if(actif && plans && plans.style.display !== 'none'){
     if(!c){ c = document.createElement('div'); c.id = 'of-carte'; plans.parentNode.insertBefore(c, plans); }
     c.innerHTML = `<div class="of-h"><b>🎁 −${OFFRE.pct} % ${T('activé')}</b><span class="of-chrono">${chronoTxt()}</span></div>
       <small>${T('Code')} <b>${OFFRE.code}</b> · ${T('appliqué automatiquement au paiement, Mobile Money comme carte')}</small>`;
@@ -2661,6 +2661,19 @@ async function chargerAbonnement(){
     SESSION.fin = rows[0]?.actif_jusqua || null;
     sauverSession();
   }
+  // par quel moyen l'abonnement a-t-il été payé ? (carte Whop = renouvellement automatique)
+  if(SESSION.fin){
+    try{ const d = await rpcPub('mon_abonnement'); SESSION.methode = d && d.methode ? String(d.methode) : (d ? 'inconnu' : null); }catch(e){ SESSION.methode = null; }
+    sauverSession();
+  } else SESSION.methode = null;
+}
+// « Prolonger » : uniquement Mobile Money (paiement unique) et au plus 10 jours avant la fin
+const PROLONGER_JOURS = 10;
+function abonneCarte(){ return !!(SESSION.methode && /whop|carte|bictorys|stripe/i.test(SESSION.methode)); }
+function peutProlonger(){
+  if(!estAbonne() || abonneCarte() || SESSION.methode === null || SESSION.methode === undefined) return false;
+  const jours = Math.ceil((new Date(SESSION.fin) - Date.now()) / 864e5);
+  return jours <= PROLONGER_JOURS;
 }
 
 function basculerMdp(id){ const i = $(id); i.type = i.type === 'password' ? 'text' : 'password'; }
@@ -2798,14 +2811,20 @@ function rendreCompte(){
     const jours = Math.max(1, Math.ceil((fin - Date.now()) / 864e5));
     const vie = jours > 3650;
     const pct = vie ? 100 : Math.max(6, Math.min(100, Math.round(jours / 90 * 100)));
+    const carte = abonneCarte(), prol = peutProlonger();
+    const dateFin = fin.toLocaleDateString(LOC, { day: 'numeric', month: 'long' });
+    const sous = vie ? T('Compte à vie')
+      : carte ? T('Renouvelé automatiquement le') + ' ' + dateFin + ' · ' + T('résiliable à tout moment')
+      : T('Encore') + ' ' + jours + ' ' + T(jours > 1 ? 'jours' : 'jour') + (prol ? '' : ' · ' + T('tu pourras prolonger') + ' ' + PROLONGER_JOURS + ' ' + T('jours avant la fin'));
     $('cp-tete').innerHTML = `
       <div class="cp-statut">
-        <div class="h"><span style="color:var(--aura1);font-family:'JetBrains Mono',monospace;letter-spacing:.14em;font-size:10.5px">${T('TON ABONNEMENT')}</span><span>${T('PRO')}</span></div>
-        <div class="t">${vie ? T('PRO actif, sans date de fin') : T('PRO actif jusqu\'au') + ' ' + fin.toLocaleDateString(LOC, { day: 'numeric', month: 'long' })}</div>
+        <div class="h"><span style="color:var(--aura1);font-family:'JetBrains Mono',monospace;letter-spacing:.14em;font-size:10.5px">${T('TON ABONNEMENT')}</span><span>${carte ? T('carte') : SESSION.methode && SESSION.methode !== 'inconnu' ? T('Mobile Money') : 'PRO'}</span></div>
+        <div class="t">${vie ? T('PRO actif, sans date de fin') : T('PRO actif jusqu\'au') + ' ' + dateFin}</div>
         <div class="b"><i style="width:${pct}%"></i></div>
-        <small>${vie ? T('Compte à vie') : T('Encore') + ' ' + jours + ' ' + T(jours > 1 ? 'jours' : 'jour') + ' · ' + T('renouvellement automatique, résiliable à tout moment')}</small>
+        <small>${sous}</small>
       </div>
-      <div class="cp-prolong"><h2>${T('Prolonger maintenant')}</h2><p>${T('La durée choisie s\'ajoute à ta date de fin : tu ne perds aucun jour.')}</p></div>`;
+      ${carte ? `<a class="lien-retour" href="https://whop.com/orders/" target="_blank" rel="noopener" style="margin-top:10px">${T('Gérer mon abonnement, changer de carte ou résilier')}</a>` : ''}
+      ${prol ? `<div class="cp-prolong"><h2>${T('Prolonger maintenant')}</h2><p>${T('La durée choisie s\'ajoute à ta date de fin : tu ne perds aucun jour.')}</p></div>` : ''}`;
   } else {
     const ok = g => `<span class="c ${g ? 'g' : ''}"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>`;
     const non = '<span class="n">—</span>';
@@ -2818,6 +2837,10 @@ function rendreCompte(){
       </div>
       <button class="cp-decouvrir" onclick="ouvrirGuide()"><span class="ic">✨</span><span class="t"><b>${T('Ce qu\'AURA90 va changer pour toi')}</b><small>${T('Le moteur, les analyses, les séries, le LIVE : tout en 2 minutes')}</small></span><span class="fl">›</span></button>`;
   }
+  // abonné qui ne peut pas (ou n'a pas à) prolonger : plus de formules ni de bouton de paiement
+  const vente = !ab || peutProlonger();
+  ['ldc-bandeau', 'plans', 'promo-bloc', 'cta-zone'].forEach(id => { const e = $(id); if(e) e.style.display = vente ? '' : 'none'; });
+  const ofc = $('of-carte'); if(ofc) ofc.style.display = vente ? '' : 'none';
   // --- bandeau Ligue des champions
   rendreLdc();
   // --- formules
@@ -2826,6 +2849,7 @@ function rendreCompte(){
   const m = MOYENS_PAYS[PAYS_U];
   $('cp-moyens').textContent = '🔒 ' + (euro ? T('Carte bancaire, Apple Pay, Google Pay') : m + ', ' + T('carte bancaire'));
   $('cp-autre').textContent = euro ? T('Payer par Mobile Money (Wave, OM…)') : T('Payer par carte bancaire en euros');
+  $('cp-acces').textContent = euro ? T('Accès immédiat · renouvellement automatique, résiliable à tout moment') : T('Accès immédiat · paiement unique, sans renouvellement automatique');
   $('cp-autre').style.display = euro || carteVisible() ? '' : 'none';
   $('cgu-txt').innerHTML = T("J'accepte les") + ' ' + texteLegal('/cgu.html', T("conditions d'utilisation")) + ' ' + T('et de') + ' ' + texteLegal('/cgv.html', T('vente')) + '.';
   $('pied-legal').innerHTML = [['/cgu.html', 'CGU'], ['/cgv.html', 'CGV'], ['/confidentialite.html', T('Confidentialité')], ['/mentions-legales.html', T('Mentions légales')]].map(x => texteLegal(x[0], x[1])).join(' · ');
@@ -4968,7 +4992,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-16';
+const APP_VERSION = '2026-10-30-17';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
