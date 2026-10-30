@@ -3310,7 +3310,14 @@ function blocMontante(def){
   const auj = new Date().toISOString().slice(0,10);
   const LIGNES = lignesMontante(def.type);
   let N = def.paliers;
-  const k = n => n >= 1e6 ? (n/1e6).toFixed(1).replace('.0','')+'M' : n >= 1e3 ? Math.round(n/1e3)+'k' : String(Math.round(n));
+  // 30/10/2026 : montants des cases dans la devise de l'utilisateur (F CFA : 15k, 23k… ; sinon 23 €, 35 €…)
+  const kF = n => n >= 1e6 ? (n/1e6).toFixed(1).replace('.0','')+'M' : n >= 1e3 ? Math.round(n/1e3)+'k' : String(Math.round(n));
+  const k = n => {
+    if(CFA || !DEV_OK) return kF(n);
+    const v = enDevise(n);
+    try{ return new Intl.NumberFormat(LOC, { style:'currency', currency: DEVISE, notation:'compact', maximumFractionDigits: v < 1000 ? 0 : 1 }).format(v); }
+    catch(e){ return kF(v) + ' ' + DEVISE; }
+  };
   if(!LIGNES.length){
     return `
       <div class="mt-hero ${def.type==='turbo'?'turbo':''}">
@@ -4478,7 +4485,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-1';
+const APP_VERSION = '2026-10-30-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
