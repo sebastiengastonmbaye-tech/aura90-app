@@ -132,6 +132,131 @@ body.cta-on #page-accueil{padding-bottom:calc(210px + env(safe-area-inset-bottom
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--surface)}
 body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--nuit);z-index:190;pointer-events:none}
+/* ================= PAGE COMPTE — redesign du 30/10/2026 ================= */
+#cp-tete .cp-h1{margin:18px 20px 0;font-size:28px;line-height:1.14;font-weight:800;letter-spacing:-.5px}
+#cp-tete .cp-h1 i{font-style:normal;color:var(--aura1)}
+.cp-tab{margin:18px 16px 0;border-radius:16px;border:1px solid var(--ligne);overflow:hidden;font-size:13px}
+.cp-tab .r{display:grid;grid-template-columns:minmax(0,1fr) 58px 58px;align-items:center;padding:11px 13px;border-top:1px solid var(--ligne)}
+.cp-tab .r:first-child{border-top:none;background:var(--surface);padding:9px 13px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--sourdine)}
+.cp-tab .r:first-child b{text-align:center;font-weight:700}
+.cp-tab .r:first-child b.p{color:var(--aura1)}
+.cp-tab .r em{font-style:normal}
+.cp-tab .c{justify-self:center;display:flex}
+.cp-tab .c svg{width:15px;height:15px;fill:none;stroke:var(--aura1);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.cp-tab .c.g svg{stroke:var(--sourdine)}
+.cp-tab .n{justify-self:center;color:#4A5A70}
+.cp-statut{margin:14px 16px 0;padding:16px;border-radius:18px;background:var(--surface);border:1px solid rgba(61,232,200,.45);display:flex;flex-direction:column;gap:10px}
+.cp-statut .h{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--aura1)}
+.cp-statut .h span{color:var(--sourdine);letter-spacing:0;font-family:'Manrope';font-weight:600;font-size:11.5px}
+.cp-statut .t{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.cp-statut .b{height:7px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.cp-statut .b i{display:block;height:100%;background:linear-gradient(90deg,var(--aura1),var(--aura2))}
+.cp-statut small{font-size:12px;color:var(--sourdine);line-height:1.5}
+.cp-prolong{padding:20px 20px 0}
+.cp-prolong h2{font-size:16px;font-weight:800;margin:0}
+.cp-prolong p{margin:4px 0 0;font-size:12.5px;line-height:1.5;color:var(--sourdine)}
+/* bandeau Ligue des champions */
+.ldc{position:relative;overflow:hidden;margin:18px 16px 0;padding:13px 14px;border-radius:16px;border:1px solid rgba(160,185,255,.45);
+  background:radial-gradient(120% 90% at 85% 0%,#2B3F8F 0%,#121B4A 45%,#070B22 100%);display:flex;flex-direction:column;gap:9px;animation:ldcPulse 3s ease-in-out infinite}
+.ldc .et{position:absolute;inset:0;pointer-events:none}
+.ldc .et svg{position:absolute;animation:ldcTw 2.4s ease-in-out infinite}
+.ldc .sw{position:absolute;top:0;bottom:0;left:0;width:35%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.10),transparent);animation:ldcSweep 4.5s ease-in-out infinite}
+.ldc .h{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;white-space:nowrap}
+.ldc .tag{padding:3px 9px;border-radius:99px;background:linear-gradient(90deg,#DCE6FF,#8FB7FF);color:#0A1240;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;letter-spacing:.1em}
+.ldc .jq{font-size:11.5px;color:#C9D6FF;font-weight:700}
+.ldc .m{position:relative;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;line-height:1.3}
+.ldc .m svg{flex:none;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+.ldc .m svg .rot{transform-origin:50px 50px;animation:ldcSpin 3.2s linear infinite}
+.ldc .cd{position:relative;display:flex;gap:6px;align-items:center}
+.ldc .cd i{color:#8FB7FF;font-style:normal;font-weight:800}
+.ldc .cd span{display:flex;flex-direction:column;align-items:center;min-width:44px;padding:5px 4px;border-radius:9px;background:rgba(5,9,30,.75);border:1px solid rgba(160,185,255,.35)}
+.ldc .cd b{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:800;color:#fff}
+.ldc .cd small{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:#9FB0D8}
+@keyframes ldcTw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+@keyframes ldcSpin{to{transform:rotate(360deg)}}
+@keyframes ldcSweep{0%{transform:translateX(-120%)}60%,100%{transform:translateX(320%)}}
+@keyframes ldcPulse{0%,100%{box-shadow:0 0 0 0 rgba(143,183,255,0)}50%{box-shadow:0 0 18px 2px rgba(143,183,255,.35)}}
+/* formules */
+.plans{padding:14px 16px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.plan{all:unset;box-sizing:border-box;position:relative;padding:13px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);display:flex;flex-direction:column;gap:4px;cursor:pointer;text-align:start;min-width:0}
+.plan.choisie{border:2px solid var(--aura1);padding:12px 11px}
+.plan .pl-l{display:flex;justify-content:space-between;align-items:center;gap:6px;white-space:nowrap}
+.plan .pl-nom{font-size:13px;font-weight:700;color:var(--sourdine)}
+.plan.choisie .pl-nom{color:var(--aura1);font-weight:800}
+.plan .pl-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ko,#FF6B81)}
+.plan .pl-barre{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ko,#FF6B81)}
+.plan .prix{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:19px;white-space:nowrap;display:flex;flex-direction:column}
+.plan .prix s{font-size:11px;font-weight:600;opacity:.6}
+.plan .pl-sous{font-size:11px;color:var(--sourdine);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan .pl-badge{position:absolute;top:-10px;right:10px;padding:2px 8px;border-radius:99px;background:var(--aura1);color:#062019;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;letter-spacing:.06em}
+#page-compte #of-carte{margin:14px 16px 0}
+.plans .of-px{display:none}
+.promo-bloc{margin:12px 16px 0;padding:12px 13px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);display:flex;flex-direction:column;gap:9px}
+.promo-bloc label{font-size:12.5px;font-weight:700;color:#A9B4C5}
+.promo-bloc .pb-ligne{display:flex;gap:8px}
+.promo-bloc input{flex:1;min-width:0;box-sizing:border-box;padding:10px 11px;border-radius:10px;border:1px solid var(--ligne);background:var(--nuit);color:var(--texte);font-family:'JetBrains Mono',monospace;font-size:12.5px;text-transform:uppercase}
+.promo-bloc .pb-ligne button{all:unset;padding:10px 13px;border-radius:10px;background:var(--surface2);font-weight:700;font-size:12.5px;cursor:pointer}
+.promo-bloc #msg-promo .avert{margin:0;text-align:start}
+.cta-zone{padding:16px 16px 0;display:flex;flex-direction:column;gap:9px}
+.cp-cta{all:unset;box-sizing:border-box;text-align:center;padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#061412;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 24px rgba(61,232,200,.3)}
+.cp-moyens,.cp-acces{text-align:center;font-size:11.5px;color:var(--sourdine);line-height:1.5}
+.cp-cgu{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.5;color:#A9B4C5;padding:2px 2px 0;cursor:pointer;border-radius:8px}
+.cp-cgu input{margin:2px 0 0;width:18px;height:18px;flex:none;accent-color:var(--aura1)}
+.cp-cgu a{color:var(--aura1)}
+.cp-cgu.ko{animation:cguShake .4s ease;color:var(--ko,#FF6B81)}
+@keyframes cguShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#cp-autre{margin:2px 0 0;text-decoration:none;font-size:12.5px}
+#bloc-auth{margin-top:8px}
+#bloc-profil .section-titre{margin-top:22px}
+.cp-ligne{width:calc(100% - 32px);margin:6px 16px 4px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);font-family:inherit;font-size:13px;font-weight:700;text-align:start;cursor:pointer}
+.carte-admin{border-color:rgba(139,124,255,.6);background:linear-gradient(120deg,rgba(139,124,255,.14),var(--surface))}
+.carte-admin b{color:#C9BFFF}
+.cp-pied{padding:14px 24px 10px;text-align:center;font-size:10.5px;line-height:1.7;color:var(--sourdine);display:flex;flex-direction:column;gap:4px}
+.cp-pied a{color:var(--sourdine)}
+/* feuille de paiement */
+#zone-paiement{position:absolute;inset:0;z-index:60;background:rgba(3,6,12,.72);display:none;align-items:flex-end}
+#zone-paiement.on{display:flex}
+.ps-boite{width:100%;box-sizing:border-box;border-radius:22px 22px 0 0;background:#0B111B;border-top:1px solid var(--ligne);padding:10px 0 calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 50px rgba(0,0,0,.6);animation:psIn .28s ease}
+@keyframes psIn{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.ps-poignee{width:40px;height:4px;border-radius:99px;background:#2A3A52;margin:0 auto 12px}
+.ps-titre{margin:0 16px 10px;font-size:17px;font-weight:800}
+.ps-boite .avert{font-size:10.5px}
+/* ================= ACCUEIL — drapeaux et filtre (30/10/2026) ================= */
+.comp-tete .nom-c img.dl{width:18px;height:13px;border-radius:2px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.comp-tete .nom-c:has(img.dl)::before{display:none}
+.flt-btn{all:unset;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:99px;background:var(--surface);border:1px solid var(--aura1);color:var(--aura1);font-size:12px;font-weight:800;cursor:pointer;position:relative;flex:none}
+.flt-btn svg{width:14px;height:14px;fill:none;stroke:var(--aura1);stroke-width:2.2;stroke-linecap:round}
+.flt-btn .n{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;border-radius:99px;background:var(--ko,#FF6B81);color:#1A0710;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px;box-sizing:border-box}
+.flt-puces{display:flex;gap:8px;padding:0 16px 8px;overflow-x:auto;scrollbar-width:none}
+.flt-puces::-webkit-scrollbar{display:none}
+.flt-puces button{all:unset;display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;background:var(--surface);border:1px solid var(--ligne);font-size:12px;font-weight:700;color:#C9D3E2;white-space:nowrap;cursor:pointer}
+.flt-puces button img{width:16px;height:12px;border-radius:2px;object-fit:cover}
+.flt-puces button i{font-style:normal;color:var(--sourdine);margin-left:2px}
+.flt-vide{margin:30px 24px;text-align:center;color:var(--sourdine);font-size:13px;line-height:1.6}
+.flt-vide button{all:unset;display:inline-block;margin-top:10px;padding:9px 14px;border-radius:99px;border:1px solid var(--aura1);color:var(--aura1);font-weight:800;cursor:pointer}
+#flt-feuille{position:absolute;inset:0;z-index:60;background:rgba(3,6,12,.72);display:none;align-items:flex-end}
+#flt-feuille.on{display:flex}
+.flt-boite{width:100%;max-height:88%;box-sizing:border-box;overflow-y:auto;border-radius:22px 22px 0 0;background:#0B111B;border-top:1px solid var(--ligne);padding:10px 18px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;box-shadow:0 -20px 50px rgba(0,0,0,.6);animation:psIn .28s ease}
+.flt-boite .h{display:flex;align-items:center;justify-content:space-between}
+.flt-boite .h b{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.flt-boite .h button,.flt-tt button{all:unset;font-size:12.5px;color:var(--sourdine);cursor:pointer}
+.flt-tt{display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--sourdine)}
+.flt-tt button{color:var(--aura1);font-weight:700;font-family:'Manrope';letter-spacing:0}
+.flt-chips{display:flex;flex-wrap:wrap;gap:8px}
+.flt-chips button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.flt-chips button img{width:16px;height:12px;border-radius:2px;object-fit:cover}
+.flt-chips button.on{background:rgba(61,232,200,.12);border:1.5px solid var(--aura1);color:var(--texte);padding:7.5px 10.5px}
+.flt-chips button.on::after{content:'✓';color:var(--aura1);font-weight:800}
+.flt-seg{display:flex;padding:4px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne)}
+.flt-seg button{all:unset;flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:12.5px;font-weight:800;color:var(--sourdine);cursor:pointer}
+.flt-seg button.on{background:var(--surface2);color:var(--texte)}
+.flt-dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.flt-dates label{display:flex;flex-direction:column;gap:3px;padding:9px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--ligne)}
+.flt-dates label span{font-size:10.5px;color:var(--sourdine);font-weight:700}
+.flt-dates input{all:unset;font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;color:var(--texte);color-scheme:dark;width:100%}
+.flt-note{font-size:11.5px;color:var(--sourdine);display:flex;align-items:center;gap:6px}
+.flt-note::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--aura1)}
+.flt-ok{all:unset;box-sizing:border-box;text-align:center;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#061412;font-weight:800;font-size:15.5px;cursor:pointer}
 html,body{height:100%;overflow-x:hidden;max-width:100%}
 @supports (height:100dvh){ html,body{height:100dvh} }
 body{background:var(--nuit);color:var(--texte);font-family:'Manrope',sans-serif;display:flex;flex-direction:column}
@@ -1158,11 +1283,36 @@ const CONFIG = {
     <div id="zone-coupons"><div class="chargement">CHARGEMENT DES COUPONS…</div></div>
   </div>
 
-  <!-- ============ COMPTE / ABO ============ -->
+  <!-- ============ COMPTE / ABO (redesign du 30/10/2026) ============ -->
   <div class="page" id="page-compte">
-    <div class="abo-tete"><h2>Chaque match.<br>Chaque verdict.</h2><p>Analyse illimitée sur toutes les compétitions couvertes.</p></div>
-    <div id="zone-reglages"></div>
-    <button class="carte-guide" onclick="ouvrirGuide()"><span class="ic-g">📖</span><span class="g"><b id="gd-carte-t">Comment marche AURA90 ?</b><small id="gd-carte-s">Le guide de chaque section, montantes comprises</small></span><span class="fl">›</span></button>
+    <div id="cp-tete"></div>
+    <div id="ldc-bandeau"></div>
+    <div class="plans" id="plans">
+      <button class="plan" data-f="mois" onclick="choisirFormule('mois',12000,'1 mois',this)">
+        <span class="pl-l"><span class="pl-nom">1 mois</span><span class="pl-tag" id="pl-tag-mois"></span></span>
+        <span class="prix" id="pl-prix-mois"></span>
+        <span class="pl-sous" id="pl-sous-mois"></span>
+      </button>
+      <button class="plan choisie" data-f="3mois" onclick="choisirFormule('3mois',30000,'3 mois',this)">
+        <span class="pl-badge" id="pl-badge-3mois">−21 %</span>
+        <span class="pl-l"><span class="pl-nom">3 mois</span><s class="pl-barre" id="pl-barre-3mois"></s></span>
+        <span class="prix" id="pl-prix-3mois"></span>
+        <span class="pl-sous" id="pl-sous-3mois"></span>
+      </button>
+    </div>
+    <div class="promo-bloc" id="promo-bloc">
+      <label for="code-promo">Un code promo ?</label>
+      <div class="pb-ligne"><input id="code-promo" placeholder="Code partenaire ou reçu par mail" autocomplete="off" oninput="verifierCodePromo()"><button onclick="verifierCodePromo(true)">Appliquer</button></div>
+      <div id="msg-promo"></div>
+    </div>
+    <div class="cta-zone" id="cta-zone">
+      <button class="cp-cta" id="cp-cta" onclick="clicPasserPro()">Passer PRO</button>
+      <div class="cp-moyens" id="cp-moyens"></div>
+      <div class="cp-acces" id="cp-acces">Accès immédiat · renouvellement automatique, résiliable à tout moment</div>
+      <label class="cp-cgu" id="cp-cgu"><input type="checkbox" id="cgu-ok" onchange="$('cp-cgu').classList.remove('ko');if(this.checked)$('msg-acces').innerHTML=''"><span id="cgu-txt"></span></label>
+      <button class="lien-retour" id="cp-autre" onclick="ouvrirPaiement(true)"></button>
+    </div>
+    <div id="msg-acces"></div>
 
     <!-- ----- non connecté ----- -->
     <div id="bloc-auth">
@@ -1195,40 +1345,15 @@ const CONFIG = {
 
     <!-- ----- connecté ----- -->
     <div id="bloc-profil" style="display:none">
-      <button id="btn-admin" class="carte-admin" style="display:none" onclick="location.href='admin.html'">
-        🛠️ <span>Panneau d'administration</span> <b>›</b>
-      </button>
-      <div id="statut-acces"></div>
-      </div>
-      <div class="offre star" style="cursor:pointer" onclick="choisirFormule('mois',12000,'1 mois',this)">
-        <div class="populaire">OFFRE DE LANCEMENT</div>
-        <div class="g"><div class="nom-o">Mois</div><div class="eco"><b>−20 %</b> pendant l'offre de lancement</div></div>
-        <div class="prix"><span class="ancien" data-m="15000"></span><span data-m="12000"></span><small>/ mois</small><span class="usd" data-xof="12000"></span></div>
-        <div class="radio"></div>
-      </div>
-      <div class="offre" style="cursor:pointer" onclick="choisirFormule('3mois',30000,'3 mois',this)">
-        <div class="g"><div class="nom-o">3 mois</div><div class="eco">soit <b>≈ <span data-m="10000"></span>/mois</b> au lieu de <span data-m="15000"></span></div></div>
-        <div class="prix"><span class="ancien" data-m="45000"></span><span data-m="30000"></span><small></small><span class="usd" data-xof="30000"></span></div>
-        <div class="radio"></div>
-      </div>
-      <div class="note-secu"><span id="note-paiement"></span><br>Prix de lancement, durée limitée — le passage au plein tarif (<span data-m="15000"></span>/mois) sera annoncé à l'avance.</div>
-      <div id="zone-paiement" style="display:none">
-        <div class="recap-paie"><span>FORMULE CHOISIE</span><b id="paie-libelle"></b></div>
-        <div class="champ">
-          <input id="code-promo" placeholder="Code promo (optionnel)" autocomplete="off" style="text-transform:uppercase" oninput="verifierCodePromo()">
-        </div>
-        <div id="msg-promo"></div>
-        <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" id="btn-payer-sp" onclick="payerMaintenant('mobile')">📱 Wave, Orange Money… Carte bancaire</button></div>
-        <div class="champ" id="champ-carte" style="display:none"><button class="bouton-carte" id="btn-payer-carte" onclick="payerMaintenant('carte')">💳 Apple Pay, Google Pay, Carte bancaire</button></div>
-        <div class="avert" id="avert-carte" style="display:none">Paiement sécurisé, accès PRO activé automatiquement. 📱 Wave, Orange Money, Mobile Money ou carte bancaire selon ton pays, payé en francs CFA. 💳 Apple Pay, Google Pay ou carte bancaire depuis n'importe quel pays, payé en euros : 18,99 €/mois ou 44,99 €/3 mois, renouvelé automatiquement, résiliable à tout moment (code promo non valable).</div>
-        <div class="avert" id="avert-mobile">Paiement sécurisé via SasPay : Wave, Orange Money, Mobile Money ou carte bancaire selon ton pays. Ton accès PRO s'active automatiquement.</div>
-      </div>
-      <div id="msg-acces"></div>
-
-      <div class="champ"><button style="flex:1" id="btn-push" onclick="activerPush()">🔔 Activer les notifications</button></div>
+      <div class="section-titre">Mon compte</div>
+      <div id="zone-reglages"></div>
+      <button class="carte-guide" onclick="ouvrirGuide()"><span class="ic-g">📖</span><span class="g"><b id="gd-carte-t">Comment marche AURA90 ?</b><small id="gd-carte-s">Le guide de chaque section, montantes comprises</small></span><span class="fl">›</span></button>
+      <button class="cp-ligne" id="btn-push" onclick="activerPush()">🔔 Activer les notifications</button>
       <div id="msg-push"></div>
-
       <div id="zone-partenaire"></div>
+      <button id="btn-admin" class="carte-admin" style="display:none" onclick="location.href='admin.html'">
+        🛠️ <span>Panneau admin</span> <b>›</b>
+      </button>
       <button class="lien-retour" id="btn-deco" onclick="deconnecter()">Se déconnecter (<span id="profil-email"></span>)</button>
     </div>
 
@@ -1237,7 +1362,49 @@ const CONFIG = {
       <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📲 Installer l'app</button>
     </div>
 
-    <div class="jeu-resp" id="pied-resp">Interdit aux moins de 18 ans. AURA90 fournit des analyses statistiques,<br>jamais une garantie de résultat.</div>
+    <div class="cp-pied" id="pied-resp"><span>Réservé aux 18 ans et plus. AURA90 fournit des analyses statistiques, jamais une garantie de résultat.</span><span id="pied-legal"></span><span>© 2026 AURA90 · Tous droits réservés</span></div>
+  </div>
+
+  <!-- feuille de paiement (choix du moyen) -->
+  <div id="zone-paiement" onclick="if(event.target===this)fermerPaiement()">
+    <div class="ps-boite">
+      <div class="ps-poignee"></div>
+      <div class="ps-titre">Comment veux-tu payer ?</div>
+      <div class="recap-paie"><span>FORMULE CHOISIE</span><b id="paie-libelle"></b></div>
+      <div id="ps-boutons">
+        <div class="champ" id="champ-carte" style="display:none"><button class="bouton-carte" id="btn-payer-carte" onclick="payerMaintenant('carte')">💳 Apple Pay, Google Pay, Carte bancaire</button></div>
+        <div class="champ"><button class="bouton-aura" style="margin:0;flex:1" id="btn-payer-sp" onclick="payerMaintenant('mobile')">📱 Wave, Orange Money… Carte bancaire</button></div>
+      </div>
+      <div class="avert" id="avert-carte" style="display:none">Paiement sécurisé, accès PRO activé automatiquement. 📱 Wave, Orange Money, Mobile Money ou carte bancaire selon ton pays, payé en francs CFA. 💳 Apple Pay, Google Pay ou carte bancaire depuis n'importe quel pays, payé en euros : 18,99 €/mois ou 44,99 €/3 mois, renouvelé automatiquement, résiliable à tout moment (code promo non valable).</div>
+      <div class="avert" id="avert-mobile">Paiement sécurisé via SasPay : Wave, Orange Money, Mobile Money ou carte bancaire selon ton pays. Ton accès PRO s'active automatiquement.</div>
+    </div>
+  </div>
+
+  <!-- feuille de filtre de l'accueil -->
+  <div id="flt-feuille" onclick="if(event.target===this)fermerFiltre()">
+    <div class="flt-boite">
+      <div class="ps-poignee" style="margin-bottom:2px"></div>
+      <div class="h"><b>Filtrer l'accueil</b><button onclick="fltReinit()">Réinitialiser</button></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="flt-tt"><span>CHAMPIONNATS</span><span><button onclick="fltTout(true)">Tout</button> · <button onclick="fltTout(false)">Aucun</button></span></div>
+        <div class="flt-chips" id="flt-chips"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="flt-tt"><span>DATES</span></div>
+        <div class="flt-seg" id="flt-seg">
+          <button data-md="tous" onclick="fltMode('tous')">Tout</button>
+          <button data-md="auj" onclick="fltMode('auj')">Aujourd'hui</button>
+          <button data-md="demain" onclick="fltMode('demain')">Demain</button>
+          <button data-md="periode" onclick="fltMode('periode')">Période</button>
+        </div>
+        <div class="flt-dates" id="flt-dates" style="display:none">
+          <label><span>Du</span><input type="date" id="flt-du" onchange="fltDates()"></label>
+          <label><span>Au</span><input type="date" id="flt-au" onchange="fltDates()"></label>
+        </div>
+        <div class="flt-note" id="flt-note"></div>
+      </div>
+      <button class="flt-ok" id="flt-ok" onclick="fermerFiltre(true)">Voir les matchs</button>
+    </div>
   </div>
 
   <div id="panneau-install" onclick="if(event.target===this)fermerGuideInstall()">
@@ -1817,6 +1984,92 @@ function majCtaPro(){
   el.classList.toggle('on', ok);
   document.body.classList.toggle('cta-on', ok);
 }
+/* ---- drapeaux des championnats (30/10/2026) ---- */
+const PAYS_LIGUE = { 'Ligue 1':'fr', 'Ligue 2':'fr', 'Premier League':'gb-eng', 'Championship':'gb-eng', 'League One':'gb-eng', 'FA Cup':'gb-eng', 'EFL Cup':'gb-eng', 'League Cup':'gb-eng',
+  'La Liga':'es', 'Segunda División':'es', 'Serie A':'it', 'Serie B':'it', 'Bundesliga':'de', '2. Bundesliga':'de', 'Liga Portugal':'pt', 'Primeira Liga':'pt', 'Jupiler Pro League':'be',
+  'Süper Lig':'tr', 'Eredivisie':'nl', 'Eerste Divisie':'nl', 'MLS':'us', 'Saudi Pro League':'sa', 'Ligue des Champions':'eu', 'Ligue Europa':'eu', 'Ligue Conférence':'eu', 'Ligue des Nations':'eu',
+  'Brasileirão':'br', 'Liga Profesional':'ar', 'Liga MX':'mx', 'Süper Lig Turquie':'tr', 'Scottish Premiership':'gb-sct', 'Super League':'ch', 'Bundesliga Autriche':'at' };
+function drapeauLigue(l){
+  const c = PAYS_LIGUE[l]; if(!c) return '';
+  return `<img class="dl" src="https://flagcdn.com/w40/${c}.png" alt="" loading="lazy" onerror="this.remove()">`;
+}
+/* ---- filtre de l'accueil (30/10/2026) : championnats + dates, mémorisé sur l'appareil ---- */
+let FLT = { ligues: null, mode: 'tous', du: '', au: '' };
+try{ const f = JSON.parse(localStorage.getItem('aura90_filtre') || 'null'); if(f && typeof f === 'object') FLT = { ...FLT, ...f }; }catch(e){}
+const jourLocal = d => { d = d || new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+function fltSauver(){ try{ localStorage.setItem('aura90_filtre', JSON.stringify(FLT)); }catch(e){} }
+function fltLigues(){ return [...new Set(pronosAccueil().map(p => p.ligue))].sort((a, b) => a.localeCompare(b, 'fr')); }
+function fltBornes(){ const L = pronosAccueil().map(p => dLoc(p.date_match, p.heure)).sort(); return [L[0] || jourLocal(), L[L.length - 1] || jourLocal()]; }
+function fltNettoyer(){
+  const auj = jourLocal(), dem = jourLocal(new Date(Date.now() + 864e5));
+  if(FLT.mode === 'periode' && (!FLT.au || FLT.au < auj)) FLT.mode = 'tous';
+  if(FLT.mode === 'periode' && FLT.du && FLT.du < auj) FLT.du = auj;
+  if(FLT.ligues){ const L = fltLigues(); if(L.length && !FLT.ligues.some(x => L.includes(x))) FLT.ligues = null; }
+  return { auj, dem };
+}
+function fltActif(){ return !!(FLT.ligues) || FLT.mode !== 'tous'; }
+function fltNb(){ return (FLT.ligues ? 1 : 0) + (FLT.mode !== 'tous' ? 1 : 0); }
+function filtrerPronos(L){
+  const { auj, dem } = fltNettoyer();
+  return L.filter(p => {
+    if(FLT.ligues && !FLT.ligues.includes(p.ligue)) return false;
+    const d = dLoc(p.date_match, p.heure);
+    if(FLT.mode === 'auj') return d === auj;
+    if(FLT.mode === 'demain') return d === dem;
+    if(FLT.mode === 'periode') return (!FLT.du || d >= FLT.du) && (!FLT.au || d <= FLT.au);
+    return true;
+  });
+}
+function fltDateCourte(d){ return new Date(d + 'T12:00:00').toLocaleDateString(LOC, { day: 'numeric', month: 'short' }); }
+function fltBouton(){
+  const n = fltNb();
+  return `<button class="flt-btn" onclick="ouvrirFiltre()"><svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg>${T('Filtrer')}${n ? `<span class="n">${n}</span>` : ''}</button>`;
+}
+function fltPuces(){
+  if(!fltActif()) return '';
+  let h = '';
+  (FLT.ligues || []).forEach(l => { h += `<button onclick="fltRetirerLigue('${l.replace(/'/g, "\\'")}')">${drapeauLigue(l)}${l}<i>✕</i></button>`; });
+  if(FLT.mode === 'auj') h += `<button onclick="fltMode('tous',true)">📅 ${T("Aujourd'hui")}<i>✕</i></button>`;
+  if(FLT.mode === 'demain') h += `<button onclick="fltMode('tous',true)">📅 ${T('Demain')}<i>✕</i></button>`;
+  if(FLT.mode === 'periode') h += `<button onclick="fltMode('tous',true)">📅 ${FLT.du ? fltDateCourte(FLT.du) : '…'} → ${FLT.au ? fltDateCourte(FLT.au) : '…'}<i>✕</i></button>`;
+  return `<div class="flt-puces">${h}</div>`;
+}
+function fltRetirerLigue(l){ if(!FLT.ligues) return; FLT.ligues = FLT.ligues.filter(x => x !== l); if(!FLT.ligues.length) FLT.ligues = null; fltSauver(); afficherAccueil(); }
+function fltReinit(){ FLT = { ligues: null, mode: 'tous', du: '', au: '' }; fltSauver(); fltRendreFeuille(); }
+function fltTout(oui){ FLT.ligues = oui ? null : []; fltRendreFeuille(); }
+function fltBasculer(l){
+  const L = fltLigues();
+  let sel = FLT.ligues ? [...FLT.ligues] : [...L];
+  sel = sel.includes(l) ? sel.filter(x => x !== l) : [...sel, l];
+  FLT.ligues = sel.length >= L.length ? null : sel;
+  fltRendreFeuille();
+}
+function fltMode(m, direct){
+  FLT.mode = m;
+  if(m === 'periode'){ const [a, b] = fltBornes(); if(!FLT.du) FLT.du = jourLocal(); if(!FLT.au || FLT.au > b) FLT.au = b; }
+  if(direct){ fltSauver(); afficherAccueil(); return; }
+  fltRendreFeuille();
+}
+function fltDates(){
+  const [a, b] = fltBornes(), auj = jourLocal();
+  let du = $('flt-du').value || auj, au = $('flt-au').value || b;
+  if(du < auj) du = auj; if(au > b) au = b; if(au < du) au = du;
+  FLT.du = du; FLT.au = au; fltRendreFeuille();
+}
+function fltRendreFeuille(){
+  const L = fltLigues(), [a, b] = fltBornes();
+  $('flt-chips').innerHTML = L.map(l => `<button class="${!FLT.ligues || FLT.ligues.includes(l) ? 'on' : ''}" onclick="fltBasculer('${l.replace(/'/g, "\\'")}')">${drapeauLigue(l)}${l}</button>`).join('') || `<span style="font-size:12.5px;color:var(--sourdine)">${T('Aucun championnat publié pour l\'instant.')}</span>`;
+  document.querySelectorAll('#flt-seg button').forEach(x => x.classList.toggle('on', x.dataset.md === FLT.mode));
+  const per = FLT.mode === 'periode';
+  $('flt-dates').style.display = per ? '' : 'none';
+  if(per){ const du = $('flt-du'), au = $('flt-au'); du.min = jourLocal(); du.max = b; au.min = jourLocal(); au.max = b; du.value = FLT.du || jourLocal(); au.value = FLT.au || b; }
+  $('flt-note').textContent = T('Le moteur a publié jusqu\'au') + ' ' + new Date(b + 'T12:00:00').toLocaleDateString(LOC, { weekday: 'long', day: 'numeric', month: 'long' }) + '.';
+  const n = filtrerPronos(pronosAccueil()).filter(p => !MDJ || p.id !== MDJ.id).length;
+  $('flt-ok').textContent = n ? T('Voir') + ' ' + n + ' ' + T(n > 1 ? 'matchs' : 'match') : T('Aucun match avec ces filtres');
+}
+function ouvrirFiltre(){ fltRendreFeuille(); $('flt-feuille').classList.add('on'); }
+function fermerFiltre(appliquer){ $('flt-feuille').classList.remove('on'); if(appliquer !== false){ fltSauver(); afficherAccueil(); } }
+
 function afficherAccueil(){
   const AV = pronosAccueil();
   if(!AV.length){
@@ -1832,7 +2085,7 @@ function afficherAccueil(){
   $('zone-mdj').innerHTML = `
     <div class="mdj2" onclick="lancerAnalyse(${MDJ.id})">
       <div class="m2-haut"><span class="m2-gratuit">★ ${T('Match du jour · gratuit')}</span>
-        <span class="m2-info">${MDJ.ligue} · ${MDJ.heure ? hLoc(MDJ.date_match, MDJ.heure, true) : labelDate(dLoc(MDJ.date_match, MDJ.heure))}</span></div>
+        <span class="m2-info">${drapeauLigue(MDJ.ligue)} ${MDJ.ligue} · ${MDJ.heure ? hLoc(MDJ.date_match, MDJ.heure, true) : labelDate(dLoc(MDJ.date_match, MDJ.heure))}</span></div>
       <div class="m2-duel">
         <div class="m2-eq">${ecu(MDJ.logo_dom, MDJ.dom, true)}<span>${MDJ.dom}</span></div>
         <span class="m2-vs">vs</span>
@@ -1843,16 +2096,18 @@ function afficherAccueil(){
       <div class="m2-lien">${badgeEmo(MDJ.badge)} ${T(MDJ.badge)}<span>${T("Voir l'analyse complète")} ›</span></div>
     </div>`;
 
-  // liste groupée date → ligue
+  // liste groupée date → ligue (filtrée par le choix de l'utilisateur)
   let html = '';
   const parDate = {};
-  AV.forEach(p=>{ if(p.id===MDJ.id) return; const dl = dLoc(p.date_match, p.heure); (parDate[dl]=parDate[dl]||[]).push(p); });
+  filtrerPronos(AV).forEach(p=>{ if(p.id===MDJ.id) return; const dl = dLoc(p.date_match, p.heure); (parDate[dl]=parDate[dl]||[]).push(p); });
+  let premier = true;
   Object.keys(parDate).sort().forEach(d=>{
-    html += `<div class="jour-titre"><span>${labelDate(d)}</span></div>`;
+    html += `<div class="jour-titre"><span>${labelDate(d)}</span>${premier ? fltBouton() : ''}</div>${premier ? fltPuces() : ''}`;
+    premier = false;
     const parLigue = {};
     parDate[d].forEach(p=>{ (parLigue[p.ligue]=parLigue[p.ligue]||[]).push(p); });
     Object.keys(parLigue).sort().forEach(l=>{
-      html += `<div class="comp-tete"><span class="nom-c">${l}</span><span class="trait"></span></div>`;
+      html += `<div class="comp-tete"><span class="nom-c">${drapeauLigue(l)}${l}</span><span class="trait"></span></div>`;
       parLigue[l].forEach(p=>{
         const libre = estDeverrouille();
         html += `
@@ -1868,6 +2123,7 @@ function afficherAccueil(){
       });
     });
   });
+  if(!html && fltActif()) html = `<div class="jour-titre"><span>${T('MATCHS')}</span>${fltBouton()}</div>${fltPuces()}<div class="flt-vide">${T('Aucun match ne correspond à tes filtres.')}<br><button onclick="fltReinit();fermerFiltre()">${T('Tout afficher')}</button></div>`;
   $('zone-matchs').innerHTML = html || `<div class="vide">Un seul match analysé pour l'instant — c'est celui du jour, au-dessus.</div>`;
   cascade('#zone-matchs .match');
   majCtaPro();
@@ -1904,21 +2160,14 @@ async function rpcPub(nom, corps, deja){
 // carte en haut des offres + prix réduits + barre du bas
 function majOffre(){
   const actif = offreActive() && !estAbonne();
-  const premiere = document.querySelector('#page-compte .offre');
+  const plans = $('plans');
   let c = $('of-carte');
-  if(actif && premiere){
-    if(!c){ c = document.createElement('div'); c.id = 'of-carte'; premiere.parentNode.insertBefore(c, premiere); }
+  if(actif && plans){
+    if(!c){ c = document.createElement('div'); c.id = 'of-carte'; plans.parentNode.insertBefore(c, plans); }
     c.innerHTML = `<div class="of-h"><b>🎁 −${OFFRE.pct} % ${T('activé')}</b><span class="of-chrono">${chronoTxt()}</span></div>
       <small>${T('Code')} <b>${OFFRE.code}</b> · ${T('appliqué automatiquement au paiement, Mobile Money comme carte')}</small>`;
   } else if(c) c.remove();
-  document.querySelectorAll('#page-compte .offre').forEach(o => {
-    const m = (o.getAttribute('onclick') || '').match(/choisirFormule\('[^']+',\s*(\d+)/);
-    let x = o.querySelector('.of-px');
-    if(actif && m){
-      if(!x){ x = document.createElement('span'); x.className = 'of-px'; (o.querySelector('.prix') || o).appendChild(x); }
-      x.textContent = T('avec ton code') + ' : ' + mF(prixOffre(+m[1]));
-    } else if(x) x.remove();
-  });
+  try{ rendrePlans(); }catch(e){}
   try{ majCtaPro(); }catch(e){}
 }
 setInterval(() => {
@@ -2052,11 +2301,12 @@ function lireSuite(){
 const FORMULES = { mois: [12000, '1 mois'], '3mois': [30000, '3 mois'] };
 function montrerPorte(p){
   const co = estConnecte();
-  const offre = (f, nom, prix, ancien, plus, star) => `
+  const offre = (f, nom, star) => { const x = prixAffiche(f); const tag = f === 'mois' && ldcActive() ? (x.apres ? T('puis') + ' ' + x.apres : 'LANCEMENT') : '';
+      return `
       <button class="pt-offre ${star ? 'star' : ''}" onclick="porteFormule('${f}', ${p.id})">
-        <span class="g"><b>${nom}</b><small>${plus}</small></span>
-        <span class="d"><s>${mF(ancien)}</s><b>${mF(prix)}</b></span><span class="fl">›</span>
-      </button>`;
+        <span class="g"><b>${nom}</b><small>${x.sous}</small></span>
+        <span class="d">${x.barre ? '<s>' + x.barre + '</s>' : tag ? '<s style="text-decoration:none">' + tag + '</s>' : ''}<b>${x.txt}</b></span><span class="fl">›</span>
+      </button>`; };
   $('fiche').innerHTML = `
     <div class="porte">
       <div class="pt-ok">✓ <span>Analyse terminée</span></div>
@@ -2071,9 +2321,9 @@ function montrerPorte(p){
       </button>
       <button class="lien-retour" onclick="porteEmail(${p.id})"><span>ou avec un email</span></button>`}
       <div class="pt-etape">${co ? '' : '<span class="n">2</span>'}<span>Passe PRO : toutes les analyses, chaque jour</span></div>
-      ${offre('mois', T('Mois'), 12000, 15000, T('Offre de lancement'), true)}
-      ${offre('3mois', T('3 mois'), 30000, 45000, T('soit') + ' ≈ ' + mF(10000) + T('/mois'), false)}
-      <div class="pt-note">${T('Wave, Orange Money, carte bancaire, Apple Pay, Google Pay · accès immédiat')}</div>
+      ${offre('mois', T('1 mois'), false)}
+      ${offre('3mois', T('3 mois'), true)}
+      <div class="pt-note">${modeEuro() ? T('Carte bancaire, Apple Pay, Google Pay · accès immédiat') : T('Wave, Orange Money, carte bancaire · accès immédiat')}</div>
     </div>
     <button class="lien-retour" onclick="fermerAnalyse()">← Analyser une autre rencontre</button>`;
   $('fiche').classList.add('actif');
@@ -2093,7 +2343,7 @@ function porteFormule(f, id){
 function ouvrirFormule(f){
   const [prix, lib] = FORMULES[f] || FORMULES.mois;
   allerPage('compte');
-  setTimeout(() => choisirFormule(f, prix, lib, document.querySelector(`.offre[onclick*="'${f}'"]`)), 350);
+  setTimeout(() => choisirFormule(f, prix, lib, document.querySelector(`.plan[data-f="${f}"]`), true), 350);
 }
 // après connexion (email ou retour Google) : on reprend là où il en était
 function suiteApresConnexion(){
@@ -2376,7 +2626,6 @@ function majBoutonPro(){
 
 function majCompte(){
   try{ majCtaPro(); }catch(e){}
-  try{ majOffre(); }catch(e){}
   const co = estConnecte();
   majBoutonPro();
   majBoutonAdmin();
@@ -2385,56 +2634,177 @@ function majCompte(){
   else {
     $('btn-cloche').style.display='none';
     $('zone-partenaire').innerHTML='';
-    $('statut-acces').innerHTML='';
   }
   $('bloc-auth').style.display = co ? 'none' : '';
   if($('btn-deco')) $('btn-deco').style.display = co ? '' : 'none';
   $('bloc-profil').style.display = co ? '' : 'none';
-  if(co){
-    $('profil-email').textContent = SESSION.email || '';
-    if(estAbonne()){
-      const fin = new Date(SESSION.fin);
-      const jours = Math.max(1, Math.ceil((fin - Date.now()) / 864e5));
-      $('statut-acces').innerHTML = `
-        <div class="statut-ok">◈ Abonnement PRO actif jusqu'au ${fin.toLocaleDateString(LOC,{day:'numeric',month:'long',year:'numeric'})} · ${jours} jour${jours>1?'s':''} restant${jours>1?'s':''}</div>
-        <div class="note-prolong">Tu peux prolonger dès maintenant : la durée choisie <b>s'ajoute</b> à ta date de fin, tu ne perds aucun jour.</div>`;
-    } else {
-      $('statut-acces').innerHTML = `<div class="avert">Aucun abonnement actif — choisis une formule ci-dessous.</div>`;
-    }
-  }
+  if(co) $('profil-email').textContent = SESSION.email || '';
+  try{ rendreCompte(); }catch(e){ console.warn('compte', e); }
+  try{ majOffre(); }catch(e){}
 }
 
-/* ================= PAIEMENT ================= */
-function choisirFormule(f, prix, libelle, el){
+/* ================= PAGE COMPTE — redesign du 30/10/2026 =================
+   - Prix réels en euros (Whop) hors pays Mobile Money ; francs CFA (SasPay) sinon.
+   - Prix barré UNIQUEMENT quand il est réel (3 mois = 3 × le prix du mois).
+   - Offre LDC : décompte jusqu'à OFFRE_LDC.fin, puis le mois passe au prix « apres ».
+   - « Passer PRO » ouvre la feuille de choix du moyen de paiement (carte / Mobile Money),
+     classée selon le pays du compte. */
+const PAGES_LEGALES = false;   // → true dès que cgu.html, cgv.html, confidentialite.html et mentions-legales.html sont en ligne
+const PRIX_EUR = { mois: 18.99, '3mois': 44.99 };
+const OFFRE_LDC = { fin: '2026-11-03T18:00:00+01:00', apres: { eur: '21,99 €', xof: '' } };
+const modeEuro = () => !MOYENS_PAYS[PAYS_U];
+const eur = v => v.toFixed(2).replace('.', ',') + ' €';
+const ldcActive = () => Date.now() < Date.parse(OFFRE_LDC.fin);
+function prixAffiche(f){
+  const of = offreActive() && !estAbonne();
+  if(modeEuro()){
+    const p = PRIX_EUR[f], pr = of ? Math.round(p * (100 - OFFRE.pct)) / 100 : p;
+    return { txt: eur(pr), base: eur(p), reduit: of, barre: f === '3mois' ? eur(PRIX_EUR.mois * 3) : '',
+      sous: f === '3mois' ? T('soit') + ' ' + eur(pr / 3) + ' / ' + T('mois') : T('renouvelé chaque mois'), apres: OFFRE_LDC.apres.eur };
+  }
+  const p = FORMULES[f][0], pr = of ? prixOffre(p) : p;
+  return { txt: mF(pr), base: mF(p), reduit: of, barre: f === '3mois' ? mF(FORMULES.mois[0] * 3) : '',
+    sous: f === '3mois' ? T('soit') + ' ' + mF(Math.round(pr / 3 / 50) * 50) + ' / ' + T('mois') : T('renouvelé chaque mois'), apres: OFFRE_LDC.apres.xof };
+}
+function rendrePlans(){
+  ['mois', '3mois'].forEach(f => {
+    const x = prixAffiche(f);
+    $('pl-prix-' + f).innerHTML = (x.reduit ? '<s>' + x.base + '</s>' : '') + x.txt;
+    $('pl-sous-' + f).textContent = x.sous;
+  });
+  const tag = $('pl-tag-mois');
+  const ap = prixAffiche('mois').apres;
+  tag.textContent = ldcActive() && ap ? T('puis') + ' ' + ap : (ldcActive() ? 'LANCEMENT' : '');
+  $('pl-barre-3mois').textContent = prixAffiche('3mois').barre;
+  document.querySelectorAll('#plans .plan').forEach(p => p.classList.toggle('choisie', p.dataset.f === FORMULE));
+  const ab = estAbonne(), x = prixAffiche(FORMULE);
+  $('cp-cta').textContent = (ab ? T('Prolonger') : T('Passer PRO')) + ' · ' + x.txt;
+}
+function texteLegal(lien, txt){ return PAGES_LEGALES ? `<a href="${lien}" target="_blank" rel="noopener">${txt}</a>` : txt; }
+function rendreCompte(){
+  if(!FORMULE) FORMULE = '3mois';
+  const ab = estAbonne(), euro = modeEuro();
+  // --- en-tête
+  if(ab){
+    const fin = new Date(SESSION.fin);
+    const jours = Math.max(1, Math.ceil((fin - Date.now()) / 864e5));
+    const vie = jours > 3650;
+    const pct = vie ? 100 : Math.max(6, Math.min(100, Math.round(jours / 90 * 100)));
+    $('cp-tete').innerHTML = `
+      <div class="cp-statut">
+        <div class="h"><span style="color:var(--aura1);font-family:'JetBrains Mono',monospace;letter-spacing:.14em;font-size:10.5px">${T('TON ABONNEMENT')}</span><span>${T('PRO')}</span></div>
+        <div class="t">${vie ? T('PRO actif, sans date de fin') : T('PRO actif jusqu\'au') + ' ' + fin.toLocaleDateString(LOC, { day: 'numeric', month: 'long' })}</div>
+        <div class="b"><i style="width:${pct}%"></i></div>
+        <small>${vie ? T('Compte à vie') : T('Encore') + ' ' + jours + ' ' + T(jours > 1 ? 'jours' : 'jour') + ' · ' + T('renouvellement automatique, résiliable à tout moment')}</small>
+      </div>
+      <div class="cp-prolong"><h2>${T('Prolonger maintenant')}</h2><p>${T('La durée choisie s\'ajoute à ta date de fin : tu ne perds aucun jour.')}</p></div>`;
+  } else {
+    const ok = g => `<span class="c ${g ? 'g' : ''}"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>`;
+    const non = '<span class="n">—</span>';
+    const r = (t, gratuit) => `<div class="r"><em>${T(t)}</em>${gratuit ? ok(true) : non}${ok(false)}</div>`;
+    $('cp-tete').innerHTML = `
+      <h1 class="cp-h1">${T('Débloque')} <i>${T('tous')}</i> ${T('les matchs.')}</h1>
+      <div class="cp-tab">
+        <div class="r"><em></em><b>${T('GRATUIT')}</b><b class="p">PRO</b></div>
+        ${r('Le match du jour', true)}${r('Toutes les analyses du jour')}${r('Les analyses signées ⚡')}${r('Les sélections et séries du moteur')}${r('Le LIVE pendant les matchs')}
+      </div>`;
+  }
+  // --- bandeau Ligue des champions
+  rendreLdc();
+  // --- formules
+  rendrePlans();
+  // --- bouton et textes de paiement
+  const m = MOYENS_PAYS[PAYS_U];
+  $('cp-moyens').textContent = '🔒 ' + (euro ? T('Carte bancaire, Apple Pay, Google Pay') : m + ', ' + T('carte bancaire'));
+  $('cp-autre').textContent = euro ? T('Payer par Mobile Money (Wave, OM…)') : T('Payer par carte bancaire en euros');
+  $('cp-autre').style.display = euro || carteVisible() ? '' : 'none';
+  $('cgu-txt').innerHTML = T("J'accepte les") + ' ' + texteLegal('/cgu.html', T("conditions d'utilisation")) + ' ' + T('et de') + ' ' + texteLegal('/cgv.html', T('vente')) + '.';
+  $('pied-legal').innerHTML = [['/cgu.html', 'CGU'], ['/cgv.html', 'CGV'], ['/confidentialite.html', T('Confidentialité')], ['/mentions-legales.html', T('Mentions légales')]].map(x => texteLegal(x[0], x[1])).join(' · ');
+  // code promo pré-rempli (offre email ou lien partenaire)
+  const cp = $('code-promo'), ref = localStorage.getItem('aura90_ref');
+  if(offreActive() && !ab){ if(cp.value !== OFFRE.code){ cp.value = OFFRE.code; verifierCodePromo(); } }
+  else if(ref && !cp.value){ cp.value = ref; verifierCodePromo(); }
+}
+// ---- bandeau « Offre LDC » avec décompte
+function rendreLdc(){
+  const z = $('ldc-bandeau'); if(!z) return;
+  if(!ldcActive()){ z.innerHTML = ''; return; }
+  if(z.querySelector('.ldc')) return;   // déjà posé : seul le décompte bouge
+  const fin = new Date(OFFRE_LDC.fin);
+  const jq = fin.toLocaleDateString(LOC, { weekday: 'long' }) + ' ' + fin.getHours() + ' h';
+  let et = '';
+  const pos = [[4,8,5],[18,70,4],[33,14,6],[47,86,4],[61,30,5],[74,62,8],[88,10,4],[95,78,5],[26,44,4],[80,38,6],[52,8,4],[12,90,5]];
+  pos.forEach((p, i) => { et += `<svg style="left:${p[0]}%;top:${p[1]}%;width:${p[2]}px;height:${p[2]}px;animation-duration:${(1.6 + (i % 5) * .35).toFixed(2)}s;animation-delay:${(i * .27 % 2.5).toFixed(2)}s" viewBox="0 0 10 10"><path d="M5 0L6.2 3.8 10 5 6.2 6.2 5 10 3.8 6.2 0 5 3.8 3.8z" fill="#DCE6FF"/></svg>`; });
+  const ap = prixAffiche('mois').apres;
+  const txt = ap ? T('Le prix passe à') + ' ' + ap + ' / ' + T('mois') + ' ' + T('après le décompte.') : T('Le prix du mois augmente après le décompte.');
+  const ballon = `<svg width="30" height="30" viewBox="0 0 100 100"><defs><clipPath id="ldcClip"><circle cx="50" cy="50" r="46"/></clipPath><radialGradient id="ldcSh" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs><circle cx="50" cy="50" r="46" fill="#F4F7FF"/><g clip-path="url(#ldcClip)"><g class="rot"><polygon points="50,32 67,44 61,64 39,64 33,44" fill="#1F3FA8"/><polygon points="50,-4 67,8 61,28 39,28 33,8" fill="#1F3FA8"/><polygon points="50,68 67,80 61,100 39,100 33,80" fill="#1F3FA8"/><polygon points="86,20 103,32 97,52 75,52 69,32" fill="#1F3FA8"/><polygon points="14,20 31,32 25,52 3,52 -3,32" fill="#1F3FA8"/><polygon points="86,56 103,68 97,88 75,88 69,68" fill="#1F3FA8"/><polygon points="14,56 31,68 25,88 3,88 -3,68" fill="#1F3FA8"/><path d="M50 32L50 10M67 44L86 34M61 64L73 80M39 64L27 80M33 44L14 34" stroke="#1F3FA8" stroke-width="2.2" fill="none"/></g></g><circle cx="50" cy="50" r="46" fill="url(#ldcSh)"/><circle cx="50" cy="50" r="46" fill="none" stroke="#9FB4E8" stroke-width="2"/></svg>`;
+  const c = (id, l) => `<span><b id="ldc-${id}">00</b><small>${l}</small></span>`;
+  z.innerHTML = `<div class="ldc"><div class="et">${et}</div><div class="sw"></div>
+    <div class="h"><span class="tag">${T('OFFRE LDC')}</span><span class="jq">${T("Jusqu'à")} ${jq}</span></div>
+    <div class="m">${ballon}<span>${txt}</span></div>
+    <div class="cd">${c('j', T('JOURS'))}<i>:</i>${c('h', 'H')}<i>:</i>${c('m', 'MIN')}<i>:</i>${c('s', 'SEC')}</div></div>`;
+  ldcTic();
+}
+function ldcTic(){
+  if(!$('ldc-j')) return;
+  const r = Math.max(0, Date.parse(OFFRE_LDC.fin) - Date.now()) / 1000 | 0;
+  const v = [r / 86400 | 0, r / 3600 % 24 | 0, r / 60 % 60 | 0, r % 60];
+  ['j', 'h', 'm', 's'].forEach((k, i) => { const e = $('ldc-' + k), t = String(v[i]).padStart(2, '0'); if(e && e.textContent !== t) e.textContent = t; });
+}
+setInterval(() => {
+  if(!$('ldc-bandeau')) return;
+  if(ldcActive()) ldcTic();
+  else if($('ldc-bandeau').innerHTML){ $('ldc-bandeau').innerHTML = ''; try{ rendrePlans(); }catch(e){} }
+}, 1000);
+// ---- bouton « Passer PRO »
+function clicPasserPro(){
   if(!estConnecte()){
-    noterSuite({ formule: f }); setMode('inscription');
+    noterSuite({ formule: FORMULE }); setMode('inscription');
     msgAuth(T('Crée ton compte (10 secondes) : ta formule s\'ouvre juste après.'));
-    $('bloc-auth').scrollIntoView({behavior:'smooth', block:'start'});
+    $('bloc-auth').scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
-  FORMULE = f;
-  document.querySelectorAll('.offre').forEach(o=>o.classList.remove('choisie'));
-  if(el) el.classList.add('choisie');
-  const pr = offreActive() ? prixOffre(prix) : prix;
-  $('paie-libelle').innerHTML = `${libelle} · ${pr !== prix ? '<s style="opacity:.55;font-weight:500">' + mF(prix) + '</s> ' : ''}${mF(pr)}<span class="usd-inline">${CFA ? '(' + enUSD(prix) + ')' : MOYENS_PAYS[PAYS_U] ? '(' + nbF(prix) + ' F CFA)' : ''}</span>`;
-  $('zone-paiement').style.display = '';
+  ouvrirPaiement(false);
+}
+function cguOk(){
+  const c = $('cgu-ok'), l = $('cp-cgu');
+  if(c && c.checked) return true;
+  if(l){ l.classList.remove('ko'); void l.offsetWidth; l.classList.add('ko'); l.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  $('msg-acces').innerHTML = `<div class="avert" style="color:var(--ko)">${T('Coche la case pour accepter les conditions avant de payer.')}</div>`;
+  return false;
+}
+// ---- feuille de choix du moyen de paiement (autre = l'utilisateur veut l'autre zone de paiement)
+function ouvrirPaiement(autre){
+  if(!estConnecte()){ clicPasserPro(); return; }
+  if(!cguOk()) return;
+  $('msg-acces').innerHTML = '';
+  const x = prixAffiche(FORMULE), lib = FORMULES[FORMULE][1];
+  $('paie-libelle').innerHTML = `${lib} · ${x.reduit ? '<s style="opacity:.55;font-weight:500">' + x.base + '</s> ' : ''}${x.txt}`;
   majBoutonCarte();
-  const ref = localStorage.getItem('aura90_ref');
-  if(offreActive()){ $('code-promo').value = OFFRE.code; verifierCodePromo(); }
-  else if(ref && !$('code-promo').value){ $('code-promo').value = ref; verifierCodePromo(); }
-  $('zone-paiement').scrollIntoView({behavior:'smooth', block:'center'});
+  const z = $('ps-boutons'), carte = $('champ-carte'), mob = carte.nextElementSibling;
+  const carteDabord = modeEuro() ? !autre : !!autre;
+  z.appendChild(carteDabord ? mob : carte);          // le moyen principal en premier
+  $('zone-paiement').classList.add('on');
+}
+function fermerPaiement(){ $('zone-paiement').classList.remove('on'); }
+
+/* ================= PAIEMENT ================= */
+function choisirFormule(f, prix, libelle, el, ouvrir){
+  FORMULE = f;
+  try{ rendrePlans(); }catch(e){}
+  if(ouvrir) clicPasserPro();
 }
 
 let PROMO_TIMER = null;
-async function verifierCodePromo(){
+async function verifierCodePromo(tout_de_suite){
   clearTimeout(PROMO_TIMER);
   PROMO_TIMER = setTimeout(async ()=>{
     const c = $('code-promo').value.trim().toUpperCase();
     if(!/^[A-Z0-9]{4,10}$/.test(c)){ $('msg-promo').innerHTML=''; return; }
     if(/^PRO(10|15|20)[A-Z0-9]{4}$/.test(c)){
-      const base = FORMULE === '3mois' ? 30000 : 12000;
+      const x = prixAffiche(FORMULE);
       $('msg-promo').innerHTML = offreActive() && c === OFFRE.code
-        ? `<div class="avert" style="color:var(--aura1)">${T('Code')} ${c} : −${OFFRE.pct} % · <span class="mo">${mF(prixOffre(base))}</span> ${T('au lieu de')} <span class="mo">${mF(base)}</span> · ⏱ <span class="of-chrono">${chronoTxt()}</span></div>`
+        ? `<div class="avert" style="color:var(--aura1)">${T('Code')} ${c} : −${OFFRE.pct} % · <span class="mo">${x.txt}</span> ${T('au lieu de')} <span class="mo">${x.base}</span> · ⏱ <span class="of-chrono">${chronoTxt()}</span></div>`
         : `<div class="avert" style="color:var(--ko)">${T('Ce code a expiré ou appartient à un autre compte.')}</div>`;
       return;
     }
@@ -2447,10 +2817,10 @@ async function verifierCodePromo(){
       const ok = await r.json();
       const red = FORMULE === '3mois' ? 2000 : 1000;
       $('msg-promo').innerHTML = ok === true
-        ? `<div class="avert" style="color:var(--aura1)">Code ${c} appliqué : −<span class="mo">${mF(red)}</span> sur ce paiement.</div>`
+        ? `<div class="avert" style="color:var(--aura1)">${modeEuro() ? T('Code') + ' ' + c + ' ' + T('reconnu : la réduction s\'applique au paiement Mobile Money.') : T('Code') + ' ' + c + ' ' + T('appliqué :') + ' −<span class="mo">' + mF(red) + '</span> ' + T('sur ce paiement.')}</div>`
         : `<div class="avert" style="color:var(--ko)">Code inconnu — vérifie l'orthographe.</div>`;
     }catch(e){ $('msg-promo').innerHTML=''; }
-  }, 350);
+  }, tout_de_suite === true ? 0 : 350);
 }
 
 // Paiement : SasPay (mobile money) + Whop (carte bancaire en euros, 25/10/2026)
@@ -4344,7 +4714,7 @@ setTimeout(msCompteur, 4000);
 // arrivée depuis une relance de paiement (?offres=1) : page Compte, sur les offres
 function allerOffres(){
   allerPage('compte');
-  setTimeout(() => { const o = document.querySelector('.offre'); if(o) o.scrollIntoView({behavior:'smooth', block:'center'}); }, 400);
+  setTimeout(() => { const o = document.querySelector('#plans'); if(o) o.scrollIntoView({behavior:'smooth', block:'center'}); }, 400);
 }
 if(/[?&]offres=1/.test(location.search)){
   history.replaceState(null, '', location.pathname);
@@ -4485,7 +4855,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-2';
+const APP_VERSION = '2026-10-30-3';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
