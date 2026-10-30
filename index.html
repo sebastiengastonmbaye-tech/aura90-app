@@ -2626,11 +2626,11 @@ const ENTETE_INS = (t, st) => `<img class="ins-logo" src="icon-192.png" alt=""><
 function ouvrirGuideInstall(){
   if(estInstallee()) return;
   let h = '';
-  const lien = location.origin + '/';
+  const lien = navInterne() ? lienSuivi() : location.origin + '/';
   if(navInterne()){
     if(estAndroid()){
       h = ENTETE_INS('Ouvre AURA90 dans Chrome', 'Tu es dans le navigateur de TikTok / Instagram : l\'app ne peut pas s\'installer ici.')
-        + `<button class="ins-btn" onclick="location.href='intent://${location.host}/#Intent;scheme=https;package=com.android.chrome;end'">Ouvrir dans Chrome</button>`
+        + `<button class="ins-btn" onclick="location.href='intent://' + lienSuivi().replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end'">Ouvrir dans Chrome</button>`
         + `<div class="ins-note">Si rien ne se passe : touche ${IC_MENU} en haut à droite puis <b>« Ouvrir dans le navigateur »</b>.</div>`;
     } else {
       h = ENTETE_INS('Ouvre AURA90 dans Safari', 'Tu es dans le navigateur de TikTok / Instagram : l\'app ne peut pas s\'installer ici.')
@@ -3570,6 +3570,11 @@ async function epRpc(nom, corps){
    · Toutes les 60 s tant que l'app est ouverte : signal « en ligne » (battement).
    · Les liens partenaires (?ref=CODE) gardent leur propre suivi. */
 const SUIVI_VIS = (() => {
+  // 30/10/2026 : lien rouvert depuis le navigateur de TikTok / Instagram (?vid=…) → même visiteur
+  try{
+    const vid = new URLSearchParams(location.search).get('vid');
+    if(vid && /^[0-9a-f-]{36}$/i.test(vid) && !LS.get('aura90_visiteur')) LS.set('aura90_visiteur', vid);   // seulement un navigateur « neuf »
+  }catch(e){}
   let v = LS.get('aura90_visiteur');
   if(!v){ v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); LS.set('aura90_visiteur', v); }
   return v;
@@ -3578,6 +3583,13 @@ const SUIVI_ALIAS = { instagram:'insta', ig:'insta', yt:'youtube', tt:'tiktok', 
 function suiviSourceDuLien(){
   const q = new URLSearchParams(location.search);
   if(q.get('ref')) return null;
+  // 30/10/2026 : retour de connexion Google (#access_token), de paiement (?paiement=, Whop, SasPay)
+  // ou de l'email de relance : ce ne sont pas des visites venues de Google
+  if(/access_token|type=recovery/.test(location.hash) || q.get('paiement') || q.get('sp') || q.get('maj')) return null;
+  try{
+    const h0 = document.referrer ? new URL(document.referrer).hostname : '';
+    if(/(^|\.)accounts\.google\.|supabase\.co$|whop\.com$|saspay|bictorys|^checkout\./.test(h0) && !q.get('s')) return null;
+  }catch(e){}
   let s = (q.get('s') || q.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20);
   if(!s){
     try{
@@ -3593,6 +3605,13 @@ function suiviSourceDuLien(){
   s = SUIVI_ALIAS[s] || s;
   return s && s.length >= 2 ? s : null;
 }
+function lienSuivi(){
+  let src = null; try{ src = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
+  const u = new URL(location.origin + '/');
+  if(src && src.s) u.searchParams.set('s', src.s);
+  u.searchParams.set('vid', SUIVI_VIS);
+  return u.toString();
+}
 (function(){
   const s = suiviSourceDuLien(); if(!s) return;
   let ancien = null; try{ ancien = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
@@ -3602,6 +3621,16 @@ function suiviSourceDuLien(){
     body: JSON.stringify({ p_source: s, p_visiteur: SUIVI_VIS })
   }).catch(()=>{});
 })();
+// navigateur interne (TikTok, Instagram…) : on laisse ?s=…&vid=… dans la barre d'adresse
+setTimeout(() => {
+  try{
+    if(!navInterne()) return;
+    const u = new URL(location.href), l = new URL(lienSuivi());
+    if(!l.searchParams.get('s')) return;
+    u.searchParams.set('s', l.searchParams.get('s')); u.searchParams.set('vid', SUIVI_VIS);
+    history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+  }catch(e){}
+}, 1800);
 async function suiviBattement(){
   if(document.hidden) return;
   const page = ((document.querySelector('.page.active') || {}).id || '').replace('page-', '') || 'accueil';
@@ -4449,7 +4478,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-29-5';
+const APP_VERSION = '2026-10-30-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
