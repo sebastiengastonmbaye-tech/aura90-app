@@ -1430,6 +1430,10 @@ body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .co-toast.on{opacity:1}
 
 body.sur-coach #ms-bulle{display:none}
+.co-avis{margin:14px 16px 4px;padding:13px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(61,232,200,.12),rgba(139,124,255,.12));border:1px solid rgba(61,232,200,.45);font-size:13px;line-height:1.5}
+.co-avis b{display:block;font-size:14px;margin-bottom:3px}
+.co-avis span{color:var(--sourdine)}
+.co-pts span b{color:var(--texte)}
 
 </style>
 </head>
@@ -5477,9 +5481,16 @@ async function coachInit(force){
   return COACH.chargement;
 }
 // à chaque mise à jour du compte (connexion, abonnement, paiement) : on recharge l'état du coach
-majCompte = (function(orig){ return function(){ try{ orig.apply(this, arguments); }finally{ try{ coachInit(true); }catch(e){} } }; })(majCompte);
+majCompte = (function(orig){ return function(){ try{ orig.apply(this, arguments); }finally{ try{ if(estConnecte()) $('co-avis')?.remove(); coachInit(true); }catch(e){} } }; })(majCompte);
 // sur l'onglet Coach : pas de bulle d'aide par-dessus la discussion
-allerPage = (function(orig){ return function(p){ orig.apply(this, arguments); document.body.classList.toggle('sur-coach', p === 'coach'); if(p === 'coach' && !($('coach-corps') && $('coach-corps').innerHTML.trim())) coachRendre(); }; })(allerPage);
+allerPage = (function(orig){ return function(p){
+  orig.apply(this, arguments); document.body.classList.toggle('sur-coach', p === 'coach');
+  if(p !== 'coach') return;
+  if(!($('coach-corps') && $('coach-corps').innerHTML.trim())) coachRendre();
+  // PRO qui n'a pas encore accepté les règles : l'écran des règles s'ouvre tout seul, une fois
+  const e = COACH.etat;
+  if(e && e.pro && e.verrou && !COACH.reglesMontrees && !$('co-ecran').classList.contains('on')){ COACH.reglesMontrees = true; setTimeout(coachEcranRegles, 400); }
+}; })(allerPage);
 // première ouverture : après les écrans de présentation, on atterrit sur le coach
 finOnboard = (function(orig){ return function(){ orig.apply(this, arguments); if(COACH.acces) allerPage('coach'); }; })(finOnboard);
 // retour de connexion / inscription lancée depuis le coach : on reprend là où on en était
@@ -5499,11 +5510,12 @@ function coachRendre(){
   const e = COACH.etat;
   if(!e){ z.innerHTML = `<div class="co-bientot">Chargement…</div>`; return; }
   if(!e.plan){ z.innerHTML = coachVueAccueil(true); return; }
-  z.innerHTML = e.pro ? coachVuePro(e) : coachVuePresentation(e);
+  z.innerHTML = e.pro && !e.verrou ? coachVuePro(e) : coachVuePresentation(e);
   requestAnimationFrame(() => {
     document.querySelectorAll('#page-coach .co-obj .b i').forEach(i => { i.style.width = (i.dataset.w || 0) + '%'; });
-    if(!e.pro) coachAnimerPresentation(); else { coachChargerMessages(); }
+    if(!(e.pro && !e.verrou)) coachAnimerPresentation(); else { coachChargerMessages(); }
   });
+
 }
 
 function coachVueAccueil(connecte){
@@ -5512,19 +5524,19 @@ function coachVueAccueil(connecte){
     <span class="co-badge">◉ COACH 90'</span>
     <h2>Ton plan,<br><span>construit pour toi</span></h2>
     <div class="co-pts">
-      <div><i>1</i><span>Une sélection par jour, choisie selon ta méthode dans les analyses du moteur</span></div>
-      <div><i>2</i><span>Un suivi semaine et mois : ce que tu tiens, ce que ça donne</span></div>
-      <div><i>3</i><span>Un coach qui te garde dans ton cadre, et qui te freine quand il faut</span></div>
+      <div><i>1</i><span><b>Tu réponds à quelques questions</b> : ce que tu cherches, tes jours, ton budget. Deux minutes.</span></div>
+      <div><i>2</i><span><b>Le coach écrit ton plan</b> : une sélection par jour, une part fixe, des règles d'arrêt claires.</span></div>
+      <div><i>3</i><span><b>Chaque jour, il te donne ta sélection</b>, tirée des analyses du moteur, et tu notes si tu l'as suivie.</span></div>
+      <div><i>4</i><span><b>Chaque semaine, le bilan</b> : jours tenus, résultat, et ce qu'il faut ajuster. Si tu sors du cadre, il te le dit.</span></div>
     </div>
-    <button class="co-cta" onclick="coachDemarrer()">${connecte ? 'Créer mon plan' : 'Créer mon plan'}</button>
+    <button class="co-cta" onclick="coachDemarrer()">Créer mon plan</button>
     <button class="co-lien" onclick="allerPage('accueil')">Voir les matchs du jour d'abord</button>
   </div>
   <div class="co-etapes">
-    <div><b>2 min</b><small>quelques questions, pas plus</small></div>
-    <div><b>1</b><small>plan clair, le tien</small></div>
-    <div><b>7j/7</b><small>le coach lit les mêmes analyses que toi</small></div>
-  </div>
-  <div class="co-sous" style="margin-top:18px;font-size:12px">Réservé aux 18 ans et plus. Le coach aide à tenir une méthode ; il ne promet aucun résultat et ne décide jamais d'un montant à ta place.</div>`;
+    <div><b>Gratuit</b><small>créer ton plan ne coûte rien</small></div>
+    <div><b>PRO</b><small>pour le suivre au quotidien avec le coach</small></div>
+    <div><b>Tes règles</b><small>c'est toi qui fixes le budget, jamais lui</small></div>
+  </div>`;
 }
 
 /* ================= DÉMARRAGE : compte → règles → questionnaire ================= */
@@ -5532,14 +5544,21 @@ function coachDemarrer(){
   if(!estConnecte()){
     noterSuite({ coach: 1 });
     allerPage('compte'); setMode('inscription');
-    msgAuth('Crée ton compte : ton plan arrive juste après.');
-    setTimeout(() => { const b = $('bloc-auth'); if(b) defilerVers(b); }, 350);
+    coachAvisCompte();
+    setTimeout(() => { const a = $('co-avis'); if(a) defilerVers(a); }, 350);
     return;
   }
   if(COACH.acces !== true){ coachInit(true).then(() => { if(COACH.acces === true) coachDemarrer(); }); return; }
-  if(!COACH.etat?.acceptation) coachEcranRegles(); else coachQuiz();
+  coachQuiz();
 }
 
+// bandeau en tête du formulaire de compte quand on arrive depuis le coach
+function coachAvisCompte(){
+  const bloc = $('bloc-auth'); if(!bloc) return;
+  let a = $('co-avis');
+  if(!a){ a = document.createElement('div'); a.id = 'co-avis'; a.className = 'co-avis'; bloc.insertBefore(a, bloc.firstChild); }
+  a.innerHTML = `<b>Pour créer ton plan, il te faut un compte.</b><span>C'est gratuit et ça prend dix secondes. Ton plan s'ouvre juste après.</span>`;
+}
 function coachEcran(o){
   const e = $('co-ecran');
   $('co-retour').style.visibility = o.retour ? 'visible' : 'hidden';
@@ -5555,15 +5574,16 @@ function coachEcranRetour(){ if(COACH.ecranRetour) COACH.ecranRetour(); else coa
 
 function coachEcranRegles(){
   coachEcran({ retour:true, passer:false, onRetour: coachFermerEcran, corps: `
-    <span class="co-sur">Avant de commencer</span>
+    <span class="co-sur">Ton plan est activé</span>
     <h2>Ton coach, <span>en trois règles</span></h2>
+    <p>Avant la première sélection, une seule fois.</p>
     <div class="co-regles">
       <div><b>1</b><span>Il travaille uniquement avec les analyses publiées par le moteur AURA90. Il ne devine rien, il n'invente aucun match.</span></div>
       <div><b>2</b><span>Il t'aide à poser une méthode et à la tenir. Les montants, c'est toi qui les décides : il ne te dira jamais d'augmenter.</span></div>
       <div><b>3</b><span>Il ne promet rien. Une analyse à 85 % tombe environ une fois sur sept, et il te le rappellera. Si tu veux faire une pause, il la respecte.</span></div>
     </div>
     <label class="co-cgu" id="co-cgu"><input type="checkbox" id="co-cgu-ok" onchange="$('co-cgu').classList.remove('ko')"><span>J'ai lu et j'accepte les conditions d'utilisation du coach. J'ai 18 ans ou plus. Je sais que le coach ne garantit aucun résultat et que je reste seul responsable de mes décisions.</span></label>`,
-    pied: `<button class="co-btn" onclick="coachAccepter()">Commencer avec mon coach</button>` });
+    pied: `<button class="co-btn" onclick="coachAccepter()">J'accepte, on commence</button>` });
 }
 async function coachAccepter(){
   if(!$('co-cgu-ok').checked){ $('co-cgu').classList.add('ko'); return; }
@@ -5571,7 +5591,9 @@ async function coachAccepter(){
   const { data } = await coachAppel({ action:'accepter' });
   if(!data || !data.ok){ b.disabled = false; b.textContent = 'Commencer avec mon coach'; coToast('Réessaie dans un instant.'); return; }
   if(COACH.etat) COACH.etat.acceptation = true;
-  coachQuiz();
+  coachFermerEcran();
+  await coachInit(true);
+  coToast('C\'est parti.');
 }
 
 /* ================= QUESTIONNAIRE À BRANCHES ================= */
@@ -5734,10 +5756,15 @@ function coachEcranPret(p){
     `<div class="co-bloc" style="margin:0"><span class="co-sur">Objectif du mois</span><div style="margin-top:6px;font-size:14px;font-weight:700">Suivre ${p.objectif_jours} jours</div></div>`,
   ].filter(Boolean);
   coachEcran({ retour:false, passer:false, corps:`<span class="co-sur">C'est prêt</span><h2>Ton plan <span>est prêt</span></h2><div class="co-pret"><div class="co-plan-anim" id="co-anim">${lignes.map(l => `<div>${l}</div>`).join('')}</div></div>`,
-    pied:`<button class="co-btn" id="co-voir" style="opacity:0;transition:opacity .4s" onclick="coachFermerEcran();allerPage('coach')">Voir mon espace coach</button>` });
+    pied:`<button class="co-btn" id="co-voir" style="opacity:0;transition:opacity .4s" onclick="coachApresPret()">Voir mon espace coach</button>` });
   const items = document.querySelectorAll('#co-anim > div');
   items.forEach((el, k) => setTimeout(() => el.classList.add('vu'), 250 + k * 420));
   setTimeout(() => { const b = $('co-voir'); if(b) b.style.opacity = '1'; }, 300 + items.length * 420);
+}
+function coachApresPret(){
+  coachFermerEcran(); allerPage('coach');
+  const e = COACH.etat;
+  if(e && e.pro && e.verrou && !COACH.reglesMontrees){ COACH.reglesMontrees = true; setTimeout(coachEcranRegles, 300); }
 }
 function coJoursTexte(j){
   if(!j || j.length >= 7) return 'Tous les jours';
@@ -5850,6 +5877,7 @@ function coachBlocReglages(e){
 async function coachDeclarer(suivi){
   const { data } = await coachAppel({ action:'declarer', suivi });
   if(data?.ok){ await coachInit(true); coachAlerte(false); coToast(suivi ? 'Noté : suivie.' : 'Noté : pas suivie.'); if(suivi) setTimeout(() => $('co-mise')?.focus({ preventScroll:true }), 200); }
+  else if(data?.erreur === 'regles') coachEcranRegles();
   else coToast(data?.erreur === 'pro' ? 'Réservé aux PRO.' : 'Réessaie.');
 }
 async function coachEnregistrerMontants(){
@@ -5955,6 +5983,7 @@ async function coachConstruire(){
   const { data } = await coachAppel({ action:'combine', cote: CO_CIBLE, periode: CO_PERIODE });
   b.disabled = false; b.textContent = 'Construire';
   if(data?.erreur === 'pro'){ coachFermerCombine(); allerOffres(); return; }
+  if(data?.erreur === 'regles'){ coachFermerCombine(); coachEcranRegles(); return; }
   coachAfficherProps(data || { vide:true, raison:'Le serveur ne répond pas.' });
 }
 function coachAfficherProps(d){
@@ -5997,7 +6026,7 @@ function coachVuePresentation(e){
   return `
   <div class="co-pres">
     <div class="co-h1">Ton plan <i>est prêt</i></div>
-    <div class="co-sous">Construit à partir de tes réponses. Il attend d'être activé.</div>
+    <div class="co-sous">${e.verrou ? 'Construit à partir de tes réponses. Accepte les règles du coach pour l\'ouvrir.' : 'Construit à partir de tes réponses. Il attend d\'être activé.'}</div>
     ${coachCartePlan(e, false)}
     <div class="co-bloc"><div class="h"><span class="co-sur">Aujourd'hui, ton coach a déjà travaillé</span></div>${apercu}</div>
     ${hier}
@@ -6008,8 +6037,8 @@ function coachVuePresentation(e){
       <div><b>🔁</b><small>Fin de mois</small><em>ton nouveau plan</em></div>
     </div>
     <div class="co-demo"><span class="co-sur">Le coach en trois réponses</span><div class="fil" id="co-demo-fil"></div></div>
-    <div class="co-activer"><button onclick="allerOffres()">Activer mon plan</button><small>${prix ? prix + ' · ' : ''}accès immédiat, sélection débloquée dès le paiement</small></div>
-    <div class="co-sous" style="margin-top:14px;font-size:11.5px">Réservé aux 18 ans et plus. Le coach aide à tenir une méthode ; il ne garantit aucun résultat et ne décide jamais d'un montant.</div>
+    ${e.verrou ? `<div class="co-activer"><button onclick="coachEcranRegles()">Lire les règles et activer</button><small>Tu es PRO : il reste les trois règles du coach à accepter, une seule fois.</small></div>`
+      : `<div class="co-activer"><button onclick="allerOffres()">Activer mon plan</button><small>${prix ? prix + ' · ' : ''}accès immédiat, sélection débloquée dès le paiement</small></div>`}
   </div>`;
 }
 function coachAnimerPresentation(){
