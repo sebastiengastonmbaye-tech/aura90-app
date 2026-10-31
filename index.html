@@ -5442,7 +5442,7 @@ const coCote = v => v == null ? '—' : coNbr(v, 2);
 const coMontant = v => v == null ? '—' : mD(+v);
 const JOURS_COURTS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 const NOMS_JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-const FAMILLES = { lecture:'Lecture', prudent:'Prudent 1,40', cote2:'Cote 2', series:'Séries', plaisir:'Plaisir', methode:'Méthode' };
+const FAMILLES = { lecture:'Lecture', prudent:'Prudent', cote2:'Cote 2', series:'Séries', plaisir:'Plaisir', methode:'Méthode' };
 
 function coToast(t){ const e = $('co-toast'); if(!e) return; e.textContent = t; e.classList.add('on'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('on'), 2200); }
 
@@ -5549,9 +5549,9 @@ function coachVueAccueil(connecte){
 // les exemples de plans de la page d'accueil (mêmes codes que la vraie carte)
 function coachExemples(){
   return [
-    { fam:'PRUDENT 1,40', nom:'Plan Prudent', pour:'Tu débutes, ou tu veux du calme', l:[['1','match / jour'],['1,30–1,50','cote visée'],['fixe','ta part']], jours:[2,3,5,6,0], regles:['La sélection la plus sûre du moteur, expliquée en deux lignes','Trois échecs dans la semaine : on en parle avant de continuer'] },
-    { fam:'COTE 2', nom:'Plan Cote 2', pour:'Tu as déjà ta méthode', l:[['2–3','matchs / jour'],['1,80–2,30','cote visée'],['fixe','ta part']], jours:[5,6,0], regles:['Un combiné par jour autour de 2, sur les analyses signées','Deux échecs d\'affilée : repos le lendemain'] },
-    { fam:'PLAISIR', nom:'Plan Plaisir', pour:'Un combiné le week-end, pas plus', l:[['2–4','matchs / combiné'],['5–10','cote visée'],['fixe','ton montant']], jours:[6,0], regles:['Un combiné le samedi, construit par le moteur','Perdu ? On attend le week-end suivant, on ne rejoue pas'] },
+    { fam:'PRUDENT', nom:'Plan Prudent', pour:'Pour avancer sereinement, jour après jour', l:[['1–2','matchs / jour'],['1,50–1,80','cote visée'],['fixe','ta part']], jours:[2,3,5,6,0], regles:['Chaque jour, la sélection la plus sûre du moteur, expliquée en deux lignes par ton coach','Ton coach veille à ce que tu restes dans tes limites, toujours'] },
+    { fam:'COTE 2', nom:'Plan Cote 2', pour:'Pour un rythme régulier et une vraie méthode', l:[['2–3','matchs / jour'],['1,80–2,30','cote visée'],['fixe','ta part']], jours:[5,6,0], regles:['Un combiné par jour autour de 2, construit sur les analyses signées du moteur','Le dimanche, ton bilan : ce que tu as tenu, ce que ça a donné'] },
+    { fam:'PLAISIR', nom:'Plan Plaisir', pour:'Pour se faire plaisir le week-end, avec de la méthode', l:[['2–4','matchs / combiné'],['5–10','cote visée'],['fixe','ton montant']], jours:[6,0], regles:['Le samedi, un combiné à cote 5 à 10, construit par le moteur pour toi','Toujours le même montant : le plaisir reste un plaisir'] },
   ];
 }
 function coachCarteExemple(x){
@@ -5657,7 +5657,7 @@ function coachEcransPour(rep){
     { cle:'experience', type:'cartes', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Pour régler le ton du coach, pas pour te juger.', options:[{ v:'jamais', ic:'🌱', t:'Jamais' }, { v:'tenu', ic:'💪', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'〰️', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
     { cle:'jours', type:'grille', titre:'Combien de jours par semaine ?', sous:'Le coach conseille au moins un jour de repos.', options:[{ v:2, t:'2 jours', s:'le week-end' }, { v:3, t:'3 jours', s:'ven, sam, dim' }, { v:5, t:'5 jours', s:'deux jours de repos' }, { v:7, t:'Tous les jours', s:'avec le lundi de repos' }], defaut:3 },
     { cle:'famille', type:'cartes', titre:'Quel plan te ressemble ?', sous:'Celui que le coach conseille d\'après tes réponses est marqué.', options:[
-      { v:'prudent', ic:'🛡️', t:'Prudent 1,40', s:'une sélection par jour entre 1,30 et 1,50, la plus sûre du moteur · réussite habituelle élevée' },
+      { v:'prudent', ic:'🛡️', t:'Prudent', s:'une sélection par jour entre 1,50 et 1,80, la plus sûre du moteur · réussite habituelle élevée' },
       { v:'cote2', ic:'⚖️', t:'Cote 2', s:'un combiné autour de 2 par jour sur les analyses signées · une réussite sur deux environ' },
       { v:'series', ic:'📈', t:'Séries', s:'le palier du jour de la Montante 1, une unité de départ fixe · une série peut tomber, c\'est prévu' }], defaut:'prudent', conseil: rep.experience === 'tenu' ? 'cote2' : 'prudent' },
     budget('Ton budget pour le mois', 'Il sert à calculer ta part fixe par sélection. Tu peux ne pas le dire : le plan parlera en parts.'),
