@@ -1510,6 +1510,10 @@ body.sur-coach #ms-bulle{display:none}
 .co-prop .lg .ch{grid-area:ch;display:flex;flex-direction:column;min-width:0}
 .co-prop .lg .ch small{color:var(--sourdine);font-size:10.5px;margin-top:1px}
 .co-prop .lg b{grid-area:cote;font-family:'JetBrains Mono',monospace;font-size:14px;align-self:center}
+.co-q-lbl{margin-top:14px;font-size:13px;font-weight:700}
+.co-q-lbl span{color:var(--sourdine);font-weight:600}
+.co-q-lbl + .co-decl{margin-top:8px}
+.co-q-lbl + .co-montants{margin-top:8px}
 
 </style>
 </head>
@@ -5788,14 +5792,14 @@ function coachQuizEcrans(){ return coachEcransPour(COACH.quiz.rep); }
 function coachQuizHtml(ec, q, total){
   const val = q.rep[ec.cle];
   let corps = `<div class="co-q"><span class="co-sur">${ec.cle === 'objectif' ? 'Pour commencer' : `Question ${q.i + 1} sur ${total}`}${ec.facultatif ? ' · facultatif' : ''}</span><h2>${ec.titre}</h2>${ec.sous ? `<p>${ec.sous}</p>` : ''}`;
-  const tuile = (o, k, extra) => `<button class="co-tuile ${val === o.v ? 'on' : ''}" style="--i:${k}" onclick="coachQuizChoisir(${JSON.stringify(o.v)}, this)">
+  const tuile = (o, k, extra) => `<button class="co-tuile ${val === o.v ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(JSON.stringify(o.v))}" onclick="coachQuizTap(this)">
       <span class="ic"><svg class="ic"><use href="#${o.ic || 'i-cible'}"/></svg></span>
       <span class="g"><b>${o.t}${ec.conseil === o.v ? '<span class="tag">CONSEILLÉ POUR TOI</span>' : ''}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>${extra || ''}
     </button>`;
   if(ec.type === 'tuiles'){
     corps += `<div class="co-tuiles">${ec.options.map((o, k) => tuile(o, k)).join('')}</div>`;
   } else if(ec.type === 'grille'){
-    corps += `<div class="co-grille">${ec.options.map((o, k) => `<button class="co-tuile gr ${val === o.v ? 'on' : ''}" style="--i:${k}" onclick="coachQuizChoisir(${JSON.stringify(o.v)}, this)"><em>${o.n}</em><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
+    corps += `<div class="co-grille">${ec.options.map((o, k) => `<button class="co-tuile gr ${val === o.v ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(JSON.stringify(o.v))}" onclick="coachQuizTap(this)"><em>${o.n}</em><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
   } else if(ec.type === 'chips'){
     const sel = ec.multi ? (Array.isArray(val) ? val : []) : (val ? [val] : []);
     corps += `<div class="co-chips" id="co-chips">${ec.options.map((o, k) => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.img ? `<img src="${o.img}" alt="">` : ''}${coEchap(o.t)}</button>`).join('')}</div>`;
@@ -5833,6 +5837,7 @@ function coachQuizRendre(premier){
   // la barre de progression reste en place (hors de .co-q) : on la met à jour sans la recréer
   const bar = z.querySelector('.co-prog i'); if(bar) bar.style.width = Math.round(q.i / total * 100) + '%';
 }
+function coachQuizTap(el){ let v = null; try{ v = JSON.parse(el.dataset.v); }catch(e){ v = el.dataset.v; } coachQuizChoisir(v, el); }
 function coachQuizChoisir(v, el){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
   q.rep[ec.cle] = v;
@@ -5988,7 +5993,6 @@ function coachVuePro(e){
 }
 function coachBlocAujourdhui(e){
   const s = e.aujourdhui || {}, p = e.plan, d = s.declare || {};
-  const plancherPct = e.reglages?.plancher_pct || 10;
   let corps;
   if(e.pause) corps = `<div class="co-repos"><b>Pause</b>Le coach ne propose rien pendant la pause. Les analyses restent sur l'Accueil.</div>`;
   else if(s.repos) corps = `<div class="co-repos"><b>Jour de repos</b>C'est prévu dans ton plan. Rien à suivre aujourd'hui, on se retrouve ${coProchainJour(p)}.</div>`;
@@ -6000,15 +6004,16 @@ function coachBlocAujourdhui(e){
           <span class="ch">${coEchap(x.selection)}</span><div class="inf">${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, true) : ''}${x.resultat === 'gagne' ? ' · ✓ validé' : x.resultat === 'perdu' ? ' · ✗' : ''}</div></div>
         <div class="ct">${x.cote != null ? `<b>${coCote(x.cote)}</b><small>${x.estime ? 'cote estimée' : 'cote indicative'}</small>` : `<b>${Math.round(x.confiance)} %</b><small>indice</small>`}</div>
       </div>`).join('');
-    const total = s.cote != null ? `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : 'autour de ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : 'cote totale indicative'}</small></div><div class="ind"><b>${s.indice} %</b><small>indice de réussite</small></div></div>` : `<div class="co-tot"><div><b>${(s.items || []).length}</b><small>analyse${(s.items || []).length > 1 ? 's' : ''} à lire</small></div><div class="ind"><b>${s.indice} %</b><small>indice global</small></div></div>`;
-    const plancher = s.cote != null ? `<div class="co-note">Plancher : <b>${coCote(s.cote * (1 - plancherPct / 100))}</b>. Si tu trouves nettement moins chez toi, passe ton tour, la sélection ne vaut plus le risque.${p.unite ? ` Ta part : <b>${coMontant(p.unite)}</b>, pas plus.` : ''}</div>` : '';
+    const total = s.cote != null ? `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : 'cote totale, indicative'}</small></div><div class="ind"><b>${s.indice} %</b><small>indice de réussite</small></div></div>` : `<div class="co-tot"><div><b>${(s.items || []).length}</b><small>analyse${(s.items || []).length > 1 ? 's' : ''} à lire</small></div><div class="ind"><b>${s.indice} %</b><small>indice global</small></div></div>`;
+    const part = p.unite ? `<div class="co-note">Ta part sur cette sélection : <b>${coMontant(p.unite)}</b>, comme chaque jour.</div>` : '';
     const decl = p.famille === 'lecture' ? '' : `
+      <div class="co-q-lbl">Tu as suivi cette sélection ?</div>
       <div class="co-decl">
-        <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">✓ J'ai suivi</button>
-        <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Pas suivi</button>
+        <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">Oui, je l'ai suivie</button>
+        <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Non</button>
       </div>
-      ${d.suivi === true ? `<div class="co-montants deux"><input id="co-mise" type="number" inputmode="decimal" placeholder="${p.unite ? 'Montant · ta part : ' + coMontant(p.unite) : 'Montant (facultatif)'}" value="${d.mise ?? ''}"><button onclick="coachEnregistrerMontants()">${d.mise != null ? '✓' : 'OK'}</button></div>` : ''}`;
-    corps = `<div class="co-sel">${items}</div>${total}${s.note ? `<div class="co-note">${coEchap(s.note)}</div>` : ''}${plancher}${decl}`;
+      ${d.suivi === true ? `<div class="co-q-lbl">Combien tu as mis dessus ? <span>(facultatif)</span></div><div class="co-montants deux"><input id="co-mise" type="number" inputmode="decimal" placeholder="${p.unite ? coMontant(p.unite) : 'Montant'}" value="${d.mise ?? ''}"><button onclick="coachEnregistrerMontants()">${d.mise != null ? '✓' : 'OK'}</button></div>` : ''}`;
+    corps = `<div class="co-sel">${items}</div>${total}${s.note ? `<div class="co-note">${coEchap(s.note)}</div>` : ''}${part}${decl}`;
   }
   return `<div class="co-bloc" id="co-auj"><div class="h"><span class="co-sur">Aujourd'hui</span>${!s.vide && !s.repos && !e.pause && (s.items || []).length ? `<button class="co-lien" style="width:auto;margin:0;font-size:12px" onclick="coachCopierSelection()">Copier</button>` : `<small>${new Date().toLocaleDateString(LOC, { weekday:'long', day:'numeric', month:'long' })}</small>`}</div>${corps}</div>`;
 }
@@ -6155,14 +6160,15 @@ function coachAfficherProps(d){
   const z = $('co-props'); if(!z) return;
   if(d.refuse) z.innerHTML = `<div class="co-alerte">Au-dessus de ${d.cote_max}, le coach ne construit pas : à ce niveau l'indice de réussite tombe sous 5 %, ce n'est plus une sélection, c'est un ticket de loterie. Il a construit au maximum autorisé.</div>`; else z.innerHTML = '';
   if(d.vide){ z.insertAdjacentHTML('beforeend', `<div class="co-alerte">${coEchap(d.raison || 'Rien à proposer.')}</div>`); return; }
+  if(d.etendu) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Plus assez de matchs à venir sur la période choisie : le moteur a construit sur ${d.periode === '3j' ? '3 jours' : 'aujourd\'hui et demain'}.</div>`);
   if(d.hors_plan) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Cette cote sort de ton plan. Le coach construit quand même, mais ce combiné ne compte pas dans ton suivi, et ta part reste la même.</div>`);
   z.insertAdjacentHTML('beforeend', `<div class="co-props">${d.propositions.map((p, k) => `
     <div class="co-prop">
       <div class="t"><b>${p.nb} match${p.nb > 1 ? 's' : ''} · autour de ${coCote(p.cote)}</b><span class="n ${['sur', 'equ', 'aud'][k]}">${p.niveau.toUpperCase()}</span></div>
       ${p.items.map(x => `<div class="lg"><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><i>–</i>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div><div class="ch"><em>${coEchap(x.selection)}</em><small>${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, x.date_match === jourLocal()) : ''}${x.estime ? ' · cote estimée' : ''}</small></div><b>${coCote(x.cote)}</b></div>`).join('')}
-      <div class="pied"><span>Indice <b>${p.indice} %</b> · plancher <b>${coCote(p.plancher)}</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
+      <div class="pied"><span>Indice de réussite <b>${p.indice} %</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
     </div>`).join('')}</div>
-    <div class="co-note" style="margin-top:12px">L'indice est le produit des indices de chaque match : plus il y a de matchs, plus il baisse. Les cotes sont indicatives et bougent jusqu'au coup d'envoi.</div>`);
+    <div class="co-note" style="margin-top:12px">Plus il y a de matchs, plus l'indice de réussite baisse : c'est normal. Les cotes sont indicatives, elles peuvent être un peu différentes sur ta plateforme.</div>`);
   COACH.props = d.propositions;
 }
 function coachCopierProp(k){
