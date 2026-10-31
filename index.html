@@ -64,12 +64,12 @@ body.cta-on #page-accueil{padding-bottom:calc(210px + env(safe-area-inset-bottom
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AURA90">
-<title>AURA90 — Pronostics foot du jour, combinés et montantes</title>
+<meta name="apple-mobile-web-app-title" content="AURA90 TEST">
+<title>AURA90 TEST — version d'essai du coach</title>
 <meta name="description" content="AURA90 : pronostics foot du jour, combinés et montantes. Chaque match analysé, chaque résultat vérifié. Ligue des Champions, Premier League, Liga, Ligue 1, CAN.">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://aura90.app/">
-<meta name="application-name" content="AURA90">
+<meta name="application-name" content="AURA90 TEST">
 <!-- Partage WhatsApp / Facebook / TikTok / X -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AURA90">
@@ -1201,6 +1201,236 @@ body.cta-on #page-accueil{padding-bottom:calc(170px + env(safe-area-inset-bottom
 #maj-app{position:absolute;left:12px;right:12px}
 #ms-bulle{position:absolute;right:14px}
 body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+/* ================= COACH 90' (31/10/2026) ================= */
+.nav button.nav-coach{position:relative;color:var(--texte)}
+.nav button.nav-coach .co-rond{width:46px;height:46px;margin:-22px auto 3px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(61,232,200,.38);border:3px solid var(--surface);transition:transform .2s}
+.nav button.nav-coach .co-rond svg{margin:0;width:22px;height:22px;color:#06110E;stroke-width:2}
+.nav button.nav-coach.actif .co-rond{transform:translateY(-2px) scale(1.06)}
+.nav button.nav-coach .co-pt{position:absolute;top:-26px;right:calc(50% - 26px);width:10px;height:10px;border-radius:50%;background:#FF7A9E;border:2px solid var(--surface);display:none}
+.nav button.nav-coach.alerte .co-pt{display:block}
+
+#page-coach{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+.co-wrap{padding:0 16px}
+.co-h1{margin:18px 20px 0;font-size:27px;line-height:1.14;font-weight:800;letter-spacing:-.5px}
+.co-h1 i{font-style:normal;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.co-sous{margin:8px 20px 0;color:var(--sourdine);font-size:13.5px;line-height:1.55}
+.co-sur{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--sourdine);text-transform:uppercase}
+
+/* ---- accueil du coach (pas de plan) ---- */
+.co-hero{margin:18px 16px 0;padding:22px 18px 20px;border-radius:22px;background:radial-gradient(120% 90% at 10% 0%,rgba(61,232,200,.16),transparent 55%),radial-gradient(90% 80% at 100% 100%,rgba(139,124,255,.18),transparent 60%),var(--surface);border:1px solid var(--ligne);position:relative;overflow:hidden}
+.co-hero .co-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;background:rgba(61,232,200,.1);border:1px solid rgba(61,232,200,.35);color:var(--aura1);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em}
+.co-hero h2{font-family:'Unbounded',sans-serif;font-size:21px;line-height:1.25;margin-top:14px}
+.co-hero h2 span{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.co-pts{margin:16px 0 0;display:flex;flex-direction:column;gap:9px}
+.co-pts div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45}
+.co-pts i{flex:0 0 22px;height:22px;border-radius:7px;background:var(--surface2);border:1px solid var(--ligne);display:flex;align-items:center;justify-content:center;font-style:normal;color:var(--aura1);font-size:12px;font-weight:800}
+.co-cta{margin-top:18px;width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 0 24px rgba(61,232,200,.32)}
+.co-lien{display:block;width:100%;margin:10px 0 0;background:none;border:none;color:var(--sourdine);font-size:12.5px;font-family:inherit;text-decoration:underline;cursor:pointer}
+.co-etapes{margin:22px 16px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.co-etapes div{padding:12px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);text-align:center}
+.co-etapes b{display:block;font-family:'Unbounded',sans-serif;font-size:16px;color:var(--aura1)}
+.co-etapes small{display:block;margin-top:5px;font-size:11px;color:var(--sourdine);line-height:1.4}
+
+/* ---- écrans plein (règles, questionnaire, plan prêt) ---- */
+.co-ecran{position:fixed;inset:0;z-index:95;background:var(--nuit);display:none;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));overflow:hidden}
+.co-ecran.on{display:flex}
+.co-ecran .co-haut{display:flex;align-items:center;justify-content:space-between;min-height:34px}
+.co-ecran .co-retour{background:none;border:none;color:var(--texte);font-size:26px;line-height:1;padding:0 8px 2px 0;cursor:pointer;font-family:inherit}
+.co-ecran .co-passer{background:none;border:none;color:var(--sourdine);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;padding:6px 0 6px 8px}
+.co-ecran .co-corps{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:6px 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.co-ecran .co-corps::-webkit-scrollbar{display:none}
+.co-ecran h2{font-family:'Unbounded',sans-serif;font-size:19px;line-height:1.3;margin:14px 0 6px}
+.co-ecran h2 span{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.co-ecran p{color:var(--sourdine);font-size:13.5px;line-height:1.6}
+.co-points{display:flex;gap:7px;justify-content:center;margin:0 0 12px}
+.co-points i{width:7px;height:7px;border-radius:50%;background:var(--ligne);transition:all .3s}
+.co-points i.on{width:22px;border-radius:99px;background:linear-gradient(90deg,var(--aura1),var(--aura2))}
+.co-btn{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;font-size:14.5px;font-family:inherit;cursor:pointer;box-shadow:0 0 22px rgba(61,232,200,.3)}
+.co-btn:disabled{opacity:.35;box-shadow:none}
+.co-regles{margin:16px 0 0;display:flex;flex-direction:column;gap:10px}
+.co-regles div{display:flex;gap:12px;padding:13px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);font-size:13.5px;line-height:1.5}
+.co-regles b{flex:0 0 26px;height:26px;border-radius:8px;background:rgba(61,232,200,.12);color:var(--aura1);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px}
+.co-cgu{display:flex;gap:10px;align-items:flex-start;margin:18px 0 14px;font-size:12.5px;line-height:1.5;color:var(--sourdine)}
+.co-cgu input{margin-top:3px;width:18px;height:18px;accent-color:var(--aura1);flex:0 0 auto}
+.co-cgu.ko{color:var(--ko)}
+
+/* cartes de réponse */
+.co-cartes{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.co-carte{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);cursor:pointer;animation:splashIn .35s ease both}
+.co-carte .ic{flex:0 0 36px;height:36px;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:17px}
+.co-carte .g{flex:1;min-width:0}
+.co-carte b{display:block;font-size:14px}
+.co-carte small{display:block;color:var(--sourdine);font-size:12px;line-height:1.4;margin-top:2px}
+.co-carte .ok{width:20px;height:20px;border-radius:50%;border:2px solid var(--ligne);flex:0 0 auto}
+.co-carte.on{border-color:var(--aura1);background:rgba(61,232,200,.07)}
+.co-carte.on .ok{border-color:var(--aura1);background:var(--aura1);box-shadow:inset 0 0 0 3px var(--surface)}
+.co-carte .tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#06110E;background:var(--aura1);padding:3px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
+.co-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+.co-grille .co-carte{flex-direction:column;align-items:flex-start;gap:4px;padding:12px}
+.co-grille .co-carte .ok{display:none}
+.co-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.co-chip{all:unset;box-sizing:border-box;padding:9px 13px;border-radius:99px;background:var(--surface);border:1px solid var(--ligne);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.co-chip img{width:18px;height:13px;border-radius:2px;object-fit:cover}
+.co-chip.on{border-color:var(--aura1);background:rgba(61,232,200,.1);color:var(--aura1)}
+.co-saisie{display:flex;gap:8px;margin-top:10px}
+.co-saisie input{flex:1;background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:12px 13px;color:var(--texte);font:600 16px 'Manrope',sans-serif}
+.co-saisie span{align-self:center;color:var(--sourdine);font-weight:700}
+
+/* plan prêt */
+.co-pret .co-plan-anim{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.co-pret .co-plan-anim > div{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+.co-pret .co-plan-anim > div.vu{opacity:1;transform:none}
+
+/* ---- la carte du plan ---- */
+.co-plan{margin:16px 16px 0;padding:16px;border-radius:20px;background:linear-gradient(160deg,rgba(61,232,200,.12),rgba(139,124,255,.1) 60%,var(--surface) 100%),var(--surface);border:1px solid rgba(61,232,200,.35);position:relative;overflow:hidden}
+.co-plan .t{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.co-plan h3{font-size:18px;font-weight:800;letter-spacing:-.3px;line-height:1.2}
+.co-plan .fam{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--aura1);margin-bottom:5px}
+.co-plan .etat{flex:0 0 auto;font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:99px;background:var(--surface2);color:var(--sourdine);border:1px solid var(--ligne)}
+.co-plan .etat.actif{color:#06110E;background:var(--aura1);border-color:var(--aura1)}
+.co-plan .l{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.co-plan .l div{padding:9px 8px;border-radius:12px;background:rgba(7,11,18,.45);border:1px solid var(--ligne);text-align:center}
+.co-plan .l b{display:block;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--texte)}
+.co-plan .l small{display:block;font-size:10px;color:var(--sourdine);margin-top:3px;letter-spacing:.04em}
+.co-plan .regles{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.co-plan .regles div{display:flex;gap:8px;font-size:12.5px;line-height:1.45;color:var(--texte)}
+.co-plan .regles i{color:var(--aura1);font-style:normal;flex:0 0 auto}
+.co-sem{display:flex;gap:6px;margin-top:14px}
+.co-sem div{flex:1;text-align:center}
+.co-sem i{display:block;height:8px;border-radius:99px;background:var(--surface2);border:1px solid var(--ligne)}
+.co-sem i.suivi{background:var(--aura1);border-color:var(--aura1)}
+.co-sem i.gagne{background:var(--aura1);border-color:var(--aura1)}
+.co-sem i.perdu{background:var(--ko);border-color:var(--ko)}
+.co-sem i.pas{background:repeating-linear-gradient(45deg,var(--surface2),var(--surface2) 3px,var(--ligne) 3px,var(--ligne) 6px)}
+.co-sem i.repos{background:transparent;border-style:dashed}
+.co-sem i.auj{box-shadow:0 0 0 2px rgba(61,232,200,.45)}
+.co-sem small{display:block;font-size:9.5px;color:var(--sourdine);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.co-obj{margin-top:14px}
+.co-obj .h{display:flex;justify-content:space-between;font-size:11.5px;color:var(--sourdine)}
+.co-obj .h b{color:var(--texte)}
+.co-obj .b{height:7px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:6px}
+.co-obj .b i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura1),var(--aura2));transition:width .8s ease}
+.co-obj .b i.budget{background:linear-gradient(90deg,#FFB454,#FF7A9E)}
+
+/* jauge de crédits */
+.co-jauge{margin:14px 16px 0;display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--sourdine)}
+.co-jauge .b{flex:1;height:5px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.co-jauge .b i{display:block;height:100%;background:linear-gradient(90deg,var(--aura1),var(--aura2));transition:width .5s}
+.co-jauge.bas .b i{background:linear-gradient(90deg,#FFB454,#FF7A9E)}
+.co-jauge b{font-family:'JetBrains Mono',monospace;color:var(--texte);font-size:11.5px}
+
+/* ---- aujourd'hui ---- */
+.co-bloc{margin:14px 16px 0;padding:15px;border-radius:18px;background:var(--surface);border:1px solid var(--ligne)}
+.co-bloc .h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.co-bloc .h .co-sur{color:var(--aura1)}
+.co-bloc .h small{font-size:11px;color:var(--sourdine)}
+.co-sel{display:flex;flex-direction:column;gap:8px}
+.co-sel .m{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border-radius:13px;background:var(--surface2);border:1px solid var(--ligne)}
+.co-sel .m .eq{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;min-width:0}
+.co-sel .m .eq span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co-sel .m .eq .ecu{width:18px;height:18px;flex:0 0 18px}
+.co-sel .m .eq .ecu img{width:18px;height:18px;object-fit:contain}
+.co-sel .m .ch{display:block;margin-top:4px;font-size:12.5px;color:var(--aura1);font-weight:700}
+.co-sel .m .inf{font-size:10.5px;color:var(--sourdine);margin-top:3px}
+.co-sel .m .ct{text-align:right}
+.co-sel .m .ct b{display:block;font-family:'JetBrains Mono',monospace;font-size:15px}
+.co-sel .m .ct small{display:block;font-size:10px;color:var(--sourdine);margin-top:2px;white-space:nowrap}
+.co-sel .m.ok{border-color:rgba(61,232,200,.5)}
+.co-sel .m.ko{border-color:rgba(255,122,158,.5);opacity:.85}
+.co-sel .m.flou .eq span{filter:blur(5px);user-select:none}
+.co-sel .m.flou .ecu{filter:blur(3px)}
+.co-tot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed var(--ligne)}
+.co-tot div b{display:block;font-family:'JetBrains Mono',monospace;font-size:18px}
+.co-tot div small{display:block;font-size:10px;color:var(--sourdine);margin-top:2px}
+.co-tot .ind{text-align:right}
+.co-tot .ind b{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.co-note{margin-top:10px;font-size:11.5px;color:var(--sourdine);line-height:1.5}
+.co-note b{color:var(--texte)}
+.co-decl{display:flex;gap:8px;margin-top:12px}
+.co-decl button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface2);color:var(--texte);font-weight:800;font-family:inherit;font-size:13px;cursor:pointer}
+.co-decl button.on{border-color:var(--aura1);background:rgba(61,232,200,.12);color:var(--aura1)}
+.co-decl button.on.non{border-color:var(--sourdine);color:var(--texte);background:var(--surface2)}
+.co-montants{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:8px}
+.co-montants input{min-width:0;background:var(--surface2);border:1px solid var(--ligne);border-radius:12px;padding:11px 12px;color:var(--texte);font:600 16px 'Manrope',sans-serif}
+.co-montants button{padding:0 14px;border-radius:12px;border:none;background:var(--aura1);color:#06110E;font-weight:800;font-family:inherit;cursor:pointer}
+.co-repos{text-align:center;padding:18px 10px;color:var(--sourdine);font-size:13.5px;line-height:1.55}
+.co-repos b{display:block;color:var(--texte);font-size:16px;margin-bottom:4px}
+.co-hier{margin:12px 16px 0;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);font-size:13px}
+.co-hier i{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--sourdine)}
+.co-hier i.gagne{background:var(--aura1)}.co-hier i.perdu{background:var(--ko)}
+.co-hier b{font-family:'JetBrains Mono',monospace}
+
+/* ---- sans abonnement : présentation ---- */
+.co-pres .co-bloc,.co-pres .co-plan,.co-pres .co-hier,.co-pres .co-frise,.co-pres .co-demo{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.co-pres .vu{opacity:1 !important;transform:none !important}
+.co-verrou{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--sourdine);font-weight:700}
+.co-verrou svg{width:12px;height:12px;stroke-width:2}
+.co-frise{margin:14px 16px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.co-frise div{padding:11px 8px;border-radius:13px;background:var(--surface);border:1px solid var(--ligne);text-align:center}
+.co-frise b{display:block;font-size:17px}
+.co-frise small{display:block;font-size:10.5px;color:var(--sourdine);line-height:1.35;margin-top:5px}
+.co-frise em{display:block;font-style:normal;font-size:11px;font-weight:800;margin-top:4px}
+.co-demo{margin:14px 16px 0;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--ligne)}
+.co-demo .fil{display:flex;flex-direction:column;gap:7px;margin-top:10px;min-height:60px}
+.co-demo .ms-m{animation:splashIn .35s ease both}
+.co-activer{position:absolute;left:10px;right:10px;bottom:calc(74px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;padding:14px 16px;border-radius:18px;background:var(--nuit);border:1px solid rgba(61,232,200,.4);box-shadow:0 -10px 30px rgba(7,11,18,.7),0 0 26px rgba(61,232,200,.18);z-index:5}
+.co-activer button{width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer}
+.co-activer small{display:block;text-align:center;color:var(--sourdine);font-size:11.5px;margin-top:8px}
+
+/* ---- discussion ---- */
+.co-chat{margin:14px 16px 0;border-radius:18px;background:var(--surface);border:1px solid var(--ligne);overflow:hidden}
+.co-chat .h{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--ligne)}
+.co-chat .h .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));display:flex;align-items:center;justify-content:center;color:#06110E;flex:0 0 auto}
+.co-chat .h .av svg{width:18px;height:18px;stroke-width:2}
+.co-chat .h b{display:block;font-size:14px}
+.co-chat .h small{display:block;font-size:11px;color:var(--sourdine)}
+.co-fil{padding:12px;display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.co-fil .ms-m.coach{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne);border-bottom-left-radius:5px}
+.co-fil .vide{text-align:center;color:var(--sourdine);font-size:12.5px;padding:10px;line-height:1.5}
+.co-sugg{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px}
+.co-sugg button{background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);border-radius:99px;padding:7px 11px;font-size:12px;font-family:inherit;cursor:pointer}
+.co-pied{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--ligne);background:var(--surface)}
+.co-pied textarea{flex:1;resize:none;height:44px;max-height:110px;line-height:1.35;overflow-y:hidden;background:var(--surface2);border:1px solid var(--ligne);border-radius:13px;padding:11px 12px;color:var(--texte);font:500 16px 'Manrope',sans-serif}
+.co-pied button{height:44px;align-self:flex-end;border:none;border-radius:13px;font-weight:800;cursor:pointer;font-family:inherit}
+.co-pied .env{width:44px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-size:18px}
+.co-pied .env:disabled{opacity:.45}
+.co-pied .cmb{padding:0 12px;background:var(--surface2);border:1px solid rgba(61,232,200,.4);color:var(--aura1);font-size:12px}
+.co-ecrit{font-size:11.5px;color:var(--sourdine);padding:0 4px;font-style:italic}
+
+/* ---- réglages ---- */
+.co-reg{margin:16px 16px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.co-reg button{padding:11px 10px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px}
+.co-reg button span{opacity:.8}
+.co-reg button.danger{color:var(--ko);border-color:rgba(255,122,158,.35)}
+
+/* ---- feuille combiné ---- */
+#co-feuille{position:fixed;inset:0;z-index:96;background:rgba(7,11,18,.78);display:none;align-items:flex-end;justify-content:center}
+#co-feuille.on{display:flex}
+#co-feuille .bx{width:100%;max-width:520px;max-height:88vh;overflow-y:auto;background:var(--surface);border-radius:24px 24px 0 0;border:1px solid var(--ligne);padding:10px 16px calc(22px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+#co-feuille .poignee{width:40px;height:4px;border-radius:99px;background:var(--ligne);margin:4px auto 14px}
+#co-feuille h3{font-size:17px;font-weight:800}
+#co-feuille .lab{margin:14px 0 8px;font-size:11px;color:var(--sourdine);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.co-props{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.co-prop{padding:13px;border-radius:16px;background:var(--surface2);border:1px solid var(--ligne)}
+.co-prop .t{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.co-prop .t b{font-size:14px}
+.co-prop .t .n{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:3px 8px;border-radius:99px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine)}
+.co-prop .t .n.sur{color:var(--aura1);border-color:rgba(61,232,200,.5)}.co-prop .t .n.equ{color:var(--equilibre);border-color:rgba(91,168,245,.5)}.co-prop .t .n.aud{color:var(--audacieux);border-color:rgba(167,139,255,.5)}
+.co-prop .lg{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:5px 0;border-top:1px solid var(--ligne)}
+.co-prop .lg span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co-prop .lg em{font-style:normal;color:var(--aura1);font-weight:700}
+.co-prop .lg b{font-family:'JetBrains Mono',monospace;flex:0 0 auto}
+.co-prop .pied{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11.5px;color:var(--sourdine)}
+.co-prop .pied b{color:var(--texte);font-family:'JetBrains Mono',monospace}
+.co-prop .pied button{padding:7px 12px;border-radius:10px;border:1px solid rgba(61,232,200,.4);background:var(--surface);color:var(--aura1);font-weight:800;font-family:inherit;cursor:pointer;font-size:12px}
+.co-alerte{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,180,84,.1);border:1px solid rgba(255,180,84,.35);font-size:12px;line-height:1.5;color:var(--texte)}
+.co-bientot{margin:30px 16px;text-align:center;color:var(--sourdine);font-size:13.5px;line-height:1.6}
+.co-bientot b{display:block;color:var(--texte);font-size:17px;margin-bottom:6px}
+.co-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);padding:10px 16px;border-radius:99px;font-size:12.5px;font-weight:700;z-index:120;opacity:0;transition:opacity .25s;pointer-events:none}
+.co-toast.on{opacity:1}
+
+body.sur-coach #ms-bulle{display:none}
+
 </style>
 </head>
 <body>
@@ -1233,6 +1463,7 @@ const CONFIG = {
   <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-6z"/><path d="M9 5v14" stroke-dasharray="2 3"/></symbol>
   <symbol id="i-etoile" viewBox="0 0 24 24"><path d="m12 3 2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3 1.2-6.2L3 9.5l6.3-.8L12 3z"/></symbol>
   <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9zM10.3 20a2 2 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-sifflet" viewBox="0 0 24 24"><path d="M3 13.5a5.5 5.5 0 1 0 11 0V12H3v1.5z"/><path d="M14 12V9.5h7V12M9.5 8V5.5M12.5 8l1.5-2.5"/><circle cx="8.5" cy="13.5" r="1.3"/></symbol>
   <symbol id="i-oeil" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-sceau" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><path d="m9 15-1.5 6L12 18.5 16.5 21 15 15M12 8v2.5l1.8 1"/></symbol>
 </svg>
@@ -1412,6 +1643,11 @@ const CONFIG = {
     <div class="cp-pied" id="pied-resp"><span>Réservé aux 18 ans et plus. AURA90 fournit des analyses statistiques, jamais une garantie de résultat.</span><span id="pied-legal"></span><span>© 2026 AURA90 · Tous droits réservés</span></div>
   </div>
 
+<!-- ============ COACH 90' (31/10/2026) ============ -->
+<div class="page" id="page-coach">
+  <div id="coach-corps"></div>
+</div>
+
   <!-- feuille de paiement (choix du moyen) -->
   <div id="zone-paiement" onclick="if(event.target===this)fermerPaiement()">
     <div class="ps-boite">
@@ -1518,6 +1754,7 @@ const CONFIG = {
   <div class="nav">
     <button class="actif" data-page="accueil" onclick="allerPage('accueil')"><svg class="ic"><use href="#i-eclair"/></svg>Accueil</button>
     <button data-page="palmares" onclick="allerPage('palmares')"><svg class="ic"><use href="#i-graph"/></svg>Palmarès</button>
+    <button class="nav-coach" data-page="coach" onclick="allerPage('coach')" style="display:none"><span class="co-rond"><svg class="ic"><use href="#i-sifflet"/></svg></span>Coach<i class="co-pt"></i></button>
     <button data-page="coupons" onclick="allerPage('coupons')"><svg class="ic"><use href="#i-ticket"/></svg>Coupons</button>
     <button data-page="compte" onclick="allerPage('compte')"><svg class="ic"><use href="#i-user"/></svg>Compte</button>
   </div>
@@ -1528,6 +1765,18 @@ const CONFIG = {
 </div>
 
 <!-- ================= MESSAGERIE ================= -->
+
+<!-- écrans plein du coach : règles, questionnaire, plan prêt (un seul conteneur, rempli par coachEcran) -->
+<div class="co-ecran" id="co-ecran">
+  <div class="co-haut"><button class="co-retour" id="co-retour" onclick="coachEcranRetour()" aria-label="Retour">‹</button><button class="co-passer" id="co-passer" onclick="coachPasser()">Passer</button></div>
+  <div class="co-corps" id="co-ecran-corps"></div>
+  <div id="co-ecran-pied"></div>
+</div>
+<!-- feuille « Combiné » -->
+<div id="co-feuille" onclick="if(event.target===this)coachFermerCombine()">
+  <div class="bx" id="co-feuille-bx"></div>
+</div>
+<div class="co-toast" id="co-toast"></div>
 
 <div id="vh-panneau">
   <div id="vh-boite">
@@ -5004,7 +5253,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-31-1';
+const APP_VERSION = '2026-11-01-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -5166,6 +5415,623 @@ charger();
     if(p !== 'ok') spVerifierSiBesoin();   // paiement SasPay confirmé pendant que l'app était fermée ?
   }
 })();
+
+/* ================= COACH 90' (31/10/2026) =================
+   Cinquième onglet. Tout passe par la fonction Edge « coach » (accès bêta / admin / public selon coach_reglages).
+   Sans abonnement : le plan est présenté mais pas activé, jamais un match ni une discussion.
+   PRO : plan, sélection du jour, déclaration, discussion (crédits), combinés à la demande. */
+const COACH_PUBLIC = true;   // true sur la branche de test : l'onglet est visible même sans compte
+const COACH = { etat:null, acces:null, cle:null, chargement:null, quiz:null, msgs:[], dernier:0, envoi:false, redirige:false, demoTimer:null };
+const coEchap = t => String(t ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const coNbr = (v, dec) => Number(v).toLocaleString(LOC, { minimumFractionDigits: dec ?? 0, maximumFractionDigits: dec ?? 2 });
+const coCote = v => v == null ? '—' : coNbr(v, 2);
+const coMontant = v => v == null ? '—' : mD(+v);
+const JOURS_COURTS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+const NOMS_JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const FAMILLES = { lecture:'Lecture', prudent:'Prudent 1,40', cote2:'Cote 2', series:'Séries', plaisir:'Plaisir', methode:'Méthode' };
+
+function coToast(t){ const e = $('co-toast'); if(!e) return; e.textContent = t; e.classList.add('on'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('on'), 2200); }
+
+async function coachAppel(corps, deja){
+  if(!SESSION.access) return { status: 401, data: { erreur: 'non connecté' } };
+  const opts = () => ({ method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body: JSON.stringify({ jour: jourLocal(), ...(corps || {}) }) });
+  let r;
+  try{ r = await fetch(CONFIG.SUPABASE_URL + '/functions/v1/coach', opts()); }catch(e){ return { status: 0, data: { erreur: 'Connexion perdue, réessaie.' } }; }
+  if(r.status === 401 && !deja && await rafraichirSession()) return coachAppel(corps, true);
+  const data = await r.json().catch(() => ({ erreur: 'réponse illisible' }));
+  return { status: r.status, data };
+}
+
+/* ---- visibilité de l'onglet ---- */
+function coachOnglet(visible){
+  const b = document.querySelector('.nav .nav-coach'); if(!b) return;
+  b.style.display = visible ? '' : 'none';
+}
+function coachAlerte(on){ const b = document.querySelector('.nav .nav-coach'); if(b) b.classList.toggle('alerte', !!on); }
+
+/* ---- chargement de l'état (appelé à chaque changement de session via majCompte) ---- */
+async function coachInit(force){
+  const cle = estConnecte() ? `${SESSION.uid || SESSION.email}|${SESSION.fin || ''}` : 'anon';
+  if(!force && cle === COACH.cle && COACH.etat !== undefined){ coachRendre(); return; }
+  COACH.cle = cle;
+  if(!estConnecte()){
+    COACH.etat = null; COACH.acces = COACH_PUBLIC ? 'visiteur' : null;
+    coachOnglet(COACH_PUBLIC); coachRendre(); return;
+  }
+  if(COACH.chargement) return COACH.chargement;
+  COACH.chargement = (async () => {
+    const { status, data } = await coachAppel({ action:'etat' });
+    if(status === 403){ COACH.acces = false; COACH.etat = null; coachOnglet(COACH_PUBLIC); }
+    else if(status === 200 && data && !data.erreur){ COACH.acces = true; COACH.etat = data; coachOnglet(true); }
+    else { COACH.acces = COACH_PUBLIC ? 'erreur' : null; COACH.etat = null; coachOnglet(COACH_PUBLIC || COACH.acces === true); }
+    COACH.chargement = null;
+    coachRendre();
+    const e = COACH.etat;
+    coachAlerte(e && e.plan && e.pro && e.aujourdhui && !e.aujourdhui.vide && !e.aujourdhui.repos && !(e.aujourdhui.declare && e.aujourdhui.declare.suivi !== null && e.aujourdhui.declare.suivi !== undefined));
+    // quelqu'un qui a un plan ouvre l'app sur son coach (sauf arrivée par un lien ou un retour de paiement)
+    if(e && e.plan && !COACH.redirige && !VIENT_DE_LIEN && !/[?&](paiement|aller|maj)=/.test(location.search) && !location.hash.includes('access_token')){
+      COACH.redirige = true;
+      if(!$('onboard').classList.contains('actif')) allerPage('coach');
+    }
+  })();
+  return COACH.chargement;
+}
+// à chaque mise à jour du compte (connexion, abonnement, paiement) : on recharge l'état du coach
+majCompte = (function(orig){ return function(){ try{ orig.apply(this, arguments); }finally{ try{ coachInit(true); }catch(e){} } }; })(majCompte);
+// sur l'onglet Coach : pas de bulle d'aide par-dessus la discussion
+allerPage = (function(orig){ return function(p){ orig.apply(this, arguments); document.body.classList.toggle('sur-coach', p === 'coach'); if(p === 'coach' && !($('coach-corps') && $('coach-corps').innerHTML.trim())) coachRendre(); }; })(allerPage);
+// première ouverture : après les écrans de présentation, on atterrit sur le coach
+finOnboard = (function(orig){ return function(){ orig.apply(this, arguments); if(COACH.acces) allerPage('coach'); }; })(finOnboard);
+// retour de connexion / inscription lancée depuis le coach : on reprend là où on en était
+suiteApresConnexion = (function(orig){ return function(){
+  let o = null; try{ o = JSON.parse(localStorage.getItem(SUITE_CLE) || 'null'); }catch(e){}
+  if(o && o.coach){ localStorage.removeItem(SUITE_CLE); allerPage('coach'); coachInit(true).then(() => coachDemarrer()); return true; }
+  return orig.apply(this, arguments);
+}; })(suiteApresConnexion);
+
+/* ---- rendu de l'onglet ---- */
+function coachRendre(){
+  const z = $('coach-corps'); if(!z) return;
+  clearTimeout(COACH.demoTimer);
+  if(!estConnecte()) { z.innerHTML = coachVueAccueil(false); return; }
+  if(COACH.acces === false){ z.innerHTML = `<div class="co-bientot"><b>Le coach arrive bientôt</b>Il est en test avec quelques comptes. Tu seras prévenu dès qu'il s'ouvre.</div>`; return; }
+  if(COACH.acces === 'erreur'){ z.innerHTML = `<div class="co-bientot"><b>Coach indisponible</b>Le serveur ne répond pas. Réessaie dans un instant.<br><br><button class="co-lien" onclick="coachInit(true)">Réessayer</button></div>`; return; }
+  const e = COACH.etat;
+  if(!e){ z.innerHTML = `<div class="co-bientot">Chargement…</div>`; return; }
+  if(!e.plan){ z.innerHTML = coachVueAccueil(true); return; }
+  z.innerHTML = e.pro ? coachVuePro(e) : coachVuePresentation(e);
+  requestAnimationFrame(() => {
+    document.querySelectorAll('#page-coach .co-obj .b i').forEach(i => { i.style.width = (i.dataset.w || 0) + '%'; });
+    if(!e.pro) coachAnimerPresentation(); else { coachChargerMessages(); }
+  });
+}
+
+function coachVueAccueil(connecte){
+  return `
+  <div class="co-hero">
+    <span class="co-badge">◉ COACH 90'</span>
+    <h2>Ton plan,<br><span>construit pour toi</span></h2>
+    <div class="co-pts">
+      <div><i>1</i><span>Une sélection par jour, choisie selon ta méthode dans les analyses du moteur</span></div>
+      <div><i>2</i><span>Un suivi semaine et mois : ce que tu tiens, ce que ça donne</span></div>
+      <div><i>3</i><span>Un coach qui te garde dans ton cadre, et qui te freine quand il faut</span></div>
+    </div>
+    <button class="co-cta" onclick="coachDemarrer()">${connecte ? 'Créer mon plan' : 'Créer mon plan'}</button>
+    <button class="co-lien" onclick="allerPage('accueil')">Voir les matchs du jour d'abord</button>
+  </div>
+  <div class="co-etapes">
+    <div><b>2 min</b><small>quelques questions, pas plus</small></div>
+    <div><b>1</b><small>plan clair, le tien</small></div>
+    <div><b>7j/7</b><small>le coach lit les mêmes analyses que toi</small></div>
+  </div>
+  <div class="co-sous" style="margin-top:18px;font-size:12px">Réservé aux 18 ans et plus. Le coach aide à tenir une méthode ; il ne promet aucun résultat et ne décide jamais d'un montant à ta place.</div>`;
+}
+
+/* ================= DÉMARRAGE : compte → règles → questionnaire ================= */
+function coachDemarrer(){
+  if(!estConnecte()){
+    noterSuite({ coach: 1 });
+    allerPage('compte'); setMode('inscription');
+    msgAuth('Crée ton compte : ton plan arrive juste après.');
+    setTimeout(() => { const b = $('bloc-auth'); if(b) defilerVers(b); }, 350);
+    return;
+  }
+  if(COACH.acces !== true){ coachInit(true).then(() => { if(COACH.acces === true) coachDemarrer(); }); return; }
+  if(!COACH.etat?.acceptation) coachEcranRegles(); else coachQuiz();
+}
+
+function coachEcran(o){
+  const e = $('co-ecran');
+  $('co-retour').style.visibility = o.retour ? 'visible' : 'hidden';
+  $('co-passer').style.display = o.passer ? '' : 'none';
+  $('co-ecran-corps').innerHTML = o.corps || '';
+  $('co-ecran-pied').innerHTML = o.pied || '';
+  $('co-ecran-corps').scrollTop = 0;
+  e.classList.add('on');
+  COACH.ecranRetour = o.onRetour || null;
+}
+function coachFermerEcran(){ $('co-ecran').classList.remove('on'); COACH.ecranRetour = null; }
+function coachEcranRetour(){ if(COACH.ecranRetour) COACH.ecranRetour(); else coachFermerEcran(); }
+
+function coachEcranRegles(){
+  coachEcran({ retour:true, passer:false, onRetour: coachFermerEcran, corps: `
+    <span class="co-sur">Avant de commencer</span>
+    <h2>Ton coach, <span>en trois règles</span></h2>
+    <div class="co-regles">
+      <div><b>1</b><span>Il travaille uniquement avec les analyses publiées par le moteur AURA90. Il ne devine rien, il n'invente aucun match.</span></div>
+      <div><b>2</b><span>Il t'aide à poser une méthode et à la tenir. Les montants, c'est toi qui les décides : il ne te dira jamais d'augmenter.</span></div>
+      <div><b>3</b><span>Il ne promet rien. Une analyse à 85 % tombe environ une fois sur sept, et il te le rappellera. Si tu veux faire une pause, il la respecte.</span></div>
+    </div>
+    <label class="co-cgu" id="co-cgu"><input type="checkbox" id="co-cgu-ok" onchange="$('co-cgu').classList.remove('ko')"><span>J'ai lu et j'accepte les conditions d'utilisation du coach. J'ai 18 ans ou plus. Je sais que le coach ne garantit aucun résultat et que je reste seul responsable de mes décisions.</span></label>`,
+    pied: `<button class="co-btn" onclick="coachAccepter()">Commencer avec mon coach</button>` });
+}
+async function coachAccepter(){
+  if(!$('co-cgu-ok').checked){ $('co-cgu').classList.add('ko'); return; }
+  const b = document.querySelector('#co-ecran-pied .co-btn'); b.disabled = true; b.textContent = '…';
+  const { data } = await coachAppel({ action:'accepter' });
+  if(!data || !data.ok){ b.disabled = false; b.textContent = 'Commencer avec mon coach'; coToast('Réessaie dans un instant.'); return; }
+  if(COACH.etat) COACH.etat.acceptation = true;
+  coachQuiz();
+}
+
+/* ================= QUESTIONNAIRE À BRANCHES ================= */
+const OBJECTIFS = [
+  { v:'analyses',    ic:'📖', t:'Suivre les analyses',               s:'lire les meilleures analyses du jour, sans plan chiffré' },
+  { v:'plan',        ic:'🎯', t:'Avoir un plan clair',               s:'une méthode à suivre chaque jour, avec un objectif sur le mois' },
+  { v:'budget',      ic:'🧭', t:'Garder le contrôle de mon budget',   s:'un cadre, des limites, et quelqu\'un qui te prévient' },
+  { v:'plaisir',     ic:'🎉', t:'Me faire plaisir sur des combinés',  s:'des combinés bien construits, de temps en temps' },
+  { v:'tete_froide', ic:'🧊', t:'Arrêter les décisions à chaud',      s:'ne plus rejouer après une perte, ne plus jouer n\'importe quoi' },
+];
+const LIGUES_DEFAUT = ['Ligue 1', 'Premier League', 'Liga', 'Serie A', 'Bundesliga', 'Ligue des Champions', 'Ligue Europa', 'Championship', 'Eredivisie', 'Liga Portugal', 'Süper Lig', 'Jupiler Pro League'];
+function coPaliersBudget(){
+  if(CFA) return [10000, 25000, 50000, 100000, 150000];
+  if(['MAD', 'DZD', 'TND'].includes(DEVISE)) return [200, 500, 1000, 2000, 3000];
+  if(!DEV_OK) return [20, 50, 100, 200, 300];
+  const t = tauxDe(DEVISE) || 1 / 655.957; const base = [20, 50, 100, 200, 300].map(e => e * 655.957 * t);
+  return base.map(v => { const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.round(v / p) * p; });
+}
+function coPaliersMise(){
+  if(CFA) return [500, 1000, 2000, 5000, 10000];
+  if(['MAD', 'DZD', 'TND'].includes(DEVISE)) return [10, 20, 50, 100, 200];
+  if(!DEV_OK) return [2, 5, 10, 20, 50];
+  const t = tauxDe(DEVISE) || 1 / 655.957; return [2, 5, 10, 20, 50].map(e => { const v = e * 655.957 * t; const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.max(1, Math.round(v / p) * p); });
+}
+// chaque écran : { cle, titre, sous, type, options, defaut, multi }
+function coachEcransPour(rep){
+  const o = rep.objectif;
+  const budget = (titre, sous) => ({ cle:'budget', type:'budget', titre, sous: sous || 'Ce que tu te fixes comme plafond. Le coach ne te proposera jamais d\'aller au-dessus.', defaut:null });
+  const L = [{ cle:'objectif', type:'cartes', titre:'Avec AURA90, tu veux surtout…', sous:'Une seule réponse : c\'est elle qui construit ton plan.', options: OBJECTIFS, defaut:'plan' }];
+  if(!o) return L;
+  if(o === 'analyses') return L.concat([
+    { cle:'championnats', type:'chips', multi:true, titre:'Quels championnats tu suis ?', sous:'Plusieurs choix possibles. Les analyses de ces championnats passeront en premier.', options: (typeof fltLigues === 'function' && fltLigues().length >= 4 ? fltLigues() : LIGUES_DEFAUT).map(l => ({ v:l, t:l, img: typeof drapeauLigue === 'function' ? drapeauLigue(l) : '' })), defaut:[] },
+    { cle:'rappel', type:'cartes', titre:'À quel moment tu veux ta sélection du jour ?', sous:'Un rappel, pas plus, jamais le jour de repos.', options:[{ v:'matin', ic:'🌅', t:'Le matin' }, { v:'apres_midi', ic:'☀️', t:'En début d\'après-midi' }, { v:'avant', ic:'⏱️', t:'Juste avant les matchs' }, { v:null, ic:'🔕', t:'Pas de rappel' }], defaut:null },
+  ]);
+  if(o === 'plan') return L.concat([
+    { cle:'experience', type:'cartes', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Pour régler le ton du coach, pas pour te juger.', options:[{ v:'jamais', ic:'🌱', t:'Jamais' }, { v:'tenu', ic:'💪', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'〰️', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
+    { cle:'jours', type:'grille', titre:'Combien de jours par semaine ?', sous:'Le coach conseille au moins un jour de repos.', options:[{ v:2, t:'2 jours', s:'le week-end' }, { v:3, t:'3 jours', s:'ven, sam, dim' }, { v:5, t:'5 jours', s:'deux jours de repos' }, { v:7, t:'Tous les jours', s:'avec le lundi de repos' }], defaut:3 },
+    { cle:'famille', type:'cartes', titre:'Quel plan te ressemble ?', sous:'Celui que le coach conseille d\'après tes réponses est marqué.', options:[
+      { v:'prudent', ic:'🛡️', t:'Prudent 1,40', s:'une sélection par jour entre 1,30 et 1,50, la plus sûre du moteur · réussite habituelle élevée' },
+      { v:'cote2', ic:'⚖️', t:'Cote 2', s:'un combiné autour de 2 par jour sur les analyses signées · une réussite sur deux environ' },
+      { v:'series', ic:'📈', t:'Séries', s:'le palier du jour de la Montante 1, une unité de départ fixe · une série peut tomber, c\'est prévu' }], defaut:'prudent', conseil: rep.experience === 'tenu' ? 'cote2' : 'prudent' },
+    budget('Ton budget pour le mois', 'Il sert à calculer ta part fixe par sélection. Tu peux ne pas le dire : le plan parlera en parts.'),
+  ]);
+  if(o === 'budget') return L.concat([
+    { cle:'dernier_mois', type:'cartes', titre:'Le mois dernier, tu as fini comment ?', sous:'Ça règle la fermeté des limites, rien d\'autre.', options:[{ v:'vert', ic:'🟢', t:'Dans le vert' }, { v:'zero', ic:'⚪', t:'Autour de zéro' }, { v:'rouge', ic:'🔴', t:'Dans le rouge' }, { v:'sais_pas', ic:'🤷', t:'Je ne sais pas, et c\'est le problème' }], defaut:'zero' },
+    budget('Le montant à ne pas dépasser ce mois-ci'),
+    { cle:'alerte', type:'cartes', titre:'Je te préviens quand tu approches ?', sous:'Un message calme, une seule fois.', options:[{ v:'moitie', ic:'½', t:'À la moitié' }, { v:'p80', ic:'80', t:'À 80 %' }, { v:'les_deux', ic:'✓', t:'Les deux' }, { v:'non', ic:'—', t:'Non' }], defaut:'les_deux' },
+  ]);
+  if(o === 'plaisir') return L.concat([
+    { cle:'gamme', type:'cartes', titre:'Tes combinés, c\'est plutôt…', sous:'La cote visée par le coach quand il construit.', options:[{ v:'2-3', ic:'🎯', t:'Cote 2 à 3', s:'2 ou 3 matchs, ça passe souvent' }, { v:'5-10', ic:'🎲', t:'Cote 5 à 10', s:'3 à 5 matchs, un sur plusieurs' }, { v:'10-30', ic:'🚀', t:'Cote 10 à 30', s:'rare, et c\'est normal' }], defaut:'2-3' },
+    { cle:'frequence', type:'cartes', titre:'Combien de fois par semaine ?', sous:'Le coach fixe les jours avec toi.', options:[{ v:'1', ic:'1', t:'Une fois', s:'le samedi' }, { v:'2-3', ic:'2', t:'Deux ou trois', s:'samedi et dimanche' }, { v:'plus', ic:'3', t:'Plus', s:'vendredi, samedi, dimanche · pas au-delà' }], defaut:'1' },
+    { cle:'mise', type:'montant', titre:'Ce que tu mets d\'habitude sur un combiné', sous:'Toujours le même montant, c\'est la règle de ce plan.', defaut:null },
+  ]);
+  if(o === 'tete_froide') return L.concat([
+    { cle:'probleme', type:'cartes', titre:'Ce qui te coûte le plus cher, en général', sous:'C\'est la règle que le coach surveillera en premier.', options:[{ v:'rejoue', ic:'🔁', t:'Je rejoue après une perte' }, { v:'trop_matchs', ic:'📚', t:'Je joue trop de matchs' }, { v:'trop_gros', ic:'💥', t:'Je mise trop gros' }, { v:'live', ic:'📺', t:'Je joue sur un coup de tête pendant les matchs' }], defaut:'rejoue' },
+    budget('Le montant à ne pas dépasser ce mois-ci'),
+    { cle:'repos', type:'cartes', titre:'Un jour sans jeu fixe dans la semaine ?', sous:'Le repos fait partie du plan.', options:[{ v:'un', ic:'1', t:'Oui, un jour', s:'tu choisis lequel juste après' }, { v:'deux', ic:'2', t:'Deux jours', s:'lundi et mardi' }, { v:'non', ic:'—', t:'Non' }], defaut:'un' },
+  ]);
+  return L;
+}
+
+function coachQuiz(){
+  COACH.quiz = { rep:{}, i:0, pile:[] };
+  coachQuizRendre();
+}
+function coachQuizEcrans(){ return coachEcransPour(COACH.quiz.rep); }
+function coachQuizRendre(){
+  const q = COACH.quiz, ecrans = coachQuizEcrans();
+  if(q.i >= ecrans.length){ coachQuizFin(); return; }
+  const ec = ecrans[q.i], total = ecrans.length;
+  const points = `<div class="co-points">${Array.from({ length: total }, (_, k) => `<i class="${k === q.i ? 'on' : ''}"></i>`).join('')}</div>`;
+  let corps = `<span class="co-sur">Question ${q.i + 1} sur ${total}</span><h2>${ec.titre}</h2>${ec.sous ? `<p>${ec.sous}</p>` : ''}`;
+  const val = q.rep[ec.cle];
+  if(ec.type === 'cartes'){
+    corps += `<div class="co-cartes">${ec.options.map(o => `
+      <button class="co-carte ${val === o.v || (val === undefined && false) ? 'on' : ''}" onclick="coachQuizChoisir(${JSON.stringify(o.v)})">
+        <span class="ic">${o.ic || '•'}</span><span class="g"><b>${o.t}${ec.conseil === o.v ? '<span class="tag">CONSEILLÉ POUR TOI</span>' : ''}</b>${o.s ? `<small>${o.s}</small>` : ''}</span><span class="ok"></span>
+      </button>`).join('')}</div>`;
+  } else if(ec.type === 'grille'){
+    corps += `<div class="co-grille">${ec.options.map(o => `<button class="co-carte ${val === o.v ? 'on' : ''}" onclick="coachQuizChoisir(${JSON.stringify(o.v)})"><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
+  } else if(ec.type === 'chips'){
+    const sel = Array.isArray(val) ? val : [];
+    corps += `<div class="co-chips" id="co-chips">${ec.options.map(o => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.img ? `<img src="${o.img}" alt="">` : ''}${coEchap(o.t)}</button>`).join('')}</div>`;
+  } else if(ec.type === 'budget' || ec.type === 'montant'){
+    const paliers = ec.type === 'budget' ? coPaliersBudget() : coPaliersMise();
+    corps += `<div class="co-chips" id="co-chips">${paliers.map(v => `<button class="co-chip ${val === v ? 'on' : ''}" onclick="coachQuizMontant(${v})">${coMontant(v)}</button>`).join('')}
+      <button class="co-chip ${val === null && q.rep[ec.cle + '_refus'] ? 'on' : ''}" onclick="coachQuizMontant(null)">Je préfère ne pas le dire</button></div>
+      <div class="co-saisie"><input id="co-autre" type="number" inputmode="decimal" min="0" placeholder="Autre montant" value="${typeof val === 'number' && !paliers.includes(val) ? val : ''}" oninput="coachQuizAutre(this.value)"><span>${coEchap(typeof symDevise === 'function' ? symDevise() : DEVISE)}</span></div>
+      <p style="margin-top:12px;font-size:12px">${ec.type === 'budget' ? 'Ce montant reste privé. Il n\'est utilisé que pour ta part fixe et tes alertes.' : 'Si ça dépend des jours, choisis le montant le plus fréquent.'}</p>`;
+  }
+  // écran de choix du jour de repos (branche E, après « Oui, un jour »)
+  if(ec.cle === 'repos' && q.rep.repos === 'un'){
+    corps += `<p style="margin-top:14px"><b style="color:var(--texte)">Lequel ?</b></p><div class="co-chips">${[1, 2, 3, 4, 5, 6, 0].map(j => `<button class="co-chip ${(q.rep.repos_jour ?? 1) === j ? 'on' : ''}" onclick="COACH.quiz.rep.repos_jour=${j};coachQuizRendre()">${NOMS_JOURS[j]}</button>`).join('')}</div>`;
+  }
+  const pret = ec.type === 'chips' ? true : (val !== undefined);
+  coachEcran({ retour: true, passer: true, onRetour: coachQuizRetour, corps: points + corps,
+    pied: `<button class="co-btn" id="co-suivant" ${pret ? '' : 'disabled'} onclick="coachQuizSuivant()">${q.i + 1 === total ? 'Voir mon plan' : 'Continuer'}</button>` });
+}
+function coachQuizChoisir(v){
+  const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
+  q.rep[ec.cle] = v;
+  if(ec.cle === 'objectif'){ for(const k of Object.keys(q.rep)) if(k !== 'objectif') delete q.rep[k]; }
+  if(ec.cle === 'repos' && v === 'un'){ q.rep.repos_jour = q.rep.repos_jour ?? 1; coachQuizRendre(); return; }
+  if(ec.cle === 'famille' || ec.cle === 'repos' || ec.cle === 'experience' || ec.cle === 'jours' || ec.cle === 'gamme' || ec.cle === 'frequence' || ec.cle === 'alerte' || ec.cle === 'dernier_mois' || ec.cle === 'rappel' || ec.cle === 'probleme' || ec.cle === 'objectif'){
+    coachQuizRendre(); setTimeout(coachQuizSuivant, 260); return;    // un tap = on avance
+  }
+  coachQuizRendre();
+}
+function coachQuizChip(b){
+  const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
+  const sel = new Set(Array.isArray(q.rep[ec.cle]) ? q.rep[ec.cle] : []);
+  if(sel.has(b.dataset.v)) sel.delete(b.dataset.v); else sel.add(b.dataset.v);
+  q.rep[ec.cle] = [...sel]; b.classList.toggle('on');
+}
+function coachQuizMontant(v){
+  const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
+  q.rep[ec.cle] = v; q.rep[ec.cle + '_refus'] = v === null;
+  coachQuizRendre();
+}
+function coachQuizAutre(v){
+  const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
+  const n = parseFloat(String(v).replace(',', '.'));
+  if(Number.isFinite(n) && n > 0){ q.rep[ec.cle] = n; q.rep[ec.cle + '_refus'] = false; $('co-suivant').disabled = false; document.querySelectorAll('#co-chips .co-chip').forEach(c => c.classList.remove('on')); }
+}
+function coachQuizSuivant(){
+  const q = COACH.quiz, ecrans = coachQuizEcrans(), ec = ecrans[q.i];
+  if(ec && q.rep[ec.cle] === undefined && ec.type !== 'chips') return;
+  if(ec && ec.type === 'chips' && q.rep[ec.cle] === undefined) q.rep[ec.cle] = [];
+  q.pile.push(q.i); q.i++;
+  coachQuizRendre();
+}
+function coachQuizRetour(){
+  const q = COACH.quiz;
+  if(!q.pile.length){ coachFermerEcran(); return; }
+  q.i = q.pile.pop(); coachQuizRendre();
+}
+function coachPasser(){
+  const q = COACH.quiz; if(!q) return;
+  const ecrans = coachQuizEcrans(), ec = ecrans[q.i];
+  if(ec.cle === 'objectif'){ q.rep = { objectif:'plan', experience:'jamais', jours:3, famille:'prudent', budget:null, passe:true }; q.i = 99; coachQuizRendre(); return; }
+  if(q.rep[ec.cle] === undefined) q.rep[ec.cle] = ec.defaut;
+  q.pile.push(q.i); q.i++; coachQuizRendre();
+}
+async function coachQuizFin(){
+  const q = COACH.quiz;
+  coachEcran({ retour:false, passer:false, corps:`<span class="co-sur">Un instant</span><h2>Le coach <span>construit ton plan…</span></h2><p>Il croise tes réponses avec les analyses publiées aujourd'hui.</p>`, pied:'' });
+  const { data } = await coachAppel({ action:'profil', pays: PAYS_U, devise: DEVISE, reponses: q.rep });
+  if(!data || !data.ok){ coachEcran({ retour:true, passer:false, onRetour: coachFermerEcran, corps:`<h2>Ça n'a pas marché</h2><p>${coEchap(data?.erreur || 'Le serveur ne répond pas.')}</p>`, pied:`<button class="co-btn" onclick="coachQuizFin()">Réessayer</button>` }); return; }
+  COACH.quiz = null;
+  await coachInit(true);
+  coachEcranPret(data.plan);
+}
+function coachEcranPret(p){
+  const lignes = [
+    `<div class="co-plan" style="margin:0"><div class="fam">TON PLAN</div><h3>${coEchap(p.nom)}</h3></div>`,
+    `<div class="co-bloc" style="margin:0"><span class="co-sur">Les jours</span><div style="margin-top:6px;font-size:14px;font-weight:700">${coJoursTexte(p.jours)}</div></div>`,
+    p.famille === 'lecture' ? `<div class="co-bloc" style="margin:0"><span class="co-sur">Chaque jour</span><div style="margin-top:6px;font-size:14px;font-weight:700">Une ou deux analyses commentées, sans montant</div></div>`
+      : `<div class="co-bloc" style="margin:0"><span class="co-sur">La cote visée</span><div style="margin-top:6px;font-size:14px;font-weight:700">Autour de ${coCote(p.cote_min)} à ${coCote(p.cote_max)}</div></div>`,
+    p.unite ? `<div class="co-bloc" style="margin:0"><span class="co-sur">Ta part fixe</span><div style="margin-top:6px;font-size:14px;font-weight:700">${coMontant(p.unite)} par sélection, jamais plus</div></div>` : (p.famille !== 'lecture' ? `<div class="co-bloc" style="margin:0"><span class="co-sur">Ta part</span><div style="margin-top:6px;font-size:14px;font-weight:700">Une part fixe que tu fixes toi-même</div></div>` : ''),
+    `<div class="co-bloc" style="margin:0"><span class="co-sur">Objectif du mois</span><div style="margin-top:6px;font-size:14px;font-weight:700">Suivre ${p.objectif_jours} jours</div></div>`,
+  ].filter(Boolean);
+  coachEcran({ retour:false, passer:false, corps:`<span class="co-sur">C'est prêt</span><h2>Ton plan <span>est prêt</span></h2><div class="co-pret"><div class="co-plan-anim" id="co-anim">${lignes.map(l => `<div>${l}</div>`).join('')}</div></div>`,
+    pied:`<button class="co-btn" id="co-voir" style="opacity:0;transition:opacity .4s" onclick="coachFermerEcran();allerPage('coach')">Voir mon espace coach</button>` });
+  const items = document.querySelectorAll('#co-anim > div');
+  items.forEach((el, k) => setTimeout(() => el.classList.add('vu'), 250 + k * 420));
+  setTimeout(() => { const b = $('co-voir'); if(b) b.style.opacity = '1'; }, 300 + items.length * 420);
+}
+function coJoursTexte(j){
+  if(!j || j.length >= 7) return 'Tous les jours';
+  if(j.length === 6){ const r = [1, 2, 3, 4, 5, 6, 0].find(x => !j.includes(x)); return `Tous les jours sauf le ${NOMS_JOURS[r]}`; }
+  const ordre = [1, 2, 3, 4, 5, 6, 0].filter(x => j.includes(x));
+  return ordre.map(x => NOMS_JOURS[x]).join(', ').replace(/^./, c => c.toUpperCase());
+}
+
+/* ================= LA CARTE DU PLAN (commune) ================= */
+function coachCartePlan(e, actif){
+  const p = e.plan;
+  const auj = jourLocal(); const js = new Date().getDay();
+  const lundi = (() => { const d = new Date(); d.setDate(d.getDate() - ((js + 6) % 7)); return d; })();
+  const semaine = e.semaine || [];
+  const pastilles = [1, 2, 3, 4, 5, 6, 0].map((j, k) => {
+    const d = new Date(lundi); d.setDate(lundi.getDate() + k); const iso = jourLocal(d);
+    const s = semaine.find(x => x.jour === iso);
+    let cls = '';
+    if(!p.jours.includes(j) && p.famille !== 'lecture') cls = 'repos';
+    else if(s && s.suivi === true) cls = s.resultat === 'gagne' ? 'gagne' : s.resultat === 'perdu' ? 'perdu' : 'suivi';
+    else if(s && s.suivi === false) cls = 'pas';
+    else if(iso < auj && p.jours.includes(j)) cls = 'pas';
+    return `<div><i class="${cls} ${iso === auj ? 'auj' : ''}"></i><small>${JOURS_COURTS[j]}</small></div>`;
+  }).join('');
+  const bm = e.bilan_mois, obj = p.objectif_jours || 20, suivis = bm ? bm.suivis : 0;
+  const budget = e.budget;
+  return `
+  <div class="co-plan">
+    <div class="t"><div><div class="fam">${coEchap(FAMILLES[p.famille] || p.famille).toUpperCase()} · ${new Date().toLocaleDateString(LOC, { month: 'long' }).toUpperCase()}</div><h3>${coEchap(p.nom)}</h3></div><span class="etat ${actif ? 'actif' : ''}">${actif ? 'ACTIF' : 'PAS ACTIVÉ'}</span></div>
+    <div class="l">
+      <div><b>${p.famille === 'lecture' ? '1–2' : p.legs_max === 1 ? '1' : '2–' + p.legs_max}</b><small>${p.famille === 'lecture' ? 'analyses / jour' : 'matchs / jour'}</small></div>
+      <div><b>${p.famille === 'lecture' ? '—' : coCote(p.cote_min) + '–' + coCote(p.cote_max)}</b><small>cote visée</small></div>
+      <div><b>${p.unite ? coMontant(p.unite) : p.famille === 'lecture' ? '0' : 'parts'}</b><small>${p.unite ? 'part fixe' : p.famille === 'lecture' ? 'montant' : 'à ta main'}</small></div>
+    </div>
+    <div class="co-sem">${pastilles}</div>
+    <div class="co-obj"><div class="h"><span>Objectif du mois · ${obj} jours suivis</span><b>${suivis} / ${obj}</b></div><div class="b"><i data-w="${Math.min(100, Math.round(suivis / obj * 100))}"></i></div></div>
+    ${budget ? `<div class="co-obj"><div class="h"><span>Budget de la semaine</span><b>${coMontant(budget.engage)} / ${coMontant(budget.hebdo)}</b></div><div class="b"><i class="budget" data-w="${budget.pct}"></i></div></div>` : ''}
+    <div class="regles">${(p.regles || []).map(r => `<div><i>›</i><span>${coEchap(r)}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+/* ================= VUE PRO ================= */
+function coachVuePro(e){
+  const c = e.credits, pct = c.quota ? Math.round(c.restants / c.quota * 100) : 0;
+  const sel = e.aujourdhui || {};
+  return `
+  <div class="co-h1">Coach <i>90'</i></div>
+  <div class="co-jauge ${c.restants <= 10 ? 'bas' : ''}"><span>Messages aujourd'hui</span><div class="b"><i style="width:${pct}%"></i></div><b>${c.restants} / ${c.quota}</b></div>
+  ${e.pause ? `<div class="co-bloc" style="border-color:rgba(255,180,84,.4)"><span class="co-sur" style="color:#FFB454">Coach en pause</span><div style="margin-top:6px;font-size:13.5px;line-height:1.5">Pas de sélection jusqu'au ${new Date(e.pause + 'T12:00:00').toLocaleDateString(LOC, { day:'numeric', month:'long' })}. Tu peux reprendre quand tu veux.</div><button class="co-lien" style="text-align:left;margin-top:6px" onclick="coachPause(0)">Reprendre maintenant</button></div>` : ''}
+  ${coachCartePlan(e, true)}
+  ${coachBlocAujourdhui(e)}
+  ${e.hier ? `<div class="co-hier"><i class="${e.hier.resultat}"></i><span>Hier : ${e.hier.repos ? 'jour de repos' : e.hier.resultat === 'gagne' ? `sélection <b>validée</b>` : e.hier.resultat === 'perdu' ? `sélection <b>perdue</b>` : e.hier.resultat === 'sans' ? 'pas de sélection' : 'résultat en attente'}${e.hier.suivi === true ? ' · suivie' : e.hier.suivi === false ? ' · pas suivie' : e.hier.repos || e.hier.resultat === 'sans' ? '' : ' · <button class="co-lien" style="display:inline;width:auto;margin:0;font-size:12.5px" onclick="coachDeclarerHier()">tu as suivi ?</button>'}</span></div>` : ''}
+  <div class="co-chat" id="co-chat">
+    <div class="h"><div class="av"><svg class="ic"><use href="#i-sifflet"/></svg></div><div><b>Ton coach</b><small>Il lit la même sélection et le même suivi que toi</small></div></div>
+    <div class="co-fil" id="co-fil"><div class="vide">Chargement…</div></div>
+    <div class="co-sugg" id="co-sugg"></div>
+    <div class="co-pied">
+      <textarea id="co-texte" rows="1" placeholder="Écris à ton coach…" maxlength="1200" oninput="coachAjuster()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();coachEnvoyer()}"></textarea>
+      <button class="cmb" onclick="coachOuvrirCombine()">Combiné</button>
+      <button class="env" id="co-env" onclick="coachEnvoyer()">➤</button>
+    </div>
+  </div>
+  ${coachBlocReglages(e)}`;
+}
+function coachBlocAujourdhui(e){
+  const s = e.aujourdhui || {}, p = e.plan, d = s.declare || {};
+  const plancherPct = e.reglages?.plancher_pct || 10;
+  let corps;
+  if(e.pause) corps = `<div class="co-repos"><b>Pause</b>Le coach ne propose rien pendant la pause. Les analyses restent sur l'Accueil.</div>`;
+  else if(s.repos) corps = `<div class="co-repos"><b>Jour de repos</b>C'est prévu dans ton plan. Rien à suivre aujourd'hui, on se retrouve ${coProchainJour(p)}.</div>`;
+  else if(s.vide) corps = `<div class="co-repos"><b>Pas de sélection pour l'instant</b>${coEchap(s.raison || 'Aucune analyse publiée.')}</div>`;
+  else {
+    const items = (s.items || []).map(x => `
+      <div class="m ${x.resultat === 'gagne' ? 'ok' : x.resultat === 'perdu' ? 'ko' : ''}">
+        <div><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><span style="color:var(--sourdine);font-weight:600">–</span>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div>
+          <span class="ch">${coEchap(x.selection)}</span><div class="inf">${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, true) : ''}${x.resultat === 'gagne' ? ' · ✓ validé' : x.resultat === 'perdu' ? ' · ✗' : ''}</div></div>
+        <div class="ct">${x.cote != null ? `<b>${coCote(x.cote)}</b><small>${x.estime ? 'cote estimée' : 'cote indicative'}</small>` : `<b>${Math.round(x.confiance)} %</b><small>indice</small>`}</div>
+      </div>`).join('');
+    const total = s.cote != null ? `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : 'autour de ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : 'cote totale indicative'}</small></div><div class="ind"><b>${s.indice} %</b><small>indice de réussite</small></div></div>` : `<div class="co-tot"><div><b>${(s.items || []).length}</b><small>analyse${(s.items || []).length > 1 ? 's' : ''} à lire</small></div><div class="ind"><b>${s.indice} %</b><small>indice global</small></div></div>`;
+    const plancher = s.cote != null ? `<div class="co-note">Plancher : <b>${coCote(s.cote * (1 - plancherPct / 100))}</b>. Si tu trouves nettement moins chez toi, passe ton tour, la sélection ne vaut plus le risque.${p.unite ? ` Ta part : <b>${coMontant(p.unite)}</b>, pas plus.` : ''}</div>` : '';
+    const decl = p.famille === 'lecture' ? '' : `
+      <div class="co-decl">
+        <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">✓ J'ai suivi</button>
+        <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Pas suivi</button>
+      </div>
+      ${d.suivi === true ? `<div class="co-montants"><input id="co-mise" type="number" inputmode="decimal" placeholder="Montant ${p.unite ? '(' + coMontant(p.unite) + ')' : ''}" value="${d.mise ?? ''}"><input id="co-cv" type="number" inputmode="decimal" step="0.01" placeholder="Cote vue chez toi" value="${d.cote_vue ?? ''}"><button onclick="coachEnregistrerMontants()">OK</button></div>` : ''}`;
+    corps = `<div class="co-sel">${items}</div>${total}${s.note ? `<div class="co-note">${coEchap(s.note)}</div>` : ''}${plancher}${decl}`;
+  }
+  return `<div class="co-bloc"><div class="h"><span class="co-sur">Aujourd'hui</span>${!s.vide && !s.repos && !e.pause && (s.items || []).length ? `<button class="co-lien" style="width:auto;margin:0;font-size:12px" onclick="coachCopierSelection()">Copier</button>` : `<small>${new Date().toLocaleDateString(LOC, { weekday:'long', day:'numeric', month:'long' })}</small>`}</div>${corps}</div>`;
+}
+function coProchainJour(p){
+  const js = new Date().getDay();
+  for(let k = 1; k <= 7; k++){ const j = (js + k) % 7; if(p.jours.includes(j)) return k === 1 ? 'demain' : NOMS_JOURS[j]; }
+  return 'bientôt';
+}
+function coachBlocReglages(e){
+  const r = e.profil?.rappel_heure;
+  const rl = { matin:'le matin', apres_midi:'l\'après-midi', avant:'avant les matchs' }[r] || 'désactivé';
+  return `<div class="co-reg">
+    <button onclick="coachQuiz()">✎ <span>Refaire mes réponses</span></button>
+    <button onclick="coachRappel()">🔔 <span>Rappel : ${rl}</span></button>
+    ${!CFA ? `<button onclick="coachPlateforme()">▦ <span>${e.profil?.plateforme ? 'Plateforme : indiquée' : 'Ma plateforme'}</span></button>` : ''}
+    <button onclick="${e.pause ? 'coachPause(0)' : 'coachPause(7)'}">⏸ <span>${e.pause ? 'Reprendre' : 'Pause 7 jours'}</span></button>
+    <button class="danger" onclick="coachEffacer()">🗑 <span>Effacer mon suivi</span></button>
+  </div>
+  <div class="co-sous" style="margin-top:14px;font-size:11.5px">Le coach aide à tenir une méthode. Il ne garantit aucun résultat et ne décide jamais d'un montant. Réservé aux 18 ans et plus. Besoin d'une pause ? Elle est à un tap, au-dessus.</div>`;
+}
+
+/* ---- actions PRO ---- */
+async function coachDeclarer(suivi){
+  const { data } = await coachAppel({ action:'declarer', suivi });
+  if(data?.ok){ await coachInit(true); coachAlerte(false); coToast(suivi ? 'Noté : suivie.' : 'Noté : pas suivie.'); if(suivi) setTimeout(() => $('co-mise')?.focus({ preventScroll:true }), 200); }
+  else coToast(data?.erreur === 'pro' ? 'Réservé aux PRO.' : 'Réessaie.');
+}
+async function coachEnregistrerMontants(){
+  const m = $('co-mise')?.value, cv = $('co-cv')?.value;
+  const { data } = await coachAppel({ action:'declarer', suivi:true, mise: m === '' ? null : parseFloat(String(m).replace(',', '.')), cote_vue: cv === '' ? null : parseFloat(String(cv).replace(',', '.')) });
+  if(data?.ok){ await coachInit(true); coToast('Enregistré.'); } else coToast('Réessaie.');
+}
+async function coachDeclarerHier(){
+  const d = new Date(); d.setDate(d.getDate() - 1);
+  const ok = confirm('Hier, tu as suivi la sélection ?');
+  const { data } = await coachAppel({ action:'declarer', pour: jourLocal(d), suivi: ok });
+  if(data?.ok){ await coachInit(true); coToast('Noté.'); }
+}
+function coachCopierSelection(){
+  const s = COACH.etat?.aujourdhui; if(!s || !s.items) return;
+  const txt = `SÉLECTION AURA90 · ${new Date().toLocaleDateString(LOC, { day:'numeric', month:'long' })}\n\n` + s.items.map(x => `${x.dom} – ${x.ext}\n→ ${x.selection}${x.cote ? `  (autour de ${coCote(x.cote)})` : ''}`).join('\n\n') + (s.cote ? `\n\nCote totale indicative : ${coCote(s.cote)} · indice ${s.indice} %` : '') + `\n${location.origin}${location.pathname}`;
+  (navigator.clipboard?.writeText(txt) || Promise.reject()).then(() => coToast('Copié.')).catch(() => coToast('Copie impossible ici.'));
+}
+async function coachRappel(){
+  const cur = COACH.etat?.profil?.rappel_heure || null;
+  const suite = { null:'matin', matin:'apres_midi', apres_midi:'avant', avant:null }[String(cur)];
+  const { data } = await coachAppel({ action:'rappel', heure: suite });
+  if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.rappel_heure = suite; coachRendre(); coToast(suite ? 'Rappel réglé.' : 'Rappel désactivé.'); }
+}
+async function coachPause(j){
+  if(j && !confirm('Mettre le coach en pause 7 jours ? Pas de sélection, pas de message. Tu pourras reprendre quand tu veux.')) return;
+  const { data } = await coachAppel({ action:'pause', jours: j });
+  if(data?.ok){ await coachInit(true); coToast(j ? 'Pause activée.' : 'C\'est reparti.'); }
+}
+function coachPlateforme(){
+  const cur = COACH.etat?.profil?.plateforme || '';
+  const v = prompt('Sur quelle plateforme tu joues ? (reste privé, sert à adapter les cotes)', cur);
+  if(v === null) return;
+  coachAppel({ action:'plateforme', nom: v.trim() || null }).then(({ data }) => { if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.plateforme = v.trim() || null; coachRendre(); coToast('Enregistré.'); } });
+}
+async function coachEffacer(){
+  if(!confirm('Effacer tout ton suivi, ta discussion et ton plan ? C\'est définitif.')) return;
+  const { data } = await coachAppel({ action:'effacer' });
+  if(data?.ok){ COACH.msgs = []; COACH.dernier = 0; await coachInit(true); coToast('Effacé.'); }
+}
+
+/* ---- discussion ---- */
+function coachBulle(m){ return `<div class="ms-m ${m.role === 'user' ? 'user' : 'coach'} notranslate">${coEchap(m.texte)}<small>${new Date(m.cree_le || Date.now()).toLocaleTimeString(LOC, { hour:'2-digit', minute:'2-digit' })}</small></div>`; }
+function coachBas(){ const f = $('co-fil'); if(f) f.scrollTop = f.scrollHeight; }
+async function coachChargerMessages(){
+  const f = $('co-fil'); if(!f) return;
+  const { data } = await coachAppel({ action:'messages', apres: 0 });
+  const l = data?.messages || [];
+  COACH.msgs = l; COACH.dernier = l.length ? l[l.length - 1].id : 0;
+  f.innerHTML = l.length ? l.map(coachBulle).join('') : `<div class="vide">Pose une question sur ta sélection, ton plan ou ta semaine. Le coach répond en trois phrases, et il ne te dira jamais combien mettre.</div>`;
+  const sg = $('co-sugg'); if(sg) sg.innerHTML = l.length ? '' : ['Pourquoi cette sélection ?', 'Je fais quoi si je perds ce soir ?', 'Comment lire l\'indice ?'].map(t => `<button onclick="coachSugg(this)">${t}</button>`).join('');
+  coachBas();
+}
+function coachSugg(b){ $('co-texte').value = b.textContent; coachEnvoyer(); }
+function coachAjuster(){ const z = $('co-texte'); if(!z) return; z.style.height = '44px'; const h = Math.min(z.scrollHeight, 110); z.style.height = h + 'px'; z.style.overflowY = z.scrollHeight > 110 ? 'auto' : 'hidden'; }
+async function coachEnvoyer(){
+  const z = $('co-texte'), t = (z?.value || '').trim();
+  if(!t || COACH.envoi) return;
+  COACH.envoi = true; z.value = ''; coachAjuster(); $('co-env').disabled = true;
+  const f = $('co-fil'); if(f.querySelector('.vide')) f.innerHTML = ''; const sg = $('co-sugg'); if(sg) sg.innerHTML = '';
+  f.insertAdjacentHTML('beforeend', coachBulle({ role:'user', texte:t, cree_le:new Date() }) + `<div class="co-ecrit" id="co-ecrit">Le coach écrit…</div>`); coachBas();
+  const { data } = await coachAppel({ action:'message', texte:t });
+  COACH.envoi = false; $('co-ecrit')?.remove(); $('co-env').disabled = false;
+  if(data?.erreur){
+    if(data.erreur === 'regles'){ coachEcranRegles(); return; }
+    if(data.erreur === 'pro'){ allerOffres(); return; }
+    f.insertAdjacentHTML('beforeend', `<div class="co-ecrit">${coEchap(data.texte || data.erreur)}</div>`); coachBas();
+    if(data.erreur === 'quota' && COACH.etat){ COACH.etat.credits.restants = 0; coachMajJauge(); }
+    return;
+  }
+  for(const m of data?.messages || []){ f.insertAdjacentHTML('beforeend', coachBulle(m)); COACH.dernier = Math.max(COACH.dernier, m.id || 0); }
+  if(data?.credits && COACH.etat){ COACH.etat.credits = data.credits; coachMajJauge(); }
+  coachBas();
+}
+function coachMajJauge(){
+  const c = COACH.etat?.credits; const j = document.querySelector('#page-coach .co-jauge'); if(!c || !j) return;
+  j.querySelector('.b i').style.width = (c.quota ? Math.round(c.restants / c.quota * 100) : 0) + '%'; j.querySelector('b').textContent = `${c.restants} / ${c.quota}`; j.classList.toggle('bas', c.restants <= 10);
+}
+
+/* ---- combinés à la demande ---- */
+let CO_CIBLE = 2, CO_PERIODE = '2j';
+function coachOuvrirCombine(){
+  const p = COACH.etat?.plan; CO_CIBLE = p && p.famille !== 'lecture' ? Math.round(((p.cote_min + p.cote_max) / 2) * 10) / 10 : 2;
+  coachRendreCombine(null); $('co-feuille').classList.add('on');
+}
+function coachFermerCombine(){ $('co-feuille').classList.remove('on'); }
+function coachRendreCombine(res){
+  const max = COACH.etat?.reglages?.cote_max || 30;
+  const chips = [1.5, 2, 3, 5, 10, 20].filter(c => c <= max);
+  let html = `<div class="poignee"></div><h3>Construire un combiné</h3>
+    <div class="lab">Cote visée</div>
+    <div class="co-chips" style="margin-top:0">${chips.map(c => `<button class="co-chip ${CO_CIBLE === c ? 'on' : ''}" onclick="CO_CIBLE=${c};coachRendreCombine()">${coCote(c)}</button>`).join('')}</div>
+    <div class="co-saisie" style="margin-top:8px"><input id="co-cible" type="number" inputmode="decimal" step="0.1" min="1.3" max="${max}" placeholder="Autre cote (max ${max})" value="${chips.includes(CO_CIBLE) ? '' : CO_CIBLE}" oninput="const v=parseFloat(this.value.replace(',','.'));if(v>0){CO_CIBLE=v;document.querySelectorAll('#co-feuille .co-chip').forEach(c=>c.classList.remove('on'))}"></div>
+    <div class="lab">Période</div>
+    <div class="co-chips" style="margin-top:0">${[['auj', 'Aujourd\'hui'], ['2j', '2 jours'], ['3j', '3 jours']].map(([v, t]) => `<button class="co-chip ${CO_PERIODE === v ? 'on' : ''}" onclick="CO_PERIODE='${v}';coachRendreCombine()">${t}</button>`).join('')}</div>
+    <button class="co-btn" style="margin-top:16px" id="co-construire" onclick="coachConstruire()">Construire</button>
+    <div id="co-props"></div>`;
+  $('co-feuille-bx').innerHTML = html;
+  if(res) coachAfficherProps(res);
+}
+async function coachConstruire(){
+  const b = $('co-construire'); b.disabled = true; b.textContent = 'Le moteur construit…';
+  const { data } = await coachAppel({ action:'combine', cote: CO_CIBLE, periode: CO_PERIODE });
+  b.disabled = false; b.textContent = 'Construire';
+  if(data?.erreur === 'pro'){ coachFermerCombine(); allerOffres(); return; }
+  coachAfficherProps(data || { vide:true, raison:'Le serveur ne répond pas.' });
+}
+function coachAfficherProps(d){
+  const z = $('co-props'); if(!z) return;
+  if(d.refuse) z.innerHTML = `<div class="co-alerte">Au-dessus de ${d.cote_max}, le coach ne construit pas : à ce niveau l'indice de réussite tombe sous 5 %, ce n'est plus une sélection, c'est un ticket de loterie. Il a construit au maximum autorisé.</div>`; else z.innerHTML = '';
+  if(d.vide){ z.insertAdjacentHTML('beforeend', `<div class="co-alerte">${coEchap(d.raison || 'Rien à proposer.')}</div>`); return; }
+  if(d.hors_plan) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Cette cote sort de ton plan. Le coach construit quand même, mais ce combiné ne compte pas dans ton suivi, et ta part reste la même.</div>`);
+  z.insertAdjacentHTML('beforeend', `<div class="co-props">${d.propositions.map((p, k) => `
+    <div class="co-prop">
+      <div class="t"><b>${p.nb} match${p.nb > 1 ? 's' : ''} · autour de ${coCote(p.cote)}</b><span class="n ${['sur', 'equ', 'aud'][k]}">${p.niveau.toUpperCase()}</span></div>
+      ${p.items.map(x => `<div class="lg"><span>${coEchap(x.dom)} – ${coEchap(x.ext)} <em>${coEchap(x.selection)}</em></span><b>${coCote(x.cote)}</b></div>`).join('')}
+      <div class="pied"><span>Indice <b>${p.indice} %</b> · plancher <b>${coCote(p.plancher)}</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
+    </div>`).join('')}</div>
+    <div class="co-note" style="margin-top:12px">L'indice est le produit des indices de chaque match : plus il y a de matchs, plus il baisse. Les cotes sont indicatives et bougent jusqu'au coup d'envoi.</div>`);
+  COACH.props = d.propositions;
+}
+function coachCopierProp(k){
+  const p = COACH.props?.[k]; if(!p) return;
+  const txt = `COMBINÉ AURA90 · ${p.niveau}\n\n` + p.items.map(x => `${x.dom} – ${x.ext}\n→ ${x.selection}  (${coCote(x.cote)})`).join('\n\n') + `\n\nCote totale indicative : ${coCote(p.cote)} · indice ${p.indice} %\n${location.origin}${location.pathname}`;
+  (navigator.clipboard?.writeText(txt) || Promise.reject()).then(() => coToast('Copié.')).catch(() => coToast('Copie impossible ici.'));
+}
+
+/* ================= VUE SANS ABONNEMENT : la présentation ================= */
+const DEMOS = {
+  defaut: [['Et si je perds mardi ?', 'On ne rattrape rien. Repos, et on repart mercredi avec la sélection du matin. Un jour perdu en suivant le plan, c\'est prévu dedans.'], ['Je peux demander un combiné à cote 10 ?', 'Oui. Je te dirai qu\'il sort de ton plan, et je le construirai quand même si tu insistes. Ta part, elle, ne bouge pas.'], ['Tu me dis combien mettre ?', 'Non. Ça, c\'est toi. Ton plan dit une part fixe, la même chaque jour. Mon travail, c\'est que tu la tiennes.']],
+  lecture: [['Pourquoi cette analyse aujourd\'hui ?', 'Le moteur l\'a signée : sa confiance dépasse ses seuils. Je te la commente en deux lignes, tu lis, tu compares, rien d\'autre.'], ['Tu me donnes une cote ?', 'Pas dans ce plan. Ici on lit les analyses et on apprend à les juger. Si tu veux un plan chiffré un jour, tu refais tes réponses.'], ['Et dimanche ?', 'Le point sur la semaine : ce que le moteur a vu juste, ce qu\'il a raté, et pourquoi.']],
+  budget: [['J\'en suis où ce mois-ci ?', 'À 40 % de ton plafond, on est le 12. Tu es dans le rythme. Je te préviens à la moitié, puis à 80 %.'], ['Je peux dépasser un peu ce week-end ?', 'Non, et tu m\'as demandé de le dire. Le plafond, c\'est toi qui l\'as fixé un jour calme. On s\'y tient.'], ['Tu me dis combien mettre ?', 'Jamais. Ton plan dit une part fixe, la même chaque jour. Je veille à ce qu\'elle ne grossisse pas.']],
+  plaisir: [['Un combiné à cote 8 pour samedi ?', 'C\'est dans ta gamme. Appuie sur Combiné, le moteur construit avec les analyses publiées. Trois niveaux, tu choisis.'], ['Et si ça passe pas ?', 'Alors on attend le prochain jour prévu. Pas de deuxième combiné le même soir, c\'est la règle de ce plan.'], ['Je double la mise la semaine prochaine ?', 'Non. Toujours le même montant, c\'est ce qui fait que ça reste un plaisir.']],
+  methode: [['J\'ai perdu ce soir, je rejoue ?', 'Non. C\'est la règle numéro un de ton plan, celle que tu as choisie. Demain matin, ta sélection sera là.'], ['Le lundi, vraiment rien ?', 'Rien. Le repos fait partie de la méthode. Les analyses restent sur l\'Accueil si tu veux lire.'], ['Tu me dis combien mettre ?', 'Non. Ta part est fixe, tu l\'as décidée. Mon travail : que tu ne la changes pas sur un coup de tête.']],
+};
+function coachVuePresentation(e){
+  const p = e.plan, a = e.aujourdhui || {};
+  const apercu = a.vide || a.repos ? `<div class="co-repos"><b>${a.repos ? 'Jour de repos' : 'Pas encore de sélection'}</b>${a.repos ? 'C\'est prévu dans ton plan.' : coEchap(a.raison || 'Les analyses du jour arrivent.')}</div>`
+    : `<div class="co-sel">${Array.from({ length: a.nb || 1 }, (_, k) => `<div class="m flou"><div><div class="eq"><span>Équipe ${k * 2 + 1}</span><span style="color:var(--sourdine)">–</span><span>Équipe ${k * 2 + 2}</span></div><span class="ch" style="filter:blur(4px)">sélection</span></div><div class="ct"><span class="co-verrou"><svg class="ic"><use href="#i-cadenas"/></svg>PRO</span></div></div>`).join('')}</div>
+       <div class="co-tot"><div><b>${a.nb} match${a.nb > 1 ? 's' : ''}</b><small>${a.cote ? 'cote totale autour de ' + coCote(a.cote) : 'à lire aujourd\'hui'}</small></div><div class="ind"><b>${a.indice} %</b><small>indice de réussite</small></div></div>
+       ${a.premier_coup ? `<div class="co-note">Premier coup d'envoi à <b>${hLoc(jourLocal(), a.premier_coup, true)}</b>. La sélection se débloque dès que ton plan est activé.</div>` : ''}`;
+  const hier = e.hier && !e.hier.repos && e.hier.resultat !== 'sans' ? `<div class="co-hier"><i class="${e.hier.resultat}"></i><span>Hier, la sélection de ton plan : <b>${e.hier.resultat === 'gagne' ? 'validée' : e.hier.resultat === 'perdu' ? 'perdue' : 'en attente'}</b> · ${e.hier.nb} match${e.hier.nb > 1 ? 's' : ''}</span></div>` : '';
+  const demo = DEMOS[p.famille === 'prudent' || p.famille === 'cote2' || p.famille === 'series' ? 'defaut' : p.famille] || DEMOS.defaut;
+  const prix = typeof prixAffiche === 'function' ? (() => { try { const m = prixAffiche('mois'), t = prixAffiche('3mois'); return `${m.txt} / mois ou ${t.txt} les 3 mois`; } catch (err) { return ''; } })() : '';
+  return `
+  <div class="co-pres">
+    <div class="co-h1">Ton plan <i>est prêt</i></div>
+    <div class="co-sous">Construit à partir de tes réponses. Il attend d'être activé.</div>
+    ${coachCartePlan(e, false)}
+    <div class="co-bloc"><div class="h"><span class="co-sur">Aujourd'hui, ton coach a déjà travaillé</span></div>${apercu}</div>
+    ${hier}
+    <div class="co-frise">
+      <div><b>🌅</b><small>Le matin</small><em>ta sélection est prête</em></div>
+      <div><b>🌙</b><small>Le soir</small><em>tu déclares en un geste</em></div>
+      <div><b>📊</b><small>Le dimanche</small><em>ton bilan</em></div>
+      <div><b>🔁</b><small>Fin de mois</small><em>ton nouveau plan</em></div>
+    </div>
+    <div class="co-demo"><span class="co-sur">Le coach en trois réponses</span><div class="fil" id="co-demo-fil"></div></div>
+    <div class="co-activer"><button onclick="allerOffres()">Activer mon plan</button><small>${prix ? prix + ' · ' : ''}accès immédiat, sélection débloquée dès le paiement</small></div>
+    <div class="co-sous" style="margin-top:14px;font-size:11.5px">Réservé aux 18 ans et plus. Le coach aide à tenir une méthode ; il ne garantit aucun résultat et ne décide jamais d'un montant.</div>
+  </div>`;
+}
+function coachAnimerPresentation(){
+  const els = document.querySelectorAll('#page-coach .co-pres .co-bloc, #page-coach .co-pres .co-plan, #page-coach .co-pres .co-hier, #page-coach .co-pres .co-frise, #page-coach .co-pres .co-demo');
+  if(ANIM_OFF || !('IntersectionObserver' in window)){ els.forEach(x => x.classList.add('vu')); coachDemo(true); return; }
+  const io = new IntersectionObserver(entries => { entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('vu'); io.unobserve(en.target); if(en.target.classList.contains('co-demo')) coachDemo(); } }); }, { root: $('page-coach'), threshold: .15 });
+  els.forEach(x => io.observe(x));
+  setTimeout(() => { const first = document.querySelector('#page-coach .co-pres .co-plan'); if(first) first.classList.add('vu'); }, 60);
+}
+function coachDemo(direct){
+  const f = $('co-demo-fil'); if(!f || f.dataset.fait) return; f.dataset.fait = '1';
+  const p = COACH.etat?.plan; const demo = DEMOS[p && (p.famille === 'prudent' || p.famille === 'cote2' || p.famille === 'series') ? 'defaut' : p?.famille] || DEMOS.defaut;
+  const bulleCoach = r => `<div class="ms-m coach notranslate" style="align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne);border-bottom-left-radius:5px">${coEchap(r)}</div>`;
+  const file = []; demo.forEach(([q, r]) => { file.push([`<div class="ms-m user notranslate">${coEchap(q)}</div>`, 600]); file.push([bulleCoach(r), 1500]); });
+  clearTimeout(COACH.demoTimer); f.innerHTML = '';
+  const suivant = () => { const it = file.shift(); if(!it) return; f.insertAdjacentHTML('beforeend', it[0]); COACH.demoTimer = setTimeout(suivant, direct ? 0 : it[1]); };
+  suivant();
+}
+
+/* ---- démarrage ---- */
+document.addEventListener('DOMContentLoaded', () => { coachOnglet(COACH_PUBLIC); coachInit(); });
+
 </script>
 <!-- aura90-v4-sans-jeu · montantes v2 29/09 · seo 14/10 · messagerie 15/10 -->
 </body>
