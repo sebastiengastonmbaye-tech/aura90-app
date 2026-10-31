@@ -1434,6 +1434,16 @@ body.sur-coach #ms-bulle{display:none}
 .co-avis b{display:block;font-size:14px;margin-bottom:3px}
 .co-avis span{color:var(--sourdine)}
 .co-pts span b{color:var(--texte)}
+.co-ex-titre{margin:22px 16px 0;display:flex;flex-direction:column;gap:3px}
+.co-ex-titre small{font-size:12px;color:var(--sourdine)}
+.co-ex{display:flex;gap:10px;overflow-x:auto;padding:12px 16px 6px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.co-ex::-webkit-scrollbar{display:none}
+.co-ex .co-ex-carte{flex:0 0 82%;margin:0;scroll-snap-align:start;padding:14px}
+.co-ex-carte .pour{display:block;margin-top:4px;font-size:11.5px;color:var(--sourdine)}
+.co-ex-carte .l{margin-top:12px}
+.co-ex-carte .regles{margin-top:10px}
+.co-ex-carte .regles div{font-size:12px}
+.co-ex-carte .l b{font-size:12.5px;white-space:nowrap}
 
 </style>
 </head>
@@ -5532,10 +5542,25 @@ function coachVueAccueil(connecte){
     <button class="co-cta" onclick="coachDemarrer()">Créer mon plan</button>
     <button class="co-lien" onclick="allerPage('accueil')">Voir les matchs du jour d'abord</button>
   </div>
-  <div class="co-etapes">
-    <div><b>Gratuit</b><small>créer ton plan ne coûte rien</small></div>
-    <div><b>PRO</b><small>pour le suivre au quotidien avec le coach</small></div>
-    <div><b>Tes règles</b><small>c'est toi qui fixes le budget, jamais lui</small></div>
+  <div class="co-ex-titre"><span class="co-sur">À quoi ressemble un plan</span><small>Trois exemples. Le tien dépendra de tes réponses.</small></div>
+  <div class="co-ex">${coachExemples().map(coachCarteExemple).join('')}</div>
+  <div class="co-sous" style="margin-top:10px;text-align:center;font-size:12px">Créer ton plan est gratuit.</div>`;
+}
+// les exemples de plans de la page d'accueil (mêmes codes que la vraie carte)
+function coachExemples(){
+  return [
+    { fam:'PRUDENT 1,40', nom:'Plan Prudent', pour:'Tu débutes, ou tu veux du calme', l:[['1','match / jour'],['1,30–1,50','cote visée'],['fixe','ta part']], jours:[2,3,5,6,0], regles:['La sélection la plus sûre du moteur, expliquée en deux lignes','Trois échecs dans la semaine : on en parle avant de continuer'] },
+    { fam:'COTE 2', nom:'Plan Cote 2', pour:'Tu as déjà ta méthode', l:[['2–3','matchs / jour'],['1,80–2,30','cote visée'],['fixe','ta part']], jours:[5,6,0], regles:['Un combiné par jour autour de 2, sur les analyses signées','Deux échecs d\'affilée : repos le lendemain'] },
+    { fam:'PLAISIR', nom:'Plan Plaisir', pour:'Un combiné le week-end, pas plus', l:[['2–4','matchs / combiné'],['5–10','cote visée'],['fixe','ton montant']], jours:[6,0], regles:['Un combiné le samedi, construit par le moteur','Perdu ? On attend le week-end suivant, on ne rejoue pas'] },
+  ];
+}
+function coachCarteExemple(x){
+  const past = [1, 2, 3, 4, 5, 6, 0].map(j => `<div><i class="${x.jours.includes(j) ? 'suivi' : 'repos'}"></i><small>${JOURS_COURTS[j]}</small></div>`).join('');
+  return `<div class="co-plan co-ex-carte">
+    <div class="t"><div><div class="fam">${x.fam}</div><h3>${x.nom}</h3><small class="pour">${x.pour}</small></div><span class="etat">EXEMPLE</span></div>
+    <div class="l">${x.l.map(([b, t]) => `<div><b>${b}</b><small>${t}</small></div>`).join('')}</div>
+    <div class="co-sem">${past}</div>
+    <div class="regles">${x.regles.map(r => `<div><i>›</i><span>${r}</span></div>`).join('')}</div>
   </div>`;
 }
 
