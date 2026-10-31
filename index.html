@@ -1445,6 +1445,72 @@ body.sur-coach #ms-bulle{display:none}
 .co-ex-carte .regles div{font-size:12px}
 .co-ex-carte .l b{font-size:12.5px;white-space:nowrap}
 
+/* ---- questionnaire : fond vivant, tuiles en relief, transitions ---- */
+.co-ecran.quiz{background:#070B12}
+.co-ecran.quiz::before,.co-ecran.quiz::after{content:"";position:absolute;width:62vw;height:62vw;border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none;z-index:0}
+.co-ecran.quiz::before{background:radial-gradient(circle,rgba(61,232,200,.55),transparent 65%);top:-18vw;right:-20vw;animation:coOrbA 14s ease-in-out infinite alternate}
+.co-ecran.quiz::after{background:radial-gradient(circle,rgba(139,124,255,.55),transparent 65%);bottom:-10vw;left:-24vw;animation:coOrbB 17s ease-in-out infinite alternate}
+@keyframes coOrbA{from{transform:translate(0,0) scale(1)}to{transform:translate(-40px,60px) scale(1.15)}}
+@keyframes coOrbB{from{transform:translate(0,0) scale(1.1)}to{transform:translate(50px,-50px) scale(.95)}}
+.co-ecran.quiz .co-haut,.co-ecran.quiz .co-corps,.co-ecran.quiz #co-ecran-pied{position:relative;z-index:1}
+.co-prog{height:4px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;margin:4px 0 14px}
+.co-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura1),var(--aura2));border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.co-q{display:flex;flex-direction:column}
+.co-q h2,.co-q p,.co-q .co-sur{animation:coMonte .5s cubic-bezier(.2,.8,.2,1) both}
+.co-q p{animation-delay:.06s}
+.co-q.co-q-out{animation:coSort .22s ease-in both}
+.co-q.co-q-out-d{animation:coSortD .22s ease-in both}
+.co-q.co-q-in{animation:coEntre .32s cubic-bezier(.2,.8,.2,1) both}
+.co-q.co-q-in-g{animation:coEntreG .32s cubic-bezier(.2,.8,.2,1) both}
+@keyframes coMonte{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes coSort{to{opacity:0;transform:translateX(-36px)}}
+@keyframes coSortD{to{opacity:0;transform:translateX(36px)}}
+@keyframes coEntre{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes coEntreG{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
+.co-tuiles{display:flex;flex-direction:column;gap:10px;margin-top:16px;perspective:900px}
+.co-tuile{all:unset;box-sizing:border-box;position:relative;display:flex;align-items:center;gap:13px;padding:14px 14px;border-radius:18px;cursor:pointer;
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 10px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.07);
+  transform-origin:50% 0;animation:coTuile .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 70ms);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s,opacity .3s,background .25s}
+@keyframes coTuile{from{opacity:0;transform:rotateX(-22deg) translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+.co-tuile .ic{flex:0 0 50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#1A2536,#0E1520);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -8px 14px rgba(0,0,0,.35),0 6px 14px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);transition:transform .3s cubic-bezier(.3,1.4,.4,1),background .3s}
+.co-tuile .ic svg{width:24px;height:24px;color:var(--aura1);stroke-width:1.7}
+.co-tuile .g{flex:1;min-width:0}
+.co-tuile b{display:block;font-size:14.5px;line-height:1.25}
+.co-tuile small{display:block;color:var(--sourdine);font-size:12px;line-height:1.4;margin-top:3px}
+.co-tuile .tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;color:#06110E;background:var(--aura1);padding:3px 7px;border-radius:99px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.co-tuile:active{transform:scale(.985)}
+.co-tuile.on{border-color:rgba(61,232,200,.8);background:linear-gradient(145deg,rgba(61,232,200,.16),rgba(139,124,255,.12));box-shadow:0 14px 34px rgba(61,232,200,.22),inset 0 1px 0 rgba(255,255,255,.12);transform:translateY(-2px) scale(1.02)}
+.co-tuile.on .ic{background:linear-gradient(145deg,var(--aura1),var(--aura2));transform:scale(1.08) rotate(-4deg)}
+.co-tuile.on .ic svg{color:#06110E}
+.co-tuile.hors{opacity:.35;transform:scale(.97)}
+.co-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;perspective:900px}
+.co-tuile.gr{flex-direction:column;align-items:flex-start;gap:2px;padding:16px 14px}
+.co-tuile.gr em{font-style:normal;font-family:'Unbounded',sans-serif;font-size:26px;line-height:1;background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.co-tuile.gr b{font-size:13.5px;margin-top:6px}
+.co-tuile.gr small{margin-top:2px}
+.co-chips .co-chip{animation:coMonte .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 40ms)}
+.co-chip.gros{padding:12px 16px;font-size:14px;font-family:'JetBrains Mono',monospace}
+.co-chip.on{box-shadow:0 8px 20px rgba(61,232,200,.18)}
+.co-q-aide{text-align:center;color:var(--sourdine);font-size:12px;padding:12px 0 2px}
+.co-chargeur{display:flex;gap:8px;margin-top:22px}
+.co-chargeur i{width:10px;height:10px;border-radius:50%;background:var(--aura1);animation:coPulse 1s ease-in-out infinite}
+.co-chargeur i:nth-child(2){animation-delay:.15s;background:#5fd6e6}.co-chargeur i:nth-child(3){animation-delay:.3s;background:var(--aura2)}
+@keyframes coPulse{0%,100%{transform:scale(.6);opacity:.4}50%{transform:scale(1);opacity:1}}
+.co-montants.deux{grid-template-columns:1fr auto}
+.co-f-tete{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.co-f-x{width:34px;height:34px;border-radius:10px;border:1px solid var(--ligne);background:var(--surface2);color:var(--texte);font-size:15px;cursor:pointer;font-family:inherit}
+.co-prop .lg{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"eq cote" "ch cote";gap:2px 8px;align-items:center;padding:8px 0;border-top:1px solid var(--ligne);font-size:12.5px}
+.co-prop .lg .eq{grid-area:eq;display:flex;align-items:center;gap:6px;font-weight:700;min-width:0}
+.co-prop .lg .eq span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co-prop .lg .eq i{font-style:normal;color:var(--sourdine)}
+.co-prop .lg .eq .ecu{width:18px;height:18px;flex:0 0 18px}.co-prop .lg .eq .ecu img{width:18px;height:18px;object-fit:contain}
+.co-prop .lg .ch{grid-area:ch;display:flex;flex-direction:column;min-width:0}
+.co-prop .lg .ch small{color:var(--sourdine);font-size:10.5px;margin-top:1px}
+.co-prop .lg b{grid-area:cote;font-family:'JetBrains Mono',monospace;font-size:14px;align-self:center}
+
 </style>
 </head>
 <body>
@@ -1478,6 +1544,25 @@ const CONFIG = {
   <symbol id="i-etoile" viewBox="0 0 24 24"><path d="m12 3 2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 17l-5.6 3 1.2-6.2L3 9.5l6.3-.8L12 3z"/></symbol>
   <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9zM10.3 20a2 2 0 0 0 3.4 0"/></symbol>
   <symbol id="i-sifflet" viewBox="0 0 24 24"><path d="M3 13.5a5.5 5.5 0 1 0 11 0V12H3v1.5z"/><path d="M14 12V9.5h7V12M9.5 8V5.5M12.5 8l1.5-2.5"/><circle cx="8.5" cy="13.5" r="1.3"/></symbol>
+  <symbol id="i-livre" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></symbol>
+  <symbol id="i-cible" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></symbol>
+  <symbol id="i-boussole" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-fete" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+  <symbol id="i-glace" viewBox="0 0 24 24"><path d="M12 2v20M4.5 6.5l15 11M19.5 6.5l-15 11M12 2l-2.5 2.5M12 2l2.5 2.5M12 22l-2.5-2.5M12 22l2.5-2.5"/></symbol>
+  <symbol id="i-graine" viewBox="0 0 24 24"><path d="M12 22v-8M12 14c0-4 3-7 7-7 0 4-3 7-7 7zM12 14c0-3-2.5-5-5-5 0 3 2 5 5 5z"/></symbol>
+  <symbol id="i-force" viewBox="0 0 24 24"><path d="M6 10a3 3 0 0 1 3-3h1l1-3h3l-1 3h2a3 3 0 0 1 3 3v5a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5z"/></symbol>
+  <symbol id="i-vague" viewBox="0 0 24 24"><path d="M3 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M3 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/></symbol>
+  <symbol id="i-haut" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  <symbol id="i-bas" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+  <symbol id="i-egal" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="i-question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5V14M12 17h.01"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-soleil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+  <symbol id="i-horloge" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-boucle" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></symbol>
+  <symbol id="i-de" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.3"/><circle cx="15" cy="15" r="1.3"/><circle cx="12" cy="12" r="1.3"/></symbol>
+  <symbol id="i-fusee" viewBox="0 0 24 24"><path d="M12 3c3 2 5 6 5 10l-2 2h-6l-2-2c0-4 2-8 5-10z"/><path d="M9 15l-3 4 4-1M15 15l3 4-4-1"/><circle cx="12" cy="10" r="1.5"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
   <symbol id="i-oeil" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-sceau" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><path d="m9 15-1.5 6L12 18.5 16.5 21 15 15M12 8v2.5l1.8 1"/></symbol>
 </svg>
@@ -5594,7 +5679,7 @@ function coachEcran(o){
   e.classList.add('on');
   COACH.ecranRetour = o.onRetour || null;
 }
-function coachFermerEcran(){ $('co-ecran').classList.remove('on'); COACH.ecranRetour = null; }
+function coachFermerEcran(){ $('co-ecran').classList.remove('on'); $('co-ecran').classList.remove('quiz'); COACH.ecranRetour = null; }
 function coachEcranRetour(){ if(COACH.ecranRetour) COACH.ecranRetour(); else coachFermerEcran(); }
 
 function coachEcranRegles(){
@@ -5623,13 +5708,21 @@ async function coachAccepter(){
 
 /* ================= QUESTIONNAIRE À BRANCHES ================= */
 const OBJECTIFS = [
-  { v:'analyses',    ic:'📖', t:'Suivre les analyses',               s:'lire les meilleures analyses du jour, sans plan chiffré' },
-  { v:'plan',        ic:'🎯', t:'Avoir un plan clair',               s:'une méthode à suivre chaque jour, avec un objectif sur le mois' },
-  { v:'budget',      ic:'🧭', t:'Garder le contrôle de mon budget',   s:'un cadre, des limites, et quelqu\'un qui te prévient' },
-  { v:'plaisir',     ic:'🎉', t:'Me faire plaisir sur des combinés',  s:'des combinés bien construits, de temps en temps' },
-  { v:'tete_froide', ic:'🧊', t:'Arrêter les décisions à chaud',      s:'ne plus rejouer après une perte, ne plus jouer n\'importe quoi' },
+  { v:'analyses',    ic:'i-livre',    t:'Suivre les analyses',               s:'lire les meilleures analyses du jour, sans plan chiffré' },
+  { v:'plan',        ic:'i-cible',    t:'Avoir un plan clair',               s:'une méthode à suivre chaque jour, avec un objectif sur le mois' },
+  { v:'budget',      ic:'i-boussole', t:'Garder le contrôle de mon budget',   s:'un cadre, des limites, et quelqu\'un qui te prévient' },
+  { v:'plaisir',     ic:'i-fete',     t:'Me faire plaisir sur des combinés',  s:'des combinés bien construits, de temps en temps' },
+  { v:'tete_froide', ic:'i-glace',    t:'Arrêter les décisions à chaud',      s:'ne plus rejouer après une perte, ne plus jouer n\'importe quoi' },
 ];
 const LIGUES_DEFAUT = ['Ligue 1', 'Premier League', 'Liga', 'Serie A', 'Bundesliga', 'Ligue des Champions', 'Ligue Europa', 'Championship', 'Eredivisie', 'Liga Portugal', 'Süper Lig', 'Jupiler Pro League'];
+// plateformes proposées selon le pays (réponse privée, jamais affichée ailleurs)
+const PLATEFORMES = {
+  FR:['Winamax', 'Betclic', 'Unibet', 'ParionsSport', 'PMU', 'Zebet', 'Bwin'], BE:['Unibet', 'Betfirst', 'Ladbrokes', 'Bwin', 'Napoleon'], CH:['Swiss4Win', 'Jackpots.ch'],
+  CA:['Mise-o-jeu', 'Bet365', 'Betway'], US:['DraftKings', 'FanDuel', 'BetMGM'], GB:['Bet365', 'William Hill', 'Betfair', 'Sky Bet'],
+  MA:['1xBet', 'Betwinner', 'Melbet', 'MDJS'], DZ:['1xBet', 'Betwinner', 'Melbet'], TN:['1xBet', 'Betwinner', 'Promosport'],
+  AFR:['1xBet', 'Betwinner', 'Premier Bet', 'Sunubet', 'Melbet', '1win', 'Betclic', 'Paris Sportifs Lonase'], DEF:['1xBet', 'Bet365', 'Betway', 'Betwinner'],
+};
+function coPlateformes(){ return PLATEFORMES[PAYS_U] || (CFA ? PLATEFORMES.AFR : PLATEFORMES.DEF); }
 function coPaliersBudget(){
   if(CFA) return [10000, 25000, 50000, 100000, 150000];
   if(['MAD', 'DZD', 'TND'].includes(DEVISE)) return [200, 500, 1000, 2000, 3000];
@@ -5643,100 +5736,139 @@ function coPaliersMise(){
   if(!DEV_OK) return [2, 5, 10, 20, 50];
   const t = tauxDe(DEVISE) || 1 / 655.957; return [2, 5, 10, 20, 50].map(e => { const v = e * 655.957 * t; const p = Math.pow(10, Math.floor(Math.log10(v))); return Math.max(1, Math.round(v / p) * p); });
 }
-// chaque écran : { cle, titre, sous, type, options, defaut, multi }
+// chaque écran : { cle, titre, sous, type, options, defaut, multi, facultatif }
 function coachEcransPour(rep){
   const o = rep.objectif;
   const budget = (titre, sous) => ({ cle:'budget', type:'budget', titre, sous: sous || 'Ce que tu te fixes comme plafond. Le coach ne te proposera jamais d\'aller au-dessus.', defaut:null });
-  const L = [{ cle:'objectif', type:'cartes', titre:'Avec AURA90, tu veux surtout…', sous:'Une seule réponse : c\'est elle qui construit ton plan.', options: OBJECTIFS, defaut:'plan' }];
+  const plateforme = { cle:'plateforme', type:'chips', facultatif:true, titre:'Sur quelle plateforme tu joues ?', sous:'Facultatif. Ça reste privé et sert à adapter les cotes. Si on n\'a pas accès aux cotes de ta plateforme, le coach donne des cotes indicatives.', options: coPlateformes().map(n => ({ v:n, t:n })), autre:true, defaut:null };
+  const L = [{ cle:'objectif', type:'tuiles', titre:'Avec AURA90, tu veux surtout…', sous:'Une seule réponse : c\'est elle qui construit ton plan.', options: OBJECTIFS, defaut:'plan' }];
   if(!o) return L;
   if(o === 'analyses') return L.concat([
     { cle:'championnats', type:'chips', multi:true, titre:'Quels championnats tu suis ?', sous:'Plusieurs choix possibles. Les analyses de ces championnats passeront en premier.', options: (typeof fltLigues === 'function' && fltLigues().length >= 4 ? fltLigues() : LIGUES_DEFAUT).map(l => ({ v:l, t:l, img: typeof drapeauLigue === 'function' ? drapeauLigue(l) : '' })), defaut:[] },
-    { cle:'rappel', type:'cartes', titre:'À quel moment tu veux ta sélection du jour ?', sous:'Un rappel, pas plus, jamais le jour de repos.', options:[{ v:'matin', ic:'🌅', t:'Le matin' }, { v:'apres_midi', ic:'☀️', t:'En début d\'après-midi' }, { v:'avant', ic:'⏱️', t:'Juste avant les matchs' }, { v:null, ic:'🔕', t:'Pas de rappel' }], defaut:null },
+    { cle:'rappel', type:'tuiles', titre:'À quel moment tu veux ta sélection du jour ?', sous:'Un rappel, pas plus, jamais le jour de repos.', options:[{ v:'matin', ic:'i-soleil', t:'Le matin' }, { v:'apres_midi', ic:'i-soleil', t:'En début d\'après-midi' }, { v:'avant', ic:'i-horloge', t:'Juste avant les matchs' }, { v:null, ic:'i-x', t:'Pas de rappel' }], defaut:null },
   ]);
   if(o === 'plan') return L.concat([
-    { cle:'experience', type:'cartes', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Pour régler le ton du coach, pas pour te juger.', options:[{ v:'jamais', ic:'🌱', t:'Jamais' }, { v:'tenu', ic:'💪', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'〰️', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
-    { cle:'jours', type:'grille', titre:'Combien de jours par semaine ?', sous:'Le coach conseille au moins un jour de repos.', options:[{ v:2, t:'2 jours', s:'le week-end' }, { v:3, t:'3 jours', s:'ven, sam, dim' }, { v:5, t:'5 jours', s:'deux jours de repos' }, { v:7, t:'Tous les jours', s:'avec le lundi de repos' }], defaut:3 },
-    { cle:'famille', type:'cartes', titre:'Quel plan te ressemble ?', sous:'Celui que le coach conseille d\'après tes réponses est marqué.', options:[
-      { v:'prudent', ic:'🛡️', t:'Prudent', s:'une sélection par jour entre 1,50 et 1,80, la plus sûre du moteur · réussite habituelle élevée' },
-      { v:'cote2', ic:'⚖️', t:'Cote 2', s:'un combiné autour de 2 par jour sur les analyses signées · une réussite sur deux environ' },
-      { v:'series', ic:'📈', t:'Séries', s:'le palier du jour de la Montante 1, une unité de départ fixe · une série peut tomber, c\'est prévu' }], defaut:'prudent', conseil: rep.experience === 'tenu' ? 'cote2' : 'prudent' },
+    { cle:'experience', type:'tuiles', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Pour régler le ton du coach, pas pour te juger.', options:[{ v:'jamais', ic:'i-graine', t:'Jamais' }, { v:'tenu', ic:'i-force', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'i-vague', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
+    { cle:'jours', type:'grille', titre:'Combien de jours par semaine ?', sous:'Le coach conseille au moins un jour de repos.', options:[{ v:2, n:'2', t:'jours', s:'le week-end' }, { v:3, n:'3', t:'jours', s:'ven, sam, dim' }, { v:5, n:'5', t:'jours', s:'deux jours de repos' }, { v:7, n:'7', t:'jours', s:'le lundi de repos' }], defaut:3 },
+    { cle:'famille', type:'tuiles', titre:'Quel plan te ressemble ?', sous:'Celui que le coach conseille d\'après tes réponses est marqué.', options:[
+      { v:'prudent', ic:'i-bouclier', t:'Prudent', s:'une sélection par jour entre 1,50 et 1,80, la plus sûre du moteur · réussite habituelle élevée' },
+      { v:'cote2', ic:'i-balance', t:'Cote 2', s:'un combiné autour de 2 par jour sur les analyses signées · une réussite sur deux environ' },
+      { v:'series', ic:'i-graph', t:'Séries', s:'le palier du jour de la Montante 1, une unité de départ fixe · une série peut s\'arrêter, c\'est prévu' }], defaut:'prudent', conseil: rep.experience === 'tenu' ? 'cote2' : 'prudent' },
     budget('Ton budget pour le mois', 'Il sert à calculer ta part fixe par sélection. Tu peux ne pas le dire : le plan parlera en parts.'),
+    plateforme,
   ]);
   if(o === 'budget') return L.concat([
-    { cle:'dernier_mois', type:'cartes', titre:'Le mois dernier, tu as fini comment ?', sous:'Ça règle la fermeté des limites, rien d\'autre.', options:[{ v:'vert', ic:'🟢', t:'Dans le vert' }, { v:'zero', ic:'⚪', t:'Autour de zéro' }, { v:'rouge', ic:'🔴', t:'Dans le rouge' }, { v:'sais_pas', ic:'🤷', t:'Je ne sais pas, et c\'est le problème' }], defaut:'zero' },
+    { cle:'dernier_mois', type:'tuiles', titre:'Le mois dernier, tu as fini comment ?', sous:'Ça règle la fermeté des limites, rien d\'autre.', options:[{ v:'vert', ic:'i-haut', t:'Dans le vert' }, { v:'zero', ic:'i-egal', t:'Autour de zéro' }, { v:'rouge', ic:'i-bas', t:'Dans le rouge' }, { v:'sais_pas', ic:'i-question', t:'Je ne sais pas, et c\'est le problème' }], defaut:'zero' },
     budget('Le montant à ne pas dépasser ce mois-ci'),
-    { cle:'alerte', type:'cartes', titre:'Je te préviens quand tu approches ?', sous:'Un message calme, une seule fois.', options:[{ v:'moitie', ic:'½', t:'À la moitié' }, { v:'p80', ic:'80', t:'À 80 %' }, { v:'les_deux', ic:'✓', t:'Les deux' }, { v:'non', ic:'—', t:'Non' }], defaut:'les_deux' },
+    { cle:'alerte', type:'grille', titre:'Je te préviens quand tu approches ?', sous:'Un message calme, une seule fois.', options:[{ v:'moitie', n:'50 %', t:'à la moitié' }, { v:'p80', n:'80 %', t:'presque au bout' }, { v:'les_deux', n:'2×', t:'les deux' }, { v:'non', n:'—', t:'pas d\'alerte' }], defaut:'les_deux' },
+    plateforme,
   ]);
   if(o === 'plaisir') return L.concat([
-    { cle:'gamme', type:'cartes', titre:'Tes combinés, c\'est plutôt…', sous:'La cote visée par le coach quand il construit.', options:[{ v:'2-3', ic:'🎯', t:'Cote 2 à 3', s:'2 ou 3 matchs, ça passe souvent' }, { v:'5-10', ic:'🎲', t:'Cote 5 à 10', s:'3 à 5 matchs, un sur plusieurs' }, { v:'10-30', ic:'🚀', t:'Cote 10 à 30', s:'rare, et c\'est normal' }], defaut:'2-3' },
-    { cle:'frequence', type:'cartes', titre:'Combien de fois par semaine ?', sous:'Le coach fixe les jours avec toi.', options:[{ v:'1', ic:'1', t:'Une fois', s:'le samedi' }, { v:'2-3', ic:'2', t:'Deux ou trois', s:'samedi et dimanche' }, { v:'plus', ic:'3', t:'Plus', s:'vendredi, samedi, dimanche · pas au-delà' }], defaut:'1' },
+    { cle:'gamme', type:'tuiles', titre:'Tes combinés, c\'est plutôt…', sous:'La cote visée par le coach quand il construit.', options:[{ v:'2-3', ic:'i-cible', t:'Cote 2 à 3', s:'2 ou 3 matchs, ça passe souvent' }, { v:'5-10', ic:'i-de', t:'Cote 5 à 10', s:'3 à 5 matchs, un sur plusieurs' }, { v:'10-30', ic:'i-fusee', t:'Cote 10 à 30', s:'rare, et c\'est normal' }], defaut:'2-3' },
+    { cle:'frequence', type:'grille', titre:'Combien de fois par semaine ?', sous:'Le coach fixe les jours avec toi.', options:[{ v:'1', n:'1', t:'fois', s:'le samedi' }, { v:'2-3', n:'2', t:'fois', s:'samedi et dimanche' }, { v:'plus', n:'3', t:'fois', s:'ven, sam, dim · pas au-delà' }], defaut:'1' },
     { cle:'mise', type:'montant', titre:'Ce que tu mets d\'habitude sur un combiné', sous:'Toujours le même montant, c\'est la règle de ce plan.', defaut:null },
+    plateforme,
   ]);
   if(o === 'tete_froide') return L.concat([
-    { cle:'probleme', type:'cartes', titre:'Ce qui te coûte le plus cher, en général', sous:'C\'est la règle que le coach surveillera en premier.', options:[{ v:'rejoue', ic:'🔁', t:'Je rejoue après une perte' }, { v:'trop_matchs', ic:'📚', t:'Je joue trop de matchs' }, { v:'trop_gros', ic:'💥', t:'Je mise trop gros' }, { v:'live', ic:'📺', t:'Je joue sur un coup de tête pendant les matchs' }], defaut:'rejoue' },
+    { cle:'probleme', type:'tuiles', titre:'Ce qui te coûte le plus cher, en général', sous:'C\'est la règle que le coach surveillera en premier.', options:[{ v:'rejoue', ic:'i-boucle', t:'Je rejoue après une perte' }, { v:'trop_matchs', ic:'i-livre', t:'Je joue trop de matchs' }, { v:'trop_gros', ic:'i-eclair', t:'Je mise trop gros' }, { v:'live', ic:'i-oeil', t:'Je joue sur un coup de tête pendant les matchs' }], defaut:'rejoue' },
     budget('Le montant à ne pas dépasser ce mois-ci'),
-    { cle:'repos', type:'cartes', titre:'Un jour sans jeu fixe dans la semaine ?', sous:'Le repos fait partie du plan.', options:[{ v:'un', ic:'1', t:'Oui, un jour', s:'tu choisis lequel juste après' }, { v:'deux', ic:'2', t:'Deux jours', s:'lundi et mardi' }, { v:'non', ic:'—', t:'Non' }], defaut:'un' },
+    { cle:'repos', type:'tuiles', titre:'Un jour sans jeu fixe dans la semaine ?', sous:'Le repos fait partie du plan.', options:[{ v:'un', ic:'i-pause', t:'Oui, un jour', s:'tu choisis lequel juste après' }, { v:'deux', ic:'i-pause', t:'Deux jours', s:'lundi et mardi' }, { v:'non', ic:'i-x', t:'Non' }], defaut:'un' },
+    plateforme,
   ]);
   return L;
 }
 
+/* ---- le questionnaire : écrans animés, un tap = on avance ---- */
 function coachQuiz(){
-  COACH.quiz = { rep:{}, i:0, pile:[] };
-  coachQuizRendre();
+  COACH.quiz = { rep:{}, i:0, pile:[], sens:1 };
+  $('co-ecran').classList.add('quiz');
+  coachQuizRendre(true);
 }
 function coachQuizEcrans(){ return coachEcransPour(COACH.quiz.rep); }
-function coachQuizRendre(){
-  const q = COACH.quiz, ecrans = coachQuizEcrans();
-  if(q.i >= ecrans.length){ coachQuizFin(); return; }
-  const ec = ecrans[q.i], total = ecrans.length;
-  const points = `<div class="co-points">${Array.from({ length: total }, (_, k) => `<i class="${k === q.i ? 'on' : ''}"></i>`).join('')}</div>`;
-  let corps = `<span class="co-sur">Question ${q.i + 1} sur ${total}</span><h2>${ec.titre}</h2>${ec.sous ? `<p>${ec.sous}</p>` : ''}`;
+function coachQuizHtml(ec, q, total){
   const val = q.rep[ec.cle];
-  if(ec.type === 'cartes'){
-    corps += `<div class="co-cartes">${ec.options.map(o => `
-      <button class="co-carte ${val === o.v || (val === undefined && false) ? 'on' : ''}" onclick="coachQuizChoisir(${JSON.stringify(o.v)})">
-        <span class="ic">${o.ic || '•'}</span><span class="g"><b>${o.t}${ec.conseil === o.v ? '<span class="tag">CONSEILLÉ POUR TOI</span>' : ''}</b>${o.s ? `<small>${o.s}</small>` : ''}</span><span class="ok"></span>
-      </button>`).join('')}</div>`;
+  let corps = `<div class="co-q"><span class="co-sur">${ec.cle === 'objectif' ? 'Pour commencer' : `Question ${q.i + 1} sur ${total}`}${ec.facultatif ? ' · facultatif' : ''}</span><h2>${ec.titre}</h2>${ec.sous ? `<p>${ec.sous}</p>` : ''}`;
+  const tuile = (o, k, extra) => `<button class="co-tuile ${val === o.v ? 'on' : ''}" style="--i:${k}" onclick="coachQuizChoisir(${JSON.stringify(o.v)}, this)">
+      <span class="ic"><svg class="ic"><use href="#${o.ic || 'i-cible'}"/></svg></span>
+      <span class="g"><b>${o.t}${ec.conseil === o.v ? '<span class="tag">CONSEILLÉ POUR TOI</span>' : ''}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>${extra || ''}
+    </button>`;
+  if(ec.type === 'tuiles'){
+    corps += `<div class="co-tuiles">${ec.options.map((o, k) => tuile(o, k)).join('')}</div>`;
   } else if(ec.type === 'grille'){
-    corps += `<div class="co-grille">${ec.options.map(o => `<button class="co-carte ${val === o.v ? 'on' : ''}" onclick="coachQuizChoisir(${JSON.stringify(o.v)})"><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
+    corps += `<div class="co-grille">${ec.options.map((o, k) => `<button class="co-tuile gr ${val === o.v ? 'on' : ''}" style="--i:${k}" onclick="coachQuizChoisir(${JSON.stringify(o.v)}, this)"><em>${o.n}</em><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
   } else if(ec.type === 'chips'){
-    const sel = Array.isArray(val) ? val : [];
-    corps += `<div class="co-chips" id="co-chips">${ec.options.map(o => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.img ? `<img src="${o.img}" alt="">` : ''}${coEchap(o.t)}</button>`).join('')}</div>`;
+    const sel = ec.multi ? (Array.isArray(val) ? val : []) : (val ? [val] : []);
+    corps += `<div class="co-chips" id="co-chips">${ec.options.map((o, k) => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.img ? `<img src="${o.img}" alt="">` : ''}${coEchap(o.t)}</button>`).join('')}</div>`;
+    if(ec.autre) corps += `<div class="co-saisie"><input id="co-autre-txt" type="text" maxlength="40" placeholder="Une autre plateforme ?" value="${!ec.multi && val && !ec.options.some(o => o.v === val) ? coEchap(val) : ''}" oninput="coachQuizAutreTexte(this.value)"></div>`;
   } else if(ec.type === 'budget' || ec.type === 'montant'){
     const paliers = ec.type === 'budget' ? coPaliersBudget() : coPaliersMise();
-    corps += `<div class="co-chips" id="co-chips">${paliers.map(v => `<button class="co-chip ${val === v ? 'on' : ''}" onclick="coachQuizMontant(${v})">${coMontant(v)}</button>`).join('')}
-      <button class="co-chip ${val === null && q.rep[ec.cle + '_refus'] ? 'on' : ''}" onclick="coachQuizMontant(null)">Je préfère ne pas le dire</button></div>
+    corps += `<div class="co-chips" id="co-chips">${paliers.map((v, k) => `<button class="co-chip gros ${val === v ? 'on' : ''}" style="--i:${k}" onclick="coachQuizMontant(${v})">${coMontant(v)}</button>`).join('')}
+      <button class="co-chip ${val === null && q.rep[ec.cle + '_refus'] ? 'on' : ''}" style="--i:${paliers.length}" onclick="coachQuizMontant(null)">Je préfère ne pas le dire</button></div>
       <div class="co-saisie"><input id="co-autre" type="number" inputmode="decimal" min="0" placeholder="Autre montant" value="${typeof val === 'number' && !paliers.includes(val) ? val : ''}" oninput="coachQuizAutre(this.value)"><span>${coEchap(typeof symDevise === 'function' ? symDevise() : DEVISE)}</span></div>
       <p style="margin-top:12px;font-size:12px">${ec.type === 'budget' ? 'Ce montant reste privé. Il n\'est utilisé que pour ta part fixe et tes alertes.' : 'Si ça dépend des jours, choisis le montant le plus fréquent.'}</p>`;
   }
-  // écran de choix du jour de repos (branche E, après « Oui, un jour »)
   if(ec.cle === 'repos' && q.rep.repos === 'un'){
-    corps += `<p style="margin-top:14px"><b style="color:var(--texte)">Lequel ?</b></p><div class="co-chips">${[1, 2, 3, 4, 5, 6, 0].map(j => `<button class="co-chip ${(q.rep.repos_jour ?? 1) === j ? 'on' : ''}" onclick="COACH.quiz.rep.repos_jour=${j};coachQuizRendre()">${NOMS_JOURS[j]}</button>`).join('')}</div>`;
+    corps += `<p style="margin-top:14px"><b style="color:var(--texte)">Lequel ?</b></p><div class="co-chips">${[1, 2, 3, 4, 5, 6, 0].map((j, k) => `<button class="co-chip ${(q.rep.repos_jour ?? 1) === j ? 'on' : ''}" style="--i:${k}" onclick="COACH.quiz.rep.repos_jour=${j};coachQuizRendre()">${NOMS_JOURS[j]}</button>`).join('')}</div>`;
   }
-  const pret = ec.type === 'chips' ? true : (val !== undefined);
-  coachEcran({ retour: true, passer: true, onRetour: coachQuizRetour, corps: points + corps,
-    pied: `<button class="co-btn" id="co-suivant" ${pret ? '' : 'disabled'} onclick="coachQuizSuivant()">${q.i + 1 === total ? 'Voir mon plan' : 'Continuer'}</button>` });
+  return corps + '</div>';
 }
-function coachQuizChoisir(v){
+function coachQuizRendre(premier){
+  const q = COACH.quiz, ecrans = coachQuizEcrans();
+  if(q.i >= ecrans.length){ coachQuizFin(); return; }
+  const ec = ecrans[q.i], total = ecrans.length;
+  const val = q.rep[ec.cle];
+  const prog = `<div class="co-prog"><i style="width:${Math.round((q.i) / total * 100)}%"></i></div>`;
+  const pret = ec.type === 'chips' ? true : (val !== undefined);
+  const avance = ec.type === 'tuiles' || ec.type === 'grille';   // un tap = on avance : pas de bouton principal
+  const pied = avance && ec.cle !== 'repos' ? `<div class="co-q-aide">Touche une réponse pour continuer</div>` : `<button class="co-btn" id="co-suivant" ${pret ? '' : 'disabled'} onclick="coachQuizSuivant()">${q.i + 1 === total ? 'Voir mon plan' : (ec.facultatif && !val ? 'Passer cette question' : 'Continuer')}</button>`;
+  const corps = prog + coachQuizHtml(ec, q, total);
+  if(premier || !$('co-ecran').classList.contains('on')){
+    coachEcran({ retour: true, passer: true, onRetour: coachQuizRetour, corps, pied });
+    return;
+  }
+  // transition : l'écran courant glisse, le suivant arrive
+  const z = $('co-ecran-corps'), cur = z.querySelector('.co-q');
+  const fin = () => { $('co-ecran-corps').innerHTML = corps; $('co-ecran-pied').innerHTML = pied; $('co-ecran-corps').scrollTop = 0; const n = z.querySelector('.co-q'); if(n){ n.classList.add(q.sens < 0 ? 'co-q-in-g' : 'co-q-in'); } COACH.ecranRetour = coachQuizRetour; };
+  if(cur && !ANIM_OFF){ cur.classList.add(q.sens < 0 ? 'co-q-out-d' : 'co-q-out'); setTimeout(fin, 220); } else fin();
+  // la barre de progression reste en place (hors de .co-q) : on la met à jour sans la recréer
+  const bar = z.querySelector('.co-prog i'); if(bar) bar.style.width = Math.round(q.i / total * 100) + '%';
+}
+function coachQuizChoisir(v, el){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
   q.rep[ec.cle] = v;
   if(ec.cle === 'objectif'){ for(const k of Object.keys(q.rep)) if(k !== 'objectif') delete q.rep[k]; }
-  if(ec.cle === 'repos' && v === 'un'){ q.rep.repos_jour = q.rep.repos_jour ?? 1; coachQuizRendre(); return; }
-  if(ec.cle === 'famille' || ec.cle === 'repos' || ec.cle === 'experience' || ec.cle === 'jours' || ec.cle === 'gamme' || ec.cle === 'frequence' || ec.cle === 'alerte' || ec.cle === 'dernier_mois' || ec.cle === 'rappel' || ec.cle === 'probleme' || ec.cle === 'objectif'){
-    coachQuizRendre(); setTimeout(coachQuizSuivant, 260); return;    // un tap = on avance
-  }
+  // animation de choix : la tuile touchée s'allume, les autres s'effacent
+  if(el){ const parent = el.parentElement; parent.querySelectorAll('.co-tuile').forEach(t => { t.classList.toggle('on', t === el); t.classList.toggle('hors', t !== el); }); }
+  if(ec.cle === 'repos' && v === 'un'){ q.rep.repos_jour = q.rep.repos_jour ?? 1; setTimeout(() => coachQuizRendre(), 200); return; }
+  if(ec.type === 'tuiles' || ec.type === 'grille'){ setTimeout(coachQuizSuivant, ANIM_OFF ? 0 : 420); return; }
   coachQuizRendre();
 }
 function coachQuizChip(b){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
-  const sel = new Set(Array.isArray(q.rep[ec.cle]) ? q.rep[ec.cle] : []);
-  if(sel.has(b.dataset.v)) sel.delete(b.dataset.v); else sel.add(b.dataset.v);
-  q.rep[ec.cle] = [...sel]; b.classList.toggle('on');
+  if(ec.multi){
+    const sel = new Set(Array.isArray(q.rep[ec.cle]) ? q.rep[ec.cle] : []);
+    if(sel.has(b.dataset.v)) sel.delete(b.dataset.v); else sel.add(b.dataset.v);
+    q.rep[ec.cle] = [...sel]; b.classList.toggle('on');
+  } else {
+    const deja = b.classList.contains('on');
+    b.parentElement.querySelectorAll('.co-chip').forEach(c => c.classList.remove('on'));
+    q.rep[ec.cle] = deja ? null : b.dataset.v; if(!deja) b.classList.add('on');
+    const t = $('co-autre-txt'); if(t) t.value = '';
+    const btn = $('co-suivant'); if(btn) btn.textContent = q.rep[ec.cle] ? 'Continuer' : (ec.facultatif ? 'Passer cette question' : 'Continuer');
+  }
+}
+function coachQuizAutreTexte(v){
+  const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
+  q.rep[ec.cle] = v.trim() || null;
+  document.querySelectorAll('#co-chips .co-chip').forEach(c => c.classList.remove('on'));
+  const btn = $('co-suivant'); if(btn) btn.textContent = q.rep[ec.cle] ? 'Continuer' : 'Passer cette question';
 }
 function coachQuizMontant(v){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
   q.rep[ec.cle] = v; q.rep[ec.cle + '_refus'] = v === null;
-  coachQuizRendre();
+  document.querySelectorAll('#co-chips .co-chip').forEach(c => c.classList.toggle('on', c.textContent.trim() === (v === null ? 'Je préfère ne pas le dire' : coMontant(v))));
+  const a = $('co-autre'); if(a) a.value = '';
+  const btn = $('co-suivant'); if(btn) btn.disabled = false;
 }
 function coachQuizAutre(v){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
@@ -5745,26 +5877,26 @@ function coachQuizAutre(v){
 }
 function coachQuizSuivant(){
   const q = COACH.quiz, ecrans = coachQuizEcrans(), ec = ecrans[q.i];
-  if(ec && q.rep[ec.cle] === undefined && ec.type !== 'chips') return;
-  if(ec && ec.type === 'chips' && q.rep[ec.cle] === undefined) q.rep[ec.cle] = [];
-  q.pile.push(q.i); q.i++;
+  if(!ec) return;
+  if(q.rep[ec.cle] === undefined){ if(ec.type === 'chips' || ec.facultatif) q.rep[ec.cle] = ec.multi ? [] : null; else return; }
+  q.pile.push(q.i); q.i++; q.sens = 1;
   coachQuizRendre();
 }
 function coachQuizRetour(){
   const q = COACH.quiz;
-  if(!q.pile.length){ coachFermerEcran(); return; }
-  q.i = q.pile.pop(); coachQuizRendre();
+  if(!q || !q.pile.length){ coachFermerEcran(); return; }
+  q.i = q.pile.pop(); q.sens = -1; coachQuizRendre();
 }
 function coachPasser(){
   const q = COACH.quiz; if(!q) return;
   const ecrans = coachQuizEcrans(), ec = ecrans[q.i];
   if(ec.cle === 'objectif'){ q.rep = { objectif:'plan', experience:'jamais', jours:3, famille:'prudent', budget:null, passe:true }; q.i = 99; coachQuizRendre(); return; }
   if(q.rep[ec.cle] === undefined) q.rep[ec.cle] = ec.defaut;
-  q.pile.push(q.i); q.i++; coachQuizRendre();
+  q.pile.push(q.i); q.i++; q.sens = 1; coachQuizRendre();
 }
 async function coachQuizFin(){
   const q = COACH.quiz;
-  coachEcran({ retour:false, passer:false, corps:`<span class="co-sur">Un instant</span><h2>Le coach <span>construit ton plan…</span></h2><p>Il croise tes réponses avec les analyses publiées aujourd'hui.</p>`, pied:'' });
+  coachEcran({ retour:false, passer:false, corps:`<div class="co-q"><span class="co-sur">Un instant</span><h2>Le coach <span>construit ton plan…</span></h2><p>Il croise tes réponses avec les analyses publiées aujourd'hui.</p><div class="co-chargeur"><i></i><i></i><i></i></div></div>`, pied:'' });
   const { data } = await coachAppel({ action:'profil', pays: PAYS_U, devise: DEVISE, reponses: q.rep });
   if(!data || !data.ok){ coachEcran({ retour:true, passer:false, onRetour: coachFermerEcran, corps:`<h2>Ça n'a pas marché</h2><p>${coEchap(data?.erreur || 'Le serveur ne répond pas.')}</p>`, pied:`<button class="co-btn" onclick="coachQuizFin()">Réessayer</button>` }); return; }
   COACH.quiz = null;
@@ -5875,10 +6007,10 @@ function coachBlocAujourdhui(e){
         <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">✓ J'ai suivi</button>
         <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Pas suivi</button>
       </div>
-      ${d.suivi === true ? `<div class="co-montants"><input id="co-mise" type="number" inputmode="decimal" placeholder="Montant ${p.unite ? '(' + coMontant(p.unite) + ')' : ''}" value="${d.mise ?? ''}"><input id="co-cv" type="number" inputmode="decimal" step="0.01" placeholder="Cote vue chez toi" value="${d.cote_vue ?? ''}"><button onclick="coachEnregistrerMontants()">OK</button></div>` : ''}`;
+      ${d.suivi === true ? `<div class="co-montants deux"><input id="co-mise" type="number" inputmode="decimal" placeholder="${p.unite ? 'Montant · ta part : ' + coMontant(p.unite) : 'Montant (facultatif)'}" value="${d.mise ?? ''}"><button onclick="coachEnregistrerMontants()">${d.mise != null ? '✓' : 'OK'}</button></div>` : ''}`;
     corps = `<div class="co-sel">${items}</div>${total}${s.note ? `<div class="co-note">${coEchap(s.note)}</div>` : ''}${plancher}${decl}`;
   }
-  return `<div class="co-bloc"><div class="h"><span class="co-sur">Aujourd'hui</span>${!s.vide && !s.repos && !e.pause && (s.items || []).length ? `<button class="co-lien" style="width:auto;margin:0;font-size:12px" onclick="coachCopierSelection()">Copier</button>` : `<small>${new Date().toLocaleDateString(LOC, { weekday:'long', day:'numeric', month:'long' })}</small>`}</div>${corps}</div>`;
+  return `<div class="co-bloc" id="co-auj"><div class="h"><span class="co-sur">Aujourd'hui</span>${!s.vide && !s.repos && !e.pause && (s.items || []).length ? `<button class="co-lien" style="width:auto;margin:0;font-size:12px" onclick="coachCopierSelection()">Copier</button>` : `<small>${new Date().toLocaleDateString(LOC, { weekday:'long', day:'numeric', month:'long' })}</small>`}</div>${corps}</div>`;
 }
 function coProchainJour(p){
   const js = new Date().getDay();
@@ -5899,16 +6031,23 @@ function coachBlocReglages(e){
 }
 
 /* ---- actions PRO ---- */
+function coachMajAujourdhui(){ const z = $('co-auj'); if(z && COACH.etat) z.outerHTML = coachBlocAujourdhui(COACH.etat); }
 async function coachDeclarer(suivi){
+  const e = COACH.etat; if(!e || !e.aujourdhui) return;
+  const avant = e.aujourdhui.declare ? { ...e.aujourdhui.declare } : null;
+  e.aujourdhui.declare = { ...(avant || {}), suivi };          // affichage immédiat, le serveur suit
+  coachMajAujourdhui(); coachAlerte(false);
+  if(suivi) setTimeout(() => $('co-mise')?.focus({ preventScroll:true }), 150);
   const { data } = await coachAppel({ action:'declarer', suivi });
-  if(data?.ok){ await coachInit(true); coachAlerte(false); coToast(suivi ? 'Noté : suivie.' : 'Noté : pas suivie.'); if(suivi) setTimeout(() => $('co-mise')?.focus({ preventScroll:true }), 200); }
-  else if(data?.erreur === 'regles') coachEcranRegles();
-  else coToast(data?.erreur === 'pro' ? 'Réservé aux PRO.' : 'Réessaie.');
+  if(data?.ok){ coToast(suivi ? 'Noté : suivie.' : 'Noté : pas suivie.'); coachAppel({ action:'bilan' }).then(({ data: b }) => { if(b && COACH.etat){ COACH.etat.bilan_semaine = b.semaine; COACH.etat.bilan_mois = b.mois; COACH.etat.budget = b.budget; } }); }
+  else { e.aujourdhui.declare = avant; coachMajAujourdhui(); if(data?.erreur === 'regles') coachEcranRegles(); else coToast(data?.erreur === 'pro' ? 'Réservé aux PRO.' : 'Réessaie.'); }
 }
 async function coachEnregistrerMontants(){
-  const m = $('co-mise')?.value, cv = $('co-cv')?.value;
-  const { data } = await coachAppel({ action:'declarer', suivi:true, mise: m === '' ? null : parseFloat(String(m).replace(',', '.')), cote_vue: cv === '' ? null : parseFloat(String(cv).replace(',', '.')) });
-  if(data?.ok){ await coachInit(true); coToast('Enregistré.'); } else coToast('Réessaie.');
+  const e = COACH.etat; const m = $('co-mise')?.value;
+  const mise = m === '' || m == null ? null : parseFloat(String(m).replace(',', '.'));
+  if(e?.aujourdhui){ e.aujourdhui.declare = { ...(e.aujourdhui.declare || {}), suivi:true, mise }; coachMajAujourdhui(); }
+  const { data } = await coachAppel({ action:'declarer', suivi:true, mise });
+  if(data?.ok) coToast('Enregistré.'); else coToast('Réessaie.');
 }
 async function coachDeclarerHier(){
   const d = new Date(); d.setDate(d.getDate() - 1);
@@ -5992,14 +6131,15 @@ function coachFermerCombine(){ $('co-feuille').classList.remove('on'); }
 function coachRendreCombine(res){
   const max = COACH.etat?.reglages?.cote_max || 30;
   const chips = [1.5, 2, 3, 5, 10, 20].filter(c => c <= max);
-  let html = `<div class="poignee"></div><h3>Construire un combiné</h3>
+  let html = `<div class="poignee"></div><div class="co-f-tete"><h3>Construire un combiné</h3><button class="co-f-x" onclick="coachFermerCombine()" aria-label="Fermer">✕</button></div>
     <div class="lab">Cote visée</div>
     <div class="co-chips" style="margin-top:0">${chips.map(c => `<button class="co-chip ${CO_CIBLE === c ? 'on' : ''}" onclick="CO_CIBLE=${c};coachRendreCombine()">${coCote(c)}</button>`).join('')}</div>
     <div class="co-saisie" style="margin-top:8px"><input id="co-cible" type="number" inputmode="decimal" step="0.1" min="1.3" max="${max}" placeholder="Autre cote (max ${max})" value="${chips.includes(CO_CIBLE) ? '' : CO_CIBLE}" oninput="const v=parseFloat(this.value.replace(',','.'));if(v>0){CO_CIBLE=v;document.querySelectorAll('#co-feuille .co-chip').forEach(c=>c.classList.remove('on'))}"></div>
     <div class="lab">Période</div>
     <div class="co-chips" style="margin-top:0">${[['auj', 'Aujourd\'hui'], ['2j', '2 jours'], ['3j', '3 jours']].map(([v, t]) => `<button class="co-chip ${CO_PERIODE === v ? 'on' : ''}" onclick="CO_PERIODE='${v}';coachRendreCombine()">${t}</button>`).join('')}</div>
     <button class="co-btn" style="margin-top:16px" id="co-construire" onclick="coachConstruire()">Construire</button>
-    <div id="co-props"></div>`;
+    <div id="co-props"></div>
+    <button class="co-lien" style="margin-top:14px" onclick="coachFermerCombine()">Fermer</button>`;
   $('co-feuille-bx').innerHTML = html;
   if(res) coachAfficherProps(res);
 }
@@ -6019,7 +6159,7 @@ function coachAfficherProps(d){
   z.insertAdjacentHTML('beforeend', `<div class="co-props">${d.propositions.map((p, k) => `
     <div class="co-prop">
       <div class="t"><b>${p.nb} match${p.nb > 1 ? 's' : ''} · autour de ${coCote(p.cote)}</b><span class="n ${['sur', 'equ', 'aud'][k]}">${p.niveau.toUpperCase()}</span></div>
-      ${p.items.map(x => `<div class="lg"><span>${coEchap(x.dom)} – ${coEchap(x.ext)} <em>${coEchap(x.selection)}</em></span><b>${coCote(x.cote)}</b></div>`).join('')}
+      ${p.items.map(x => `<div class="lg"><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><i>–</i>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div><div class="ch"><em>${coEchap(x.selection)}</em><small>${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, x.date_match === jourLocal()) : ''}${x.estime ? ' · cote estimée' : ''}</small></div><b>${coCote(x.cote)}</b></div>`).join('')}
       <div class="pied"><span>Indice <b>${p.indice} %</b> · plancher <b>${coCote(p.plancher)}</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
     </div>`).join('')}</div>
     <div class="co-note" style="margin-top:12px">L'indice est le produit des indices de chaque match : plus il y a de matchs, plus il baisse. Les cotes sont indicatives et bougent jusqu'au coup d'envoi.</div>`);
