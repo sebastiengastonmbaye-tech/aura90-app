@@ -1185,7 +1185,7 @@ html[dir=rtl] .ep-ret,html[dir=rtl] .mb-fleche,html[dir=rtl] .ms-retour{transfor
    pouvait décaler après le clavier, un zoom ou l'ouverture d'un écran plein.
    Valable iPhone, Android, Mac, PC : il n'y a plus rien à « recaler ». */
 html{height:100%;overflow:hidden;touch-action:pan-x pan-y}
-body{position:fixed;top:0;left:0;right:0;bottom:auto;height:var(--coque,100dvh);min-height:0;overflow:hidden;display:flex;flex-direction:column;overscroll-behavior:none}
+body{position:fixed;inset:0;height:auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;overscroll-behavior:none}
 #app{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
 #app > .haut{position:static;flex:none}
 .page{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;scrollbar-width:none;
@@ -1553,20 +1553,9 @@ const CONFIG = {
 </div>
 
 <script>
-/* 30/10/2026 — la coque : hauteur réelle de l'écran (les navigateurs intégrés TikTok/Instagram sur iPhone
-   se trompent sur les éléments fixés en bas) et interdiction absolue de défiler (seules les pages défilent). */
+/* 31/10/2026 — la coque : le corps est fixé aux quatre bords de la fenêtre (le navigateur gère lui-même
+   la hauteur, app installée comprise) ; interdiction absolue de défiler : seules les pages défilent. */
 (function(){
-  const r = document.documentElement;
-  function maj(){
-    const vv = window.visualViewport;
-    // hauteur en pixels CSS de mise en page, quel que soit le zoom (vv.height est divisé par le zoom)
-    const h = Math.round(vv && vv.height ? vv.height * (vv.scale || 1) : window.innerHeight);
-    if(h > 200) r.style.setProperty('--coque', h + 'px');
-  }
-  maj();
-  if(window.visualViewport){ visualViewport.addEventListener('resize', maj); visualViewport.addEventListener('scroll', maj); }
-  window.addEventListener('resize', maj); window.addEventListener('orientationchange', () => setTimeout(maj, 300)); window.addEventListener('pageshow', maj);
-  let n = 0; const t = setInterval(() => { maj(); if(++n > 12) clearInterval(t); }, 250);
   // clavier ouvert (champ de saisie actif) : on masque la barre du bas et la bulle pour laisser la place
   const champ = el => el && (el.tagName === 'INPUT' && !/checkbox|radio|button|submit/.test(el.type) || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT');
   document.addEventListener('focusin', e => { if(champ(e.target)) document.body.classList.add('clavier'); });
@@ -1893,7 +1882,15 @@ let SESSION = JSON.parse(localStorage.getItem('aura90_session') || 'null') || { 
 function sauverSession(){ localStorage.setItem('aura90_session', JSON.stringify(SESSION)); }
 const estConnecte = () => !!SESSION.access;
 const estAbonne  = () => SESSION.fin && new Date(SESSION.fin) > new Date();
-const estDeverrouille = () => estAbonne();
+// 30/10/2026 : un abonné ne débloque que les matchs qui se jouent AVANT la fin de son abonnement
+function finAbo(){ return estAbonne() ? new Date(SESSION.fin) : null; }
+function matchAvantFin(p){
+  const f = finAbo(); if(!f) return false;
+  if(!p || !p.date_match) return true;
+  const dh = new Date(String(p.date_match).slice(0, 10) + 'T' + (p.heure ? String(p.heure).slice(0, 5) : '00:00') + ':00Z');
+  return dh.getTime() - 3600e3 <= f.getTime();   // tolérance d'une heure (fuseau de publication)
+}
+const estDeverrouille = p => p ? matchAvantFin(p) : estAbonne();
 let FORMULE = null;
 // lien d'affiliation ?ref=CODE → mémorisé et pré-rempli au paiement
 (function(){
@@ -2200,7 +2197,7 @@ function afficherAccueil(){
     Object.keys(parLigue).sort().forEach(l=>{
       html += `<div class="comp-tete"><span class="nom-c">${drapeauLigue(l)}${l}</span><span class="trait"></span></div>`;
       parLigue[l].forEach(p=>{
-        const libre = estDeverrouille();
+        const libre = estDeverrouille(p);
         html += `
         <div class="match" onclick="lancerAnalyse(${p.id})">
           <div class="paire">
@@ -2316,7 +2313,7 @@ function lancerAnalyse(id){
   const p = PRONOS.find(x=>x.id===id);
   if(!p) return;
   const gratuit = MDJ && p.id===MDJ.id;
-  const ferme = !gratuit && !estDeverrouille();   // 28/10 : l'analyse tourne, le résultat demande un compte / PRO
+  const ferme = !gratuit && !estDeverrouille(p);   // 28/10 : l'analyse tourne, le résultat demande un compte / PRO · 30/10 : match après la fin d'abonnement → verrouillé
   const v = x => ferme ? '<i class="ok-c">✓</i>' : x;
 
   $('overlay').classList.add('actif');
@@ -2392,6 +2389,22 @@ function lireSuite(){
 const FORMULES = { mois: [12000, '1 mois'], '3mois': [30000, '3 mois'] };
 function montrerPorte(p){
   const co = estConnecte();
+  // abonné, mais le match se joue après la fin de son abonnement
+  if(estAbonne() && !matchAvantFin(p)){
+    const fin = new Date(SESSION.fin).toLocaleDateString(LOC, { day: 'numeric', month: 'long' });
+    const carte = typeof abonneCarte === 'function' && abonneCarte();
+    $('fiche').innerHTML = `
+      <div class="porte">
+        <div class="pt-ok">✓ <span>${T('Analyse terminée')}</span></div>
+        <h3><span>${T('Ce match se joue après la fin de ton abonnement')}</span></h3>
+        <div class="pt-match">${p.dom} — ${p.ext}</div>
+        <div class="pt-note" style="margin-top:12px">${T('Ton accès PRO va jusqu\'au')} ${fin}. ${carte ? T('Il se renouvelle automatiquement : ce match se débloquera à ce moment-là.') : T('Prolonge-le et ce match se débloque tout de suite, sans perdre un jour.')}</div>
+        ${carte ? '' : `<button class="bouton-aura" style="margin-top:14px" onclick="fermerAnalyse();allerPage('compte')">${T('Prolonger mon abonnement')} ›</button>`}
+      </div>
+      <button class="lien-retour" onclick="fermerAnalyse()">← ${T('Analyser une autre rencontre')}</button>`;
+    $('fiche').classList.add('actif'); defilerVers($('fiche'));
+    return;
+  }
   const offre = (f, nom, star) => { const x = prixAffiche(f); const tag = f === 'mois' && ldcActive() ? (x.apres ? '<s>' + x.apres + '</s>' : 'LANCEMENT') : '';
       return `
       <button class="pt-offre ${star ? 'star' : ''}" onclick="porteFormule('${f}', ${p.id})">
@@ -2823,7 +2836,6 @@ function rendreCompte(){
         <div class="b"><i style="width:${pct}%"></i></div>
         <small>${sous}</small>
       </div>
-      ${carte ? `<a class="lien-retour" href="https://whop.com/orders/" target="_blank" rel="noopener" style="margin-top:10px">${T('Gérer mon abonnement, changer de carte ou résilier')}</a>` : ''}
       ${prol ? `<div class="cp-prolong"><h2>${T('Prolonger maintenant')}</h2><p>${T('La durée choisie s\'ajoute à ta date de fin : tu ne perds aucun jour.')}</p></div>` : ''}`;
   } else {
     const ok = g => `<span class="c ${g ? 'g' : ''}"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>`;
@@ -4992,7 +5004,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-10-30-17';
+const APP_VERSION = '2026-10-31-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
