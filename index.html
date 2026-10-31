@@ -1514,6 +1514,10 @@ body.sur-coach #ms-bulle{display:none}
 .co-q-lbl span{color:var(--sourdine);font-weight:600}
 .co-q-lbl + .co-decl{margin-top:8px}
 .co-q-lbl + .co-montants{margin-top:8px}
+/* réactivité au toucher : pas de délai de 300 ms, pas de sélection de texte */
+.co-tuile,.co-chip,.co-btn,.co-cta,.co-decl button,.co-reg button,.co-f-x,.co-prop .pied button,.co-montants button,.nav button.nav-coach,.co-ecran .co-retour,.co-ecran .co-passer,.co-lien{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.co-btn.danger{background:linear-gradient(135deg,#FF7A9E,#ff5c8a);box-shadow:0 0 22px rgba(255,122,158,.3)}
+.co-chip img.dl{width:18px;height:13px;border-radius:2px;object-fit:cover}
 
 </style>
 </head>
@@ -5748,12 +5752,12 @@ function coachEcransPour(rep){
   const L = [{ cle:'objectif', type:'tuiles', titre:'Avec AURA90, tu veux surtout…', sous:'Une seule réponse : c\'est elle qui construit ton plan.', options: OBJECTIFS, defaut:'plan' }];
   if(!o) return L;
   if(o === 'analyses') return L.concat([
-    { cle:'championnats', type:'chips', multi:true, titre:'Quels championnats tu suis ?', sous:'Plusieurs choix possibles. Les analyses de ces championnats passeront en premier.', options: (typeof fltLigues === 'function' && fltLigues().length >= 4 ? fltLigues() : LIGUES_DEFAUT).map(l => ({ v:l, t:l, img: typeof drapeauLigue === 'function' ? drapeauLigue(l) : '' })), defaut:[] },
+    { cle:'championnats', type:'chips', multi:true, titre:'Quels championnats tu suis ?', sous:'Plusieurs choix possibles. Les analyses de ces championnats passeront en premier.', options: (typeof fltLigues === 'function' && fltLigues().length >= 4 ? fltLigues() : LIGUES_DEFAUT).map(l => ({ v:l, t:l, html: typeof drapeauLigue === 'function' ? drapeauLigue(l) : '' })), defaut:[] },
     { cle:'rappel', type:'tuiles', titre:'À quel moment tu veux ta sélection du jour ?', sous:'Un rappel, pas plus, jamais le jour de repos.', options:[{ v:'matin', ic:'i-soleil', t:'Le matin' }, { v:'apres_midi', ic:'i-soleil', t:'En début d\'après-midi' }, { v:'avant', ic:'i-horloge', t:'Juste avant les matchs' }, { v:null, ic:'i-x', t:'Pas de rappel' }], defaut:null },
   ]);
   if(o === 'plan') return L.concat([
-    { cle:'experience', type:'tuiles', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Pour régler le ton du coach, pas pour te juger.', options:[{ v:'jamais', ic:'i-graine', t:'Jamais' }, { v:'tenu', ic:'i-force', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'i-vague', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
-    { cle:'jours', type:'grille', titre:'Combien de jours par semaine ?', sous:'Le coach conseille au moins un jour de repos.', options:[{ v:2, n:'2', t:'jours', s:'le week-end' }, { v:3, n:'3', t:'jours', s:'ven, sam, dim' }, { v:5, n:'5', t:'jours', s:'deux jours de repos' }, { v:7, n:'7', t:'jours', s:'le lundi de repos' }], defaut:3 },
+    { cle:'experience', type:'tuiles', titre:'Tu as déjà suivi un plan sur plusieurs semaines ?', sous:'Ça aide le coach à savoir comment t\'accompagner.', options:[{ v:'jamais', ic:'i-graine', t:'Jamais' }, { v:'tenu', ic:'i-force', t:'Oui, et j\'ai tenu' }, { v:'lache', ic:'i-vague', t:'Oui, mais j\'ai lâché en route' }], defaut:'jamais' },
+    { cle:'jours', type:'grille', titre:'Combien de jours par semaine tu veux une sélection ?', sous:'Les autres jours, le coach ne propose rien : c\'est le repos, et il fait partie du plan.', options:[{ v:2, n:'2', t:'jours', s:'samedi et dimanche' }, { v:3, n:'3', t:'jours', s:'vendredi, samedi, dimanche' }, { v:5, n:'5', t:'jours', s:'mar, mer, ven, sam, dim' }, { v:7, n:'7', t:'jours', s:'tous les jours' }, { v:'autre', n:'✎', t:'Je choisis', s:'tu coches tes jours' }], defaut:3 },
     { cle:'famille', type:'tuiles', titre:'Quel plan te ressemble ?', sous:'Celui que le coach conseille d\'après tes réponses est marqué.', options:[
       { v:'prudent', ic:'i-bouclier', t:'Prudent', s:'une sélection par jour entre 1,50 et 1,80, la plus sûre du moteur · réussite habituelle élevée' },
       { v:'cote2', ic:'i-balance', t:'Cote 2', s:'un combiné autour de 2 par jour sur les analyses signées · une réussite sur deux environ' },
@@ -5802,7 +5806,7 @@ function coachQuizHtml(ec, q, total){
     corps += `<div class="co-grille">${ec.options.map((o, k) => `<button class="co-tuile gr ${val === o.v ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(JSON.stringify(o.v))}" onclick="coachQuizTap(this)"><em>${o.n}</em><b>${o.t}</b><small>${o.s || ''}</small></button>`).join('')}</div>`;
   } else if(ec.type === 'chips'){
     const sel = ec.multi ? (Array.isArray(val) ? val : []) : (val ? [val] : []);
-    corps += `<div class="co-chips" id="co-chips">${ec.options.map((o, k) => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.img ? `<img src="${o.img}" alt="">` : ''}${coEchap(o.t)}</button>`).join('')}</div>`;
+    corps += `<div class="co-chips" id="co-chips">${ec.options.map((o, k) => `<button class="co-chip ${sel.includes(o.v) ? 'on' : ''}" style="--i:${k}" data-v="${coEchap(o.v)}" onclick="coachQuizChip(this)">${o.html || ''}${coEchap(o.t)}</button>`).join('')}</div>`;
     if(ec.autre) corps += `<div class="co-saisie"><input id="co-autre-txt" type="text" maxlength="40" placeholder="Une autre plateforme ?" value="${!ec.multi && val && !ec.options.some(o => o.v === val) ? coEchap(val) : ''}" oninput="coachQuizAutreTexte(this.value)"></div>`;
   } else if(ec.type === 'budget' || ec.type === 'montant'){
     const paliers = ec.type === 'budget' ? coPaliersBudget() : coPaliersMise();
@@ -5810,6 +5814,10 @@ function coachQuizHtml(ec, q, total){
       <button class="co-chip ${val === null && q.rep[ec.cle + '_refus'] ? 'on' : ''}" style="--i:${paliers.length}" onclick="coachQuizMontant(null)">Je préfère ne pas le dire</button></div>
       <div class="co-saisie"><input id="co-autre" type="number" inputmode="decimal" min="0" placeholder="Autre montant" value="${typeof val === 'number' && !paliers.includes(val) ? val : ''}" oninput="coachQuizAutre(this.value)"><span>${coEchap(typeof symDevise === 'function' ? symDevise() : DEVISE)}</span></div>
       <p style="margin-top:12px;font-size:12px">${ec.type === 'budget' ? 'Ce montant reste privé. Il n\'est utilisé que pour ta part fixe et tes alertes.' : 'Si ça dépend des jours, choisis le montant le plus fréquent.'}</p>`;
+  }
+  if(ec.cle === 'jours' && q.rep.jours === 'autre'){
+    const sel = Array.isArray(q.rep.jours_perso) ? q.rep.jours_perso : [];
+    corps += `<p style="margin-top:14px"><b style="color:var(--texte)">Tes jours</b></p><div class="co-chips" id="co-jours-perso">${[1, 2, 3, 4, 5, 6, 0].map((j, k) => `<button class="co-chip ${sel.includes(j) ? 'on' : ''}" style="--i:${k}" onclick="coachQuizJourPerso(${j}, this)">${NOMS_JOURS[j]}</button>`).join('')}</div>`;
   }
   if(ec.cle === 'repos' && q.rep.repos === 'un'){
     corps += `<p style="margin-top:14px"><b style="color:var(--texte)">Lequel ?</b></p><div class="co-chips">${[1, 2, 3, 4, 5, 6, 0].map((j, k) => `<button class="co-chip ${(q.rep.repos_jour ?? 1) === j ? 'on' : ''}" style="--i:${k}" onclick="COACH.quiz.rep.repos_jour=${j};coachQuizRendre()">${NOMS_JOURS[j]}</button>`).join('')}</div>`;
@@ -5823,8 +5831,9 @@ function coachQuizRendre(premier){
   const val = q.rep[ec.cle];
   const prog = `<div class="co-prog"><i style="width:${Math.round((q.i) / total * 100)}%"></i></div>`;
   const pret = ec.type === 'chips' ? true : (val !== undefined);
-  const avance = ec.type === 'tuiles' || ec.type === 'grille';   // un tap = on avance : pas de bouton principal
-  const pied = avance && ec.cle !== 'repos' ? `<div class="co-q-aide">Touche une réponse pour continuer</div>` : `<button class="co-btn" id="co-suivant" ${pret ? '' : 'disabled'} onclick="coachQuizSuivant()">${q.i + 1 === total ? 'Voir mon plan' : (ec.facultatif && !val ? 'Passer cette question' : 'Continuer')}</button>`;
+  const avance = (ec.type === 'tuiles' || ec.type === 'grille') && !(ec.cle === 'repos' && val === 'un') && !(ec.cle === 'jours' && val === 'autre');   // un tap = on avance
+  const pretPerso = ec.cle === 'jours' && val === 'autre' ? !!(q.rep.jours_perso && q.rep.jours_perso.length) : pret;
+  const pied = avance ? `<div class="co-q-aide">Touche une réponse pour continuer</div>` : `<button class="co-btn" id="co-suivant" ${pretPerso ? '' : 'disabled'} onclick="coachQuizSuivant()">${q.i + 1 === total ? 'Voir mon plan' : (ec.facultatif && !val ? 'Passer cette question' : 'Continuer')}</button>`;
   const corps = prog + coachQuizHtml(ec, q, total);
   if(premier || !$('co-ecran').classList.contains('on')){
     coachEcran({ retour: true, passer: true, onRetour: coachQuizRetour, corps, pied });
@@ -5845,8 +5854,15 @@ function coachQuizChoisir(v, el){
   // animation de choix : la tuile touchée s'allume, les autres s'effacent
   if(el){ const parent = el.parentElement; parent.querySelectorAll('.co-tuile').forEach(t => { t.classList.toggle('on', t === el); t.classList.toggle('hors', t !== el); }); }
   if(ec.cle === 'repos' && v === 'un'){ q.rep.repos_jour = q.rep.repos_jour ?? 1; setTimeout(() => coachQuizRendre(), 200); return; }
-  if(ec.type === 'tuiles' || ec.type === 'grille'){ setTimeout(coachQuizSuivant, ANIM_OFF ? 0 : 420); return; }
+  if(ec.cle === 'jours' && v === 'autre'){ q.rep.jours_perso = q.rep.jours_perso || []; setTimeout(() => coachQuizRendre(), 200); return; }
+  if((ec.type === 'tuiles' || ec.type === 'grille') && !(ec.cle === 'repos' && v === 'un')){ setTimeout(coachQuizSuivant, ANIM_OFF ? 0 : 420); return; }
   coachQuizRendre();
+}
+function coachQuizJourPerso(j, b){
+  const q = COACH.quiz; const sel = new Set(q.rep.jours_perso || []);
+  if(sel.has(j)) sel.delete(j); else sel.add(j);
+  q.rep.jours_perso = [...sel]; b.classList.toggle('on');
+  const btn = $('co-suivant'); if(btn) btn.disabled = !sel.size;
 }
 function coachQuizChip(b){
   const q = COACH.quiz, ec = coachQuizEcrans()[q.i];
@@ -6002,9 +6018,9 @@ function coachBlocAujourdhui(e){
       <div class="m ${x.resultat === 'gagne' ? 'ok' : x.resultat === 'perdu' ? 'ko' : ''}">
         <div><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><span style="color:var(--sourdine);font-weight:600">–</span>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div>
           <span class="ch">${coEchap(x.selection)}</span><div class="inf">${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, true) : ''}${x.resultat === 'gagne' ? ' · ✓ validé' : x.resultat === 'perdu' ? ' · ✗' : ''}</div></div>
-        <div class="ct">${x.cote != null ? `<b>${coCote(x.cote)}</b><small>${x.estime ? 'cote estimée' : 'cote indicative'}</small>` : `<b>${Math.round(x.confiance)} %</b><small>indice</small>`}</div>
+        <div class="ct"><b>${coCote(x.cote)}</b><small>${s.plateforme ? '≈ ' + coEchap(s.plateforme) : x.estime ? 'cote estimée' : 'cote indicative'}</small></div>
       </div>`).join('');
-    const total = s.cote != null ? `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : 'cote totale, indicative'}</small></div><div class="ind"><b>${s.indice} %</b><small>indice de réussite</small></div></div>` : `<div class="co-tot"><div><b>${(s.items || []).length}</b><small>analyse${(s.items || []).length > 1 ? 's' : ''} à lire</small></div><div class="ind"><b>${s.indice} %</b><small>indice global</small></div></div>`;
+    const total = `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : (s.items || []).length > 1 ? 'cote totale' + (s.plateforme ? ' ≈ ' + coEchap(s.plateforme) : ', indicative') : 'cote' + (s.plateforme ? ' ≈ ' + coEchap(s.plateforme) : ', indicative')}</small></div><div class="ind"><b>${s.indice} %</b><small>probabilité de réussite</small></div></div>`;
     const part = p.unite ? `<div class="co-note">Ta part sur cette sélection : <b>${coMontant(p.unite)}</b>, comme chaque jour.</div>` : '';
     const decl = p.famille === 'lecture' ? '' : `
       <div class="co-q-lbl">Tu as suivi cette sélection ?</div>
@@ -6025,10 +6041,10 @@ function coProchainJour(p){
 function coachBlocReglages(e){
   const r = e.profil?.rappel_heure;
   const rl = { matin:'le matin', apres_midi:'l\'après-midi', avant:'avant les matchs' }[r] || 'désactivé';
-  return `<div class="co-reg">
+  return `<div class="co-reg" id="co-reg">
     <button onclick="coachQuiz()">✎ <span>Refaire mes réponses</span></button>
     <button onclick="coachRappel()">🔔 <span>Rappel : ${rl}</span></button>
-    ${!CFA ? `<button onclick="coachPlateforme()">▦ <span>${e.profil?.plateforme ? 'Plateforme : indiquée' : 'Ma plateforme'}</span></button>` : ''}
+    <button onclick="coachPlateforme()">▦ <span>${e.profil?.plateforme ? 'Plateforme : ' + coEchap(e.profil.plateforme) : 'Ma plateforme'}</span></button>
     <button onclick="${e.pause ? 'coachPause(0)' : 'coachPause(7)'}">⏸ <span>${e.pause ? 'Reprendre' : 'Pause 7 jours'}</span></button>
     <button class="danger" onclick="coachEffacer()">🗑 <span>Effacer mon suivi</span></button>
   </div>
@@ -6069,23 +6085,54 @@ async function coachRappel(){
   const cur = COACH.etat?.profil?.rappel_heure || null;
   const suite = { null:'matin', matin:'apres_midi', apres_midi:'avant', avant:null }[String(cur)];
   const { data } = await coachAppel({ action:'rappel', heure: suite });
-  if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.rappel_heure = suite; coachRendre(); coToast(suite ? 'Rappel réglé.' : 'Rappel désactivé.'); }
+  if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.rappel_heure = suite; coachMajReglages(); coToast(suite ? 'Rappel réglé.' : 'Rappel désactivé.'); }
 }
-async function coachPause(j){
-  if(j && !confirm('Mettre le coach en pause 7 jours ? Pas de sélection, pas de message. Tu pourras reprendre quand tu veux.')) return;
+function coachPause(j){
+  if(j){ coachConfirmer('Pause 7 jours', 'Pas de sélection, pas de message pendant 7 jours. Tu peux reprendre quand tu veux depuis les réglages.', 'Mettre en pause', () => coachPauseOk(j)); return; }
+  coachPauseOk(0);
+}
+async function coachPauseOk(j){
   const { data } = await coachAppel({ action:'pause', jours: j });
-  if(data?.ok){ await coachInit(true); coToast(j ? 'Pause activée.' : 'C\'est reparti.'); }
+  if(data?.ok){ await coachInit(true); coToast(j ? 'Pause activée.' : 'C\'est reparti.'); } else coToast('Réessaie.');
 }
+// recharge l'état et ne redessine que les blocs concernés (pas de saut d'écran, la discussion reste)
+async function coachRafraichirDiscret(){
+  const { status, data } = await coachAppel({ action:'etat' });
+  if(status !== 200 || !data || data.erreur) return;
+  COACH.etat = data; coachMajAujourdhui(); coachMajReglages();
+  const plan = document.querySelector('#page-coach .co-plan'); if(plan && data.plan) plan.outerHTML = coachCartePlan(data, !!(data.pro && !data.verrou));
+  requestAnimationFrame(() => document.querySelectorAll('#page-coach .co-obj .b i').forEach(i => { i.style.width = (i.dataset.w || 0) + '%'; }));
+}
+function coachMajReglages(){ const z = $('co-reg'); if(z && COACH.etat) z.outerHTML = coachBlocReglages(COACH.etat); }
 function coachPlateforme(){
   const cur = COACH.etat?.profil?.plateforme || '';
-  const v = prompt('Sur quelle plateforme tu joues ? (reste privé, sert à adapter les cotes)', cur);
-  if(v === null) return;
-  coachAppel({ action:'plateforme', nom: v.trim() || null }).then(({ data }) => { if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.plateforme = v.trim() || null; coachRendre(); coToast('Enregistré.'); } });
+  const liste = coPlateformes();
+  $('co-feuille-bx').innerHTML = `<div class="poignee"></div><div class="co-f-tete"><h3>Ma plateforme</h3><button class="co-f-x" onclick="coachFermerCombine()" aria-label="Fermer">✕</button></div>
+    <p class="co-note" style="margin-top:6px">Reste privé. Sert à estimer les cotes comme tu les vois chez toi.</p>
+    <div class="co-chips" id="co-plat-chips" style="margin-top:12px">${liste.map((n, k) => `<button class="co-chip ${cur === n ? 'on' : ''}" style="--i:${k}" onclick="coachChoisirPlateforme('${coEchap(n).replace(/'/g, "\\'")}')">${coEchap(n)}</button>`).join('')}</div>
+    <div class="co-saisie"><input id="co-plat-autre" type="text" maxlength="40" placeholder="Une autre plateforme ?" value="${cur && !liste.includes(cur) ? coEchap(cur) : ''}"><span><button class="co-chip" onclick="coachChoisirPlateforme($('co-plat-autre').value)">OK</button></span></div>
+    <button class="co-lien" style="margin-top:14px" onclick="coachChoisirPlateforme('')">Aucune plateforme</button>`;
+  $('co-feuille').classList.add('on');
 }
-async function coachEffacer(){
-  if(!confirm('Effacer tout ton suivi, ta discussion et ton plan ? C\'est définitif.')) return;
+async function coachChoisirPlateforme(nom){
+  nom = String(nom || '').trim().slice(0, 40) || null;
+  const { data } = await coachAppel({ action:'plateforme', nom });
+  if(data?.ok){ if(COACH.etat?.profil) COACH.etat.profil.plateforme = nom; coachFermerCombine(); coachMajReglages(); coToast(nom ? 'Plateforme enregistrée.' : 'Plateforme retirée.'); coachRafraichirDiscret(); }
+  else coToast('Réessaie.');
+}
+function coachConfirmer(titre, texte, bouton, onOk, danger){
+  $('co-feuille-bx').innerHTML = `<div class="poignee"></div><h3>${titre}</h3><p class="co-note" style="margin-top:8px;font-size:13px">${texte}</p>
+    <button class="co-btn ${danger ? 'danger' : ''}" style="margin-top:16px" id="co-confirme">${bouton}</button>
+    <button class="co-lien" style="margin-top:12px" onclick="coachFermerCombine()">Annuler</button>`;
+  $('co-confirme').onclick = () => { coachFermerCombine(); onOk(); };
+  $('co-feuille').classList.add('on');
+}
+function coachEffacer(){
+  coachConfirmer('Effacer mon suivi', 'Ton plan, ton suivi et ta discussion avec le coach seront supprimés. C\'est définitif. Tu pourras créer un nouveau plan juste après.', 'Tout effacer', coachEffacerOk, true);
+}
+async function coachEffacerOk(){
   const { data } = await coachAppel({ action:'effacer' });
-  if(data?.ok){ COACH.msgs = []; COACH.dernier = 0; await coachInit(true); coToast('Effacé.'); }
+  if(data?.ok){ COACH.msgs = []; COACH.dernier = 0; await coachInit(true); coToast('Effacé.'); } else coToast(data?.erreur || 'Réessaie.');
 }
 
 /* ---- discussion ---- */
@@ -6160,16 +6207,23 @@ function coachAfficherProps(d){
   const z = $('co-props'); if(!z) return;
   if(d.refuse) z.innerHTML = `<div class="co-alerte">Au-dessus de ${d.cote_max}, le coach ne construit pas : à ce niveau l'indice de réussite tombe sous 5 %, ce n'est plus une sélection, c'est un ticket de loterie. Il a construit au maximum autorisé.</div>`; else z.innerHTML = '';
   if(d.vide){ z.insertAdjacentHTML('beforeend', `<div class="co-alerte">${coEchap(d.raison || 'Rien à proposer.')}</div>`); return; }
-  if(d.etendu) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Plus assez de matchs à venir sur la période choisie : le moteur a construit sur ${d.periode === '3j' ? '3 jours' : 'aujourd\'hui et demain'}.</div>`);
+  if(d.approche) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Avec les ${d.nb_matchs} matchs à venir sur cette période, le moteur n'atteint pas ${coCote(d.cible)} : voici le combiné le plus proche. Pour aller plus haut, passe sur 2 ou 3 jours.</div>`);
+  else if(d.elargi) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Pas de combiné exactement à ${coCote(d.cible)} avec les matchs à venir : le moteur a construit au plus près.</div>`);
+  if(d.plateforme) z.insertAdjacentHTML('beforeend', `<div class="co-note" style="margin-top:8px">Cotes estimées pour ${coEchap(d.plateforme)} : elles peuvent être un peu différentes au moment où tu regardes.</div>`);
   if(d.hors_plan) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Cette cote sort de ton plan. Le coach construit quand même, mais ce combiné ne compte pas dans ton suivi, et ta part reste la même.</div>`);
   z.insertAdjacentHTML('beforeend', `<div class="co-props">${d.propositions.map((p, k) => `
     <div class="co-prop">
-      <div class="t"><b>${p.nb} match${p.nb > 1 ? 's' : ''} · autour de ${coCote(p.cote)}</b><span class="n ${['sur', 'equ', 'aud'][k]}">${p.niveau.toUpperCase()}</span></div>
-      ${p.items.map(x => `<div class="lg"><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><i>–</i>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div><div class="ch"><em>${coEchap(x.selection)}</em><small>${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, x.date_match === jourLocal()) : ''}${x.estime ? ' · cote estimée' : ''}</small></div><b>${coCote(x.cote)}</b></div>`).join('')}
-      <div class="pied"><span>Indice de réussite <b>${p.indice} %</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
+      <div class="t"><b>${p.nb} match${p.nb > 1 ? 's' : ''} · cote ≈ ${coCote(p.cote)}</b><span class="n ${['sur', 'equ', 'aud'][k]}">${p.niveau.toUpperCase()}</span></div>
+      ${p.items.map(x => `<div class="lg"><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><i>–</i>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div><div class="ch"><em>${coEchap(x.selection)}</em><small>${coEchap(x.ligue || '')} · ${coDateMatch(x.date_match, x.heure)}</small></div><b>${coCote(x.cote)}</b></div>`).join('')}
+      <div class="pied"><span>Probabilité de réussite <b>${p.indice} %</b></span><button onclick="coachCopierProp(${k})">Copier</button></div>
     </div>`).join('')}</div>
-    <div class="co-note" style="margin-top:12px">Plus il y a de matchs, plus l'indice de réussite baisse : c'est normal. Les cotes sont indicatives, elles peuvent être un peu différentes sur ta plateforme.</div>`);
+    <div class="co-note" style="margin-top:12px">Plus il y a de matchs, plus la probabilité de réussite baisse : c'est normal.</div>`);
   COACH.props = d.propositions;
+}
+function coDateMatch(date, heure){
+  const dl = typeof dLoc === 'function' ? dLoc(date, heure) : date; const lab = typeof labelDate === 'function' ? labelDate(dl) : dl;
+  const l = lab === "AUJOURD'HUI" ? "aujourd'hui" : lab === 'DEMAIN' ? 'demain' : lab.toLowerCase();
+  return `${l} ${heure ? hLoc(date, heure, true) : ''}`.trim();
 }
 function coachCopierProp(k){
   const p = COACH.props?.[k]; if(!p) return;
