@@ -22,6 +22,8 @@ h1{font-size:26px;margin:6px 0 4px}
 h2{font-size:18px;margin:28px 0 8px}
 .maj{color:var(--sourdine);font-size:13px;margin:0 0 20px}
 ul{padding-left:20px}
+nav.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin:32px 0 0;padding-top:16px;border-top:1px solid var(--ligne)}
+nav.leg a{color:var(--sourdine)}
 .carte{background:var(--surface);border:1px solid var(--ligne);border-radius:14px;padding:14px 16px}
 </style>
 </head>
@@ -29,8 +31,7 @@ ul{padding-left:20px}
 <header><div><a class="logo" href="/">AURA<b>90'</b></a></div></header>
 <main>
 <h1>Règles de confidentialité</h1>
-<p class="maj">Dernière mise à jour : 27 octobre 2026</p>
-
+<p class="maj">Dernière mise à jour : 1er novembre 2026</p>
 <p>AURA90 (<a href="https://aura90.app">aura90.app</a>) est une application d'analyse de matchs de football. Cette page explique quelles données nous collectons, pourquoi, combien de temps nous les gardons et comment tu peux les faire supprimer.</p>
 
 <h2>1. Les données que nous collectons</h2>
@@ -40,6 +41,7 @@ ul{padding-left:20px}
 <li><b>Tes préférences</b> : langue, pays et devise d'affichage.</li>
 <li><b>Les notifications</b> : si tu les actives, l'adresse technique d'envoi fournie par ton navigateur (aucune donnée personnelle).</li>
 <li><b>La messagerie</b> : les messages que tu écris à l'équipe ou à l'assistant d'AURA90.</li>
+<li><b>Le Coach 90'</b> (si tu l'utilises) : tes réponses au questionnaire (objectif, jours, budget si tu choisis de le donner, plateforme si tu choisis de l'indiquer), ton plan, ce que tu déclares avoir suivi et les messages échangés avec le coach.</li>
 <li><b>Le parrainage</b> : le code partenaire utilisé lors de ton inscription ou de ton paiement.</li>
 </ul>
 <p>Nous ne collectons pas ta localisation précise, tes contacts ni aucune donnée de santé.</p>
@@ -49,22 +51,24 @@ ul{padding-left:20px}
 <li>Créer ton compte et te connecter.</li>
 <li>Activer et prolonger ton accès PRO après un paiement.</li>
 <li>T'envoyer les notifications que tu as choisies (combinés du jour, rappels d'abonnement).</li>
-<li>Répondre à tes messages.</li>
+<li>Répondre à tes messages et faire fonctionner le Coach 90' (construire ton plan, ta sélection du jour et tes bilans).</li>
+<li>T'envoyer des e-mails sur ton compte et, si tu n'es pas abonné, des offres AURA90 : tu peux te désabonner en un clic depuis chaque e-mail.</li>
 <li>Calculer les commissions de nos partenaires (sans jamais leur transmettre ton e-mail ni ton numéro).</li>
 </ul>
 <p>Nous ne vendons pas tes données et ne les utilisons pas pour de la publicité.</p>
+<p>Les messages envoyés au Coach 90' et à l'assistant sont lus par l'équipe AURA90 pour améliorer le service et vérifier qu'il reste responsable.</p>
 
 <h2>3. Paiements</h2>
 <p>Les paiements sont traités directement par nos prestataires : SasPay (Mobile Money et carte, en francs CFA) et Whop (carte bancaire, Apple Pay, Google Pay, en euros). Tes numéros de carte ne passent jamais par AURA90 : nous recevons seulement la confirmation du paiement.</p>
 
 <h2>4. Où sont stockées tes données</h2>
-<p>Les données sont hébergées chez Supabase (serveurs dans l'Union européenne) et le site est servi par Cloudflare. Ces prestataires agissent pour notre compte et ne peuvent pas utiliser tes données pour eux-mêmes.</p>
+<p>Les données sont hébergées chez Supabase (serveurs dans l'Union européenne) et le site est servi par Cloudflare. Les e-mails sont envoyés par Resend. Les réponses du Coach 90' et de l'assistant sont générées par Anthropic (modèle Claude, États-Unis) : seuls le texte de la conversation et les informations nécessaires à la réponse lui sont transmis, sans ton e-mail, et Anthropic ne les utilise pas pour entraîner ses modèles. Ces prestataires agissent pour notre compte et ne peuvent pas utiliser tes données pour eux-mêmes.</p>
 
 <h2>5. Combien de temps</h2>
 <ul>
 <li>Compte et préférences : tant que ton compte existe.</li>
 <li>Historique des paiements : jusqu'à 10 ans, pour nos obligations comptables.</li>
-<li>Messages : 2 ans après le dernier échange.</li>
+<li>Messages et suivi du coach : 2 ans après le dernier échange, ou tout de suite si tu touches « Effacer mon suivi » dans le coach.</li>
 </ul>
 
 <h2>6. Tes droits</h2>
@@ -77,12 +81,13 @@ ul{padding-left:20px}
 <h2>8. Âge minimum</h2>
 <p>AURA90 est réservé aux personnes de 18 ans et plus.</p>
 
-<h2>9. Contact</h2>
-<div class="carte">AURA90 — responsable : Sébastien Gaston Mbaye<br>
-E-mail : <a href="mailto:sebastiengastonmbaye@gmail.com">sebastiengastonmbaye@gmail.com</a><br>
-Ou directement depuis la messagerie de l'app.</div>
-
-<p style="margin-top:28px"><a href="/">← Retour à l'app</a></p>
+<h2>9. Responsable du traitement et contact</h2>
+<div class="carte"><b>GOMIS ADMIR</b>, entreprise individuelle de droit sénégalais, exploitant l'application AURA90<br>
+Siège : Yoff, quartier Ndiouffène, Dakar, Sénégal<br>
+RCCM : SN DKR 2025 A 48271 · NINEA : 012678077<br>
+Pour exercer tes droits : <a href="mailto:contact@aura90.app">contact@aura90.app</a> ou la messagerie de l'app</div>
+<nav class="leg"><a href="/cgu.html">CGU</a><a href="/cgv.html">CGV</a><a href="/confidentialite.html">Confidentialité</a><a href="/mentions-legales.html">Mentions légales</a></nav>
+<p style="margin-top:20px"><a href="/">← Retour à l'app</a></p>
 </main>
 </body>
 </html>
