@@ -1394,6 +1394,7 @@ body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .co-fil{padding:12px;display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .co-fil .ms-m.coach{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne);border-bottom-left-radius:5px}
 .co-fil .vide{text-align:center;color:var(--sourdine);font-size:12.5px;padding:10px;line-height:1.5}
+.co-fil .vide b{color:var(--texte);font-size:13.5px}
 .co-sugg{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px}
 .co-sugg button{background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);border-radius:99px;padding:7px 11px;font-size:12px;font-family:inherit;cursor:pointer}
 .co-pied{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--ligne);background:var(--surface)}
@@ -5374,7 +5375,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-01-5';
+const APP_VERSION = '2026-11-01-6';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -5783,7 +5784,7 @@ function coachEcransPour(rep){
   if(o === 'budget') return L.concat([
     { cle:'dernier_mois', type:'tuiles', titre:'Le mois dernier, tu as fini comment ?', sous:'Ça règle la fermeté des limites, rien d\'autre.', options:[{ v:'vert', ic:'i-haut', t:'Dans le vert' }, { v:'zero', ic:'i-egal', t:'Autour de zéro' }, { v:'rouge', ic:'i-bas', t:'Dans le rouge' }, { v:'sais_pas', ic:'i-question', t:'Je ne sais pas, et c\'est le problème' }], defaut:'zero' },
     budget('Le montant à ne pas dépasser ce mois-ci'),
-    { cle:'alerte', type:'grille', titre:'Je te préviens quand tu approches ?', sous:'Un message calme, une seule fois.', options:[{ v:'moitie', n:'50 %', t:'à la moitié' }, { v:'p80', n:'80 %', t:'presque au bout' }, { v:'les_deux', n:'2×', t:'les deux' }, { v:'non', n:'—', t:'pas d\'alerte' }], defaut:'les_deux' },
+    { cle:'alerte', type:'grille', titre:'Je te préviens quand ton budget du mois commence à partir ?', sous:'Un seul message, sans pression.', options:[{ v:'moitie', n:'50 %', t:'à la moitié du budget' }, { v:'p80', n:'80 %', t:'presque au bout du budget' }, { v:'les_deux', n:'2×', t:'les deux fois' }, { v:'non', n:'—', t:'pas besoin' }], defaut:'les_deux' },
     plateforme,
   ]);
   if(o === 'plaisir') return L.concat([
@@ -6164,9 +6165,20 @@ async function coachChargerMessages(){
   const { data } = await coachAppel({ action:'messages', apres: 0 });
   const l = data?.messages || [];
   COACH.msgs = l; COACH.dernier = l.length ? l[l.length - 1].id : 0;
-  f.innerHTML = l.length ? l.map(coachBulle).join('') : `<div class="vide">Pose une question sur ta sélection, ton plan ou ta semaine. Le coach répond en trois phrases, et il ne te dira jamais combien mettre.</div>`;
-  const sg = $('co-sugg'); if(sg) sg.innerHTML = l.length ? '' : ['Pourquoi cette sélection ?', 'Je fais quoi si je perds ce soir ?', 'Comment lire l\'indice ?'].map(t => `<button onclick="coachSugg(this)">${t}</button>`).join('');
+  f.innerHTML = l.length ? l.map(coachBulle).join('') : `<div class="vide"><b>Parle-lui comme à quelqu'un qui s'y connaît.</b><br>Ta sélection, ton plan, ta semaine, tes doutes : il te répond court et clair.</div>`;
+  // questions toutes prêtes : selon le moment, tant que la personne n'a rien écrit aujourd'hui
+  const aujL = new Date().toDateString();
+  const ecritAuj = l.some(m => m.role === 'user' && new Date(m.cree_le || 0).toDateString() === aujL);
+  const sg = $('co-sugg'); if(sg) sg.innerHTML = ecritAuj ? '' : coachQuestionsDuMoment(l.length === 0).map(t => `<button onclick="coachSugg(this)">${t}</button>`).join('');
   coachBas();
+}
+function coachQuestionsDuMoment(nouveau){
+  const e = COACH.etat || {}, a = e.aujourdhui || {}, h = e.hier || {};
+  if(nouveau) return ['Qu\'est-ce que le coach peut changer pour moi ?', 'Explique-moi mon plan en deux phrases', 'Par où je commence aujourd\'hui ?'];
+  if(a.repos || (a.vide && !a.items)) return ['Pourquoi pas de sélection aujourd\'hui ?', 'Qu\'est-ce que je peux regarder en attendant ?', 'Comment se passe ma semaine ?'];
+  if(h.resultat === 'perdu') return ['J\'ai perdu hier, je fais quoi aujourd\'hui ?', 'Est-ce que je dois changer quelque chose ?', 'Comment se passe ma semaine malgré tout ?'];
+  if(h.resultat === 'gagne') return ['Bien joué hier, je continue pareil ?', 'Je peux augmenter ma part ?', 'Comment se passe ma semaine ?'];
+  return ['Pourquoi ces matchs aujourd\'hui ?', 'C\'est quoi le match le plus solide de ma sélection ?', 'Je peux viser une cote plus haute ?'];
 }
 function coachSugg(b){ $('co-texte').value = b.textContent; coachEnvoyer(); }
 function coachAjuster(){ const z = $('co-texte'); if(!z) return; z.style.height = '44px'; const h = Math.min(z.scrollHeight, 110); z.style.height = h + 'px'; z.style.overflowY = z.scrollHeight > 110 ? 'auto' : 'hidden'; }
