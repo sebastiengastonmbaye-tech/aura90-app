@@ -254,6 +254,9 @@ body:not(.co) .adm-nav,html.nav-cachee .adm-nav{display:none}
 
 /* ===== composants portés de l'ancien tableau de bord (preuves, montantes, historique, affiliés, messagerie, détails) ===== */
 a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;pointer-events:none!important;font:inherit!important}
+.sl-chips{display:flex;gap:6px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}.sl-chips::-webkit-scrollbar{display:none}
+.sl-chips button{flex:1 0 auto;padding:8px 12px;font:700 12px inherit;font-family:inherit;border-radius:99px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);white-space:nowrap;box-shadow:none;cursor:pointer;width:auto;margin:0}
+.sl-chips button.a{color:var(--texte);border-color:rgba(61,232,200,.55);background:rgba(61,232,200,.1)}
 .sl-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .sl-kpi div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:11px;text-align:center}
 .sl-kpi b{display:block;font:800 20px 'JetBrains Mono',monospace}
@@ -2151,8 +2154,8 @@ function afResume(){
   if(!AF) return;
   const d = AF.demandes.filter(x => x.statut === 'en_attente').length, r = AF.retraits.filter(x => x.statut === 'demande');
   const somme = r.reduce((a, x) => a + x.montant, 0);
-  $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
-  $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + mD(somme) + ')' : '']
+  if($('af-badge')) $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
+  if($('af-resume')) $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + mD(somme) + ')' : '']
     .filter(Boolean).join(' · ') || AF.partenaires.filter(p => p.statut === 'actif').length + ' affiliés actifs · rien à traiter';
 }
 
