@@ -1325,14 +1325,15 @@ body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .co-bloc .h .co-sur{color:var(--aura1)}
 .co-bloc .h small{font-size:11px;color:var(--sourdine)}
 .co-sel{display:flex;flex-direction:column;gap:8px}
-.co-sel .m{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border-radius:13px;background:var(--surface2);border:1px solid var(--ligne)}
+.co-sel .m{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:10px;align-items:center;padding:10px 11px;border-radius:13px;background:var(--surface2);border:1px solid var(--ligne)}
 .co-sel .m .eq{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;min-width:0}
 .co-sel .m .eq span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .co-sel .m .eq .ecu{width:18px;height:18px;flex:0 0 18px}
 .co-sel .m .eq .ecu img{width:18px;height:18px;object-fit:contain}
 .co-sel .m .ch{display:block;margin-top:4px;font-size:12.5px;color:var(--aura1);font-weight:700}
 .co-sel .m .inf{font-size:10.5px;color:var(--sourdine);margin-top:3px}
-.co-sel .m .ct{text-align:right}
+.co-sel .m > div:first-child{min-width:0}
+.co-sel .m .ct{text-align:right;width:64px}
 .co-sel .m .ct b{display:block;font-family:'JetBrains Mono',monospace;font-size:15px}
 .co-sel .m .ct small{display:block;font-size:10px;color:var(--sourdine);margin-top:2px;white-space:nowrap}
 .co-sel .m.ok{border-color:rgba(61,232,200,.5)}
@@ -3812,10 +3813,12 @@ function remplirUSD(){ remplirMontants(); majNotePaiement(); }
 document.addEventListener('DOMContentLoaded', remplirUSD); setTimeout(remplirUSD, 0);
 
 
-async function sbUser(chemin){
+async function sbUser(chemin, deja){
   const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/' + chemin, {
     headers:{ apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }
   });
+  // jeton expiré (page restée ouverte, ou appel parti avant le rafraîchissement du démarrage) : on renouvelle et on réessaie
+  if((r.status === 401 || r.status === 403) && !deja && SESSION.refresh && await rafraichirSession()) return sbUser(chemin, true);
   if(!r.ok) throw new Error('Supabase ' + r.status);
   return r.json();
 }
@@ -5360,7 +5363,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-01-3';
+const APP_VERSION = '2026-11-01-4';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -6018,9 +6021,9 @@ function coachBlocAujourdhui(e){
       <div class="m ${x.resultat === 'gagne' ? 'ok' : x.resultat === 'perdu' ? 'ko' : ''}">
         <div><div class="eq">${ecu(x.logo_dom, x.dom, true)}<span>${coEchap(x.dom)}</span><span style="color:var(--sourdine);font-weight:600">–</span>${ecu(x.logo_ext, x.ext, true)}<span>${coEchap(x.ext)}</span></div>
           <span class="ch">${coEchap(x.selection)}</span><div class="inf">${coEchap(x.ligue || '')}${x.heure ? ' · ' + hLoc(x.date_match, x.heure, true) : ''}${x.resultat === 'gagne' ? ' · ✓ validé' : x.resultat === 'perdu' ? ' · ✗' : ''}</div></div>
-        <div class="ct"><b>${coCote(x.cote)}</b><small>${s.plateforme ? '≈ ' + coEchap(s.plateforme) : x.estime ? 'cote estimée' : 'cote indicative'}</small></div>
+        <div class="ct"><b>${coCote(x.cote)}</b></div>
       </div>`).join('');
-    const total = `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : (s.items || []).length > 1 ? 'cote totale' + (s.plateforme ? ' ≈ ' + coEchap(s.plateforme) : ', indicative') : 'cote' + (s.plateforme ? ' ≈ ' + coEchap(s.plateforme) : ', indicative')}</small></div><div class="ind"><b>${s.indice} %</b><small>probabilité de réussite</small></div></div>`;
+    const total = `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : (s.items || []).length > 1 ? 'cote totale' + (s.plateforme ? ' · estimée ' + coEchap(s.plateforme) : ' · indicative') : 'cote' + (s.plateforme ? ' · estimée ' + coEchap(s.plateforme) : ' · indicative')}</small></div><div class="ind"><b>${s.indice} %</b><small>probabilité de réussite</small></div></div>`;
     const part = p.unite ? `<div class="co-note">Ta part sur cette sélection : <b>${coMontant(p.unite)}</b>, comme chaque jour.</div>` : '';
     const decl = p.famille === 'lecture' ? '' : `
       <div class="co-q-lbl">Tu as suivi cette sélection ?</div>

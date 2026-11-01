@@ -950,12 +950,16 @@ function devRafraichir(){
 }
 
 /* ================= AUTHENTIFICATION ================= */
-async function admin(corps){
+async function admin(corps, deja){
   const r = await fetch(SUPABASE_URL + '/functions/v1/admin', {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
     body: JSON.stringify(corps)
   });
-  return r.json();
+  // jeton expiré : la passerelle répond 401 « Invalid JWT » (sans champ erreur) → on renouvelle et on réessaie
+  if(r.status === 401 && !deja && await rafraichirJeton()) return admin(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok && d && !d.erreur) d.erreur = d.message || ('HTTP ' + r.status);
+  return d;
 }
 async function rafraichirJeton(){
   try{
@@ -1010,11 +1014,12 @@ function entrer(stats){
   const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j);
 }
 
-async function rpc(nom, corps){
+async function rpc(nom, corps, deja){
   const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + nom, {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
     body: JSON.stringify(corps || {})
   });
+  if(r.status === 401 && !deja && await rafraichirJeton()) return rpc(nom, corps, true);
   const t = await r.text();
   let d; try{ d = t ? JSON.parse(t) : null; }catch(e){ d = t; }
   if(!r.ok) throw new Error((d && (d.message || d.hint)) || ('HTTP ' + r.status));
@@ -1483,8 +1488,9 @@ const CAT_NOMS = { sure:'🛡️ Sûre', confiance:'🎯 Confiance', fun:'🎲 F
 let PV_JOUR = null, PV_CACHE = {};
 const F = n => Math.round(n).toLocaleString('fr-FR');
 
-async function rest(chemin){
+async function rest(chemin, deja){
   const r = await fetch(SUPABASE_URL + '/rest/v1/' + chemin, { headers:{ apikey: SUPABASE_KEY, Authorization:'Bearer ' + JETON } });
+  if(r.status === 401 && !deja && await rafraichirJeton()) return rest(chemin, true);
   if(!r.ok) throw new Error('Supabase ' + r.status);
   return r.json();
 }
