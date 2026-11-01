@@ -1201,6 +1201,12 @@ body.cta-on #page-accueil{padding-bottom:calc(170px + env(safe-area-inset-bottom
 #maj-app{position:absolute;left:12px;right:12px}
 #ms-bulle{position:absolute;right:14px}
 body.cta-on #ms-bulle{bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+
+/* bulle de messagerie retirée : on écrit à l'équipe depuis Compte → « Poser une question » */
+#ms-bulle{display:none !important}
+.carte-guide .ms-pt2{display:none;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--ko);color:#fff;font:800 11px 'JetBrains Mono',monospace;align-items:center;justify-content:center;margin-right:2px}
+.nav button[data-page="compte"]{position:relative}
+.nav button[data-page="compte"].a-msg::after{content:'';position:absolute;top:6px;left:calc(50% + 9px);width:8px;height:8px;border-radius:50%;background:var(--ko);box-shadow:0 0 0 2px var(--fond,#070B12)}
 /* ================= COACH 90' (31/10/2026) ================= */
 .nav button.nav-coach{position:relative;color:var(--texte)}
 .nav button.nav-coach .co-rond{width:46px;height:46px;margin:-22px auto 3px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(61,232,200,.38);border:3px solid var(--surface);transition:transform .2s}
@@ -1734,6 +1740,7 @@ const CONFIG = {
       <div class="section-titre">Mon compte</div>
       <div id="zone-reglages"></div>
       <button class="carte-guide" onclick="ouvrirGuide()"><span class="ic-g">📖</span><span class="g"><b id="gd-carte-t">Comment marche AURA90 ?</b><small id="gd-carte-s">Le guide de chaque section, montantes comprises</small></span><span class="fl">›</span></button>
+      <button class="carte-guide" onclick="ouvrirMessagerie()"><span class="ic-g">💬</span><span class="g"><b id="ms-carte-t">Poser une question</b><small id="ms-carte-s">Une question sur l'app, un paiement ou une analyse ? On te répond ici.</small></span><span class="ms-pt2" id="ms-pt2"></span><span class="fl">›</span></button>
       <button class="cp-ligne" id="btn-push" onclick="activerPush()">🔔 Activer les notifications</button>
       <div id="msg-push"></div>
       <div id="zone-partenaire"></div>
@@ -3587,6 +3594,8 @@ const GD_TXT = {
   titre: { fr: "Guide de l'app", en: 'App guide', ar: 'دليل التطبيق' , es: "Guía de la app" },
   intro: { fr: "Comment fonctionne chaque partie de l'app.", en: 'How each part of the app works.', ar: 'كيف يعمل كل قسم من التطبيق.' , es: "Cómo funciona cada parte de la app." },
   ouvrir: { fr: 'Ouvrir', en: 'Open', ar: 'فتح' , es: "Abrir" },
+  q_t: { fr: 'Poser une question', en: 'Ask a question', ar: 'اطرح سؤالًا', es: 'Hacer una pregunta' },
+  q_s: { fr: "Une question sur l'app, un paiement ou une analyse ? On te répond ici.", en: 'A question about the app, a payment or an analysis? We answer here.', ar: 'سؤال عن التطبيق أو الدفع أو تحليل؟ نجيبك هنا.', es: '¿Una pregunta sobre la app, un pago o un análisis? Te respondemos aquí.' },
   carte_t: { fr: 'Comment marche AURA90 ?', en: 'How does AURA90 work?', ar: 'كيف يعمل AURA90؟' , es: "¿Cómo funciona AURA90?" },
   carte_s: { fr: 'Le guide de chaque section, montantes comprises', en: 'A guide to every section, step series included', ar: 'دليل لكل قسم، بما في ذلك السلاسل التصاعدية' , es: "La guía de cada sección, escaleras incluidas" },
   aide_mt: { fr: 'Comment marche une montante ?', en: 'How does a step series work?', ar: 'كيف تعمل السلسلة التصاعدية؟' , es: "¿Cómo funciona una escalera?" },
@@ -5135,7 +5144,9 @@ async function ouvrirMessagerie(){
 }
 function fermerMessagerie(){ $('ms-panneau').classList.remove('ouvert'); MS_OUVERT = false; clearInterval(MS_TIMER); $('ms-texte').blur(); verrouPage(false); msViewport(); }
 function msStatut(mode){ $('ms-statut').textContent = mode === 'humain' ? 'Un membre de l\'équipe te répond' : 'Réponse en quelques secondes'; }
-function msPastille(n){ const p = $('ms-pt'); p.textContent = n; p.style.display = n ? 'flex' : 'none'; }
+function msPastille(n){ const p = $('ms-pt'); p.textContent = n; p.style.display = n ? 'flex' : 'none';
+  const p2 = $('ms-pt2'); if(p2){ p2.textContent = n || ''; p2.style.display = n ? 'inline-flex' : 'none'; }
+  document.querySelector('.nav button[data-page="compte"]')?.classList.toggle('a-msg', !!n); }
 
 let MS_ENVOI = false;
 async function msSuivre(){
@@ -5363,7 +5374,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-01-4';
+const APP_VERSION = '2026-11-01-5';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -5473,6 +5484,7 @@ proposerNotifs();
 majCompte();
 majInstall();
 if($('gd-carte-t')){ $('gd-carte-t').textContent = gdT('carte_t'); $('gd-carte-s').textContent = gdT('carte_s'); $('gd-carte-t').closest('button').classList.add('notranslate'); }
+if($('ms-carte-t')){ $('ms-carte-t').textContent = gdT('q_t'); $('ms-carte-s').textContent = gdT('q_s'); $('ms-carte-t').closest('button').classList.add('notranslate'); }
 proposerInstall();
 charger();
 
@@ -5632,7 +5644,7 @@ function coachVueAccueil(connecte){
     <div class="co-pts">
       <div><i>1</i><span><b>Tu réponds à quelques questions</b> : ce que tu cherches, tes jours, ton budget. Deux minutes.</span></div>
       <div><i>2</i><span><b>Le coach écrit ton plan</b> : une sélection par jour, une part fixe, des règles d'arrêt claires.</span></div>
-      <div><i>3</i><span><b>Chaque jour, il te donne ta sélection</b>, tirée des analyses du moteur, et tu notes si tu l'as suivie.</span></div>
+      <div><i>3</i><span><b>Chaque jour, il te donne ta sélection</b>, tirée des analyses du moteur, et tu notes si tu l'as placée.</span></div>
       <div><i>4</i><span><b>Chaque semaine, le bilan</b> : jours tenus, résultat, et ce qu'il faut ajuster. Si tu sors du cadre, il te le dit.</span></div>
     </div>
     <button class="co-cta" onclick="coachDemarrer()">Créer mon plan</button>
@@ -5997,7 +6009,7 @@ function coachVuePro(e){
   ${e.pause ? `<div class="co-bloc" style="border-color:rgba(255,180,84,.4)"><span class="co-sur" style="color:#FFB454">Coach en pause</span><div style="margin-top:6px;font-size:13.5px;line-height:1.5">Pas de sélection jusqu'au ${new Date(e.pause + 'T12:00:00').toLocaleDateString(LOC, { day:'numeric', month:'long' })}. Tu peux reprendre quand tu veux.</div><button class="co-lien" style="text-align:left;margin-top:6px" onclick="coachPause(0)">Reprendre maintenant</button></div>` : ''}
   ${coachCartePlan(e, true)}
   ${coachBlocAujourdhui(e)}
-  ${e.hier ? `<div class="co-hier"><i class="${e.hier.resultat}"></i><span>Hier : ${e.hier.repos ? 'jour de repos' : e.hier.resultat === 'gagne' ? `sélection <b>validée</b>` : e.hier.resultat === 'perdu' ? `sélection <b>perdue</b>` : e.hier.resultat === 'sans' ? 'pas de sélection' : 'résultat en attente'}${e.hier.suivi === true ? ' · suivie' : e.hier.suivi === false ? ' · pas suivie' : e.hier.repos || e.hier.resultat === 'sans' ? '' : ' · <button class="co-lien" style="display:inline;width:auto;margin:0;font-size:12.5px" onclick="coachDeclarerHier()">tu as suivi ?</button>'}</span></div>` : ''}
+  ${e.hier ? `<div class="co-hier"><i class="${e.hier.resultat}"></i><span>Hier : ${e.hier.repos ? 'jour de repos' : e.hier.resultat === 'gagne' ? `sélection <b>validée</b>` : e.hier.resultat === 'perdu' ? `sélection <b>perdue</b>` : e.hier.resultat === 'sans' ? 'pas de sélection' : 'résultat en attente'}${e.hier.suivi === true ? ' · placée' : e.hier.suivi === false ? ' · pas placée' : e.hier.repos || e.hier.resultat === 'sans' ? '' : ' · <button class="co-lien" style="display:inline;width:auto;margin:0;font-size:12.5px" onclick="coachDeclarerHier()">tu l\'as placée ?</button>'}</span></div>` : ''}
   <div class="co-chat" id="co-chat">
     <div class="h"><div class="av"><svg class="ic"><use href="#i-sifflet"/></svg></div><div><b>Ton coach</b><small>Il lit la même sélection et le même suivi que toi</small></div></div>
     <div class="co-fil" id="co-fil"><div class="vide">Chargement…</div></div>
@@ -6026,12 +6038,12 @@ function coachBlocAujourdhui(e){
     const total = `<div class="co-tot"><div><b>${s.type === 'montante' ? 'Palier ' + (s.palier || '') : '≈ ' + coCote(s.cote)}</b><small>${s.type === 'montante' ? 'Montante 1 · cote ' + coCote(s.cote) : (s.items || []).length > 1 ? 'cote totale' + (s.plateforme ? ' · estimée ' + coEchap(s.plateforme) : ' · indicative') : 'cote' + (s.plateforme ? ' · estimée ' + coEchap(s.plateforme) : ' · indicative')}</small></div><div class="ind"><b>${s.indice} %</b><small>probabilité de réussite</small></div></div>`;
     const part = p.unite ? `<div class="co-note">Ta part sur cette sélection : <b>${coMontant(p.unite)}</b>, comme chaque jour.</div>` : '';
     const decl = p.famille === 'lecture' ? '' : `
-      <div class="co-q-lbl">Tu as suivi cette sélection ?</div>
+      <div class="co-q-lbl">As-tu placé cette sélection sur ta plateforme ?</div>
       <div class="co-decl">
-        <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">Oui, je l'ai suivie</button>
-        <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Non</button>
+        <button class="${d.suivi === true ? 'on' : ''}" onclick="coachDeclarer(true)">Oui, je l'ai placée</button>
+        <button class="${d.suivi === false ? 'on non' : ''}" onclick="coachDeclarer(false)">Non, pas aujourd'hui</button>
       </div>
-      ${d.suivi === true ? `<div class="co-q-lbl">Combien tu as mis dessus ? <span>(facultatif)</span></div><div class="co-montants deux"><input id="co-mise" type="number" inputmode="decimal" placeholder="${p.unite ? coMontant(p.unite) : 'Montant'}" value="${d.mise ?? ''}"><button onclick="coachEnregistrerMontants()">${d.mise != null ? '✓' : 'OK'}</button></div>` : ''}`;
+      ${d.suivi === true ? `<div class="co-q-lbl">Quel montant as-tu placé ? <span>(facultatif)</span></div><div class="co-montants deux"><input id="co-mise" type="number" inputmode="decimal" placeholder="${p.unite ? coMontant(p.unite) : 'Montant'}" value="${d.mise ?? ''}"><button onclick="coachEnregistrerMontants()">${d.mise != null ? '✓' : 'OK'}</button></div>` : ''}`;
     corps = `<div class="co-sel">${items}</div>${total}${s.note ? `<div class="co-note">${coEchap(s.note)}</div>` : ''}${part}${decl}`;
   }
   return `<div class="co-bloc" id="co-auj"><div class="h"><span class="co-sur">Aujourd'hui</span>${!s.vide && !s.repos && !e.pause && (s.items || []).length ? `<button class="co-lien" style="width:auto;margin:0;font-size:12px" onclick="coachCopierSelection()">Copier</button>` : `<small>${new Date().toLocaleDateString(LOC, { weekday:'long', day:'numeric', month:'long' })}</small>`}</div>${corps}</div>`;
@@ -6063,7 +6075,7 @@ async function coachDeclarer(suivi){
   coachMajAujourdhui(); coachAlerte(false);
   if(suivi) setTimeout(() => $('co-mise')?.focus({ preventScroll:true }), 150);
   const { data } = await coachAppel({ action:'declarer', suivi });
-  if(data?.ok){ coToast(suivi ? 'Noté : suivie.' : 'Noté : pas suivie.'); coachAppel({ action:'bilan' }).then(({ data: b }) => { if(b && COACH.etat){ COACH.etat.bilan_semaine = b.semaine; COACH.etat.bilan_mois = b.mois; COACH.etat.budget = b.budget; } }); }
+  if(data?.ok){ coToast(suivi ? 'Noté : placée.' : 'Noté : pas placée.'); coachAppel({ action:'bilan' }).then(({ data: b }) => { if(b && COACH.etat){ COACH.etat.bilan_semaine = b.semaine; COACH.etat.bilan_mois = b.mois; COACH.etat.budget = b.budget; } }); }
   else { e.aujourdhui.declare = avant; coachMajAujourdhui(); if(data?.erreur === 'regles') coachEcranRegles(); else coToast(data?.erreur === 'pro' ? 'Réservé aux PRO.' : 'Réessaie.'); }
 }
 async function coachEnregistrerMontants(){
@@ -6073,9 +6085,15 @@ async function coachEnregistrerMontants(){
   const { data } = await coachAppel({ action:'declarer', suivi:true, mise });
   if(data?.ok) coToast('Enregistré.'); else coToast('Réessaie.');
 }
-async function coachDeclarerHier(){
+function coachDeclarerHier(){
+  $('co-feuille-bx').innerHTML = `<div class="poignee"></div><h3>La sélection d'hier</h3><p class="co-note" style="margin-top:8px;font-size:13px">As-tu placé la sélection d'hier sur ta plateforme ?</p>
+    <div class="co-decl" style="margin-top:14px"><button onclick="coachDeclarerHierOk(true)">Oui, je l'ai placée</button><button onclick="coachDeclarerHierOk(false)">Non</button></div>
+    <button class="co-lien" style="margin-top:12px" onclick="coachFermerCombine()">Annuler</button>`;
+  $('co-feuille').classList.add('on');
+}
+async function coachDeclarerHierOk(ok){
+  coachFermerCombine();
   const d = new Date(); d.setDate(d.getDate() - 1);
-  const ok = confirm('Hier, tu as suivi la sélection ?');
   const { data } = await coachAppel({ action:'declarer', pour: jourLocal(d), suivi: ok });
   if(data?.ok){ await coachInit(true); coToast('Noté.'); }
 }
