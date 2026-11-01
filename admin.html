@@ -344,6 +344,29 @@ h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-b
 .co-suivi{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}.co-suivi td,.co-suivi th{padding:6px 4px;border-bottom:1px solid var(--ligne);text-align:left}.co-suivi th{color:var(--sourdine);font-weight:600;font-size:11px}
 .co-suivi .g{color:var(--aura1)}.co-suivi .p{color:#ff7a9e}
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+/* coach 90' (02/11) */
+.co-onglets{display:flex;gap:6px;margin:0 0 12px;overflow-x:auto}
+.co-onglets button{flex:0 0 auto;padding:8px 13px;border-radius:99px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:700 12.5px inherit;cursor:pointer}
+.co-onglets button.on{background:var(--aura1);color:#06110E;border-color:var(--aura1)}
+.co-pers .t .co-bdg,.co-bdg{display:inline-block;width:auto;font:800 10px 'JetBrains Mono',monospace;padding:2px 6px;border-radius:99px;margin-right:4px;vertical-align:1px;background:var(--surface2);color:var(--sourdine)}
+.co-pers .t .co-bdg.pro{background:var(--aura1);color:#06110E;font-size:10px;margin-top:0}
+.co-pers .t .co-bdg.al{background:#ff7a9e;color:#2a0710;font-size:10px;margin-top:0}
+.co-pers .t .co-bdg.pu{background:rgba(91,168,245,.18);color:#8cc1ff;font-size:10px;margin-top:0}
+.co-bdg.pro{background:var(--aura1);color:#06110E}.co-bdg.al{background:#ff7a9e;color:#2a0710}.co-bdg.pu{background:rgba(91,168,245,.18);color:#8cc1ff}
+.co-alerte-adm{background:rgba(255,122,158,.12);border:1px solid rgba(255,122,158,.45);border-radius:var(--r);padding:11px 13px;font-size:12.5px;line-height:1.5;margin-bottom:12px}
+.co-alerte-adm b{color:#ff9db6}
+.co-auj-adm{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:10px 13px;margin-bottom:10px;font-size:12.5px}
+.co-auj-adm div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--ligne)}.co-auj-adm div:last-child{border-bottom:none}
+.co-auj-adm em{font-style:normal;color:var(--aura1)}
+.mb-m.equipe{align-self:flex-end;background:rgba(139,124,255,.18);border:1px solid rgba(139,124,255,.5)}
+.co-rep{padding:12px 0 4px;display:flex;gap:8px;align-items:flex-end}
+.co-rep textarea{flex:1;min-height:44px;max-height:140px;resize:vertical;background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:10px 12px;color:var(--texte);font:13.5px/1.4 inherit}
+.co-rep button{padding:12px 14px;border-radius:12px;border:none;background:var(--aura1);color:#06110E;font-weight:800;cursor:pointer}
+.co-rep button:disabled{opacity:.5}
+.re-l{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:11px 13px;margin-bottom:8px;font-size:12.5px;line-height:1.5}
+.re-l b{display:block;font-size:13.5px}.re-l .st{font:800 10.5px 'JetBrains Mono',monospace;padding:2px 7px;border-radius:99px}
+.re-l .st.a_traiter{background:#FFB454;color:#2a1a00}.re-l .st.faite{background:var(--aura1);color:#06110E}.re-l .st.reprise{background:var(--surface2);color:var(--sourdine)}
+.re-l button{margin-top:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--aura1);background:none;color:var(--aura1);font-weight:800;cursor:pointer}
 .mb-qui{flex:1;min-width:0}
 .mb-qui .n{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mb-qui .m{font-size:11px;color:var(--sourdine);margin-top:2px}
@@ -795,7 +818,8 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
         <button class="lk" onclick="dtOuvrir('revenus')"><span class="ic">💶</span><span class="t"><b>Revenus &amp; paiements</b><span>Par jour, par mois, moyens</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('actifs')"><span class="ic">⚡</span><span class="t"><b>Activité</b><span>Actifs, inactifs à relancer</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('push')"><span class="ic">🔔</span><span class="t"><b>Abonnés push</b><span>Appareils notifiables</span></span><span class="fl">›</span></button>
-        <button class="lk" onclick="coAdmOuvrir()"><span class="ic">🎯</span><span class="t"><b>Coach 90'</b><span>Discussions, plans et suivi de chaque personne</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="coAdmOuvrir()"><span class="ic">🎯</span><span class="t"><b>Coach 90'</b><span>Discussions en cours, plans, suivi, répondre</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="reOuvrir()"><span class="ic">✋</span><span class="t"><b>Résiliations</b><span>Demandes d'arrêt du renouvellement (carte)</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="slOuvrir('sources')"><span class="ic">📈</span><span class="t"><b>Liens &amp; réseaux</b><span>TikTok, YouTube, Insta, mails de relance</span></span><span class="fl">›</span></button>
       </div>
       <div class="pg-lab">Affiliés</div>
@@ -854,6 +878,11 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
   <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre">Montantes</div></div>
   <div class="pv-cats" id="mt-types"></div>
   <div id="mt-corps"><div class="vide">Chargement…</div></div>
+</div></div>
+
+<div id="re-ecran" class="ecran"><div class="ec-boite">
+  <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre">Résiliations</div><button class="pg-btn" onclick="reCharger()">↻</button></div>
+  <div class="ec-corps" id="re-corps"><div class="vide">Chargement…</div></div>
 </div></div>
 
 <div id="co-ecran" class="ecran"><div class="ec-boite" id="co-boite">
@@ -2152,6 +2181,7 @@ async function afCharger(){
 }
 function afResume(){
   if(!AF) return;
+  AF.demandes = AF.demandes || []; AF.retraits = AF.retraits || []; AF.partenaires = AF.partenaires || [];
   const d = AF.demandes.filter(x => x.statut === 'en_attente').length, r = AF.retraits.filter(x => x.statut === 'demande');
   const somme = r.reduce((a, x) => a + x.montant, 0);
   if($('af-badge')) $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
@@ -2726,7 +2756,7 @@ function onglet(k){
 }
 function majBadges(){
   const mt = MB_CONVS.filter(c => c.a_traiter).length, nl = MB_CONVS.filter(c => c.non_lu_admin > 0).length;
-  const nAf = AF ? AF.demandes.filter(x => x.statut === 'en_attente').length + AF.retraits.filter(x => x.statut === 'demande').length : 0;
+  const nAf = AF ? (AF.demandes||[]).filter(x => x.statut === 'en_attente').length + (AF.retraits||[]).filter(x => x.statut === 'demande').length : 0;
   document.querySelectorAll('.nb-msg').forEach(e => e.textContent = (mt || nl) || '');
   document.querySelectorAll('.nb-aff').forEach(e => e.textContent = nAf || '');
 }
@@ -2759,61 +2789,119 @@ const CO_FAM = { lecture:'Lecture', prudent:'Prudent', cote2:'Cote 2', series:'S
 const CO_JOURS = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
 const coJours = j => Array.isArray(j) ? (j.length === 7 ? 'tous les jours' : j.map(x => CO_JOURS[x] || x).join(' ')) : '';
 const coMontant = (v, dev) => v == null ? '' : (Number(v) % 1 ? Number(v).toFixed(2) : Number(v)) + ' ' + (dev === 'XOF' ? 'F CFA' : (dev || ''));
+let CO_ONGLET = 'cours';
+const CO_LG = { fr:'🇫🇷 FR', en:'🇬🇧 EN', ar:'AR', es:'🇪🇸 ES' };
 async function coAdmListe(force){
   CO_DET = null; $('co-titre').textContent = 'Coach 90\'';
   const c = $('co-corps');
   if(!CO_LISTE || force){ c.innerHTML = '<div class="vide">Chargement…</div>';
     try{ CO_LISTE = await coachAdm({ action:'admin_liste' }); }
     catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fonction « coach » déployée ? ton email dans ADMIN_EMAILS ?)</div>`; return; } }
-  const L = CO_LISTE.liste || [], q = CO_LISTE.quota || 100;
-  const auj = L.filter(x => x.aujourdhui > 0).length, msgAuj = L.reduce((a, x) => a + (x.aujourdhui || 0), 0), pause = L.filter(x => x.pause && x.pause >= new Date().toLocaleDateString('sv-SE')).length;
-  c.innerHTML = `<div class="sl-kpi"><div><b>${L.length}</b><span>Personnes</span></div><div><b>${auj}</b><span>Actives aujourd'hui</span></div><div><b>${msgAuj}</b><span>Messages du jour</span></div></div>
-    <div class="pg-sous" style="margin:0 0 12px">Dernière discussion en tête · ${pause} en pause · quota ${q} messages / jour / personne</div>
-    ${L.length ? L.map((x, i) => `<div class="co-pers" onclick="coAdmDetail('${slE(x.user_id)}')">
+  const L = CO_LISTE.liste || [], q = CO_LISTE.quota || 100, auj = new Date().toLocaleDateString('sv-SE');
+  const sept = Date.now() - 7 * 864e5;
+  const enCours = x => x.alerte || (x.dernier_le && Date.parse(x.dernier_le) > sept && x.messages > 0);
+  const nb = { cours: L.filter(enCours).length, plans: L.filter(x => x.plan).length, alerte: L.filter(x => x.alerte).length, tous: L.length };
+  const vue = CO_ONGLET === 'cours' ? L.filter(enCours) : CO_ONGLET === 'plans' ? L.filter(x => x.plan) : CO_ONGLET === 'alerte' ? L.filter(x => x.alerte) : L;
+  const msgAuj = L.reduce((a, x) => a + (x.aujourdhui || 0), 0);
+  c.innerHTML = `<div class="sl-kpi"><div><b>${nb.plans}</b><span>Plans créés</span></div><div><b>${L.filter(x => x.plan && x.pro).length}</b><span>PRO avec un plan</span></div><div><b>${L.filter(x => x.push).length}</b><span>Notifs activées</span></div></div>
+    <div class="sl-kpi"><div><b>${nb.cours}</b><span>Discussions (7 j)</span></div><div><b>${msgAuj}</b><span>Messages aujourd'hui</span></div><div><b style="color:${nb.alerte ? '#ff7a9e' : 'inherit'}">${nb.alerte}</b><span>À surveiller</span></div></div>
+    <div class="co-onglets">${[['cours', 'En cours'], ['alerte', 'À surveiller'], ['plans', 'Plans'], ['tous', 'Tous']].map(([k, t]) => `<button class="${CO_ONGLET === k ? 'on' : ''}" onclick="CO_ONGLET='${k}';coAdmListe()">${t} · ${nb[k]}</button>`).join('')}</div>
+    <div class="pg-sous" style="margin:0 0 12px">${CO_ONGLET === 'cours' ? 'Personnes qui ont écrit au coach ces 7 derniers jours, ou à surveiller.' : CO_ONGLET === 'alerte' ? 'Messages de détresse ou envie de « se refaire » ces 7 derniers jours : ouvre et réponds toi-même si besoin.' : CO_ONGLET === 'plans' ? 'Toutes les personnes qui ont un plan actif.' : 'Tout le monde, dernière activité en tête.'} Quota : ${q} messages / jour / personne.</div>
+    ${vue.length ? vue.map(x => `<div class="co-pers" onclick="coAdmDetail('${slE(x.user_id)}')">
         <div class="av">${slE((x.email || '?')[0].toUpperCase())}</div>
-        <div class="t"><b>${slE(x.email || x.user_id.slice(0, 8) + '…')}</b>
-          <span>${x.plan ? slE(x.plan.nom || CO_FAM[x.plan.famille] || x.plan.famille) + (x.plan.unite ? ' · part ' + slE(coMontant(x.plan.unite, x.devise)) : '') : 'pas de plan'}${x.pays ? ' · ' + slE(x.pays) : ''}${x.plateforme ? ' · ' + slE(x.plateforme) : ''}</span>
-          <em>${x.dernier ? slE(x.dernier) : 'Aucun message pour l\'instant'}</em></div>
+        <div class="t"><b>${x.alerte ? '<span class="co-bdg al">⚠ ' + slE(x.alerte) + '</span>' : ''}${x.pro ? '<span class="co-bdg pro">PRO</span>' : ''}${x.push ? '<span class="co-bdg pu">🔔</span>' : ''}${slE(x.email || x.user_id.slice(0, 8) + '…')}</b>
+          <span>${x.plan ? slE(x.plan.nom || CO_FAM[x.plan.famille] || x.plan.famille) + (x.plan.unite ? ' · part ' + slE(coMontant(x.plan.unite, x.devise)) : '') : 'pas de plan'}${x.pays ? ' · ' + slE(x.pays) : ''}${x.langue ? ' · ' + (CO_LG[x.langue] || x.langue) : ''}${x.rappel ? ' · rappel ' + slE(x.rappel) : ''}</span>
+          <em>${x.dernier ? (x.dernier_role === 'user' ? 'Lui : ' : x.dernier_role === 'equipe' ? 'Toi : ' : 'Coach : ') + slE(x.dernier) : 'Aucun message pour l\'instant'}</em></div>
         <div class="d"><b>${x.messages} msg</b>${x.aujourdhui ? x.aujourdhui + ' / ' + q + ' auj.' : ''}<br>${slE(coQuand(x.dernier_le))}</div></div>`).join('')
-      : '<div class="vide">Personne n\'a encore créé de plan avec le coach.</div>'}`;
+      : '<div class="vide">Personne dans cette liste.</div>'}`;
 }
 async function coAdmDetail(id){
   CO_DET = id; const c = $('co-corps'); c.innerHTML = '<div class="vide">Chargement…</div>';
   let d; try{ d = await coachAdm({ action:'admin_conversation', user_id: id }); }
   catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}</div>`; return; }
   $('co-titre').textContent = d.email || 'Discussion';
-  const p = d.profil || {}, pl = (d.plans || [])[0], dev = p.devise || (pl && pl.devise) || '';
+  const p = d.profil || {}, pl = (d.plans || [])[0], pp = pl ? (pl.params || pl) : {}, dev = p.devise || pp.devise || '';
   const pro = d.fin_pro && new Date(d.fin_pro) > new Date();
   const credAuj = (d.credits || []).find(x => x.jour === new Date().toLocaleDateString('sv-SE'));
   const lig = (k, v) => `<div class="fu-l"><span>${k}</span><b>${v}</b></div>`;
   const suivi = (d.suivi || []).filter(x => x.suivi != null || (x.resultat && x.resultat !== 'sans')).slice(0, 20);
   const res = r => r === 'gagne' ? '<span class="g">validée</span>' : r === 'perdu' ? '<span class="p">perdue</span>' : r === 'en_cours' ? 'en cours' : r === 'sans' ? '—' : (r || '');
   const msgs = d.messages || [];
+  const liste = (CO_LISTE && CO_LISTE.liste || []).find(x => x.user_id === id) || {};
+  const a = d.aujourdhui;
   c.innerHTML = `<div class="fu-tete"><div class="fu-av">${slE((d.email || '?')[0].toUpperCase())}</div><div><b>${slE(d.email || id)}</b>
       <span class="fu-badge ${pro ? 'ok' : ''}">${pro ? 'PRO jusqu\'au ' + new Date(d.fin_pro).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : 'Sans abonnement'}</span></div></div>
-    ${lig('Pays · monnaie', slE([p.pays, dev].filter(Boolean).join(' · ') || '—'))}
+    ${liste.alerte ? `<div class="co-alerte-adm"><b>⚠ À surveiller : ${slE(liste.alerte)}.</b> Le coach a répondu avec le message de protection (pause proposée, aide du pays). Lis la discussion et, si besoin, réponds toi-même en bas : ta réponse arrive signée « Équipe AURA90 » avec une notification.</div>` : ''}
+    <div class="pg-lab">Aujourd'hui</div>
+    ${a ? `<div class="co-auj-adm">${(a.items || []).map(x => `<div><span>${slE(x.dom)} – ${slE(x.ext)}<br><em>${slE(x.selection)}</em>${x.heure ? ' · ' + slE(x.heure) : ''}</span><b>${x.cote ?? ''}</b></div>`).join('')}
+        <div><span>Cote totale ${a.cote ?? '—'} · indice ${a.indice ?? '—'} %</span><b>${a.suivi === true ? 'placée ✓' : a.suivi === false ? 'pas placée' : 'pas encore déclarée'}</b></div></div>` : '<div class="pg-sous" style="margin:0 0 12px">Pas de sélection aujourd\'hui (repos, pause ou pas encore ouvert).</div>'}
+    <div class="pg-lab">Profil</div>
+    ${lig('Pays · monnaie · langue', slE([p.pays, dev, p.langue].filter(Boolean).join(' · ') || '—'))}
+    ${lig('Fuseau horaire', slE(p.fuseau || '—'))}
     ${lig('Objectif', slE(p.objectif || '—'))}
     ${lig('Plateforme', slE(p.plateforme || 'non indiquée'))}
     ${lig('Budget du mois', p.budget_mois ? slE(coMontant(p.budget_mois, dev)) : 'non dit')}
+    ${lig('Rappel du matin', slE(p.rappel_heure || 'aucun'))}
+    ${lig('Notifications', d.appareils_push ? d.appareils_push + ' appareil' + (d.appareils_push > 1 ? 's' : '') : '<span style="color:#ff7a9e">pas activées</span>')}
+    ${lig('Pause', slE(p.pause_jusqua ? 'jusqu\'au ' + p.pause_jusqua : 'non'))}
     ${lig('Règles acceptées', d.acceptation ? 'oui · ' + slE(coHeure(d.acceptation.accepte_le)) : 'pas encore')}
     ${lig('Messages aujourd\'hui', (credAuj ? credAuj.utilises : 0) + ' / ' + (d.quota || 100))}
-    ${lig('Rappel · pause', slE((p.rappel_heure || 'aucun rappel') + (p.pause_jusqua ? ' · en pause jusqu\'au ' + p.pause_jusqua : '')))}
-    <div class="ligne-btn" style="margin:10px 0 16px"><button class="gris" onclick="ficheUser('${slE(id)}')">Fiche utilisateur ›</button></div>
+    <div class="ligne-btn" style="margin:10px 0 6px"><button class="gris" onclick="ficheUser('${slE(id)}')">Fiche utilisateur ›</button></div>
     <div class="pg-lab">Plan actif</div>
-    ${pl ? `<div class="co-plan"><b class="n">${slE(pl.nom || CO_FAM[pl.famille] || pl.famille)}${pl.actif === false ? ' <small style="color:var(--sourdine)">(terminé)</small>' : ''}</b>
-        ${pl.cote_min ? 'cote ' + pl.cote_min + ' à ' + pl.cote_max + ' · ' : ''}${pl.legs_max ? 'jusqu\'à ' + pl.legs_max + ' matchs · ' : ''}${slE(coJours(pl.jours))}${pl.unite ? ' · part ' + slE(coMontant(pl.unite, dev)) : ''}${pl.objectif_jours ? ' · objectif ' + pl.objectif_jours + ' jours' : ''}<br>
+    ${pl ? `<div class="co-plan"><b class="n">${slE(pp.nom || CO_FAM[pl.famille] || pl.famille)}${pl.actif === false ? ' <small style="color:var(--sourdine)">(terminé)</small>' : ''}</b>
+        ${pp.cote_min ? 'cote ' + pp.cote_min + ' à ' + pp.cote_max + ' · ' : ''}${pp.legs_max ? 'jusqu\'à ' + pp.legs_max + ' matchs · ' : ''}${slE(coJours(pp.jours))}${pp.unite ? ' · part ' + slE(coMontant(pp.unite, dev)) : ''}${pp.objectif_jours ? ' · objectif ' + pp.objectif_jours + ' jours' : ''}<br>
         <span style="color:var(--sourdine)">créé le ${slE(coHeure(pl.cree_le))}${(d.plans || []).length > 1 ? ' · ' + ((d.plans || []).length - 1) + ' plan(s) avant' : ''}</span>
-        ${Array.isArray(pl.regles) && pl.regles.length ? '<ul>' + pl.regles.map(r => '<li>' + slE(r) + '</li>').join('') + '</ul>' : ''}</div>` : '<div class="vide">Pas de plan.</div>'}
+        ${Array.isArray(pp.regles) && pp.regles.length ? '<ul>' + pp.regles.map(r => '<li>' + slE(r) + '</li>').join('') + '</ul>' : ''}</div>` : '<div class="vide">Pas de plan.</div>'}
     <div class="pg-lab">Suivi déclaré</div>
     ${suivi.length ? `<table class="co-suivi"><tr><th>Jour</th><th>Suivi</th><th>Montant</th><th>Sélection</th><th>Résultat</th></tr>
       ${suivi.map(x => `<tr><td>${x.jour.slice(5).split('-').reverse().join('/')}</td><td>${x.suivi === true ? 'oui' : x.suivi === false ? 'non' : '—'}</td><td>${x.mise != null ? slE(coMontant(x.mise, dev)) : '—'}</td><td>${x.selection && !x.selection.vide ? x.selection.nb + ' match' + (x.selection.nb > 1 ? 's' : '') + ' · ' + (x.selection.cote || '') : '—'}</td><td>${res(x.resultat)}</td></tr>`).join('')}</table>`
       : '<div class="pg-sous" style="margin:0 0 14px">Rien de déclaré pour l\'instant.</div>'}
     <div class="pg-lab">Discussion <span>${msgs.length} message${msgs.length > 1 ? 's' : ''}</span></div>
-    ${msgs.length ? `<div class="co-fil">${msgs.map(m => `<div class="mb-m ${m.role === 'user' ? 'user' : 'ia'}${m.filtre ? ' filtre' : ''}">${slE(m.texte)}<span class="tk">${m.role === 'user' ? 'Lui' : 'Coach'} · ${slE(coHeure(m.cree_le))}${m.filtre ? ' · réponse reformulée (mot interdit)' : ''}</span></div>`).join('')}</div>`
-      : '<div class="vide">Aucun message : la personne n\'a pas encore écrit au coach.</div>'}
-    <div class="ligne-btn" style="margin:0 0 20px"><button class="gris" onclick="coAdmListe()">‹ Toutes les personnes</button></div>`;
+    <div class="co-fil" id="co-fil-adm">${msgs.length ? msgs.map(coAdmBulle).join('') : '<div class="vide">Aucun message : la personne n\'a pas encore écrit au coach.</div>'}</div>
+    <div class="co-rep"><textarea id="co-rep-txt" placeholder="Répondre en tant qu'équipe AURA90 (la personne reçoit une notification)…" maxlength="2000"></textarea><button id="co-rep-btn" onclick="coAdmRepondre('${slE(id)}')">Envoyer</button></div>
+    <div class="ligne-btn" style="margin:12px 0 20px"><button class="gris" onclick="coAdmListe()">‹ Toutes les personnes</button></div>`;
   $('co-corps').scrollTop = 0;
 }
+function coAdmBulle(m){
+  const cl = m.role === 'user' ? 'user' : m.role === 'equipe' ? 'equipe' : 'ia';
+  const qui = m.role === 'user' ? 'Lui' : m.role === 'equipe' ? 'Toi (équipe)' : 'Coach';
+  return `<div class="mb-m ${cl}${m.filtre ? ' filtre' : ''}">${slE(m.texte)}<span class="tk">${qui} · ${slE(coHeure(m.cree_le))}${m.filtre ? ' · réponse reformulée (mot interdit)' : ''}</span></div>`;
+}
+async function coAdmRepondre(id){
+  const z = $('co-rep-txt'), t = (z.value || '').trim(); if(!t) return;
+  const b = $('co-rep-btn'); b.disabled = true; b.textContent = '…';
+  try{
+    const d = await coachAdm({ action:'admin_repondre', user_id: id, texte: t });
+    const f = $('co-fil-adm'); if(f.querySelector('.vide')) f.innerHTML = '';
+    f.insertAdjacentHTML('beforeend', coAdmBulle({ role:'equipe', texte:t, cree_le: d.cree_le || new Date().toISOString() }));
+    z.value = ''; toast(d.appareils ? 'Envoyé · notifié sur ' + d.appareils + ' appareil' + (d.appareils > 1 ? 's' : '') : 'Envoyé (notifications pas activées : il le verra en ouvrant son coach)');
+    if(CO_LISTE) CO_LISTE = null;
+  }catch(e){ toast('Erreur : ' + e.message); }
+  b.disabled = false; b.textContent = 'Envoyer';
+}
+
+function toast(m){ let t = document.getElementById('adm-toast'); if(!t){ t = document.createElement('div'); t.id = 'adm-toast'; t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#111a26;color:#fff;border:1px solid rgba(255,255,255,.15);padding:11px 16px;border-radius:12px;font:600 13px system-ui;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
+  t.textContent = m; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = '0', 3200); }
+/* ================= RÉSILIATIONS (fonction « abonnement ») ================= */
+async function aboAdm(corps, encore){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/abonnement', { method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON }, body: JSON.stringify(corps) });
+  if(r.status === 401 && !encore && await rafraichirJeton()) return aboAdm(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.erreur || ('HTTP ' + r.status));
+  return d;
+}
+function reOuvrir(){ $('re-ecran').classList.add('ouvert'); history.pushState({ re: 1 }, ''); reCharger(); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.re) && $('re-ecran').classList.contains('ouvert')) $('re-ecran').classList.remove('ouvert'); });
+async function reCharger(){
+  const c = $('re-corps'); c.innerHTML = '<div class="vide">Chargement…</div>';
+  let d; try{ d = await aboAdm({ action:'admin_liste' }); }catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fonction « abonnement » déployée ?)</div>`; return; }
+  const L = d.liste || [], at = L.filter(x => x.statut === 'a_traiter');
+  c.innerHTML = `<div class="pg-sous" style="margin:0 0 12px">Chaque résiliation faite dans l'app. <b>« faite »</b> = Whop a confirmé tout seul, rien à faire. <b>« à traiter »</b> = Whop n'a pas répondu : va dans Whop → Members → la personne → <i>Cancel at period end</i>, puis touche « C'est fait dans Whop ».</div>
+    ${at.length ? `<div class="co-alerte-adm"><b>${at.length} à traiter dans Whop.</b></div>` : ''}
+    ${L.length ? L.map(x => `<div class="re-l"><b>${slE(x.email || x.user_id)}</b><span class="st ${x.statut}">${x.statut === 'a_traiter' ? 'à traiter' : x.statut === 'reprise' ? 'annulée par la personne' : 'faite'}</span> · ${slE(new Date(x.demande_le).toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }))}${x.membership_id ? ' · ' + slE(x.membership_id) : ''}${x.detail ? '<br><span style="color:var(--sourdine)">' + slE(x.detail) + '</span>' : ''}
+      ${x.statut === 'a_traiter' ? `<br><button onclick="reTraiter(${+x.id})">C'est fait dans Whop</button>` : ''}</div>`).join('') : '<div class="vide">Aucune résiliation pour l\'instant.</div>'}`;
+}
+async function reTraiter(id){ try{ await aboAdm({ action:'admin_traiter', id }); toast('Noté'); reCharger(); }catch(e){ toast('Erreur : ' + e.message); } }
 
 /* ================= ÉCRANS : fond figé, barre du bas cachée pendant la saisie ================= */
 function ecranAjuster(){
