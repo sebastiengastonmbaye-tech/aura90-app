@@ -5360,7 +5360,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-01-1';
+const APP_VERSION = '2026-11-01-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -6041,14 +6041,14 @@ function coProchainJour(p){
 function coachBlocReglages(e){
   const r = e.profil?.rappel_heure;
   const rl = { matin:'le matin', apres_midi:'l\'après-midi', avant:'avant les matchs' }[r] || 'désactivé';
-  return `<div class="co-reg" id="co-reg">
+  return `<div id="co-reg"><div class="co-reg">
     <button onclick="coachQuiz()">✎ <span>Refaire mes réponses</span></button>
     <button onclick="coachRappel()">🔔 <span>Rappel : ${rl}</span></button>
     <button onclick="coachPlateforme()">▦ <span>${e.profil?.plateforme ? 'Plateforme : ' + coEchap(e.profil.plateforme) : 'Ma plateforme'}</span></button>
     <button onclick="${e.pause ? 'coachPause(0)' : 'coachPause(7)'}">⏸ <span>${e.pause ? 'Reprendre' : 'Pause 7 jours'}</span></button>
     <button class="danger" onclick="coachEffacer()">🗑 <span>Effacer mon suivi</span></button>
   </div>
-  <div class="co-sous" style="margin-top:14px;font-size:11.5px">Le coach aide à tenir une méthode. Il ne garantit aucun résultat et ne décide jamais d'un montant. Réservé aux 18 ans et plus. Besoin d'une pause ? Elle est à un tap, au-dessus.</div>`;
+  <div class="co-sous" style="margin-top:14px;font-size:11.5px">Le coach aide à tenir une méthode. Il ne garantit aucun résultat et ne décide jamais à ta place. Réservé aux 18 ans et plus. Besoin d'une pause ? Elle est à un tap, au-dessus.</div></div>`;
 }
 
 /* ---- actions PRO ---- */
@@ -6207,7 +6207,8 @@ function coachAfficherProps(d){
   const z = $('co-props'); if(!z) return;
   if(d.refuse) z.innerHTML = `<div class="co-alerte">Au-dessus de ${d.cote_max}, le coach ne construit pas : à ce niveau l'indice de réussite tombe sous 5 %, ce n'est plus une sélection, c'est un ticket de loterie. Il a construit au maximum autorisé.</div>`; else z.innerHTML = '';
   if(d.vide){ z.insertAdjacentHTML('beforeend', `<div class="co-alerte">${coEchap(d.raison || 'Rien à proposer.')}</div>`); return; }
-  if(d.approche) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Avec les ${d.nb_matchs} matchs à venir sur cette période, le moteur n'atteint pas ${coCote(d.cible)} : voici le combiné le plus proche. Pour aller plus haut, passe sur 2 ou 3 jours.</div>`);
+  if(d.approche === 'dessous' || d.approche === true) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Avec les ${d.nb_matchs} matchs à venir sur cette période, le moteur n'atteint pas ${coCote(d.cible)} : voici le combiné le plus proche.${d.periode === '3j' ? '' : ' Pour aller plus haut, passe sur ' + (d.periode === 'auj' ? '2 ou 3 jours' : '3 jours') + '.'}</div>`);
+  else if(d.approche === 'dessus') z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Pas de combiné exactement à ${coCote(d.cible)} avec les matchs à venir : voici le plus proche, un peu au-dessus.</div>`);
   else if(d.elargi) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Pas de combiné exactement à ${coCote(d.cible)} avec les matchs à venir : le moteur a construit au plus près.</div>`);
   if(d.plateforme) z.insertAdjacentHTML('beforeend', `<div class="co-note" style="margin-top:8px">Cotes estimées pour ${coEchap(d.plateforme)} : elles peuvent être un peu différentes au moment où tu regardes.</div>`);
   if(d.hors_plan) z.insertAdjacentHTML('beforeend', `<div class="co-alerte">Cette cote sort de ton plan. Le coach construit quand même, mais ce combiné ne compte pas dans ton suivi, et ta part reste la même.</div>`);

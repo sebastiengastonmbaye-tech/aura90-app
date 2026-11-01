@@ -183,7 +183,7 @@ body:not(.co) .adm-nav,html.nav-cachee .adm-nav{display:none}
 .ec-fleche{background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);width:36px;height:36px;border-radius:11px;font-size:22px;line-height:1;padding:0 0 3px;flex:0 0 auto}
 .ec-corps{flex:1;overflow-y:auto;padding:14px 14px calc(40px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 /* compat anciens identifiants */
-#mb-ecran{z-index:60}#dt-ecran{z-index:61}#pv-ecran{z-index:62}#mt-ecran,#hj-ecran{z-index:63}#pa-ecran,#pr-ecran{z-index:64}#sl-voile{z-index:70}
+#mb-ecran{z-index:60}#dt-ecran{z-index:61}#pv-ecran{z-index:62}#mt-ecran,#hj-ecran,#co-ecran{z-index:63}#pa-ecran,#pr-ecran{z-index:64}#sl-voile{z-index:70}
 .mb-vue{width:100%;height:100%;display:none;flex-direction:column;min-height:0}
 .mb-vue.active{display:flex}
 .mb-barre{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--ligne);background:var(--surface);flex:0 0 auto}
@@ -328,6 +328,18 @@ h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-b
 .mb-m.admin .tk.lu{color:#0B4FD6}
 .mb-m.user{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne)}
 .mb-m.ia{align-self:flex-end;background:rgba(61,232,200,.12);border:1px solid rgba(61,232,200,.35)}
+.co-pers{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:12px 13px;margin-bottom:8px;cursor:pointer}
+.co-pers .av{flex:0 0 38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.co-pers .t{flex:1;min-width:0}.co-pers .t b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .t span{display:block;font-size:12px;color:var(--sourdine);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .t em{display:block;font-style:normal;font-size:12px;color:var(--texte);opacity:.85;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .d{font-size:11px;color:var(--sourdine);text-align:right;white-space:nowrap}.co-pers .d b{display:block;color:var(--aura1);font-size:12px}
+.co-plan{background:var(--surface);border:1px solid rgba(61,232,200,.35);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;font-size:12.5px;line-height:1.5}
+.co-plan b.n{display:block;font-size:14px;margin-bottom:4px}.co-plan ul{margin:6px 0 0;padding-left:16px;color:var(--sourdine)}
+.co-fil{display:flex;flex-direction:column;gap:8px;margin:6px 0 16px}.co-fil .mb-m .tk{display:block;font-size:10.5px;opacity:.6;margin-top:4px;font-family:inherit;letter-spacing:0}
+.co-fil .mb-m.filtre{border-color:#ff7a9e}
+.co-suivi{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}.co-suivi td,.co-suivi th{padding:6px 4px;border-bottom:1px solid var(--ligne);text-align:left}.co-suivi th{color:var(--sourdine);font-weight:600;font-size:11px}
+.co-suivi .g{color:var(--aura1)}.co-suivi .p{color:#ff7a9e}
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
 .mb-qui{flex:1;min-width:0}
 .mb-qui .n{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -780,6 +792,7 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
         <button class="lk" onclick="dtOuvrir('revenus')"><span class="ic">💶</span><span class="t"><b>Revenus &amp; paiements</b><span>Par jour, par mois, moyens</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('actifs')"><span class="ic">⚡</span><span class="t"><b>Activité</b><span>Actifs, inactifs à relancer</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('push')"><span class="ic">🔔</span><span class="t"><b>Abonnés push</b><span>Appareils notifiables</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="coAdmOuvrir()"><span class="ic">🎯</span><span class="t"><b>Coach 90'</b><span>Discussions, plans et suivi de chaque personne</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="slOuvrir('sources')"><span class="ic">📈</span><span class="t"><b>Liens &amp; réseaux</b><span>TikTok, YouTube, Insta, mails de relance</span></span><span class="fl">›</span></button>
       </div>
       <div class="pg-lab">Affiliés</div>
@@ -838,6 +851,11 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
   <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre">Montantes</div></div>
   <div class="pv-cats" id="mt-types"></div>
   <div id="mt-corps"><div class="vide">Chargement…</div></div>
+</div></div>
+
+<div id="co-ecran" class="ecran"><div class="ec-boite" id="co-boite">
+  <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre" id="co-titre">Coach 90'</div><button class="pg-btn" onclick="coAdmRafraichir()">↻</button></div>
+  <div class="ec-corps" id="co-corps"><div class="vide">Chargement…</div></div>
 </div></div>
 
 <div id="hj-ecran" class="ecran"><div class="ec-boite" id="hj-boite">
@@ -2612,6 +2630,7 @@ async function ficheUser(id){
     ${lig('VIP jusqu\'au', u.vip_jusqua ? jd(u.vip_jusqua) : '—')}
     ${lig('Total payé', mD(u.total_paye) + ' · ' + (u.paiements || []).length + ' paiement' + ((u.paiements || []).length > 1 ? 's' : ''))}
     ${lig('Dernière activité', u.vu_le ? jd(u.vu_le) : (u.derniere_connexion ? jd(u.derniere_connexion) : '—'))}
+    <div class="ligne-btn" style="margin:8px 0 4px"><button class="gris" onclick="ficheFermer();coAdmOuvrir('${slE(id)}')">Discussion avec le coach ›</button></div>
     ${u.pays || u.langue ? lig('Pays · langue', slE([u.pays, (u.langue || '').toUpperCase()].filter(Boolean).join(' · '))) : ''}
     ${(u.paiements || []).length ? `<div class="pg-lab" style="margin-top:16px">Paiements</div>` + u.paiements.map(x =>
         `<div class="sl-pers"><div><b>${mD(x.montant)}</b><span style="display:block">${slE(x.formule === '3mois' ? '3 mois' : '1 mois')} · ${slE(x.methode || '')}${x.code ? ' · code ' + slE(x.code) : ''}</span></div><span>${new Date(x.le).toLocaleDateString('fr-FR')}</span></div>`).join('') : ''}`;
@@ -2701,6 +2720,90 @@ function majBadges(){
   const nAf = AF ? AF.demandes.filter(x => x.statut === 'en_attente').length + AF.retraits.filter(x => x.statut === 'demande').length : 0;
   document.querySelectorAll('.nb-msg').forEach(e => e.textContent = (mt || nl) || '');
   document.querySelectorAll('.nb-aff').forEach(e => e.textContent = nAf || '');
+}
+
+/* ================= COACH 90' : discussions, plans et suivi (fonction « coach », actions admin) ================= */
+let CO_LISTE = null, CO_DET = null;
+async function coachAdm(corps, encore){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/coach', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
+    body: JSON.stringify({ jour: new Date().toLocaleDateString('sv-SE'), ...corps })
+  });
+  if(r.status === 401 && !encore && await rafraichirJeton()) return coachAdm(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.erreur || ('HTTP ' + r.status));
+  return d;
+}
+function coAdmOuvrir(userId){
+  $('co-ecran').classList.add('ouvert');
+  history.pushState({ co: 1 }, '');
+  if(userId) coAdmDetail(userId); else coAdmListe();
+}
+function coAdmFermer(){ $('co-ecran').classList.remove('ouvert'); CO_DET = null; }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.co) && $('co-ecran').classList.contains('ouvert')) coAdmFermer(); });
+function coAdmRafraichir(){ if(CO_DET) coAdmDetail(CO_DET); else coAdmListe(true); }
+const coQuand = d => { if(!d) return '—'; const t = new Date(d), m = Math.round((Date.now() - t) / 60000);
+  if(m < 1) return 'à l\'instant'; if(m < 60) return 'il y a ' + m + ' min'; if(m < 36 * 60) return 'il y a ' + Math.round(m / 60) + ' h';
+  return t.toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) + ' ' + t.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }); };
+const coHeure = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) + ' · ' + new Date(d).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) : '';
+const CO_FAM = { lecture:'Lecture', prudent:'Prudent', cote2:'Cote 2', series:'Séries', plaisir:'Plaisir', methode:'Méthode' };
+const CO_JOURS = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
+const coJours = j => Array.isArray(j) ? (j.length === 7 ? 'tous les jours' : j.map(x => CO_JOURS[x] || x).join(' ')) : '';
+const coMontant = (v, dev) => v == null ? '' : (Number(v) % 1 ? Number(v).toFixed(2) : Number(v)) + ' ' + (dev === 'XOF' ? 'F CFA' : (dev || ''));
+async function coAdmListe(force){
+  CO_DET = null; $('co-titre').textContent = 'Coach 90\'';
+  const c = $('co-corps');
+  if(!CO_LISTE || force){ c.innerHTML = '<div class="vide">Chargement…</div>';
+    try{ CO_LISTE = await coachAdm({ action:'admin_liste' }); }
+    catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fonction « coach » déployée ? ton email dans ADMIN_EMAILS ?)</div>`; return; } }
+  const L = CO_LISTE.liste || [], q = CO_LISTE.quota || 100;
+  const auj = L.filter(x => x.aujourdhui > 0).length, msgAuj = L.reduce((a, x) => a + (x.aujourdhui || 0), 0), pause = L.filter(x => x.pause && x.pause >= new Date().toLocaleDateString('sv-SE')).length;
+  c.innerHTML = `<div class="sl-kpi"><div><b>${L.length}</b><span>Personnes</span></div><div><b>${auj}</b><span>Actives aujourd'hui</span></div><div><b>${msgAuj}</b><span>Messages du jour</span></div></div>
+    <div class="pg-sous" style="margin:0 0 12px">Dernière discussion en tête · ${pause} en pause · quota ${q} messages / jour / personne</div>
+    ${L.length ? L.map((x, i) => `<div class="co-pers" onclick="coAdmDetail('${slE(x.user_id)}')">
+        <div class="av">${slE((x.email || '?')[0].toUpperCase())}</div>
+        <div class="t"><b>${slE(x.email || x.user_id.slice(0, 8) + '…')}</b>
+          <span>${x.plan ? slE(x.plan.nom || CO_FAM[x.plan.famille] || x.plan.famille) + (x.plan.unite ? ' · part ' + slE(coMontant(x.plan.unite, x.devise)) : '') : 'pas de plan'}${x.pays ? ' · ' + slE(x.pays) : ''}${x.plateforme ? ' · ' + slE(x.plateforme) : ''}</span>
+          <em>${x.dernier ? slE(x.dernier) : 'Aucun message pour l\'instant'}</em></div>
+        <div class="d"><b>${x.messages} msg</b>${x.aujourdhui ? x.aujourdhui + ' / ' + q + ' auj.' : ''}<br>${slE(coQuand(x.dernier_le))}</div></div>`).join('')
+      : '<div class="vide">Personne n\'a encore créé de plan avec le coach.</div>'}`;
+}
+async function coAdmDetail(id){
+  CO_DET = id; const c = $('co-corps'); c.innerHTML = '<div class="vide">Chargement…</div>';
+  let d; try{ d = await coachAdm({ action:'admin_conversation', user_id: id }); }
+  catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}</div>`; return; }
+  $('co-titre').textContent = d.email || 'Discussion';
+  const p = d.profil || {}, pl = (d.plans || [])[0], dev = p.devise || (pl && pl.devise) || '';
+  const pro = d.fin_pro && new Date(d.fin_pro) > new Date();
+  const credAuj = (d.credits || []).find(x => x.jour === new Date().toLocaleDateString('sv-SE'));
+  const lig = (k, v) => `<div class="fu-l"><span>${k}</span><b>${v}</b></div>`;
+  const suivi = (d.suivi || []).filter(x => x.suivi != null || (x.resultat && x.resultat !== 'sans')).slice(0, 20);
+  const res = r => r === 'gagne' ? '<span class="g">validée</span>' : r === 'perdu' ? '<span class="p">perdue</span>' : r === 'en_cours' ? 'en cours' : r === 'sans' ? '—' : (r || '');
+  const msgs = d.messages || [];
+  c.innerHTML = `<div class="fu-tete"><div class="fu-av">${slE((d.email || '?')[0].toUpperCase())}</div><div><b>${slE(d.email || id)}</b>
+      <span class="fu-badge ${pro ? 'ok' : ''}">${pro ? 'PRO jusqu\'au ' + new Date(d.fin_pro).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : 'Sans abonnement'}</span></div></div>
+    ${lig('Pays · monnaie', slE([p.pays, dev].filter(Boolean).join(' · ') || '—'))}
+    ${lig('Objectif', slE(p.objectif || '—'))}
+    ${lig('Plateforme', slE(p.plateforme || 'non indiquée'))}
+    ${lig('Budget du mois', p.budget_mois ? slE(coMontant(p.budget_mois, dev)) : 'non dit')}
+    ${lig('Règles acceptées', d.acceptation ? 'oui · ' + slE(coHeure(d.acceptation.accepte_le)) : 'pas encore')}
+    ${lig('Messages aujourd\'hui', (credAuj ? credAuj.utilises : 0) + ' / ' + (d.quota || 100))}
+    ${lig('Rappel · pause', slE((p.rappel_heure || 'aucun rappel') + (p.pause_jusqua ? ' · en pause jusqu\'au ' + p.pause_jusqua : '')))}
+    <div class="ligne-btn" style="margin:10px 0 16px"><button class="gris" onclick="ficheUser('${slE(id)}')">Fiche utilisateur ›</button></div>
+    <div class="pg-lab">Plan actif</div>
+    ${pl ? `<div class="co-plan"><b class="n">${slE(pl.nom || CO_FAM[pl.famille] || pl.famille)}${pl.actif === false ? ' <small style="color:var(--sourdine)">(terminé)</small>' : ''}</b>
+        ${pl.cote_min ? 'cote ' + pl.cote_min + ' à ' + pl.cote_max + ' · ' : ''}${pl.legs_max ? 'jusqu\'à ' + pl.legs_max + ' matchs · ' : ''}${slE(coJours(pl.jours))}${pl.unite ? ' · part ' + slE(coMontant(pl.unite, dev)) : ''}${pl.objectif_jours ? ' · objectif ' + pl.objectif_jours + ' jours' : ''}<br>
+        <span style="color:var(--sourdine)">créé le ${slE(coHeure(pl.cree_le))}${(d.plans || []).length > 1 ? ' · ' + ((d.plans || []).length - 1) + ' plan(s) avant' : ''}</span>
+        ${Array.isArray(pl.regles) && pl.regles.length ? '<ul>' + pl.regles.map(r => '<li>' + slE(r) + '</li>').join('') + '</ul>' : ''}</div>` : '<div class="vide">Pas de plan.</div>'}
+    <div class="pg-lab">Suivi déclaré</div>
+    ${suivi.length ? `<table class="co-suivi"><tr><th>Jour</th><th>Suivi</th><th>Montant</th><th>Sélection</th><th>Résultat</th></tr>
+      ${suivi.map(x => `<tr><td>${x.jour.slice(5).split('-').reverse().join('/')}</td><td>${x.suivi === true ? 'oui' : x.suivi === false ? 'non' : '—'}</td><td>${x.mise != null ? slE(coMontant(x.mise, dev)) : '—'}</td><td>${x.selection && !x.selection.vide ? x.selection.nb + ' match' + (x.selection.nb > 1 ? 's' : '') + ' · ' + (x.selection.cote || '') : '—'}</td><td>${res(x.resultat)}</td></tr>`).join('')}</table>`
+      : '<div class="pg-sous" style="margin:0 0 14px">Rien de déclaré pour l\'instant.</div>'}
+    <div class="pg-lab">Discussion <span>${msgs.length} message${msgs.length > 1 ? 's' : ''}</span></div>
+    ${msgs.length ? `<div class="co-fil">${msgs.map(m => `<div class="mb-m ${m.role === 'user' ? 'user' : 'ia'}${m.filtre ? ' filtre' : ''}">${slE(m.texte)}<span class="tk">${m.role === 'user' ? 'Lui' : 'Coach'} · ${slE(coHeure(m.cree_le))}${m.filtre ? ' · réponse reformulée (mot interdit)' : ''}</span></div>`).join('')}</div>`
+      : '<div class="vide">Aucun message : la personne n\'a pas encore écrit au coach.</div>'}
+    <div class="ligne-btn" style="margin:0 0 20px"><button class="gris" onclick="coAdmListe()">‹ Toutes les personnes</button></div>`;
+  $('co-corps').scrollTop = 0;
 }
 
 /* ================= ÉCRANS : fond figé, barre du bas cachée pendant la saisie ================= */
