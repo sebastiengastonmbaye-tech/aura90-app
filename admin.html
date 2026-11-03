@@ -983,6 +983,10 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
 <div id="fu-voile" onclick="if(event.target===this)ficheFermer()"><div class="fu-boite"><div class="haut"><button class="ec-fleche nu" onclick="ficheFermer()">‹</button><b>Fiche utilisateur</b></div><div id="fu-corps"></div></div></div>
 
 <script>
+// 03/11 : un lien d'invitation ouvert ici (ancien lien « /admin?invitation=… ») part tout de suite vers l'app
+(function(){ try{ const j = new URLSearchParams(location.search).get('invitation'); if(j) location.replace(location.origin + '/?invitation=' + encodeURIComponent(j)); }catch(e){} })();
+</script>
+<script>
 /* ===================================================================
    AURA90 · Administration — refonte du 31/10/2026
    Même serveur (Supabase : fonction « admin », « messagerie », RPC admin_*),
@@ -3509,7 +3513,8 @@ function caManque(c){
   if(!c.signature_info || !c.signature_info.pdf) m.push('PDF signé');
   return m;
 }
-const caLienInvit = j => location.origin + location.pathname.replace(/admin\.html.*$/, '') + '?invitation=' + j;
+// 03/11 : toujours la racine du site (Cloudflare sert l'admin à « /admin » sans « .html »)
+const caLienInvit = j => location.origin + '/?invitation=' + j;
 
 // ---------- onglet « Demandes »
 function afDemandes(){
