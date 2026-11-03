@@ -59,6 +59,11 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 /* ---------- coque ---------- */
 #panel{display:none}
 body.co #panel{display:block}
+/* 03/11 : sur iPhone, quand la page entière défile, Safari réduit sa barre et la barre du bas « remonte ».
+   Le panneau défile donc dans son propre cadre (comme l'app) : la page ne bouge plus, la barre reste collée en bas. */
+html,body{height:100%}
+body.co{overflow:hidden}
+body.co #panel{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
 .coque{display:flex;min-height:100vh}
 .side{display:none}
 .main{flex:1;min-width:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(var(--nav) + 24px + env(safe-area-inset-bottom,0px))}
@@ -183,7 +188,7 @@ body:not(.co) .adm-nav,html.nav-cachee .adm-nav{display:none}
 .ec-fleche{background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);width:36px;height:36px;border-radius:11px;font-size:22px;line-height:1;padding:0 0 3px;flex:0 0 auto}
 .ec-corps{flex:1;overflow-y:auto;padding:14px 14px calc(40px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 /* compat anciens identifiants */
-#mb-ecran{z-index:60}#dt-ecran{z-index:61}#pv-ecran{z-index:62}#mt-ecran,#hj-ecran{z-index:63}#pa-ecran,#pr-ecran{z-index:64}#sl-voile{z-index:70}
+#mb-ecran{z-index:60}#dt-ecran{z-index:61}#pv-ecran{z-index:62}#mt-ecran,#hj-ecran,#co-ecran{z-index:63}#pa-ecran,#pr-ecran{z-index:64}#sl-voile{z-index:70}
 .mb-vue{width:100%;height:100%;display:none;flex-direction:column;min-height:0}
 .mb-vue.active{display:flex}
 .mb-barre{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--ligne);background:var(--surface);flex:0 0 auto}
@@ -254,6 +259,9 @@ body:not(.co) .adm-nav,html.nav-cachee .adm-nav{display:none}
 
 /* ===== composants portés de l'ancien tableau de bord (preuves, montantes, historique, affiliés, messagerie, détails) ===== */
 a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;pointer-events:none!important;font:inherit!important}
+.sl-chips{display:flex;gap:6px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}.sl-chips::-webkit-scrollbar{display:none}
+.sl-chips button{flex:1 0 auto;padding:8px 12px;font:700 12px inherit;font-family:inherit;border-radius:99px;background:var(--surface);border:1px solid var(--ligne);color:var(--sourdine);white-space:nowrap;box-shadow:none;cursor:pointer;width:auto;margin:0}
+.sl-chips button.a{color:var(--texte);border-color:rgba(61,232,200,.55);background:rgba(61,232,200,.1)}
 .sl-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .sl-kpi div{background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:11px;text-align:center}
 .sl-kpi b{display:block;font:800 20px 'JetBrains Mono',monospace}
@@ -268,6 +276,12 @@ a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important
 .sl-t td{padding:10px 4px;border-top:1px solid var(--ligne);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px}
 .sl-t td:first-child{font-family:inherit;font-weight:800}
 .sl-t small{display:block;color:var(--sourdine);font-size:10px}
+.sl-gr{border:1px solid var(--ligne);border-radius:14px;background:var(--surface);margin:8px 0;overflow:hidden}
+.sl-grt{padding:9px 12px;font-weight:800;font-size:12.5px;background:var(--surface2)}
+.sl-ln{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--ligne)}
+.sl-ln .t{flex:1;min-width:0}.sl-ln .t b{display:block;font-size:13px}.sl-ln .t span{font-size:11.5px;color:var(--sourdine)}
+.sl-ln button{padding:7px 10px;font-size:11.5px}
+.sl-new{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sl-new select{flex:1 1 120px}.sl-new input{flex:2 1 180px;margin:0}
 .sl-lien{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ligne);border-radius:12px;margin:7px 0;background:var(--surface)}
 .sl-lien span{flex:1;min-width:0;font:12px 'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sl-lien button{padding:7px 11px;font-size:12px}
@@ -328,7 +342,42 @@ h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-b
 .mb-m.admin .tk.lu{color:#0B4FD6}
 .mb-m.user{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne)}
 .mb-m.ia{align-self:flex-end;background:rgba(61,232,200,.12);border:1px solid rgba(61,232,200,.35)}
+.co-pers{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:12px 13px;margin-bottom:8px;cursor:pointer}
+.co-pers .av{flex:0 0 38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.co-pers .t{flex:1;min-width:0}.co-pers .t b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .t span{display:block;font-size:12px;color:var(--sourdine);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .t em{display:block;font-style:normal;font-size:12px;color:var(--texte);opacity:.85;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-pers .d{font-size:11px;color:var(--sourdine);text-align:right;white-space:nowrap}.co-pers .d b{display:block;color:var(--aura1);font-size:12px}
+.co-plan{background:var(--surface);border:1px solid rgba(61,232,200,.35);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;font-size:12.5px;line-height:1.5}
+.co-plan b.n{display:block;font-size:14px;margin-bottom:4px}.co-plan ul{margin:6px 0 0;padding-left:16px;color:var(--sourdine)}
+.co-fil{display:flex;flex-direction:column;gap:8px;margin:6px 0 16px}.co-fil .mb-m .tk{display:block;font-size:10.5px;opacity:.6;margin-top:4px;font-family:inherit;letter-spacing:0}
+.co-fil .mb-m.filtre{border-color:#ff7a9e}
+.co-suivi{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}.co-suivi td,.co-suivi th{padding:6px 4px;border-bottom:1px solid var(--ligne);text-align:left}.co-suivi th{color:var(--sourdine);font-weight:600;font-size:11px}
+.co-suivi .g{color:var(--aura1)}.co-suivi .p{color:#ff7a9e}
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+/* coach 90' (02/11) */
+.co-onglets{display:flex;gap:6px;margin:0 0 12px;overflow-x:auto}
+.co-onglets button{flex:0 0 auto;padding:8px 13px;border-radius:99px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:700 12.5px inherit;cursor:pointer}
+.co-onglets button.on{background:var(--aura1);color:#06110E;border-color:var(--aura1)}
+.co-pers .t .co-bdg,.co-bdg{display:inline-block;width:auto;font:800 10px 'JetBrains Mono',monospace;padding:2px 6px;border-radius:99px;margin-right:4px;vertical-align:1px;background:var(--surface2);color:var(--sourdine)}
+.co-pers .t .co-bdg.pro{background:var(--aura1);color:#06110E;font-size:10px;margin-top:0}
+.co-pers .t .co-bdg.al{background:#ff7a9e;color:#2a0710;font-size:10px;margin-top:0}
+.co-pers .t .co-bdg.pu{background:rgba(91,168,245,.18);color:#8cc1ff;font-size:10px;margin-top:0}
+.co-bdg.pro{background:var(--aura1);color:#06110E}.co-bdg.al{background:#ff7a9e;color:#2a0710}.co-bdg.pu{background:rgba(91,168,245,.18);color:#8cc1ff}
+.co-alerte-adm{background:rgba(255,122,158,.12);border:1px solid rgba(255,122,158,.45);border-radius:var(--r);padding:11px 13px;font-size:12.5px;line-height:1.5;margin-bottom:12px}
+.co-alerte-adm b{color:#ff9db6}
+.co-auj-adm{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:10px 13px;margin-bottom:10px;font-size:12.5px}
+.co-auj-adm div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--ligne)}.co-auj-adm div:last-child{border-bottom:none}
+.co-auj-adm em{font-style:normal;color:var(--aura1)}
+.mb-m.equipe{align-self:flex-end;background:rgba(139,124,255,.18);border:1px solid rgba(139,124,255,.5)}
+.co-rep{padding:12px 0 4px;display:flex;gap:8px;align-items:flex-end}
+.co-rep textarea{flex:1;min-height:44px;max-height:140px;resize:vertical;background:var(--surface);border:1px solid var(--ligne);border-radius:12px;padding:10px 12px;color:var(--texte);font:13.5px/1.4 inherit}
+.co-rep button{padding:12px 14px;border-radius:12px;border:none;background:var(--aura1);color:#06110E;font-weight:800;cursor:pointer}
+.co-rep button:disabled{opacity:.5}
+.re-l{background:var(--surface);border:1px solid var(--ligne);border-radius:var(--r);padding:11px 13px;margin-bottom:8px;font-size:12.5px;line-height:1.5}
+.re-l b{display:block;font-size:13.5px}.re-l .st{font:800 10.5px 'JetBrains Mono',monospace;padding:2px 7px;border-radius:99px}
+.re-l .st.a_traiter{background:#FFB454;color:#2a1a00}.re-l .st.faite{background:var(--aura1);color:#06110E}.re-l .st.reprise{background:var(--surface2);color:var(--sourdine)}
+.re-l button{margin-top:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--aura1);background:none;color:var(--aura1);font-weight:800;cursor:pointer}
 .mb-qui{flex:1;min-width:0}
 .mb-qui .n{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mb-qui .m{font-size:11px;color:var(--sourdine);margin-top:2px}
@@ -780,6 +829,8 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
         <button class="lk" onclick="dtOuvrir('revenus')"><span class="ic">💶</span><span class="t"><b>Revenus &amp; paiements</b><span>Par jour, par mois, moyens</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('actifs')"><span class="ic">⚡</span><span class="t"><b>Activité</b><span>Actifs, inactifs à relancer</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="dtOuvrir('push')"><span class="ic">🔔</span><span class="t"><b>Abonnés push</b><span>Appareils notifiables</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="coAdmOuvrir()"><span class="ic">🎯</span><span class="t"><b>Coach 90'</b><span>Discussions en cours, plans, suivi, répondre</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="reOuvrir()"><span class="ic">✋</span><span class="t"><b>Résiliations</b><span>Demandes d'arrêt du renouvellement (carte)</span></span><span class="fl">›</span></button>
         <button class="lk" onclick="slOuvrir('sources')"><span class="ic">📈</span><span class="t"><b>Liens &amp; réseaux</b><span>TikTok, YouTube, Insta, mails de relance</span></span><span class="fl">›</span></button>
       </div>
       <div class="pg-lab">Affiliés</div>
@@ -838,6 +889,16 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
   <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre">Montantes</div></div>
   <div class="pv-cats" id="mt-types"></div>
   <div id="mt-corps"><div class="vide">Chargement…</div></div>
+</div></div>
+
+<div id="re-ecran" class="ecran"><div class="ec-boite">
+  <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre">Résiliations</div><button class="pg-btn" onclick="reCharger()">↻</button></div>
+  <div class="ec-corps" id="re-corps"><div class="vide">Chargement…</div></div>
+</div></div>
+
+<div id="co-ecran" class="ecran"><div class="ec-boite" id="co-boite">
+  <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre" id="co-titre">Coach 90'</div><button class="pg-btn" onclick="coAdmRafraichir()">↻</button></div>
+  <div class="ec-corps" id="co-corps"><div class="vide">Chargement…</div></div>
 </div></div>
 
 <div id="hj-ecran" class="ecran"><div class="ec-boite" id="hj-boite">
@@ -932,12 +993,16 @@ function devRafraichir(){
 }
 
 /* ================= AUTHENTIFICATION ================= */
-async function admin(corps){
+async function admin(corps, deja){
   const r = await fetch(SUPABASE_URL + '/functions/v1/admin', {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
     body: JSON.stringify(corps)
   });
-  return r.json();
+  // jeton expiré : la passerelle répond 401 « Invalid JWT » (sans champ erreur) → on renouvelle et on réessaie
+  if(r.status === 401 && !deja && await rafraichirJeton()) return admin(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok && d && !d.erreur) d.erreur = d.message || ('HTTP ' + r.status);
+  return d;
 }
 async function rafraichirJeton(){
   try{
@@ -992,11 +1057,12 @@ function entrer(stats){
   const j = preuvesDepuisLien(); if(j !== null || /preuves/.test(location.hash)) pvOuvrir('jour', j);
 }
 
-async function rpc(nom, corps){
+async function rpc(nom, corps, deja){
   const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + nom, {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
     body: JSON.stringify(corps || {})
   });
+  if(r.status === 401 && !deja && await rafraichirJeton()) return rpc(nom, corps, true);
   const t = await r.text();
   let d; try{ d = t ? JSON.parse(t) : null; }catch(e){ d = t; }
   if(!r.ok) throw new Error((d && (d.message || d.hint)) || ('HTTP ' + r.status));
@@ -1465,8 +1531,9 @@ const CAT_NOMS = { sure:'🛡️ Sûre', confiance:'🎯 Confiance', fun:'🎲 F
 let PV_JOUR = null, PV_CACHE = {};
 const F = n => Math.round(n).toLocaleString('fr-FR');
 
-async function rest(chemin){
+async function rest(chemin, deja){
   const r = await fetch(SUPABASE_URL + '/rest/v1/' + chemin, { headers:{ apikey: SUPABASE_KEY, Authorization:'Bearer ' + JETON } });
+  if(r.status === 401 && !deja && await rafraichirJeton()) return rest(chemin, true);
   if(!r.ok) throw new Error('Supabase ' + r.status);
   return r.json();
 }
@@ -2125,10 +2192,11 @@ async function afCharger(){
 }
 function afResume(){
   if(!AF) return;
+  AF.demandes = AF.demandes || []; AF.retraits = AF.retraits || []; AF.partenaires = AF.partenaires || [];
   const d = AF.demandes.filter(x => x.statut === 'en_attente').length, r = AF.retraits.filter(x => x.statut === 'demande');
   const somme = r.reduce((a, x) => a + x.montant, 0);
-  $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
-  $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + mD(somme) + ')' : '']
+  if($('af-badge')) $('af-badge').textContent = (d + r.length) ? '· ' + (d + r.length) : '';
+  if($('af-resume')) $('af-resume').textContent = [d ? d + ' demande' + (d > 1 ? 's' : '') + ' à valider' : '', r.length ? r.length + ' retrait' + (r.length > 1 ? 's' : '') + ' à envoyer (' + mD(somme) + ')' : '']
     .filter(Boolean).join(' · ') || AF.partenaires.filter(p => p.statut === 'actif').length + ' affiliés actifs · rien à traiter';
 }
 
@@ -2136,12 +2204,13 @@ function afRendre(){
   if(AF_DET) return afRendreDetail();
   $('af-titre').textContent = AF_ONG === 'reglages' ? 'Réglages affiliés' : 'Affiliés';
   $('af-ret').hidden = true;
-  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length };
+  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length,
+              alertes: (AF.evenements || []).filter(x => !x.vu).length };
   $('af-onglets').style.display = '';
-  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits']]
+  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits'],['alertes','Paliers'],['compta','Compta']]
     .map(([k, l]) => `<button class="${AF_ONG === k ? 'actif' : ''}" onclick="AF_ONG='${k}';afRendre()">${l}${n[k] ? `<b>${n[k]}</b>` : ''}</button>`).join('');
-  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages })[AF_ONG]();
-  window.scrollTo(0, 0);
+  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages, alertes: afAlertes, compta: afCompta })[AF_ONG]();
+  hautPage();
 }
 
 /* ---------- demandes ---------- */
@@ -2265,7 +2334,7 @@ async function afDetail(uid, depuis){
   AF_DET_ONG = 'stats';
   if(depuis === 'classement'){ EP_PER = { jour:'jour', '7':'7', mois:'mois', '30':'30', tout:'tout', dates:'perso' }[CL.per]; EP_DEB = CL.deb; EP_FIN = CL.fin; }
   else EP_PER = '30';
-  window.scrollTo(0, 0);
+  hautPage();
   history.pushState({ afd: 1 }, '');
   afRendreDetail();
   try{ AF_DET.ep = await rpc('admin_aff_detail', { p_user: uid }); }catch(e){ AF_DET.ep = { statut:'erreur' }; }
@@ -2311,6 +2380,8 @@ function afGerer(p){
         <span>Disponible</span><b>${mD(p.dispo)}${p.en_cours ? ' · ' + mD(p.en_cours) + ' en cours de versement' : ''}</b>
       </div>
     </div>
+    ${afWhopCarte(p)}
+    ${afPaliersCarte(p)}
     <div class="af-titre">Réglages de l'affilié</div>
     <div class="af-carte">
       <input id="afm-code" value="${afE(p.code)}" maxlength="10" style="text-transform:uppercase" placeholder="Code">
@@ -2359,19 +2430,21 @@ function afCarteRetrait(r){
   const pays = afPays(r.pays);
   const local = r.montant_local && r.devise && r.devise !== 'XOF' && r.devise !== 'XAF'
     ? `<span>À envoyer</span><b>≈ ${Number(r.montant_local).toLocaleString('fr-FR', { maximumFractionDigits: 6 })} ${afE(r.devise)}${crypto ? ' (cours au moment de la demande)' : ''}</b>` : '';
-  const cible = crypto ? r.adresse : r.numero;
+  const cible = crypto ? r.adresse : r.iban ? r.iban : r.numero;
   return `<div class="af-carte ${r.statut === 'demande' ? 'neuf' : ''}">
     <div class="af-l1"><div><div class="af-gros">${mD(r.montant)}</div><div class="af-meta">${afE(r.email)}${r.code ? ' · ' + afE(r.code) : ''} · demandé le ${afD(r.demande_le)}</div></div>
       <span class="af-pill ${r.statut === 'demande' ? 'att' : r.statut === 'paye' ? 'ok' : 'ko'}">${r.statut === 'demande' ? 'À envoyer' : r.statut === 'paye' ? 'Envoyé ' + new Date(r.paye_le).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' }) : 'Refusé'}</span></div>
     <div class="af-kv">
       <span>Pays</span><b>${pays ? pays.dr + ' ' + afE(pays.nom) : afE(r.pays || '—')}</b>
       <span>Moyen</span><b>${crypto ? afE(r.crypto) + ' · réseau ' + afE(r.reseau) : afE(r.moyen || 'Wave')}</b>
+      ${r.iban ? `<span>Titulaire</span><b>${afE(r.titulaire || '—')}</b>${r.bic ? `<span>BIC</span><b>${afE(r.bic)}</b>` : ''}` : ''}
       ${local}
       ${r.motif ? `<span>Motif</span><b>${afE(r.motif)}</b>` : ''}
     </div>
     ${cible ? `<div class="af-copie" onclick="afCopier(this, '${afE(cible)}')"><span class="v">${afE(cible)}</span><span class="c">COPIER</span></div>` : '<div class="af-meta">Numéro manquant</div>'}
     ${crypto && r.statut === 'demande' ? `<div class="af-meta" style="color:#FFB3BB">Vérifie le réseau ${afE(r.reseau)} avant d'envoyer.</div>` : ''}
     ${r.statut === 'demande' ? `<div class="af-ligne"><button onclick="afRetrait(${r.id}, 'paye', this)">✓ Argent envoyé</button><button class="rouge" onclick="afRetrait(${r.id}, 'refuse', this)">Refuser</button></div>` : ''}
+    ${r.statut === 'paye' ? `<div class="af-ligne"><button class="gris" onclick="afReleve(${r.id})">📄 Relevé de commission (PDF)</button></div>` : ''}
   </div>`;
 }
 function afCopier(el, t){ navigator.clipboard?.writeText(t).then(() => { const c = el.querySelector('.c'); c.textContent = 'COPIÉ ✓'; setTimeout(() => c.textContent = 'COPIER', 1400); }); }
@@ -2401,6 +2474,136 @@ async function afRetrait(id, action, b){
     afMsg(r.ok ? (action === 'paye' ? 'Retrait marqué envoyé — affilié notifié.' : 'Retrait refusé — le montant revient dans son disponible.') : r.msg, r.ok);
     admin({ action:'stats' }).then(afficherStats);
   }catch(e){ afMsg(e.message); b.disabled = false; }
+}
+
+/* ---------- 03/11 : Whop, paliers propres, alertes, relevés, comptabilité ---------- */
+async function partFn(corps, encore){
+  const x = await fetch(SUPABASE_URL + '/functions/v1/partenaires', { method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON }, body: JSON.stringify(corps) });
+  if(x.status === 401 && !encore && await rafraichirJeton()) return partFn(corps, true);
+  const d = await x.json().catch(() => ({}));
+  if(!x.ok) throw new Error(d.erreur || ('HTTP ' + x.status));
+  return d;
+}
+function afWhopCarte(p){
+  return `<div class="af-titre">Whop (paiements par carte)</div><div class="af-carte">
+    ${p.whop_lie ? `<div class="af-l1"><div><b>@${afE(p.whop_user)}</b><div class="af-meta">Whop lui verse ${p.whop_pct || '—'} % sur les paiements carte de ses filleuls</div></div><span class="af-pill ${p.whop_erreur ? 'ko' : 'ok'}">${p.whop_erreur ? 'Erreur' : 'Relié'}</span></div>
+        ${p.whop_erreur ? `<div class="af-meta" style="color:#FFB3BB">${afE(p.whop_erreur)}</div>` : ''}
+        ${p.whop_pct !== p.pct ? `<div class="af-meta" style="color:#FFC86B">Son taux est ${p.pct} % mais Whop a encore ${p.whop_pct || '—'} %.</div>` : ''}
+        <div class="af-ligne"><button class="gris" onclick="afWhopResync(this)">↻ Renvoyer son % à Whop</button></div>`
+      : `<div class="af-meta" style="margin-top:0">Pas de compte Whop relié : ses commissions carte vont dans son solde à retirer (tu le paies comme pour le Mobile Money). Il peut le relier depuis son Espace partenaire.</div>`}
+  </div>`;
+}
+async function afWhopResync(b){
+  b.disabled = true;
+  try{ const d = await partFn({ action:'resync', user_id: AF_DET.uid }); const m = (d.maj || [])[0];
+    afMsg(m ? (m.ok ? 'Whop mis à jour : ' + m.pct + ' %' : m.erreur) : 'Rien à mettre à jour.', !m || m.ok); await afCharger(); }
+  catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+let AF_PAL = null;
+function afPaliersCarte(p){
+  if(p.pct_perso) return `<div class="af-titre">Paliers</div><div class="af-carte"><div class="af-meta" style="margin-top:0">Taux fixe de ${p.pct_perso} % : remets « Paliers » dans ses réglages ci-dessous pour utiliser des paliers.</div></div>`;
+  AF_PAL = AF_PAL && AF_PAL.uid === p.user_id ? AF_PAL : { uid: p.user_id, l: (p.paliers || p.paliers_effectifs || AF.reglages.paliers || []).map(x => ({ seuil: +x.seuil, pct: +x.pct })) };
+  return `<div class="af-titre">Paliers ${p.paliers ? '(propres à lui)' : '(généraux)'}</div><div class="af-carte" id="af-pal">
+    <div class="af-meta" style="margin-top:0">Son % selon ses VIP payés du mois. Il voit ses paliers dans son espace, et Whop est mis à jour dès qu'il change de palier.</div>
+    ${AF_PAL.l.map((x, i) => `<div class="af-ligne" style="align-items:center"><span style="flex:0 0 74px;font-size:12px;color:var(--sourdine)">${i === 0 ? 'Départ' : 'À partir de'}</span>
+      <input type="number" min="0" style="flex:1 1 70px;margin:0" value="${x.seuil}" ${i === 0 ? 'disabled' : ''} oninput="AF_PAL.l[${i}].seuil=+this.value" aria-label="VIP payés"><span style="font-size:12px;color:var(--sourdine)">VIP</span>
+      <input type="number" min="1" max="70" style="flex:1 1 60px;margin:0" value="${x.pct}" oninput="AF_PAL.l[${i}].pct=+this.value" aria-label="Pourcentage"><span style="font-size:12px;color:var(--sourdine)">%</span>
+      ${i ? `<button class="rouge" style="padding:7px 10px" onclick="AF_PAL.l.splice(${i},1);afRendreDetail()">✕</button>` : ''}</div>`).join('')}
+    <div class="af-ligne"><button class="gris" onclick="AF_PAL.l.push({ seuil: (AF_PAL.l[AF_PAL.l.length-1]||{seuil:0}).seuil + 10, pct: Math.min(70, (AF_PAL.l[AF_PAL.l.length-1]||{pct:25}).pct + 5) });afRendreDetail()">＋ Palier</button>
+      <button onclick="afPaliersOk(this)">Enregistrer</button>${p.paliers ? `<button class="gris" onclick="afPaliersOk(this, true)">Revenir aux paliers généraux</button>` : ''}</div>
+  </div>`;
+}
+async function afPaliersOk(b, general){
+  b.disabled = true;
+  try{
+    const l = general ? null : AF_PAL.l.map((x, i) => ({ seuil: i === 0 ? 0 : x.seuil, pct: x.pct }));
+    const r = await rpc('admin_aff_paliers', { p_user: AF_DET.uid, p_paliers: l });
+    afMsg(r.msg, r.ok);
+    if(r.ok){ AF_PAL = null; try{ await partFn({ action:'sync', user_id: AF_DET.uid }); }catch(e){} await afCharger(); }
+  }catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+function afAlertes(){
+  const L = AF.evenements || [];
+  setTimeout(() => { if(L.some(x => !x.vu)) rpc('admin_aff_evenements_vus').then(() => { L.forEach(x => x.vu = true); }).catch(() => {}); }, 1500);
+  return L.length ? L.map(e => `<div class="af-carte ${e.vu ? '' : 'neuf'}" onclick="afDetail('${e.user_id}')" style="cursor:pointer">
+      <div class="af-l1"><div><b>${afE(e.code || e.email)} : ${e.avant} % → ${e.apres} %</b><div class="af-meta">${afE(e.email)} · ${afD(e.cree_le)}</div></div>
+      <span class="af-pill ${e.apres > e.avant ? 'ok' : 'att'}">${e.apres > e.avant ? 'Monte' : 'Baisse'}</span></div>
+      <div class="af-meta">${e.whop_lie ? (e.whop_erreur ? '⚠️ Whop pas à jour : ' + afE(e.whop_erreur) : (e.whop_pct === e.apres ? '✓ Whop mis à jour (' + e.whop_pct + ' %)' : 'Whop : ' + (e.whop_pct || '—') + ' %')) : 'Pas de compte Whop : tout passe par son solde.'}
+        Mobile Money : nouveau % appliqué automatiquement.</div></div>`).join('')
+    : `<div class="vide" style="margin:0 12px">Aucun changement de palier pour l'instant. Tu seras prévenu ici dès qu'un affilié monte (ou redescend) de palier.</div>`;
+}
+let AF_CPT = { per:'mois', data:null, cle:'' };
+function afComptaPeriode(){
+  const n = new Date(), deb = AF_CPT.per === 'mois' ? new Date(n.getFullYear(), n.getMonth(), 1) : AF_CPT.per === 'prec' ? new Date(n.getFullYear(), n.getMonth() - 1, 1)
+    : AF_CPT.per === 'annee' ? new Date(n.getFullYear(), 0, 1) : null;
+  const fin = AF_CPT.per === 'prec' ? new Date(n.getFullYear(), n.getMonth(), 1) : null;
+  return [deb, fin];
+}
+function afCompta(){
+  const cle = AF_CPT.per;
+  if(AF_CPT.cle !== cle){ AF_CPT.cle = cle; AF_CPT.data = null; const [d, f] = afComptaPeriode();
+    rpc('admin_aff_compta', { p_debut: d ? d.toISOString() : null, p_fin: f ? f.toISOString() : null }).then(x => { AF_CPT.data = x; if(AF_ONG === 'compta' && !AF_DET) afRendre(); })
+      .catch(e => { AF_CPT.data = { erreur: e.message }; if(AF_ONG === 'compta') afRendre(); }); }
+  const D = AF_CPT.data;
+  const per = `<div class="af-sous">${[['mois','Ce mois'],['prec','Mois dernier'],['annee','Cette année'],['tout','Tout']].map(([k, l]) => `<button class="${AF_CPT.per === k ? 'actif' : ''}" onclick="AF_CPT.per='${k}';afRendre()">${l}</button>`).join('')}</div>`;
+  if(!D) return per + `<div class="vide" style="margin:0 12px">Chargement…</div>`;
+  if(D.erreur) return per + `<div class="vide" style="margin:0 12px">Erreur : ${afE(D.erreur)}<br>(affilies.sql exécuté ?)</div>`;
+  const C = D.commissions, R = D.retraits;
+  const mois = {};
+  C.forEach(x => { const k = String(x.le).slice(0, 7), m = mois[k] = mois[k] || { ca:0, whop:0, solde:0, n:0, paye:0 }; m.ca += +x.montant || 0; m.n++; if(x.canal === 'whop') m.whop += +x.commission || 0; else m.solde += +x.commission || 0; });
+  R.filter(x => x.statut === 'paye').forEach(x => { const k = String(x.paye_le || x.demande_le).slice(0, 7), m = mois[k] = mois[k] || { ca:0, whop:0, solde:0, n:0, paye:0 }; m.paye += +x.montant || 0; });
+  const tot = Object.values(mois).reduce((a, m) => ({ ca: a.ca + m.ca, whop: a.whop + m.whop, solde: a.solde + m.solde, paye: a.paye + m.paye }), { ca:0, whop:0, solde:0, paye:0 });
+  const nomM = k => new Date(k + '-15').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+  return per + `<div class="af-tot"><div><b>${mD(tot.ca)}</b><span>Ventes via affiliés</span></div><div><b>${mD(tot.whop + tot.solde)}</b><span>Commissions</span></div><div><b>${mD(D.du_total)}</b><span>Dû aux affiliés (dispo)</span></div></div>
+    <div class="af-carte"><b>Par mois</b>
+      ${Object.keys(mois).length ? `<table class="sl-t" style="margin-top:8px"><tr><th>Mois</th><th>Ventes</th><th>Com. Whop</th><th>Com. AURA90</th><th>Retraits payés</th></tr>
+        ${Object.keys(mois).sort().reverse().map(k => `<tr><td>${nomM(k)}</td><td>${mD(mois[k].ca)}<small>${mois[k].n} paiement${mois[k].n > 1 ? 's' : ''}</small></td><td>${mD(mois[k].whop)}</td><td>${mD(mois[k].solde)}</td><td>${mD(mois[k].paye)}</td></tr>`).join('')}</table>`
+        : '<div class="af-meta">Rien sur cette période.</div>'}
+      <div class="af-meta">Com. Whop = versées directement par Whop aux affiliés (déjà retirées de tes versements Whop). Com. AURA90 = dues par l'entreprise, payées par les retraits. ${D.en_cours_total ? mD(D.en_cours_total) + ' de retraits demandés à envoyer.' : ''}</div>
+    </div>
+    <div class="af-carte"><b>Exports pour la comptabilité</b>
+      <div class="af-meta">Fichiers CSV (Excel, Google Sheets) à garder chaque mois avec les relevés de retrait.</div>
+      <div class="af-ligne"><button class="gris" onclick="afExport('commissions')">⬇ Commissions (${C.length})</button><button class="gris" onclick="afExport('retraits')">⬇ Retraits (${R.length})</button></div>
+      ${R.filter(x => x.statut === 'paye').length ? `<div class="af-ligne">${R.filter(x => x.statut === 'paye').slice(-12).map(x => `<button class="gris" onclick="afReleve(${x.id})">📄 Relevé n° ${x.id}</button>`).join('')}</div>` : ''}
+    </div>`;
+}
+function afCsv(lignes){ return '﻿' + lignes.map(l => l.map(v => { const t = v === null || v === undefined ? '' : String(v); return /[;"\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }).join(';')).join('\r\n'); }
+function afTelecharger(nom, contenu){ const u = URL.createObjectURL(new Blob([contenu], { type:'text/csv;charset=utf-8' })); const a = document.createElement('a'); a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
+function afExport(quoi){
+  const D = AF_CPT.data; if(!D || D.erreur) return;
+  const j = d => d ? new Date(d).toLocaleDateString('fr-FR') : '';
+  const per = AF_CPT.per;
+  if(quoi === 'commissions') afTelecharger(`aura90_commissions_${per}.csv`, afCsv([['Date','Référence paiement','Moyen','Formule','Montant (F CFA)','Commission (F CFA)','Versée par','Code affilié','Affilié','Client'],
+    ...D.commissions.map(x => [j(x.le), x.ref, x.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money (SasPay)', x.formule, x.montant, x.commission, x.canal === 'whop' ? 'Whop' : 'AURA90', x.code, x.partenaire, x.client])]));
+  else afTelecharger(`aura90_retraits_${per}.csv`, afCsv([['N°','Demandé le','Payé le','Statut','Montant (F CFA)','Montant local','Devise','Moyen','Numéro / IBAN / adresse','Titulaire','Pays','Code affilié','Affilié'],
+    ...D.retraits.map(x => [x.id, j(x.demande_le), j(x.paye_le), x.statut, x.montant, x.montant_local, x.devise, x.crypto ? x.crypto + ' ' + (x.reseau || '') : x.moyen, x.iban || x.adresse || x.numero, x.titulaire, x.pays, x.code, x.partenaire])]));
+}
+async function afReleve(id){
+  let r = (AF.retraits || []).find(x => x.id === id);
+  if(!r && AF_CPT.data && !AF_CPT.data.erreur) r = AF_CPT.data.retraits.find(x => x.id === id);
+  if(!r){ afMsg('Retrait introuvable.'); return; }
+  const w = window.open('', '_blank'); if(!w){ afMsg('Autorise les fenêtres pour imprimer le relevé.'); return; }
+  const j = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '—';
+  const e = afE, moyen = r.crypto ? `${r.crypto} (réseau ${r.reseau || '—'})` : r.iban ? 'Virement bancaire' : (r.moyen || 'Mobile Money');
+  const dest = r.crypto ? r.adresse : r.iban ? r.iban + (r.titulaire ? ' — ' + r.titulaire : '') : r.numero;
+  const local = r.montant_local && r.devise && !['XOF', 'XAF'].includes(r.devise) ? `${Number(r.montant_local).toLocaleString('fr-FR', { maximumFractionDigits: 6 })} ${r.devise}` : '';
+  w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Relevé de commission n° AFF-${r.id}</title>
+    <style>body{font:14px/1.5 -apple-system,system-ui,sans-serif;color:#111;max-width:720px;margin:40px auto;padding:0 24px}h1{font-size:22px;margin:0 0 4px}
+    .l{display:flex;justify-content:space-between;gap:20px;margin-top:28px}.b{border:1px solid #ccc;border-radius:8px;padding:14px;flex:1}
+    table{width:100%;border-collapse:collapse;margin-top:28px}td,th{border-bottom:1px solid #ddd;padding:10px 6px;text-align:left}th{background:#f4f4f4}
+    .t{font-size:18px;font-weight:700}.p{margin-top:36px;font-size:12px;color:#555}@media print{button{display:none}}</style></head><body>
+    <h1>Relevé de commissions d'affiliation</h1><div>N° AFF-${r.id} · émis le ${j(r.paye_le || new Date())}</div>
+    <div class="l"><div class="b"><b>Payeur</b><br>GOMIS ADMIR – SGM BUSINESS<br>Yoff Ndiouffène, Dakar, Sénégal<br>NINEA 012678077 · RCCM SN DKR 2025 A 48271<br>contact@aura90.app</div>
+      <div class="b"><b>Bénéficiaire (affilié)</b><br>${e(r.titulaire || '')}${r.titulaire ? '<br>' : ''}${e(r.email || r.partenaire || '')}<br>Code affilié : ${e(r.code || '—')}${r.pays ? '<br>Pays : ' + e(r.pays) : ''}</div></div>
+    <table><tr><th>Désignation</th><th>Montant</th></tr>
+      <tr><td>Commissions d'affiliation AURA90 (abonnements payés par Mobile Money${r.iban ? ' et carte' : ''}) — demande du ${j(r.demande_le)}</td><td>${Number(r.montant).toLocaleString('fr-FR')} F CFA${local ? '<br>≈ ' + local : ''}</td></tr>
+      <tr><td class="t">Total versé</td><td class="t">${Number(r.montant).toLocaleString('fr-FR')} F CFA</td></tr></table>
+    <div class="l"><div class="b"><b>Paiement</b><br>${e(moyen)}<br>${e(dest || '')}<br>Versé le ${j(r.paye_le)}</div></div>
+    <p class="p">Relevé établi par GOMIS ADMIR – SGM BUSINESS pour le compte de l'affilié. Les commissions sur les paiements par carte versées directement par Whop n'y figurent pas. L'affilié reste responsable de la déclaration de ses revenus dans son pays.</p>
+    <button onclick="print()">Imprimer / enregistrer en PDF</button></body></html>`);
+  w.document.close();
 }
 
 /* ---------- réglages ---------- */
@@ -2612,12 +2815,40 @@ async function ficheUser(id){
     ${lig('VIP jusqu\'au', u.vip_jusqua ? jd(u.vip_jusqua) : '—')}
     ${lig('Total payé', mD(u.total_paye) + ' · ' + (u.paiements || []).length + ' paiement' + ((u.paiements || []).length > 1 ? 's' : ''))}
     ${lig('Dernière activité', u.vu_le ? jd(u.vu_le) : (u.derniere_connexion ? jd(u.derniere_connexion) : '—'))}
+    <div class="ligne-btn" style="margin:8px 0 4px"><button class="gris" onclick="ficheFermer();coAdmOuvrir('${slE(id)}')">Discussion avec le coach ›</button></div>
     ${u.pays || u.langue ? lig('Pays · langue', slE([u.pays, (u.langue || '').toUpperCase()].filter(Boolean).join(' · '))) : ''}
     ${(u.paiements || []).length ? `<div class="pg-lab" style="margin-top:16px">Paiements</div>` + u.paiements.map(x =>
         `<div class="sl-pers"><div><b>${mD(x.montant)}</b><span style="display:block">${slE(x.formule === '3mois' ? '3 mois' : '1 mois')} · ${slE(x.methode || '')}${x.code ? ' · code ' + slE(x.code) : ''}</span></div><span>${new Date(x.le).toLocaleDateString('fr-FR')}</span></div>`).join('') : ''}`;
 }
 function ficheFermer(){ $('fu-voile').classList.remove('ouvert'); }
 
+/* ---- 03/11 : liens nommés (plusieurs liens par réseau : « TikTok compte 1 », « Vidéo LDC »…) ---- */
+let SL_LN = null, SL_LN_RES = 'tiktok';
+function slLiensNommes(){
+  if(SL_LN === null) return `<div class="pg-lab" style="margin-top:20px">Liens nommés</div><div class="vide">Indisponible (affilies.sql exécuté ?)</div>`;
+  const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
+  const par = {}; SL_LN.filter(x => x.actif).forEach(x => (par[x.reseau] = par[x.reseau] || []).push(x));
+  const url = x => `${SL_SITE}/?s=${x.reseau}&l=${x.slug}`;
+  return `<div class="pg-lab" style="margin-top:20px">Liens nommés · un lien par compte ou par campagne</div>
+    ${Object.keys(par).length ? Object.keys(par).sort().map(k => `<div class="sl-gr"><div class="sl-grt">${slE(SL_NOMS[k] || k)}</div>
+      ${par[k].map(x => `<div class="sl-ln"><div class="t"><b>${slE(x.nom)}</b><span>${slF(x.clics)} clics · ${slF(x.inscrits)} inscrits (${pct(x.inscrits, x.clics)}) · ${slF(x.vip)} VIP (${pct(x.vip, x.inscrits)}) · ${mD(x.ca)}</span></div>
+        <button class="gris" onclick="slCopier('${url(x)}', this)">Copier</button><button class="gris" title="Retirer" onclick="slLienRetirer(${x.id})">✕</button></div>`).join('')}</div>`).join('')
+      : '<div class="pg-sous" style="margin:0 0 8px">Aucun lien nommé : crée-en un par compte TikTok, par chaîne ou par campagne pour savoir lequel ramène des VIP.</div>'}
+    <div class="sl-new"><select id="sl-ln-res" onchange="SL_LN_RES=this.value">${SL_RESEAUX.map(([k, l]) => `<option value="${k}" ${k === SL_LN_RES ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      <input id="sl-ln-nom" maxlength="40" placeholder="Nom du lien (ex. TikTok compte 2)"><button onclick="slLienCreer(this)">Créer</button></div>`;
+}
+async function slLienCreer(b){
+  const nom = ($('sl-ln-nom').value || '').trim(); if(!nom){ toast('Donne un nom au lien'); return; }
+  b.disabled = true;
+  try{ const r = await rpc('admin_liens', { p_action:'creer', p_id: null, p_reseau: $('sl-ln-res').value, p_nom: nom });
+    if(r && r.ok){ navigator.clipboard?.writeText(`${SL_SITE}/?s=${r.lien.reseau}&l=${r.lien.slug}`).catch(() => {}); toast('Lien créé et copié ✓'); await slRendre(true); } else toast((r && r.msg) || 'Erreur'); }
+  catch(e){ toast('Erreur : ' + e.message); }
+  b.disabled = false;
+}
+async function slLienRetirer(id){
+  if(!confirm('Retirer ce lien ? Ses clics restent comptés dans le réseau.')) return;
+  try{ await rpc('admin_liens', { p_action:'retirer', p_id: id, p_reseau: null, p_nom: null }); await slRendre(true); }catch(e){ toast('Erreur : ' + e.message); }
+}
 function slCopier(t, b){ navigator.clipboard?.writeText(t).then(() => { const x = b.textContent; b.textContent = 'Copié ✓'; setTimeout(() => b.textContent = x, 1400); }); }
 async function slRendre(silencieux){
   const c = $('sl-corps');
@@ -2638,10 +2869,11 @@ async function slRendre(silencieux){
   if(!silencieux) c.innerHTML = '<div class="vide">Chargement…</div>';
   let L = [];
   const [deb, fin] = slPeriode();
-  let RL = null;
-  try{ [L, RL] = await Promise.all([
+  let RL = null; SL_LN = null;
+  try{ [L, RL, SL_LN] = await Promise.all([
     rpc('admin_sources', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }).then(x => x || []),
-    rpc('admin_relances').catch(() => null)]); }
+    rpc('admin_relances').catch(() => null),
+    rpc('admin_liens_stats', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }).catch(() => null)]); }
   catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(suivi_liens.sql exécuté ?)</div>`; return; }
   const tot = L.reduce((a, x) => ({ clics: a.clics + x.clics, inscrits: a.inscrits + x.inscrits, vip: a.vip + x.vip, ca: a.ca + Number(x.ca) }), { clics: 0, inscrits: 0, vip: 0, ca: 0 });
   const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
@@ -2655,6 +2887,7 @@ async function slRendre(silencieux){
         <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
       <div class="pg-sous" style="margin-top:8px">Touche un réseau pour voir ses inscrits et ses VIP · Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
+    ${slLiensNommes()}
     ${RL ? `<div class="pg-lab" style="margin-top:20px">Emails de relance (inscrits non VIP)</div>
       ${(RL.etapes || []).length ? `<table class="sl-t"><tr><th>Mail</th><th>Envoyés</th><th>Cliqués</th><th>Payés</th></tr>
         ${RL.etapes.map(x => `<tr><td>${x.etape} · −${x.pct} %</td><td>${slF(x.envoyes)}</td><td>${slF(x.cliques)}<small>${pct(x.cliques, x.envoyes)}</small></td><td>${slF(x.payes)}<small>${pct(x.payes, x.envoyes)}</small></td></tr>`).join('')}</table>`
@@ -2686,7 +2919,7 @@ function onglet_(k){
   document.querySelectorAll('.pg').forEach(p => p.classList.toggle('actif', p.id === 'pg-' + k));
   document.querySelectorAll('.side nav button, .adm-nav button').forEach(b => b.classList.toggle('a', b.dataset.o === k));
   try{ localStorage.setItem('aura90_admin_onglet', k); }catch(e){}
-  window.scrollTo(0, 0);
+  hautPage();
 }
 function onglet(k){
   if(k === 'affilies' && AF_DET){ AF_DET = null; if(AF) afRendre(); }
@@ -2698,10 +2931,153 @@ function onglet(k){
 }
 function majBadges(){
   const mt = MB_CONVS.filter(c => c.a_traiter).length, nl = MB_CONVS.filter(c => c.non_lu_admin > 0).length;
-  const nAf = AF ? AF.demandes.filter(x => x.statut === 'en_attente').length + AF.retraits.filter(x => x.statut === 'demande').length : 0;
+  const nAf = AF ? (AF.demandes||[]).filter(x => x.statut === 'en_attente').length + (AF.retraits||[]).filter(x => x.statut === 'demande').length : 0;
   document.querySelectorAll('.nb-msg').forEach(e => e.textContent = (mt || nl) || '');
   document.querySelectorAll('.nb-aff').forEach(e => e.textContent = nAf || '');
 }
+
+/* ================= COACH 90' : discussions, plans et suivi (fonction « coach », actions admin) ================= */
+let CO_LISTE = null, CO_DET = null;
+async function coachAdm(corps, encore){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/coach', {
+    method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON },
+    body: JSON.stringify({ jour: new Date().toLocaleDateString('sv-SE'), ...corps })
+  });
+  if(r.status === 401 && !encore && await rafraichirJeton()) return coachAdm(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.erreur || ('HTTP ' + r.status));
+  return d;
+}
+function coAdmOuvrir(userId){
+  $('co-ecran').classList.add('ouvert');
+  history.pushState({ co: 1 }, '');
+  if(userId) coAdmDetail(userId); else coAdmListe();
+}
+function coAdmFermer(){ $('co-ecran').classList.remove('ouvert'); CO_DET = null; }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.co) && $('co-ecran').classList.contains('ouvert')) coAdmFermer(); });
+function coAdmRafraichir(){ if(CO_DET) coAdmDetail(CO_DET); else coAdmListe(true); }
+const coQuand = d => { if(!d) return '—'; const t = new Date(d), m = Math.round((Date.now() - t) / 60000);
+  if(m < 1) return 'à l\'instant'; if(m < 60) return 'il y a ' + m + ' min'; if(m < 36 * 60) return 'il y a ' + Math.round(m / 60) + ' h';
+  return t.toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) + ' ' + t.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }); };
+const coHeure = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) + ' · ' + new Date(d).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) : '';
+const CO_FAM = { lecture:'Lecture', prudent:'Prudent', cote2:'Cote 2', series:'Séries', plaisir:'Plaisir', methode:'Méthode' };
+const CO_JOURS = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
+const coJours = j => Array.isArray(j) ? (j.length === 7 ? 'tous les jours' : j.map(x => CO_JOURS[x] || x).join(' ')) : '';
+const coMontant = (v, dev) => v == null ? '' : (Number(v) % 1 ? Number(v).toFixed(2) : Number(v)) + ' ' + (dev === 'XOF' ? 'F CFA' : (dev || ''));
+let CO_ONGLET = 'cours';
+const CO_LG = { fr:'🇫🇷 FR', en:'🇬🇧 EN', ar:'AR', es:'🇪🇸 ES' };
+async function coAdmListe(force){
+  CO_DET = null; $('co-titre').textContent = 'Coach 90\'';
+  const c = $('co-corps');
+  if(!CO_LISTE || force){ c.innerHTML = '<div class="vide">Chargement…</div>';
+    try{ CO_LISTE = await coachAdm({ action:'admin_liste' }); }
+    catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fonction « coach » déployée ? ton email dans ADMIN_EMAILS ?)</div>`; return; } }
+  const L = CO_LISTE.liste || [], q = CO_LISTE.quota || 100, auj = new Date().toLocaleDateString('sv-SE');
+  const sept = Date.now() - 7 * 864e5;
+  const enCours = x => x.alerte || (x.dernier_le && Date.parse(x.dernier_le) > sept && x.messages > 0);
+  const nb = { cours: L.filter(enCours).length, plans: L.filter(x => x.plan).length, alerte: L.filter(x => x.alerte).length, tous: L.length };
+  const vue = CO_ONGLET === 'cours' ? L.filter(enCours) : CO_ONGLET === 'plans' ? L.filter(x => x.plan) : CO_ONGLET === 'alerte' ? L.filter(x => x.alerte) : L;
+  const msgAuj = L.reduce((a, x) => a + (x.aujourdhui || 0), 0);
+  c.innerHTML = `<div class="sl-kpi"><div><b>${nb.plans}</b><span>Plans créés</span></div><div><b>${L.filter(x => x.plan && x.pro).length}</b><span>PRO avec un plan</span></div><div><b>${L.filter(x => x.push).length}</b><span>Notifs activées</span></div></div>
+    <div class="sl-kpi"><div><b>${nb.cours}</b><span>Discussions (7 j)</span></div><div><b>${msgAuj}</b><span>Messages aujourd'hui</span></div><div><b style="color:${nb.alerte ? '#ff7a9e' : 'inherit'}">${nb.alerte}</b><span>À surveiller</span></div></div>
+    <div class="co-onglets">${[['cours', 'En cours'], ['alerte', 'À surveiller'], ['plans', 'Plans'], ['tous', 'Tous']].map(([k, t]) => `<button class="${CO_ONGLET === k ? 'on' : ''}" onclick="CO_ONGLET='${k}';coAdmListe()">${t} · ${nb[k]}</button>`).join('')}</div>
+    <div class="pg-sous" style="margin:0 0 12px">${CO_ONGLET === 'cours' ? 'Personnes qui ont écrit au coach ces 7 derniers jours, ou à surveiller.' : CO_ONGLET === 'alerte' ? 'Messages de détresse ou envie de « se refaire » ces 7 derniers jours : ouvre et réponds toi-même si besoin.' : CO_ONGLET === 'plans' ? 'Toutes les personnes qui ont un plan actif.' : 'Tout le monde, dernière activité en tête.'} Quota : ${q} messages / jour / personne.</div>
+    ${vue.length ? vue.map(x => `<div class="co-pers" onclick="coAdmDetail('${slE(x.user_id)}')">
+        <div class="av">${slE((x.email || '?')[0].toUpperCase())}</div>
+        <div class="t"><b>${x.alerte ? '<span class="co-bdg al">⚠ ' + slE(x.alerte) + '</span>' : ''}${x.pro ? '<span class="co-bdg pro">PRO</span>' : ''}${x.push ? '<span class="co-bdg pu">🔔</span>' : ''}${slE(x.email || x.user_id.slice(0, 8) + '…')}</b>
+          <span>${x.plan ? slE(x.plan.nom || CO_FAM[x.plan.famille] || x.plan.famille) + (x.plan.unite ? ' · part ' + slE(coMontant(x.plan.unite, x.devise)) : '') : 'pas de plan'}${x.pays ? ' · ' + slE(x.pays) : ''}${x.langue ? ' · ' + (CO_LG[x.langue] || x.langue) : ''}${x.rappel ? ' · rappel ' + slE(x.rappel) : ''}</span>
+          <em>${x.dernier ? (x.dernier_role === 'user' ? 'Lui : ' : x.dernier_role === 'equipe' ? 'Toi : ' : 'Coach : ') + slE(x.dernier) : 'Aucun message pour l\'instant'}</em></div>
+        <div class="d"><b>${x.messages} msg</b>${x.aujourdhui ? x.aujourdhui + ' / ' + q + ' auj.' : ''}<br>${slE(coQuand(x.dernier_le))}</div></div>`).join('')
+      : '<div class="vide">Personne dans cette liste.</div>'}`;
+}
+async function coAdmDetail(id){
+  CO_DET = id; const c = $('co-corps'); c.innerHTML = '<div class="vide">Chargement…</div>';
+  let d; try{ d = await coachAdm({ action:'admin_conversation', user_id: id }); }
+  catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}</div>`; return; }
+  $('co-titre').textContent = d.email || 'Discussion';
+  const p = d.profil || {}, pl = (d.plans || [])[0], pp = pl ? (pl.params || pl) : {}, dev = p.devise || pp.devise || '';
+  const pro = d.fin_pro && new Date(d.fin_pro) > new Date();
+  const credAuj = (d.credits || []).find(x => x.jour === new Date().toLocaleDateString('sv-SE'));
+  const lig = (k, v) => `<div class="fu-l"><span>${k}</span><b>${v}</b></div>`;
+  const suivi = (d.suivi || []).filter(x => x.suivi != null || (x.resultat && x.resultat !== 'sans')).slice(0, 20);
+  const res = r => r === 'gagne' ? '<span class="g">validée</span>' : r === 'perdu' ? '<span class="p">perdue</span>' : r === 'en_cours' ? 'en cours' : r === 'sans' ? '—' : (r || '');
+  const msgs = d.messages || [];
+  const liste = (CO_LISTE && CO_LISTE.liste || []).find(x => x.user_id === id) || {};
+  const a = d.aujourdhui;
+  c.innerHTML = `<div class="fu-tete"><div class="fu-av">${slE((d.email || '?')[0].toUpperCase())}</div><div><b>${slE(d.email || id)}</b>
+      <span class="fu-badge ${pro ? 'ok' : ''}">${pro ? 'PRO jusqu\'au ' + new Date(d.fin_pro).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : 'Sans abonnement'}</span></div></div>
+    ${liste.alerte ? `<div class="co-alerte-adm"><b>⚠ À surveiller : ${slE(liste.alerte)}.</b> Le coach a répondu avec le message de protection (pause proposée, aide du pays). Lis la discussion et, si besoin, réponds toi-même en bas : ta réponse arrive signée « Équipe AURA90 » avec une notification.</div>` : ''}
+    <div class="pg-lab">Aujourd'hui</div>
+    ${a ? `<div class="co-auj-adm">${(a.items || []).map(x => `<div><span>${slE(x.dom)} – ${slE(x.ext)}<br><em>${slE(x.selection)}</em>${x.heure ? ' · ' + slE(x.heure) : ''}</span><b>${x.cote ?? ''}</b></div>`).join('')}
+        <div><span>Cote totale ${a.cote ?? '—'} · indice ${a.indice ?? '—'} %</span><b>${a.suivi === true ? 'placée ✓' : a.suivi === false ? 'pas placée' : 'pas encore déclarée'}</b></div></div>` : '<div class="pg-sous" style="margin:0 0 12px">Pas de sélection aujourd\'hui (repos, pause ou pas encore ouvert).</div>'}
+    <div class="pg-lab">Profil</div>
+    ${lig('Pays · monnaie · langue', slE([p.pays, dev, p.langue].filter(Boolean).join(' · ') || '—'))}
+    ${lig('Fuseau horaire', slE(p.fuseau || '—'))}
+    ${lig('Objectif', slE(p.objectif || '—'))}
+    ${lig('Plateforme', slE(p.plateforme || 'non indiquée'))}
+    ${lig('Budget du mois', p.budget_mois ? slE(coMontant(p.budget_mois, dev)) : 'non dit')}
+    ${lig('Rappel du matin', slE(p.rappel_heure || 'aucun'))}
+    ${lig('Notifications', d.appareils_push ? d.appareils_push + ' appareil' + (d.appareils_push > 1 ? 's' : '') : '<span style="color:#ff7a9e">pas activées</span>')}
+    ${lig('Pause', slE(p.pause_jusqua ? 'jusqu\'au ' + p.pause_jusqua : 'non'))}
+    ${lig('Règles acceptées', d.acceptation ? 'oui · ' + slE(coHeure(d.acceptation.accepte_le)) : 'pas encore')}
+    ${lig('Messages aujourd\'hui', (credAuj ? credAuj.utilises : 0) + ' / ' + (d.quota || 100))}
+    <div class="ligne-btn" style="margin:10px 0 6px"><button class="gris" onclick="ficheUser('${slE(id)}')">Fiche utilisateur ›</button></div>
+    <div class="pg-lab">Plan actif</div>
+    ${pl ? `<div class="co-plan"><b class="n">${slE(pp.nom || CO_FAM[pl.famille] || pl.famille)}${pl.actif === false ? ' <small style="color:var(--sourdine)">(terminé)</small>' : ''}</b>
+        ${pp.cote_min ? 'cote ' + pp.cote_min + ' à ' + pp.cote_max + ' · ' : ''}${pp.legs_max ? 'jusqu\'à ' + pp.legs_max + ' matchs · ' : ''}${slE(coJours(pp.jours))}${pp.unite ? ' · part ' + slE(coMontant(pp.unite, dev)) : ''}${pp.objectif_jours ? ' · objectif ' + pp.objectif_jours + ' jours' : ''}<br>
+        <span style="color:var(--sourdine)">créé le ${slE(coHeure(pl.cree_le))}${(d.plans || []).length > 1 ? ' · ' + ((d.plans || []).length - 1) + ' plan(s) avant' : ''}</span>
+        ${Array.isArray(pp.regles) && pp.regles.length ? '<ul>' + pp.regles.map(r => '<li>' + slE(r) + '</li>').join('') + '</ul>' : ''}</div>` : '<div class="vide">Pas de plan.</div>'}
+    <div class="pg-lab">Suivi déclaré</div>
+    ${suivi.length ? `<table class="co-suivi"><tr><th>Jour</th><th>Suivi</th><th>Montant</th><th>Sélection</th><th>Résultat</th></tr>
+      ${suivi.map(x => `<tr><td>${x.jour.slice(5).split('-').reverse().join('/')}</td><td>${x.suivi === true ? 'oui' : x.suivi === false ? 'non' : '—'}</td><td>${x.mise != null ? slE(coMontant(x.mise, dev)) : '—'}</td><td>${x.selection && !x.selection.vide ? x.selection.nb + ' match' + (x.selection.nb > 1 ? 's' : '') + ' · ' + (x.selection.cote || '') : '—'}</td><td>${res(x.resultat)}</td></tr>`).join('')}</table>`
+      : '<div class="pg-sous" style="margin:0 0 14px">Rien de déclaré pour l\'instant.</div>'}
+    <div class="pg-lab">Discussion <span>${msgs.length} message${msgs.length > 1 ? 's' : ''}</span></div>
+    <div class="co-fil" id="co-fil-adm">${msgs.length ? msgs.map(coAdmBulle).join('') : '<div class="vide">Aucun message : la personne n\'a pas encore écrit au coach.</div>'}</div>
+    <div class="co-rep"><textarea id="co-rep-txt" placeholder="Répondre en tant qu'équipe AURA90 (la personne reçoit une notification)…" maxlength="2000"></textarea><button id="co-rep-btn" onclick="coAdmRepondre('${slE(id)}')">Envoyer</button></div>
+    <div class="ligne-btn" style="margin:12px 0 20px"><button class="gris" onclick="coAdmListe()">‹ Toutes les personnes</button></div>`;
+  $('co-corps').scrollTop = 0;
+}
+function coAdmBulle(m){
+  const cl = m.role === 'user' ? 'user' : m.role === 'equipe' ? 'equipe' : 'ia';
+  const qui = m.role === 'user' ? 'Lui' : m.role === 'equipe' ? 'Toi (équipe)' : 'Coach';
+  return `<div class="mb-m ${cl}${m.filtre ? ' filtre' : ''}">${slE(m.texte)}<span class="tk">${qui} · ${slE(coHeure(m.cree_le))}${m.filtre ? ' · réponse reformulée (mot interdit)' : ''}</span></div>`;
+}
+async function coAdmRepondre(id){
+  const z = $('co-rep-txt'), t = (z.value || '').trim(); if(!t) return;
+  const b = $('co-rep-btn'); b.disabled = true; b.textContent = '…';
+  try{
+    const d = await coachAdm({ action:'admin_repondre', user_id: id, texte: t });
+    const f = $('co-fil-adm'); if(f.querySelector('.vide')) f.innerHTML = '';
+    f.insertAdjacentHTML('beforeend', coAdmBulle({ role:'equipe', texte:t, cree_le: d.cree_le || new Date().toISOString() }));
+    z.value = ''; toast(d.appareils ? 'Envoyé · notifié sur ' + d.appareils + ' appareil' + (d.appareils > 1 ? 's' : '') : 'Envoyé (notifications pas activées : il le verra en ouvrant son coach)');
+    if(CO_LISTE) CO_LISTE = null;
+  }catch(e){ toast('Erreur : ' + e.message); }
+  b.disabled = false; b.textContent = 'Envoyer';
+}
+
+function hautPage(){ const p = document.getElementById('panel'); if(p) p.scrollTop = 0; window.scrollTo(0, 0); }
+function toast(m){ let t = document.getElementById('adm-toast'); if(!t){ t = document.createElement('div'); t.id = 'adm-toast'; t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#111a26;color:#fff;border:1px solid rgba(255,255,255,.15);padding:11px 16px;border-radius:12px;font:600 13px system-ui;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
+  t.textContent = m; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = '0', 3200); }
+/* ================= RÉSILIATIONS (fonction « abonnement ») ================= */
+async function aboAdm(corps, encore){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/abonnement', { method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON }, body: JSON.stringify(corps) });
+  if(r.status === 401 && !encore && await rafraichirJeton()) return aboAdm(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d.erreur || ('HTTP ' + r.status));
+  return d;
+}
+function reOuvrir(){ $('re-ecran').classList.add('ouvert'); history.pushState({ re: 1 }, ''); reCharger(); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.re) && $('re-ecran').classList.contains('ouvert')) $('re-ecran').classList.remove('ouvert'); });
+async function reCharger(){
+  const c = $('re-corps'); c.innerHTML = '<div class="vide">Chargement…</div>';
+  let d; try{ d = await aboAdm({ action:'admin_liste' }); }catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(fonction « abonnement » déployée ?)</div>`; return; }
+  const L = d.liste || [], at = L.filter(x => x.statut === 'a_traiter');
+  c.innerHTML = `<div class="pg-sous" style="margin:0 0 12px">Chaque résiliation faite dans l'app. <b>« faite »</b> = Whop a confirmé tout seul, rien à faire. <b>« à traiter »</b> = Whop n'a pas répondu : va dans Whop → Members → la personne → <i>Cancel at period end</i>, puis touche « C'est fait dans Whop ».</div>
+    ${at.length ? `<div class="co-alerte-adm"><b>${at.length} à traiter dans Whop.</b></div>` : ''}
+    ${L.length ? L.map(x => `<div class="re-l"><b>${slE(x.email || x.user_id)}</b><span class="st ${x.statut}">${x.statut === 'a_traiter' ? 'à traiter' : x.statut === 'reprise' ? 'annulée par la personne' : 'faite'}</span> · ${slE(new Date(x.demande_le).toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }))}${x.membership_id ? ' · ' + slE(x.membership_id) : ''}${x.detail ? '<br><span style="color:var(--sourdine)">' + slE(x.detail) + '</span>' : ''}
+      ${x.statut === 'a_traiter' ? `<br><button onclick="reTraiter(${+x.id})">C'est fait dans Whop</button>` : ''}</div>`).join('') : '<div class="vide">Aucune résiliation pour l\'instant.</div>'}`;
+}
+async function reTraiter(id){ try{ await aboAdm({ action:'admin_traiter', id }); toast('Noté'); reCharger(); }catch(e){ toast('Erreur : ' + e.message); } }
 
 /* ================= ÉCRANS : fond figé, barre du bas cachée pendant la saisie ================= */
 function ecranAjuster(){
@@ -2743,7 +3119,7 @@ function kpiHtml(cls, l, v, s, cle, extra){
 function majTableauDeBord(){
   if(!document.body.classList.contains('co')) return;
   const j = new Date(), h = j.getHours();
-  $('acc-bonjour').textContent = (h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir') + ' Babs';
+  $('acc-bonjour').textContent = (h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir');
   $('acc-date').textContent = j.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, c => c.toUpperCase()) + ' · à jour à ' + j.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
   $('acc-per').innerHTML = PERIODES.map(([k, l]) => `<button class="${PER === k ? 'actif' : ''}" onclick="perChoisir('${k}')">${l}</button>`).join('');
   majKpis(); majTodo(); majProgCartes(); majLiveCartes(); majAffCarte(); majBadges();
