@@ -3495,7 +3495,7 @@ async function caFn(corps, deja){
 }
 async function caCharger(){
   if(!JETON) return;
-  try{ CA = await rpc('admin_candidatures'); }
+  try{ CA = await rpc('admin_affilie_candidatures'); }
   catch(e){ CA = { erreur: e.message, invitations: [], candidatures: [] }; }
   if(!CA_PURGE && !CA.erreur){ CA_PURGE = true; caFn({ action: 'purge' }).catch(() => {}); }
   majBadges();

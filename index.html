@@ -1685,6 +1685,109 @@ html.co-charge::after{content:"";position:fixed;top:0;left:0;height:3px;width:40
 .ep-choix button:disabled{opacity:.4}
 @media (max-width:360px){ .ep-lc .n{grid-template-columns:repeat(2,1fr)} .ep-kpi{grid-template-columns:repeat(2,1fr)} }
 
+/* ===== Messagerie partenaire (03/11/2026) ===== */
+#ep .ep-pm{position:relative;width:36px;height:36px;border-radius:11px;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0}
+#ep .ep-pm svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+#ep .ep-pm em{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#FF5C7A;color:#fff;font:800 10px/17px 'JetBrains Mono',monospace;font-style:normal;text-align:center}
+#ep .ep-pm em:empty{display:none}
+#ep.pm-mode .ep-nav,#ep.pm-mode .ep-pm,#ep.pm-mode .ep-niv{display:none}
+#ep.pm-mode .ep-corps{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.ep-pm-carte{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;margin:14px 16px 0;padding:13px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--ligne);width:calc(100% - 32px)}
+.ep-pm-carte .i{width:34px;height:34px;border-radius:10px;background:rgba(61,232,200,.12);color:var(--aura1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ep-pm-carte .i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.ep-pm-carte .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ep-pm-carte .t b{font-size:14px}.ep-pm-carte .t small{font-size:12px;color:var(--sourdine)}
+.ep-pm-carte .fl{color:var(--sourdine);font-size:20px}
+.pm-carte-n{flex-shrink:0;font:800 10.5px 'JetBrains Mono',monospace;padding:4px 8px;border-radius:99px;background:#FF5C7A;color:#fff;margin-right:6px}
+.pm-vue{padding:0 16px}
+.pm-intro{font-size:12.5px;line-height:1.5;color:var(--sourdine);padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:12px}
+.pm-intro b{display:block;color:var(--texte);font-size:13.5px;margin-bottom:2px}
+.pm-fil{display:flex;flex-direction:column;gap:6px}
+.pm-jour{align-self:center;font-size:11px;color:var(--sourdine);padding:4px 10px;border-radius:99px;background:var(--surface2);margin:8px 0 4px;text-transform:capitalize}
+.pm-m{max-width:82%;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere}
+.pm-m a{color:inherit;text-decoration:underline}
+.pm-m small{display:block;font-size:10px;opacity:.6;margin-top:3px;text-align:right;font-family:'JetBrains Mono',monospace}
+.pm-m .tk{margin-left:5px;letter-spacing:-2px}.pm-m .tk.lu{opacity:1;color:#0B4FD6}
+.pm-m.eq{align-self:flex-start;background:var(--surface2);border:1px solid var(--ligne);border-bottom-left-radius:6px}
+.pm-m.moi{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;border-bottom-right-radius:6px}
+.pm-vide{text-align:center;color:var(--sourdine);font-size:13px;padding:30px 10px}
+.pm-saisie{display:none;position:absolute;left:0;right:0;bottom:0;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(10,15,24,.97);border-top:1px solid var(--ligne);backdrop-filter:blur(10px)}
+#ep.pm-mode .pm-saisie{display:flex}
+.pm-saisie textarea{flex:1;margin:0;min-height:44px;height:44px;max-height:130px;resize:none;border-radius:22px;font-family:inherit;font-size:16px;line-height:1.3;padding:11px 15px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);outline:none}
+.pm-saisie button{width:44px;height:44px;border-radius:50%;border:0;align-self:flex-end;flex-shrink:0;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.pm-saisie button svg{width:19px;height:19px;fill:currentColor}
+.pm-saisie button:disabled{opacity:.5}
+.pm-erreur{position:absolute;left:12px;right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0px));padding:9px 12px;border-radius:12px;background:rgba(255,92,122,.14);border:1px solid rgba(255,92,122,.45);color:#FFB3C1;font-size:12.5px}
+
+/* ===== Candidature partenaire + signature (03/11/2026) ===== */
+#cand{position:fixed;inset:0;z-index:960;background:var(--nuit);display:none;flex-direction:column}
+#cand.actif{display:flex}
+body.cand-ouvert{overflow:hidden}
+.cand-haut{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 8px;flex-shrink:0}
+.cand-haut h1{font-family:'Unbounded',sans-serif;font-size:15px;margin:0;flex:1}
+.cand-x{width:36px;height:36px;border-radius:11px;background:var(--surface2);border:1px solid var(--ligne);color:var(--texte);font-size:15px;cursor:pointer;flex-shrink:0}
+.cand-prog{padding:0 16px 8px;flex-shrink:0}.cand-prog:empty{display:none}
+.cand-pas{display:flex;gap:5px}.cand-pas span{flex:1;height:4px;border-radius:9px;background:var(--surface2)}
+.cand-pas span.fait{background:var(--aura1)}.cand-pas span.ici{background:linear-gradient(90deg,var(--aura1),var(--aura2))}
+.cand-prog small{display:block;margin-top:7px;font-size:11.5px;color:var(--sourdine)}
+.cand-corps{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 24px}
+.cand-bas{display:flex;gap:10px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--ligne);background:rgba(10,15,24,.97);flex-shrink:0}
+.cand-bas:empty{display:none}
+.cand-b1,.cand-b2{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 16px;border-radius:14px;font:800 15px inherit;font-family:inherit;cursor:pointer;text-decoration:none;border:0;box-sizing:border-box}
+.cand-b1{background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+.cand-b1:disabled{opacity:.35;cursor:not-allowed}.cand-b1.pale{opacity:.55}
+.cand-b2{background:var(--surface2);color:var(--texte);border:1px solid var(--ligne);flex:0 0 auto}
+.cand-fin .cand-b2{width:100%;margin-top:14px;flex:1}
+.cand-bloc{padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);margin:6px 0 14px;font-size:13px;line-height:1.5;color:var(--sourdine)}
+.cand-bloc b{display:block;color:var(--texte);font-size:15px;margin-bottom:4px}.cand-bloc p{margin:4px 0 0}.cand-bloc p b{display:inline;font-size:inherit}
+.cand-note{font-size:12px}
+.cand-vide{text-align:center;color:var(--sourdine);padding:40px 10px;font-size:14px}
+.cand-ch{display:block;margin-bottom:12px}
+.cand-ch>span{display:block;font-size:12px;font-weight:700;color:var(--sourdine);margin-bottom:5px}
+.cand-ch input,.cand-ch select,.cand-ch textarea{width:100%;box-sizing:border-box;padding:12px 13px;border-radius:12px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font-family:inherit;font-size:16px;outline:none;margin:0}
+.cand-ch input:focus,.cand-ch select:focus,.cand-ch textarea:focus{border-color:rgba(61,232,200,.6)}
+.cand-ch input:disabled{opacity:.6}
+.cand-ch textarea{resize:vertical;line-height:1.4}
+.cand-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cand-sous{font:800 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--sourdine);margin:18px 0 10px}
+.cand-radio{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:8px;cursor:pointer}
+.cand-radio.a{border-color:var(--aura1);background:rgba(61,232,200,.07)}
+.cand-radio input{accent-color:var(--aura1);width:18px;height:18px;margin:0;flex-shrink:0}
+.cand-radio span b{display:block;font-size:14px}.cand-radio span small{display:block;font-size:12px;color:var(--sourdine);margin-top:2px}
+.cand-stop{margin:4px 0 14px;padding:13px 14px;border-radius:14px;background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.5);color:#FFC2CD;font-size:13px;line-height:1.5}
+.cand-stop b{display:block;color:#FF8FA3;font-size:14px;margin-bottom:3px}
+.cand-alerte{margin:0 0 12px;padding:11px 13px;border-radius:12px;background:rgba(255,180,84,.12);border:1px solid rgba(255,180,84,.45);color:#FFD9A6;font-size:12.5px;line-height:1.45}
+.cand-err{display:none;margin:4px 0 12px;padding:11px 13px;border-radius:12px;background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.45);color:#FFC2CD;font-size:13px}
+.cand-puces{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px}
+.cand-puce{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 11px;border-radius:99px;background:var(--surface2);font-size:12.5px}
+.cand-puce button{border:0;background:rgba(255,255,255,.1);color:var(--texte);width:20px;height:20px;border-radius:50%;cursor:pointer;line-height:1;padding:0}
+.cand-canal{padding:12px 12px 2px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:10px}
+.cand-canal .cand-ch input,.cand-canal .cand-ch select{background:var(--surface2)}
+.cand-lien{background:none;border:0;color:var(--sourdine);font:700 12.5px inherit;font-family:inherit;text-decoration:underline;cursor:pointer;padding:0 0 10px}
+.cand-ajout{width:100%;padding:12px;border-radius:14px;border:1px dashed var(--ligne);background:none;color:var(--aura1);font:800 14px inherit;font-family:inherit;cursor:pointer}
+.cand-up{padding:13px;border-radius:16px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:10px}
+.cand-up.ok{border-color:rgba(61,232,200,.45)}
+.cand-up .t b{display:block;font-size:14px}.cand-up .t small{display:block;font-size:12px;color:var(--sourdine);margin-top:3px;line-height:1.4}
+.cand-vigs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cand-vig{position:relative;width:70px;height:70px;border-radius:11px;overflow:hidden;background:var(--surface2)}
+.cand-vig img{width:100%;height:100%;object-fit:cover}
+.cand-vig button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;padding:0;line-height:1}
+.cand-plus{width:70px;height:70px;border-radius:11px;border:1px dashed var(--ligne);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--aura1);cursor:pointer;position:relative}
+.cand-plus input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.cand-code{font-size:12.5px;margin:-6px 0 12px;min-height:16px}.cand-code .ok{color:var(--aura1)}.cand-code .ko{color:#FF8FA3}
+.cand-cond{height:44vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;border-radius:16px;background:#F7F8FA;color:#1A1D24;font-size:13px;line-height:1.55;border:1px solid var(--ligne)}
+.cand-sig-ent{margin-top:6px}.cand-sig-ent img{width:150px;height:auto;display:block}
+.cand-lu{font-size:12px;color:#FFB454;margin:8px 0 12px;font-weight:700}.cand-lu.ok{color:var(--aura1)}
+.cand-case{display:flex;gap:11px;align-items:flex-start;padding:11px 12px;border-radius:13px;background:var(--surface);border:1px solid var(--ligne);margin-bottom:8px;font-size:13px;line-height:1.45;cursor:pointer}
+.cand-case input{accent-color:var(--aura1);width:20px;height:20px;margin:0;flex-shrink:0}
+.cand-case input:disabled+span{opacity:.5}
+.cand-pad-t{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--sourdine);margin:6px 0 6px}
+.cand-pad-t .cand-lien{padding:0}
+.cand-pad{display:block;width:100%;height:170px;border-radius:14px;background:#fff;border:1px solid var(--ligne);touch-action:none;cursor:crosshair}
+.cand-fin{text-align:center;padding:30px 6px}
+.cand-fin .i{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.cand-fin b{display:block;font-size:19px;margin-bottom:8px}.cand-fin p{color:var(--sourdine);font-size:14px;line-height:1.5;margin:0}
+.cand-etat-c{border-color:rgba(255,180,84,.5) !important}
+
 </style>
 </head>
 <body>
@@ -4630,6 +4733,10 @@ function ouvrirNotifs(){
     const v = /valides=(\d{4}-\d{2}-\d{2})/.exec(n.lien || '');
     if(v) return `onclick="fermerNotifs();ouvrirValides('${v[1]}')" style="cursor:pointer"`;
     if(/offres=1/.test(n.lien || '')) return `onclick="fermerNotifs();allerOffres()" style="cursor:pointer"`;
+    if(/^ep=messages$/.test(n.lien || '')) return `onclick="pmDepuisNotif()" style="cursor:pointer"`;
+    if(/^(ep=conditions|candidature=1)$/.test(n.lien || '')) return `onclick="candDepuisNotif('${n.lien}')" style="cursor:pointer"`;
+    const caA = /^admin\.html#candidature=(\d+)$/.exec(n.lien || ''); if(caA) return `onclick="location.href='admin.html#candidature=${caA[1]}'" style="cursor:pointer"`;
+    const pmA = /^admin\.html#pm=([0-9a-f-]{36})$/.exec(n.lien || ''); if(pmA) return `onclick="location.href='admin.html#pm=${pmA[1]}'" style="cursor:pointer"`;
     if(!EST_ADMIN || !/valid/i.test(n.titre || '')) return '';
     const j = (String(n.corps || '').match(/\d{4}-\d{2}-\d{2}/) || [new Date(n.cree_le).toISOString().slice(0,10)])[0];
     return `onclick="location.href='admin.html#preuves=${j}'" style="cursor:pointer"`;
@@ -7565,6 +7672,537 @@ async function envoyerRetrait(){
               BIC:'BIC invalide (8 ou 11 caractères).', TITULAIRE:'Indique le nom du titulaire du compte.' };
   err(m[res?.raison] || 'Erreur — réessaie dans un instant.');
 }
+
+/* ===== Messagerie partenaire (03/11/2026) =====
+   Discussion entre le partenaire et « l'équipe AURA90 », dans l'espace partenaire.
+   Bouton bulle en haut de l'espace (avec le nombre de messages non lus), vue plein écran sans la barre du bas,
+   rafraîchie toutes les 4 s tant qu'elle est ouverte. Côté admin : admin.html → Affiliés → Messages. */
+let PM_MSG = [], PM_DERNIER = 0, PM_LU = 0, PM_NL = 0, PM_ACTIF = false, PM_RETOUR = 'accueil', PM_T = null, PM_TB = null, PM_ENVOI = false;
+
+async function pmRpc(nom, corps){
+  const appel = () => fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/' + nom, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + SESSION.access },
+    body: JSON.stringify(corps || {})
+  });
+  let r = await appel();
+  if(r.status === 401 && typeof rafraichirSession === 'function' && await rafraichirSession()) r = await appel();
+  const t = await r.text(); let d = null; try{ d = t ? JSON.parse(t) : null; }catch(e){}
+  if(!r.ok) throw new Error((d && (d.message || d.hint)) || 'Erreur réseau');
+  return d;
+}
+const pmEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const pmLiens = s => pmEsc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+const pmHeure = d => new Date(d).toLocaleTimeString(typeof LOC !== 'undefined' ? LOC : 'fr-FR', { hour: '2-digit', minute: '2-digit' });
+function pmJour(d){
+  const x = new Date(d), a = new Date(); const j = k => new Date(a.getFullYear(), a.getMonth(), a.getDate() - k).toDateString();
+  if(x.toDateString() === j(0)) return "Aujourd'hui";
+  if(x.toDateString() === j(1)) return 'Hier';
+  return x.toLocaleDateString(typeof LOC !== 'undefined' ? LOC : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+
+// ---------- badges (bouton de l'espace + carte « Espace partenaire » de Mon compte)
+function pmBadges(){
+  const b = $('ep-pm-n'); if(b) b.textContent = PM_NL > 0 ? (PM_NL > 9 ? '9+' : PM_NL) : '';
+  const c = document.querySelector('#zone-partenaire .ep-carte');
+  if(c){
+    let e = c.querySelector('.pm-carte-n');
+    if(PM_NL > 0){ if(!e){ e = document.createElement('span'); e.className = 'pm-carte-n'; c.insertBefore(e, c.querySelector('.fl')); } e.textContent = PM_NL + ' message' + (PM_NL > 1 ? 's' : ''); }
+    else if(e) e.remove();
+  }
+}
+async function pmCompter(){
+  if(!estConnecte() || !EP || EP.statut !== 'actif') return;
+  try{ PM_NL = await pmRpc('pm_non_lus') || 0; }catch(e){ return; }
+  if(PM_ACTIF) PM_NL = 0;
+  pmBadges();
+}
+
+// ---------- bouton bulle dans l'en-tête de l'espace partenaire
+function pmBouton(){
+  const h = document.querySelector('#ep .ep-haut'); if(!h || $('ep-pm')) return;
+  const b = document.createElement('button');
+  b.id = 'ep-pm'; b.className = 'ep-pm'; b.setAttribute('aria-label', 'Messages');
+  b.onclick = () => epTab('messages');
+  b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><em id="ep-pm-n"></em>';
+  h.insertBefore(b, $('ep-niv'));
+  const r = h.querySelector('.ep-ret');
+  if(r) r.onclick = () => { if(PM_ACTIF) epTab(PM_RETOUR); else fermerEP(); };
+}
+
+(function(){
+  const o0 = ouvrirEP;
+  window.ouvrirEP = function(tab){
+    const r = o0(tab);
+    pmBouton(); pmCompter();
+    clearInterval(PM_TB); PM_TB = setInterval(() => { if(!document.hidden && $('ep')?.classList.contains('actif') && !PM_ACTIF) pmCompter(); }, 30000);
+    return r;
+  };
+  const f0 = fermerEP;
+  window.fermerEP = function(retour){ pmQuitter(); clearInterval(PM_TB); return f0(retour); };
+  const t0 = epTab;
+  window.epTab = function(t){
+    if(t !== 'messages'){ if(PM_ACTIF) pmQuitter(); return t0(t); }
+    if(!PM_ACTIF && typeof EP_TAB !== 'undefined' && EP_TAB !== 'messages') PM_RETOUR = EP_TAB;
+    EP_TAB = 'messages';
+    pmOuvrir();
+  };
+  const c0 = chargerPartenaire;
+  window.chargerPartenaire = async function(){ const r = await c0(); pmCompter(); return r; };
+  const a0 = epAccueil;
+  window.epAccueil = function(){
+    return a0() + `<button class="ep-pm-carte" onclick="epTab('messages')"><span class="i"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span>
+      <span class="t"><b>Une question ? Écris à l'équipe</b><small>Liens, contenus, retraits : on te répond ici.</small></span><span class="fl">›</span></button>`;
+  };
+})();
+
+// ---------- vue « Messages »
+function pmOuvrir(){
+  const ep = $('ep'); if(!ep) return;
+  PM_ACTIF = true; ep.classList.add('pm-mode');
+  document.querySelectorAll('#ep .ep-nav button').forEach(b => b.classList.remove('a'));
+  $('ep-titre').textContent = 'Messages';
+  PM_MSG = []; PM_DERNIER = 0; PM_LU = 0;
+  const c = $('ep-corps');
+  c.innerHTML = `<div class="pm-vue">
+      <div class="pm-intro"><b>L'équipe AURA90</b>Pose tes questions ici : liens, contenus à valider, retraits. On te répond en général dans la journée, et tu reçois une notification.</div>
+      <div class="pm-fil" id="pm-fil"><div class="pm-vide">Chargement…</div></div>
+    </div>`;
+  let s = $('pm-saisie');
+  if(!s){
+    s = document.createElement('div'); s.id = 'pm-saisie'; s.className = 'pm-saisie';
+    s.innerHTML = `<textarea id="pm-texte" rows="1" maxlength="2000" placeholder="Écris ton message…"></textarea><button id="pm-env" aria-label="Envoyer" onclick="pmEnvoyer()"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button>`;
+    ep.appendChild(s);
+    const ta = s.querySelector('textarea');
+    ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 130) + 'px'; });
+    ta.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey && !/Android|iPhone|iPad/i.test(navigator.userAgent)){ e.preventDefault(); pmEnvoyer(); } });
+  }
+  $('pm-erreur')?.remove();
+  PM_NL = 0; pmBadges();
+  pmCharger(true);
+  clearInterval(PM_T); PM_T = setInterval(() => { if(!document.hidden && PM_ACTIF) pmCharger(false); }, 4000);
+}
+function pmQuitter(){
+  PM_ACTIF = false; clearInterval(PM_T);
+  $('ep')?.classList.remove('pm-mode');
+}
+function pmBulle(m){
+  const moi = m.auteur === 'partenaire';
+  const tk = moi ? `<span class="tk${m.id <= PM_LU ? ' lu' : ''}">${m.id <= PM_LU ? '✓✓' : '✓'}</span>` : '';
+  return `<div class="pm-m ${moi ? 'moi' : 'eq'}" data-id="${m.id}">${pmLiens(m.texte)}<small>${pmHeure(m.cree_le)}${tk}</small></div>`;
+}
+function pmRendre(){
+  const f = $('pm-fil'); if(!f) return;
+  if(!PM_MSG.length){ f.innerHTML = `<div class="pm-vide">Pas encore de message. Écris le premier !</div>`; return; }
+  let jour = '', h = '';
+  PM_MSG.forEach(m => { const j = pmJour(m.cree_le); if(j !== jour){ jour = j; h += `<div class="pm-jour">${pmEsc(j)}</div>`; } h += pmBulle(m); });
+  f.innerHTML = h;
+}
+function pmEnBas(){ const c = $('ep-corps'); if(c) c.scrollTop = c.scrollHeight; }
+async function pmCharger(premier){
+  let d;
+  try{ d = await pmRpc('pm_mes_messages', { p_apres: premier ? 0 : PM_DERNIER }); }
+  catch(e){ if(premier){ const f = $('pm-fil'); if(f) f.innerHTML = `<div class="pm-vide">${pmEsc(e.message)}</div>`; } return; }
+  if(!PM_ACTIF || !d) return;
+  const nv = (d.messages || []).filter(m => m.id > PM_DERNIER);
+  const lu = d.lu_jusqua || 0, luChange = lu !== PM_LU;
+  PM_LU = lu;
+  if(!nv.length && !premier){ if(luChange) pmRendre(); return; }
+  const c = $('ep-corps'), bas = premier || (c && c.scrollHeight - c.scrollTop - c.clientHeight < 120);
+  PM_MSG = PM_MSG.concat(nv); if(nv.length) PM_DERNIER = nv[nv.length - 1].id;
+  pmRendre(); if(bas) pmEnBas();
+}
+async function pmEnvoyer(){
+  const ta = $('pm-texte'), t = (ta?.value || '').trim();
+  if(!t || PM_ENVOI) return;
+  PM_ENVOI = true; $('pm-env').disabled = true; $('pm-erreur')?.remove();
+  try{
+    const m = await pmRpc('pm_envoyer', { p_texte: t });
+    ta.value = ''; ta.style.height = 'auto';
+    if(m && m.id > PM_DERNIER){ PM_MSG.push(m); PM_DERNIER = m.id; }
+    pmRendre(); pmEnBas();
+  }catch(e){
+    const p = document.createElement('div'); p.id = 'pm-erreur'; p.className = 'pm-erreur'; p.textContent = e.message;
+    $('pm-saisie').before(p);
+  }finally{ PM_ENVOI = false; $('pm-env').disabled = false; }
+}
+
+// depuis une notification « Nouveau message de l'équipe AURA90 »
+async function pmDepuisNotif(){
+  if(typeof fermerNotifs === 'function') fermerNotifs();
+  if(!EP || EP.statut !== 'actif'){ try{ EP = await epRpc('espace_partenaire'); }catch(e){} }
+  if(EP && EP.statut === 'actif'){ await ouvrirEP('accueil'); if($('ep')?.classList.contains('actif')) epTab('messages'); }
+}
+
+/* ===== Candidature partenaire sur invitation + signature des Conditions partenaire (03/11/2026) =====
+   ?invitation=JETON  → formulaire en 6 étapes (le lien est gardé dans le téléphone pendant la connexion / Google)
+   Compte             → état de la candidature (en examen, complément demandé, refusée)
+   Espace partenaire  → si une nouvelle version des conditions est publiée : re-signature obligatoire (liens en pause sinon)
+   Tout est vérifié et signé côté serveur par la fonction « candidature » (IP, appareil, empreinte du texte, PDF). */
+const CAND_FN = () => CONFIG.SUPABASE_URL + '/functions/v1/candidature';
+const CAND_ETAPES = ['Identité', 'Statut', 'Public', 'Captures', 'Projet', 'Signature'];
+const CAND_CANAUX = [['tiktok', 'TikTok'], ['instagram', 'Instagram'], ['youtube', 'YouTube'], ['groupe_whatsapp', 'Groupe WhatsApp'], ['chaine_whatsapp', 'Chaîne WhatsApp'], ['telegram', 'Telegram'], ['autre', 'Autre']];
+const CAND_PRIORITE = ['SN', 'CI', 'ML', 'BF', 'GN', 'CM', 'TG', 'BJ', 'NE', 'CD', 'CG', 'GA', 'MA', 'DZ', 'TN', 'MR', 'TD', 'MG', 'BE', 'CH', 'CA'];
+let CAND = null;   // { mode, jeton, etape, d, fichiers[], cond, lu, sig, envoi }
+
+const candEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const candLS = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k, v){ try{ v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); }catch(e){} } };
+async function candFn(corps){
+  const h = { 'Content-Type': 'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + (SESSION.access || CONFIG.SUPABASE_KEY) };
+  let r = await fetch(CAND_FN(), { method: 'POST', headers: h, body: JSON.stringify(corps) });
+  if(r.status === 401 && SESSION.access && typeof rafraichirSession === 'function' && await rafraichirSession()){ h.Authorization = 'Bearer ' + SESSION.access; r = await fetch(CAND_FN(), { method: 'POST', headers: h, body: JSON.stringify(corps) }); }
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok && !d.erreur) d.erreur = r.status === 401 ? 'Connecte-toi d\'abord.' : 'Erreur réseau, réessaie.';
+  return d;
+}
+const candNomPays = c => { const p = (typeof PAYS_PAR_CODE !== 'undefined') && PAYS_PAR_CODE[c]; try{ return p ? nomPays(p) : c; }catch(e){ return c; } };
+function candOptionsPays(sel, vide){
+  const tous = (typeof PAYS !== 'undefined' ? PAYS : []).map(p => p.c).filter(c => /^[A-Z]{2}$/.test(c));
+  const tri = [...CAND_PRIORITE.filter(c => tous.includes(c)), ...tous.filter(c => !CAND_PRIORITE.includes(c)).sort((a, b) => candNomPays(a).localeCompare(candNomPays(b), 'fr'))];
+  return (vide ? `<option value="">${vide}</option>` : '') + tri.map(c => `<option value="${c}"${c === sel ? ' selected' : ''}>${candEsc(candNomPays(c))}</option>`).join('');
+}
+function candAge(n){ if(!/^\d{4}-\d{2}-\d{2}$/.test(n || '')) return null; const d = new Date(n + 'T12:00:00'), a = new Date(); let x = a.getFullYear() - d.getFullYear(); if(a.getMonth() < d.getMonth() || (a.getMonth() === d.getMonth() && a.getDate() < d.getDate())) x--; return x; }
+
+// ---------- brouillon (sans les fichiers ni la signature)
+function candSauver(){ if(CAND && CAND.mode === 'candidature') candLS.set('aura90_cand_brouillon', JSON.stringify({ jeton: CAND.jeton, d: CAND.d, etape: CAND.etape })); }
+function candBrouillon(jeton){ try{ const b = JSON.parse(candLS.get('aura90_cand_brouillon') || 'null'); return b && b.jeton === jeton ? b : null; }catch(e){ return null; } }
+
+// ---------- écran
+function candEcran(){
+  let el = $('cand');
+  if(!el){
+    el = document.createElement('div'); el.id = 'cand';
+    el.innerHTML = `<div class="cand-haut"><button class="cand-x" onclick="candFermer()" aria-label="Fermer">✕</button><h1 id="cand-titre">Candidature partenaire</h1></div>
+      <div class="cand-prog" id="cand-prog"></div>
+      <div class="cand-corps" id="cand-corps"></div>
+      <div class="cand-bas" id="cand-bas"></div>`;
+    document.body.appendChild(el);
+  }
+  el.classList.add('actif'); try{ document.body.classList.add('cand-ouvert'); }catch(e){}
+  return el;
+}
+function candFermer(){ $('cand')?.classList.remove('actif'); document.body.classList.remove('cand-ouvert'); if(CAND) candSauver(); if(CAND && CAND.mode === 'resigner') CAND = null; }
+
+// ---------- point d'entrée : lien d'invitation
+async function candOuvrir(jeton){
+  jeton = jeton || candLS.get('aura90_invitation'); if(!jeton) return;
+  candEcran();
+  $('cand-titre').textContent = 'Candidature partenaire'; $('cand-prog').innerHTML = ''; $('cand-bas').innerHTML = '';
+  $('cand-corps').innerHTML = `<div class="cand-vide">Vérification de ton invitation…</div>`;
+  const inv = await candFn({ action: 'invitation', jeton });
+  if(!inv.ok){
+    candLS.set('aura90_invitation', null);
+    const m = { expiree: 'Ce lien d\'invitation a expiré (il est valable 7 jours).', annulee: 'Ce lien d\'invitation a été annulé.', candidature: 'Ce lien a déjà servi pour une candidature.' }[inv.etat] || 'Ce lien d\'invitation n\'est pas valable.';
+    $('cand-corps').innerHTML = `<div class="cand-bloc cand-stop"><b>Lien non valable</b><p>${m} Demande un nouveau lien à l'équipe AURA90.</p></div>`;
+    $('cand-bas').innerHTML = `<button class="cand-b2" onclick="candFermer()">Fermer</button>`; return;
+  }
+  if(!estConnecte()){
+    $('cand-corps').innerHTML = `<div class="cand-bloc"><b>Tu es invité à devenir partenaire AURA90</b>
+        <p>Pour candidater, connecte-toi ou crée ton compte AURA90 (Google ou email). Ton invitation est gardée : le formulaire se rouvre tout seul ensuite.</p>
+        <p class="cand-note">Le lien expire le ${new Date(inv.expire_le).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}.</p></div>`;
+    $('cand-bas').innerHTML = `<button class="cand-b1" onclick="candVersConnexion()">Me connecter / créer mon compte</button>`; return;
+  }
+  const ec = await epRpc('ma_candidature').catch(() => null);
+  if(ec && ['a_examiner', 'complement'].includes(ec.statut)){
+    $('cand-corps').innerHTML = `<div class="cand-bloc"><b>Tu as déjà une candidature en cours</b><p>Elle est en cours d'examen. Tu retrouves son état dans l'onglet Compte.</p></div>`;
+    $('cand-bas').innerHTML = `<button class="cand-b2" onclick="candFermer()">Fermer</button>`; return;
+  }
+  if(CAND && CAND.mode === 'candidature' && CAND.jeton === jeton){ candRendre(); return; }   // reprise sans perdre les captures déjà ajoutées
+  const b = candBrouillon(jeton);
+  CAND = { mode: 'candidature', jeton, etape: b ? Math.min(b.etape || 0, 4) : 0, d: Object.assign({ canaux: [{ type: 'tiktok', lien: '', abonnes: '' }], public_autres: [], statut_juridique: 'particulier', paiement: '' }, b ? b.d : {}),
+           fichiers: [], cond: null, lu: false, sig: { nom: '', vide: true, a: false, b: false, c: false }, envoi: false };
+  candRendre();
+}
+function candVersConnexion(){ candFermer(); try{ allerPage('compte'); }catch(e){} setTimeout(() => { const a = $('bloc-auth'); if(a) a.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300); }
+
+// ---------- rendu d'une étape
+function candRendre(){
+  const c = CAND; candEcran();
+  $('cand-titre').textContent = c.mode === 'resigner' ? 'Nouvelles Conditions partenaire' : c.mode === 'complement' ? 'Complément demandé' : 'Candidature partenaire';
+  $('cand-prog').innerHTML = c.mode === 'candidature' ? `<div class="cand-pas">${CAND_ETAPES.map((e, i) => `<span class="${i < c.etape ? 'fait' : i === c.etape ? 'ici' : ''}"></span>`).join('')}</div><small>Étape ${c.etape + 1} sur ${CAND_ETAPES.length} · ${CAND_ETAPES[c.etape]}</small>` : '';
+  const corps = c.mode === 'complement' ? candComplement() : c.mode === 'resigner' ? candSignature() : [candIdentite, candStatut, candPublic, candCaptures, candProjet, candSignature][c.etape]();
+  $('cand-corps').innerHTML = `<div class="cand-err" id="cand-err"></div>` + corps;
+  $('cand-corps').scrollTop = 0;
+  const dernier = c.mode !== 'candidature' || c.etape === CAND_ETAPES.length - 1;
+  $('cand-bas').innerHTML = (c.mode === 'candidature' && c.etape > 0 ? `<button class="cand-b2" onclick="candPrec()">Retour</button>` : '') +
+    (c.mode === 'complement' ? `<button class="cand-b1" id="cand-go" onclick="candEnvoyerComplement()">Envoyer</button>`
+      : dernier ? `<button class="cand-b1" id="cand-go" onclick="candSigner()" disabled>Signer et envoyer</button>`
+      : `<button class="cand-b1" id="cand-go" onclick="candSuiv()">Continuer</button>`);
+  if(dernier && c.mode !== 'complement') candInitSignature();
+  candMajEtat();
+}
+function candErreur(m){ const e = $('cand-err'); if(e){ e.textContent = m || ''; e.style.display = m ? 'block' : 'none'; if(m) e.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+const candChamp = (k, label, type = 'text', extra = '') => `<label class="cand-ch"><span>${label}</span><input type="${type}" value="${candEsc(CAND.d[k] || '')}" oninput="CAND.d['${k}']=this.value;candSauver();candMajEtat()" ${extra}></label>`;
+
+function candIdentite(){
+  const a = candAge(CAND.d.naissance);
+  return `<div class="cand-bloc"><b>Qui es-tu ?</b><p>Ces informations figurent sur tes Conditions partenaire signées. Elles ne sont visibles que par l'équipe AURA90.</p></div>
+    <div class="cand-g2">${candChamp('prenom', 'Prénom', 'text', 'autocomplete="given-name"')}${candChamp('nom', 'Nom', 'text', 'autocomplete="family-name"')}</div>
+    ${candChamp('naissance', 'Date de naissance', 'date', `max="${new Date().toISOString().slice(0, 10)}"`)}
+    <div class="cand-stop" id="cand-mineur" style="display:${a !== null && a < 18 ? 'block' : 'none'}"><b>Il faut avoir 18 ans ou plus</b>Le programme partenaire AURA90 est réservé aux adultes.</div>
+    <label class="cand-ch"><span>Pays de résidence</span><select onchange="CAND.d.pays_residence=this.value;candSauver();candMajEtat()">${candOptionsPays(CAND.d.pays_residence, 'Choisis ton pays')}</select></label>
+    ${candChamp('ville', 'Ville', 'text', 'autocomplete="address-level2"')}
+    ${candChamp('adresse', 'Adresse', 'text', 'autocomplete="street-address"')}
+    ${candChamp('whatsapp', 'Téléphone WhatsApp (avec l\'indicatif)', 'tel', 'placeholder="+221 77 000 00 00" autocomplete="tel"')}
+    <label class="cand-ch"><span>Email du compte</span><input value="${candEsc(SESSION.email || '')}" disabled></label>`;
+}
+function candStatut(){
+  const s = CAND.d.statut_juridique;
+  const r = (k, l, sous) => `<label class="cand-radio${s === k ? ' a' : ''}"><input type="radio" name="cand-st" ${s === k ? 'checked' : ''} onchange="CAND.d.statut_juridique='${k}';candSauver();candRendre()"><span><b>${l}</b><small>${sous}</small></span></label>`;
+  return `<div class="cand-bloc"><b>Ton statut</b><p>Tu agis en indépendant : tu déclares toi-même tes commissions dans ton pays.</p></div>
+    ${r('particulier', 'Particulier', 'Tu n\'as pas de structure')}${r('auto', 'Auto-entrepreneur', 'Entreprise individuelle, micro-entreprise…')}${r('societe', 'Société', 'SARL, SAS, SUARL…')}
+    ${s === 'societe' ? candChamp('societe_nom', 'Nom de la société') + candChamp('societe_num', 'Numéro d\'immatriculation (RCCM, NINEA, SIRET…)') : ''}
+    ${s === 'auto' ? candChamp('societe_num', 'Numéro d\'immatriculation (facultatif)') : ''}`;
+}
+function candPublic(){
+  const d = CAND.d, fr = d.public_pays === 'FR';
+  const autres = (d.public_autres || []).map(c => `<span class="cand-puce">${candEsc(candNomPays(c))}<button onclick="CAND.d.public_autres=CAND.d.public_autres.filter(x=>x!=='${c}');candSauver();candRendre()" aria-label="Retirer">×</button></span>`).join('');
+  const canal = (x, i) => `<div class="cand-canal">
+      <div class="cand-g2"><label class="cand-ch"><span>Type</span><select onchange="CAND.d.canaux[${i}].type=this.value;candSauver();candRendre()">${CAND_CANAUX.map(([k, l]) => `<option value="${k}"${x.type === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="cand-ch"><span>${/whatsapp|telegram/.test(x.type) ? 'Membres' : 'Abonnés'}</span><input type="number" min="0" inputmode="numeric" value="${candEsc(x.abonnes)}" oninput="CAND.d.canaux[${i}].abonnes=this.value;candSauver();candMajEtat()"></label></div>
+      <label class="cand-ch"><span>Lien ou nom</span><input value="${candEsc(x.lien)}" placeholder="${/whatsapp|telegram/.test(x.type) ? 'Nom du groupe ou lien d\'invitation' : 'https://… ou @pseudo'}" oninput="CAND.d.canaux[${i}].lien=this.value;candSauver();candMajEtat()"></label>
+      ${d.canaux.length > 1 ? `<button class="cand-lien" onclick="CAND.d.canaux.splice(${i},1);CAND.fichiers=CAND.fichiers.filter(f=>f.canal!==${i}).map(f=>f.canal>${i}?{...f,canal:f.canal-1}:f);candSauver();candRendre()">Retirer ce canal</button>` : ''}
+    </div>`;
+  return `<div class="cand-bloc"><b>Ton public</b><p>AURA90 n'accepte que des partenaires dont le public est <b>hors de France</b>.</p></div>
+    <label class="cand-ch"><span>Pays principal de ton audience</span><select onchange="CAND.d.public_pays=this.value;candSauver();candRendre()">${candOptionsPays(d.public_pays, 'Choisis un pays')}</select></label>
+    ${fr ? `<div class="cand-stop"><b>Nous ne pouvons pas accepter de partenaires dont le public est en France.</b>La loi française interdit la promotion payée d'abonnements de pronostics sportifs auprès d'un public en France.</div>` : `
+    <label class="cand-ch"><span>Autres pays de ton audience (facultatif)</span><select onchange="if(this.value&&!CAND.d.public_autres.includes(this.value)){CAND.d.public_autres.push(this.value);candSauver();candRendre()}">${candOptionsPays('', 'Ajouter un pays')}</select></label>
+    ${autres ? `<div class="cand-puces">${autres}</div>` : ''}
+    ${(d.public_autres || []).includes('FR') ? `<div class="cand-alerte">Tu as indiqué la France parmi tes pays : tu t'engages à ne faire aucune promotion auprès de ce public.</div>` : ''}
+    <div class="cand-sous">Tes canaux</div>
+    ${d.canaux.map(canal).join('')}
+    ${d.canaux.length < 8 ? `<button class="cand-ajout" onclick="CAND.d.canaux.push({type:'instagram',lien:'',abonnes:''});candSauver();candRendre()">＋ Ajouter un canal</button>` : ''}`}`;
+}
+function candVignettes(filtre){
+  return CAND.fichiers.map((f, i) => filtre(f) ? `<div class="cand-vig"><img src="data:${f.mime};base64,${f.data}" alt=""><button onclick="CAND.fichiers.splice(${i},1);candRendre()" aria-label="Retirer">×</button></div>` : '').join('');
+}
+function candCaptures(){
+  const d = CAND.d;
+  const bloc = (x, i) => {
+    const groupe = /whatsapp|telegram/.test(x.type), n = CAND.fichiers.filter(f => f.type === 'capture' && f.canal === i).length;
+    const nom = (CAND_CANAUX.find(c => c[0] === x.type) || [, 'Canal'])[1];
+    return `<div class="cand-up${n ? ' ok' : ''}"><div class="t"><b>${nom} · ${candEsc(x.lien || '')}</b>
+        <small>${groupe ? 'La liste des membres où l\'on voit les indicatifs des numéros (plusieurs captures si besoin).' : 'Les statistiques d\'audience par pays (outil statistiques de ton compte).'}</small></div>
+      <div class="cand-vigs">${candVignettes(f => f.type === 'capture' && f.canal === i)}<label class="cand-plus">＋<input type="file" accept="image/*" multiple onchange="candAjouterFichiers(this,'capture',${i})"></label></div></div>`;
+  };
+  const nid = CAND.fichiers.filter(f => f.type === 'identite').length;
+  return `<div class="cand-bloc"><b>Tes captures</b><p>Elles servent à vérifier où se trouve ton public. Elles ne sont visibles que par l'équipe AURA90.</p></div>
+    ${d.canaux.map(bloc).join('')}
+    <div class="cand-up${nid ? ' ok' : ''}"><div class="t"><b>Pièce d'identité</b><small>Carte d'identité (recto et verso) ou passeport, lisible. Elle confirme ton identité et ton âge.</small></div>
+      <div class="cand-vigs">${candVignettes(f => f.type === 'identite')}<label class="cand-plus">＋<input type="file" accept="image/*" multiple onchange="candAjouterFichiers(this,'identite')"></label></div></div>`;
+}
+function candProjet(){
+  const d = CAND.d, p = d.paiement;
+  const r = (k, l, sous) => `<label class="cand-radio${p === k ? ' a' : ''}"><input type="radio" name="cand-pay" ${p === k ? 'checked' : ''} onchange="CAND.d.paiement='${k}';candSauver();candRendre()"><span><b>${l}</b><small>${sous}</small></span></label>`;
+  return `<div class="cand-bloc"><b>Ton projet</b></div>
+    <label class="cand-ch"><span>Ce que tu comptes publier</span><textarea rows="3" oninput="CAND.d.projet_contenu=this.value;candSauver();candMajEtat()" placeholder="Ex. : vidéos d'analyse des matchs, présentation de l'app…">${candEsc(d.projet_contenu || '')}</textarea></label>
+    <div class="cand-g2">${candChamp('projet_frequence', 'Fréquence', 'text', 'placeholder="Ex. : 3 vidéos / semaine"')}${candChamp('projet_abonnes', 'Abonnés ramenés / mois', 'number', 'min="0" inputmode="numeric"')}</div>
+    <div class="cand-sous">Ton code partenaire</div>
+    <label class="cand-ch"><span>Code souhaité (4 à 10 lettres ou chiffres)</span><input value="${candEsc(d.code || '')}" maxlength="10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');CAND.d.code=this.value;CAND.codeOk=null;candSauver();candVerifCode()"></label>
+    <div class="cand-code" id="cand-code"></div>
+    ${candChamp('whop_pseudo', 'Ton pseudo Whop (facultatif)', 'text', 'placeholder="@pseudo"')}
+    <div class="cand-sous">Paiement de tes commissions</div>
+    ${r('whop', 'Whop', 'Paiements par carte versés directement par Whop')}${r('mm', 'Mobile Money', 'Wave, Orange Money…')}${r('virement', 'Virement bancaire', 'Sur un compte à ton nom')}`;
+}
+let CAND_T = null;
+function candVerifCode(){
+  clearTimeout(CAND_T); const z = $('cand-code'), c = CAND.d.code || '';
+  if(!/^[A-Z0-9]{4,10}$/.test(c)){ if(z) z.innerHTML = c ? '<span class="ko">4 à 10 lettres ou chiffres</span>' : ''; candMajEtat(); return; }
+  if(z) z.innerHTML = '<span>Vérification…</span>';
+  CAND_T = setTimeout(async () => {
+    const ok = await epRpc('code_partenaire_libre', { p_code: c }).catch(() => null);
+    if(CAND.d.code !== c) return;
+    CAND.codeOk = ok === true;
+    if($('cand-code')) $('cand-code').innerHTML = ok === true ? '<span class="ok">✓ Disponible</span>' : '<span class="ko">Déjà pris : choisis-en un autre</span>';
+    candMajEtat();
+  }, 450);
+}
+function candSignature(){
+  const s = CAND.sig, cond = CAND.cond;
+  const ca = (k, t) => `<label class="cand-case${s.ok === false && !s[k] ? ' ko' : ''}"><input type="checkbox" ${s[k] ? 'checked' : ''} ${CAND.lu ? '' : 'disabled'} onchange="CAND.sig.${k}=this.checked;candMajEtat()"><span>${t}</span></label>`;
+  return `${CAND.mode === 'resigner' ? `<div class="cand-bloc"><b>Une nouvelle version des Conditions partenaire est publiée</b><p>Tes liens sont en pause jusqu'à ta signature. Lis le texte jusqu'au bout, puis signe.</p></div>` : ''}
+    <div class="cand-cond" id="cand-cond" onscroll="candLu(this)">${cond ? candEsc(cond.texte).replace(/\n/g, '<br>') + `<div class="cand-sig-ent"><img src="${cond.signature_entreprise}" alt="Signature d'Admir Gomis"></div>` : '<div class="cand-vide">Chargement des conditions…</div>'}</div>
+    <div class="cand-lu" id="cand-lu">${CAND.lu ? '✓ Conditions lues jusqu\'au bout' : '↓ Fais défiler le texte jusqu\'en bas pour pouvoir signer'}</div>
+    ${ca('a', `J'ai lu et j'accepte les Conditions partenaire AURA90 (${candEsc(cond ? cond.version : '…')}).`)}
+    ${ca('b', 'Je déclare que mon public n\'est pas situé en France et que je ne ferai aucune promotion d\'AURA90 auprès d\'un public en France.')}
+    ${ca('c', 'Je certifie avoir 18 ans ou plus et que les informations et captures fournies sont exactes.')}
+    <label class="cand-ch"><span>Ton nom complet</span><input id="cand-nom" value="${candEsc(s.nom)}" oninput="CAND.sig.nom=this.value;candMajEtat()" autocomplete="name"></label>
+    <div class="cand-pad-t"><span>Ta signature (au doigt ou à la souris)</span><button class="cand-lien" onclick="candEffacerSig()">Effacer</button></div>
+    <canvas id="cand-pad" class="cand-pad"></canvas>`;
+}
+function candComplement(){
+  return `<div class="cand-bloc"><b>L'équipe AURA90 te demande :</b><p>${candEsc(CAND.msg || '').replace(/\n/g, '<br>')}</p></div>
+    <label class="cand-ch"><span>Ton message (facultatif)</span><textarea rows="3" oninput="CAND.d.message=this.value">${candEsc(CAND.d.message || '')}</textarea></label>
+    <div class="cand-up${CAND.fichiers.length ? ' ok' : ''}"><div class="t"><b>Tes captures</b><small>Tu n'as pas besoin de re-signer.</small></div>
+      <div class="cand-vigs">${candVignettes(() => true)}<label class="cand-plus">＋<input type="file" accept="image/*" multiple onchange="candAjouterFichiers(this,'complement')"></label></div></div>`;
+}
+
+// ---------- conditions : défilement obligatoire
+function candLu(el){
+  if(CAND.lu || !el) return;
+  if(el.scrollTop + el.clientHeight >= el.scrollHeight - 6){ CAND.lu = true; document.querySelectorAll('.cand-case input').forEach(i => i.disabled = false); $('cand-lu').textContent = '✓ Conditions lues jusqu\'au bout'; $('cand-lu').classList.add('ok'); candMajEtat(); }
+}
+
+// ---------- signature tracée
+function candInitSignature(){
+  const charger = async () => {
+    if(!CAND.cond){ const c = await candFn({ action: 'conditions' }); if(!c || !c.texte){ candErreur('Conditions indisponibles, réessaie.'); return; } CAND.cond = c; const z = $('cand-cond'); if(z){ z.innerHTML = candEsc(c.texte).replace(/\n/g, '<br>') + `<div class="cand-sig-ent"><img src="${c.signature_entreprise}" alt="Signature d'Admir Gomis"></div>`; } document.querySelectorAll('.cand-case span').forEach((s, i) => { if(i === 0) s.textContent = `J'ai lu et j'accepte les Conditions partenaire AURA90 (${c.version}).`; }); }
+    candLu($('cand-cond'));
+  };
+  charger();
+  const cv = $('cand-pad'); if(!cv) return;
+  const r = window.devicePixelRatio || 1, w = cv.clientWidth || 320, h = 170;
+  cv.width = w * r; cv.height = h * r; cv.style.height = h + 'px';
+  const ctx = cv.getContext('2d'); ctx.scale(r, r); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#1B2A8C';
+  let bas = false, px = 0, py = 0, trace = 0;
+  const pos = e => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+  cv.onpointerdown = e => { bas = true; [px, py] = pos(e); cv.setPointerCapture(e.pointerId); e.preventDefault(); };
+  cv.onpointermove = e => { if(!bas) return; const [x, y] = pos(e); ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke(); trace += Math.hypot(x - px, y - py); px = x; py = y; if(trace > 60 && CAND.sig.vide){ CAND.sig.vide = false; candMajEtat(); } e.preventDefault(); };
+  cv.onpointerup = cv.onpointercancel = () => { bas = false; };
+  CAND.sig.vide = true;
+}
+function candEffacerSig(){ const cv = $('cand-pad'); if(!cv) return; cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); CAND.sig.vide = true; candMajEtat(); }
+
+// ---------- fichiers : redimensionnés et compressés avant l'envoi
+async function candImage(file){
+  const url = URL.createObjectURL(file);
+  try{
+    const img = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = url; });
+    const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', 0.82).split(',')[1];
+  } finally { URL.revokeObjectURL(url); }
+}
+async function candAjouterFichiers(input, type, canal){
+  const l = [...(input.files || [])]; input.value = '';
+  if(CAND.fichiers.length + l.length > 24){ candErreur('24 fichiers maximum.'); return; }
+  for(const f of l){
+    if(!/^image\//.test(f.type)){ candErreur('Envoie des images (captures d\'écran ou photos).'); continue; }
+    try{ CAND.fichiers.push({ type, canal: canal == null ? null : canal, nom: f.name.slice(0, 80), mime: 'image/jpeg', data: await candImage(f) }); }
+    catch(e){ candErreur('Image illisible : ' + f.name); }
+  }
+  candRendre();
+}
+
+// ---------- validation des étapes
+function candManque(){
+  const d = CAND.d, e = CAND.etape;
+  if(CAND.mode !== 'candidature') return null;
+  if(e === 0){
+    if(!(d.prenom || '').trim() || !(d.nom || '').trim()) return 'Indique ton prénom et ton nom.';
+    const a = candAge(d.naissance); if(a === null) return 'Indique ta date de naissance.';
+    if(a < 18) return 'Il faut avoir 18 ans ou plus pour devenir partenaire.';
+    if(!d.pays_residence) return 'Choisis ton pays de résidence.';
+    if(!(d.ville || '').trim() || !(d.adresse || '').trim()) return 'Indique ta ville et ton adresse.';
+    if((d.whatsapp || '').replace(/\D/g, '').length < 8) return 'Indique ton numéro WhatsApp avec l\'indicatif.';
+  }
+  if(e === 1 && d.statut_juridique === 'societe' && (!(d.societe_nom || '').trim() || !(d.societe_num || '').trim())) return 'Indique le nom et le numéro d\'immatriculation de la société.';
+  if(e === 2){
+    if(!d.public_pays) return 'Choisis le pays principal de ton audience.';
+    if(d.public_pays === 'FR') return 'Nous ne pouvons pas accepter de partenaires dont le public est en France.';
+    for(const c of d.canaux) if(!(c.lien || '').trim() || !(Number(c.abonnes) >= 0) || c.abonnes === '') return 'Pour chaque canal : le lien ou le nom, et le nombre d\'abonnés.';
+  }
+  if(e === 3){
+    for(let i = 0; i < d.canaux.length; i++) if(!CAND.fichiers.some(f => f.type === 'capture' && f.canal === i)) return 'Ajoute au moins une capture pour chaque canal.';
+    if(!CAND.fichiers.some(f => f.type === 'identite')) return 'Ajoute ta pièce d\'identité.';
+  }
+  if(e === 4){
+    if(!(d.projet_contenu || '').trim() || !(d.projet_frequence || '').trim() || d.projet_abonnes === undefined || d.projet_abonnes === '') return 'Décris ton projet (contenu, fréquence, abonnés par mois).';
+    if(!/^[A-Z0-9]{4,10}$/.test(d.code || '')) return 'Choisis ton code (4 à 10 lettres ou chiffres).';
+    if(CAND.codeOk === false) return 'Ce code est déjà pris.';
+    if(!d.paiement) return 'Choisis comment recevoir tes commissions.';
+  }
+  return null;
+}
+function candSignOk(){ const s = CAND.sig; return CAND.cond && CAND.lu && s.a && s.b && s.c && (s.nom || '').trim().length >= 3 && !s.vide; }
+function candMajEtat(){
+  const b = $('cand-go'); if(!b || !CAND) return;
+  const sign = CAND.mode === 'resigner' || (CAND.mode === 'candidature' && CAND.etape === CAND_ETAPES.length - 1);
+  if(sign){ b.disabled = !candSignOk() || CAND.envoi; return; }
+  if(CAND.mode === 'complement'){ b.disabled = !CAND.fichiers.length || CAND.envoi; return; }
+  b.disabled = false; b.classList.toggle('pale', !!candManque());
+  if(CAND.etape === 0){ const a = candAge(CAND.d.naissance), m = $('cand-mineur'); if(m) m.style.display = a !== null && a < 18 ? 'block' : 'none'; }
+}
+function candSuiv(){
+  const m = candManque(); if(m){ candErreur(m); return; }
+  if(CAND.etape === 4 && CAND.codeOk == null){ candVerifCode(); candErreur('Vérification du code…'); setTimeout(() => { if(CAND.codeOk) candSuiv(); }, 900); return; }
+  CAND.etape++; candSauver(); candRendre();
+}
+function candPrec(){ if(CAND.etape > 0){ CAND.etape--; candSauver(); candRendre(); } }
+
+// ---------- envoi
+async function candSigner(){
+  if(!candSignOk() || CAND.envoi) return;
+  CAND.envoi = true; candMajEtat(); const b = $('cand-go'); b.textContent = 'Signature en cours…';
+  const image = $('cand-pad').toDataURL('image/png').split(',')[1];
+  const signature = { version: CAND.cond.version, nom: CAND.sig.nom.trim(), image, cases: { a: true, b: true, c: true } };
+  let r;
+  if(CAND.mode === 'resigner') r = await candFn({ action: 'resigner', signature });
+  else {
+    const d = { ...CAND.d, canaux: CAND.d.canaux.map(c => ({ ...c, abonnes: Number(c.abonnes) || 0 })), projet_abonnes: Number(CAND.d.projet_abonnes) || 0 };
+    r = await candFn({ action: 'envoyer', jeton: CAND.jeton, d, fichiers: CAND.fichiers.map(f => ({ type: f.type, canal: f.canal, nom: f.nom, mime: f.mime, data: f.data })), signature });
+  }
+  CAND.envoi = false;
+  if(!r.ok){ b.textContent = CAND.mode === 'resigner' ? 'Signer' : 'Signer et envoyer'; candErreur(r.erreur || 'Envoi impossible, réessaie.'); candMajEtat(); return; }
+  const resigne = CAND.mode === 'resigner';
+  if(!resigne){ candLS.set('aura90_invitation', null); candLS.set('aura90_cand_brouillon', null); }
+  $('cand-prog').innerHTML = '';
+  $('cand-corps').innerHTML = `<div class="cand-fin"><div class="i">✓</div><b>${resigne ? 'Conditions signées' : 'Candidature envoyée'}</b>
+      <p>${resigne ? 'Tes liens sont de nouveau actifs.' : 'Merci ! L\'équipe AURA90 étudie ton dossier et te répond par email et dans l\'application.'} Ton exemplaire signé des Conditions partenaire t'a été envoyé par email.</p>
+      ${r.pdf ? `<a class="cand-b2" href="${candEsc(r.pdf)}" target="_blank" rel="noopener">Télécharger mon exemplaire (PDF)</a>` : ''}</div>`;
+  $('cand-bas').innerHTML = `<button class="cand-b1" onclick="candFermer();${resigne ? "ouvrirEP('accueil')" : 'chargerPartenaire()'}">${resigne ? 'Ouvrir mon espace' : 'Terminer'}</button>`;
+  CAND = null;
+}
+async function candEnvoyerComplement(){
+  if(!CAND.fichiers.length || CAND.envoi) return;
+  CAND.envoi = true; candMajEtat(); $('cand-go').textContent = 'Envoi…';
+  const r = await candFn({ action: 'complement', message: CAND.d.message || '', fichiers: CAND.fichiers.map(f => ({ type: 'complement', nom: f.nom, mime: f.mime, data: f.data })) });
+  CAND.envoi = false;
+  if(!r.ok){ $('cand-go').textContent = 'Envoyer'; candErreur(r.erreur || 'Envoi impossible.'); candMajEtat(); return; }
+  $('cand-corps').innerHTML = `<div class="cand-fin"><div class="i">✓</div><b>Complément envoyé</b><p>Merci, l'équipe AURA90 reprend l'examen de ta candidature.</p></div>`;
+  $('cand-bas').innerHTML = `<button class="cand-b1" onclick="candFermer();chargerPartenaire()">Terminer</button>`;
+  CAND = null;
+}
+function candOuvrirComplement(msg){ CAND = { mode: 'complement', msg, d: {}, fichiers: [], envoi: false }; candRendre(); }
+async function candResigner(){
+  CAND = { mode: 'resigner', etape: 0, d: {}, fichiers: [], cond: null, lu: false, sig: { nom: '', vide: true, a: false, b: false, c: false }, envoi: false };
+  candRendre();
+}
+
+// ---------- branchements dans l'app
+(function(){
+  // 1. lien d'invitation : gardé dans le téléphone, retiré de l'adresse
+  try{
+    const q = new URLSearchParams(location.search), j = (q.get('invitation') || '').toLowerCase().replace(/[^a-f0-9]/g, '').slice(0, 80);
+    if(j){ candLS.set('aura90_invitation', j); q.delete('invitation'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); }
+    if(q.get('candidature')){ q.delete('candidature'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); setTimeout(() => { try{ allerPage('compte'); }catch(e){} }, 900); }
+  }catch(e){}
+  setTimeout(() => { if(candLS.get('aura90_invitation')) candOuvrir(); }, 1200);
+  // 2. après connexion : le formulaire se rouvre
+  const s0 = ouvrirSession;
+  window.ouvrirSession = function(d){ const r = s0(d); if(candLS.get('aura90_invitation')) setTimeout(() => candOuvrir(), 700); return r; };
+  // 3. Compte : état de la candidature
+  const c0 = chargerPartenaire;
+  window.chargerPartenaire = async function(){
+    const r = await c0();
+    const z = $('zone-partenaire'); if(!z || !estConnecte() || (EP && EP.statut === 'actif')) return r;
+    const c = await epRpc('ma_candidature').catch(() => null);
+    if(c && c.statut === 'a_examiner') z.innerHTML = `<div class="ep-etat"><b>Candidature partenaire en cours d'examen</b>Envoyée le ${new Date(c.cree_le).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}. Tu recevras une réponse par email et une notification.</div>`;
+    else if(c && c.statut === 'complement') z.innerHTML = `<div class="ep-etat cand-etat-c"><b>Candidature partenaire : complément demandé</b>${candEsc(c.complement_msg || '')}<button class="cand-b1" style="margin-top:10px;width:100%" onclick='candOuvrirComplement(${JSON.stringify(c.complement_msg || '').replace(/'/g, '&#39;')})'>Envoyer le complément</button></div>`;
+    else if(c && c.statut === 'refusee' && new Date(c.cree_le) > new Date(Date.now() - 60 * 864e5)) z.innerHTML = `<div class="ep-etat"><b>Candidature partenaire non retenue</b>${candEsc(c.motif || '')}</div>`;
+    else if(candLS.get('aura90_invitation')) z.innerHTML = `<button class="ep-carte" onclick="candOuvrir()"><div class="ico">◆</div><div class="t"><b>Ma candidature partenaire</b><span>Reprendre là où tu en étais</span></div><span class="fl">›</span></button>`;
+    return r;
+  };
+  // 4. Espace partenaire : nouvelle version des conditions à signer avant d'entrer
+  const o0 = ouvrirEP;
+  window.ouvrirEP = async function(tab){
+    const m = await epRpc('mes_conditions').catch(() => null);
+    if(m && m.a_signer){ candResigner(); return; }
+    return o0(tab);
+  };
+})();
+// notification « Nouvelles Conditions partenaire » / « complément demandé »
+function candDepuisNotif(lien){ if(typeof fermerNotifs === 'function') fermerNotifs(); if(lien === 'ep=conditions') candResigner(); else { try{ allerPage('compte'); }catch(e){} } }
 
 </script>
 <!-- aura90-v4-sans-jeu · montantes v2 29/09 · seo 14/10 · messagerie 15/10 -->
