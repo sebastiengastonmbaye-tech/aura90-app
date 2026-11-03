@@ -1787,6 +1787,25 @@ body.cand-ouvert{overflow:hidden}
 .cand-fin .i{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E;font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center}
 .cand-fin b{display:block;font-size:19px;margin-bottom:8px}.cand-fin p{color:var(--sourdine);font-size:14px;line-height:1.5;margin:0}
 .cand-etat-c{border-color:rgba(255,180,84,.5) !important}
+.cand-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cand-radio-c{justify-content:center;padding:12px 8px}.cand-radio-c span b{font-size:15px}
+
+/* ===== Réduction du code partenaire (03/11/2026) ===== */
+.red-recap{margin-top:2px;padding:12px 13px;border-radius:12px;background:rgba(61,232,200,.08);border:1px solid rgba(61,232,200,.35);font-size:13px}
+.red-recap .t{font-weight:800;color:var(--aura1);margin-bottom:6px}
+.red-recap .l{display:flex;justify-content:space-between;gap:10px;padding:3px 0;color:var(--sourdine)}
+.red-recap .l s{color:var(--sourdine)}
+.red-recap .l.f{color:var(--texte);border-top:1px solid var(--ligne);margin-top:4px;padding-top:7px;font-size:14.5px}
+.red-recap .l.f b{font-size:16px}
+.red-recap small{display:block;margin-top:6px;font-size:11.5px;color:var(--sourdine)}
+.red-ep{padding:14px 16px}
+.red-ep-l{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.red-ep-l div{padding:12px;border-radius:14px;background:var(--surface2);display:flex;flex-direction:column;gap:2px}
+.red-ep-l b{font-size:22px;font-weight:800}.red-ep-l div:last-child b{color:var(--aura1)}
+.red-ep-l span{font-size:11.5px;color:var(--sourdine)}
+.red-ep-c{margin-top:12px;font-size:13px;line-height:1.5}
+.red-ep-x{margin-top:10px;padding:11px 12px;border-radius:12px;background:rgba(139,124,255,.09);border:1px solid rgba(139,124,255,.3);font-size:13px;line-height:1.55}
+.cand-red{margin-top:-2px;padding:12px 13px;border-radius:14px;background:rgba(61,232,200,.07);border:1px solid rgba(61,232,200,.35);font-size:13px;line-height:1.5;margin-bottom:12px}
+.cand-red b{color:var(--aura1)}
 
 </style>
 </head>
@@ -7996,12 +8015,25 @@ function candProjet(){
   return `<div class="cand-bloc"><b>Ton projet</b></div>
     <label class="cand-ch"><span>Ce que tu comptes publier</span><textarea rows="3" oninput="CAND.d.projet_contenu=this.value;candSauver();candMajEtat()" placeholder="Ex. : vidéos d'analyse des matchs, présentation de l'app…">${candEsc(d.projet_contenu || '')}</textarea></label>
     <div class="cand-g2">${candChamp('projet_frequence', 'Fréquence', 'text', 'placeholder="Ex. : 3 vidéos / semaine"')}${candChamp('projet_abonnes', 'Abonnés ramenés / mois', 'number', 'min="0" inputmode="numeric"')}</div>
+    <div class="cand-sous">Réduction pour tes abonnés</div>
+    <div class="cand-g3">${[0, 5, 10].map(k => `<label class="cand-radio cand-radio-c${String(d.reduction_pct) === String(k) ? ' a' : ''}"><input type="radio" name="cand-red" ${String(d.reduction_pct) === String(k) ? 'checked' : ''} onchange="CAND.d.reduction_pct=${k};candSauver();candRendre()"><span><b>${k ? '−' + k + ' %' : '0 %'}</b></span></label>`).join('')}</div>
+    <div class="cand-red" id="cand-red">${candTexteReduction()}</div>
     <div class="cand-sous">Ton code partenaire</div>
     <label class="cand-ch"><span>Code souhaité (4 à 10 lettres ou chiffres)</span><input value="${candEsc(d.code || '')}" maxlength="10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');CAND.d.code=this.value;CAND.codeOk=null;candSauver();candVerifCode()"></label>
     <div class="cand-code" id="cand-code"></div>
     ${candChamp('whop_pseudo', 'Ton pseudo Whop (facultatif)', 'text', 'placeholder="@pseudo"')}
     <div class="cand-sous">Paiement de tes commissions</div>
     ${r('whop', 'Whop', 'Paiements par carte versés directement par Whop')}${r('mm', 'Mobile Money', 'Wave, Orange Money…')}${r('virement', 'Virement bancaire', 'Sur un compte à ton nom')}`;
+}
+let CAND_PAL = null;
+function candTexteReduction(){
+  const r = CAND.d.reduction_pct;
+  if(CAND_PAL === null){ epRpc('paliers_generaux').then(p => { CAND_PAL = Array.isArray(p) && p.length ? p : [{ seuil: 0, pct: 25 }]; const z = $('cand-red'); if(z) z.innerHTML = candTexteReduction(); }).catch(() => {}); CAND_PAL = []; }
+  const pal = (CAND_PAL && CAND_PAL.length ? CAND_PAL : [{ seuil: 0, pct: 25 }]).slice().sort((a, b) => a.seuil - b.seuil);
+  if(r === undefined || r === null || r === '') return `Choisis la réduction que ton code donne à tes abonnés. <b>Ta commission = ton pourcentage − la réduction.</b> Tu démarres à ${pal[0].pct} % sans réduction.`;
+  const p0 = Math.max(1, pal[0].pct - r), suite = pal.slice(1).map(p => Math.max(1, p.pct - r) + ' %');
+  return r ? `Tes abonnés paient <b>${r} % de moins</b>. Ta commission démarre à <b>${p0} %</b> au lieu de ${pal[0].pct} % (${pal[0].pct} − ${r})${suite.length ? ', puis ' + suite.join(' et ') + ' selon tes paliers' : ''}. Elle est calculée sur ce que paie ton abonné. Si l'équipe te fixe un pourcentage personnalisé, même calcul : ton pourcentage − ${r} %.`
+           : `Pas de réduction pour tes abonnés : ta commission démarre à <b>${p0} %</b>${suite.length ? ', puis ' + suite.join(' et ') + ' selon tes paliers' : ''}.`;
 }
 let CAND_T = null;
 function candVerifCode(){
@@ -8110,6 +8142,7 @@ function candManque(){
     if(!(d.projet_contenu || '').trim() || !(d.projet_frequence || '').trim() || d.projet_abonnes === undefined || d.projet_abonnes === '') return 'Décris ton projet (contenu, fréquence, abonnés par mois).';
     if(!/^[A-Z0-9]{4,10}$/.test(d.code || '')) return 'Choisis ton code (4 à 10 lettres ou chiffres).';
     if(CAND.codeOk === false) return 'Ce code est déjà pris.';
+    if(![0, 5, 10].includes(d.reduction_pct)) return 'Choisis la réduction pour tes abonnés (0 %, −5 % ou −10 %).';
     if(!d.paiement) return 'Choisis comment recevoir tes commissions.';
   }
   return null;
@@ -8203,6 +8236,82 @@ async function candResigner(){
 })();
 // notification « Nouvelles Conditions partenaire » / « complément demandé »
 function candDepuisNotif(lien){ if(typeof fermerNotifs === 'function') fermerNotifs(); if(lien === 'ep=conditions') candResigner(); else { try{ allerPage('compte'); }catch(e){} } }
+
+/* ===== Réduction du code partenaire (03/11/2026) =====
+   Page d'abonnement : code d'un partenaire avec réduction → prix normal, réduction, prix final (carte et Mobile Money).
+   Espace partenaire : sa réduction, sa commission (base − réduction) et un exemple chiffré ; paliers affichés après réduction. */
+let RED_CODE = null;   // { code, pct } du code appliqué sur la page d'abonnement
+const redPrixEur = (f, pct) => Math.round(PRIX_EUR[f] * (100 - pct)) / 100;                 // même calcul que whop-init
+const redPrixXof = (f, pct) => Math.round(FORMULES[f][0] * (100 - pct) / 100 / 50) * 50;    // même calcul que saspay-init
+const redEur = v => v.toFixed(2).replace('.', ',') + ' €';
+function redDetail(f, pct){
+  if(modeEuro()){ const n = PRIX_EUR[f], p = redPrixEur(f, pct); return { normal: redEur(n), moins: '−' + redEur(Math.round((n - p) * 100) / 100), final: redEur(p) }; }
+  const n = FORMULES[f][0], p = redPrixXof(f, pct); return { normal: mF(n), moins: '−' + mF(n - p), final: mF(p) };
+}
+function redAfficher(){
+  const z = $('msg-promo'); if(!z || !RED_CODE || !RED_CODE.pct) return;
+  const f = FORMULE || 'mois', x = redDetail(f, RED_CODE.pct);
+  z.innerHTML = `<div class="red-recap"><div class="t">${T('Code')} <b>${RED_CODE.code}</b> · −${RED_CODE.pct} %</div>
+    <div class="l"><span>${T('Prix normal')}${f === '3mois' ? ' (3 ' + T('mois') + ')' : ''}</span><s>${x.normal}</s></div>
+    <div class="l"><span>${T('Réduction')} −${RED_CODE.pct} %</span><span>${x.moins}</span></div>
+    <div class="l f"><span>${T('Tu paies')}</span><b>${x.final}</b></div>
+    ${modeEuro() ? `<small>${T('Par carte, ce prix reste le même à chaque renouvellement.')}</small>` : ''}</div>`;
+  const cta = $('cp-cta'); if(cta && !(typeof estAbonne === 'function' && estAbonne())) cta.textContent = T('Passer PRO') + ' · ' + x.final;
+}
+(function(){
+  // code partenaire avec réduction : on demande sa réduction ; sinon, comportement d'avant (codes d'email, anciens partenaires)
+  const v0 = verifierCodePromo;
+  window.verifierCodePromo = async function(tout){
+    const c = ($('code-promo')?.value || '').trim().toUpperCase();
+    RED_CODE = null;
+    if(/^[A-Z0-9]{4,10}$/.test(c) && !/^PRO(10|15|20)[A-Z0-9]{4}$/.test(c)){
+      try{
+        const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/code_reduction', { method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + (SESSION.access || CONFIG.SUPABASE_KEY) }, body: JSON.stringify({ p_code: c }) });
+        const d = r.ok ? await r.json() : null;
+        if(d && d.pct > 0 && ($('code-promo')?.value || '').trim().toUpperCase() === c){ RED_CODE = { code: d.code, pct: d.pct }; redAfficher(); return; }
+      }catch(e){}
+    }
+    return v0(tout);
+  };
+  // changement de formule : le récapitulatif suit
+  const p0 = rendrePlans;
+  window.rendrePlans = function(){ const r = p0.apply(this, arguments); if(RED_CODE) redAfficher(); return r; };
+})();
+
+// ---------- espace partenaire
+let RED_EP = null;
+async function redCharger(){ try{ RED_EP = await epRpc('ma_reduction'); }catch(e){ RED_EP = null; } return RED_EP; }
+function redCarte(){
+  const r = RED_EP; if(!r || r.reduction === null || r.reduction === undefined) return '';
+  const pe = PRIX_EUR.mois, ppe = Math.round(pe * (100 - r.reduction)) / 100, ge = Math.round(ppe * r.commission) / 100;
+  const px = FORMULES.mois[0], ppx = Math.round(px * (100 - r.reduction) / 100 / 50) * 50, gx = Math.round(ppx * r.commission / 100);
+  const base = r.fixe ? r.fixe + ' % ' + T('fixé avec AURA90') : T('ton palier') + ' ' + r.base + ' %';
+  return `<div class="ep-sec"><h2>${T('Ton code')} ${epEsc(r.code)}</h2><span>${r.reduction ? '−' + r.reduction + ' % ' + T('pour tes abonnés') : T('sans réduction')}</span></div>
+    <div class="ep-bloc red-ep">
+      <div class="red-ep-l"><div><b>${r.reduction ? '−' + r.reduction + ' %' : '0 %'}</b><span>${T('Réduction de tes abonnés')}</span></div>
+        <div><b>${r.commission} %</b><span>${T('Ta commission')}</span></div></div>
+      <div class="red-ep-c">${T('Ta commission')} = ${base} − ${r.reduction} % ${T('de réduction')} = <b>${r.commission} %</b>, ${T('calculée sur ce que paie ton abonné')}.</div>
+      <div class="red-ep-x"><b>${T('Exemple')}</b> : ${T('sur un abonnement à')} ${redEur(pe)}, ${T('ton abonné paie')} <b>${redEur(ppe)}</b> ${T('et tu touches')} <b>${redEur(ge)}</b>.
+        ${T('En Mobile Money')} : ${mF(px)} → ${T('il paie')} <b>${mF(ppx)}</b>, ${T('tu touches')} <b>${mF(gx)}</b>.</div>
+      <div class="ep-info">${T('Pour changer ta réduction (0 %, −5 % ou −10 %), écris à l\'équipe dans tes messages. Le changement vaut pour les nouveaux abonnements.')}</div>
+    </div>`;
+}
+(function(){
+  const a0 = epAccueil;
+  window.epAccueil = function(){ return redCarte() + a0(); };
+  // paliers affichés après réduction (ce qu'il touche vraiment)
+  const n0 = epNiveau;
+  window.epNiveau = function(){
+    if(RED_EP && RED_EP.reduction && Array.isArray(RED_EP.paliers) && RED_EP.paliers.length){
+      const garde = EP.paliers; EP.paliers = RED_EP.paliers.map(p => ({ seuil: p.seuil, pct: p.pct }));
+      try{ return n0(); } finally { EP.paliers = garde; }
+    }
+    return n0();
+  };
+  const o0 = ouvrirEP;
+  window.ouvrirEP = async function(tab){ await redCharger(); return o0(tab); };
+})();
 
 </script>
 <!-- aura90-v4-sans-jeu · montantes v2 29/09 · seo 14/10 · messagerie 15/10 -->

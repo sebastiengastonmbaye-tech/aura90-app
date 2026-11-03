@@ -636,6 +636,8 @@ html[dir=rtl] .ep-sl b{margin-left:0;margin-right:auto}
 .af-kv span{color:var(--sourdine)}
 .af-kv b{font-weight:700;word-break:break-all}
 .af-kv a{color:var(--aura1);text-decoration:none;word-break:break-all}
+#af-red .af-kv b{word-break:normal}
+.af-det-l{padding:9px 0;border-bottom:1px solid var(--ligne);font-size:12.5px}.af-det-l:last-of-type{border-bottom:0}.af-det-l .h{display:flex;justify-content:space-between;gap:8px}.af-det-l .h span{color:var(--sourdine)}.af-det-l .h span b{color:var(--texte)}.af-det-l .h>b{color:var(--aura1);white-space:nowrap}.af-det-l .d{margin-top:3px;color:var(--sourdine)}.af-det-l s{opacity:.7}
 .af-gros{font:800 22px 'JetBrains Mono',monospace;color:var(--aura1)}
 .af-copie{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px dashed rgba(61,232,200,.35);border-radius:11px;padding:10px 12px;margin-top:8px;cursor:pointer}
 .af-copie .v{flex:1;font:700 13px 'JetBrains Mono',monospace;word-break:break-all}
@@ -2439,6 +2441,7 @@ function afGerer(p){
     </div>
     ${caControleCarte(p)}
     ${afWhopCarte(p)}
+    ${afReductionCarte(p)}
     ${afPaliersCarte(p)}
     <div class="af-titre">Réglages de l'affilié</div>
     <div class="af-carte">
@@ -2465,7 +2468,7 @@ async function afModifier(b){
       if(st !== p.statut && st === 'suspendu') afPush(p.user_id, 'Compte partenaire suspendu', 'Écris-nous depuis la messagerie pour en savoir plus.');
       await afCharger(); AF_DET.p = AF.partenaires.find(x => x.user_id === p.user_id);
       try{ AF_DET.ep = await rpc('admin_aff_detail', { p_user: p.user_id }); }catch(e){}
-      afRendreDetail();
+      AF_RED = null; afRendreDetail();
     }
     afMsg(r.msg, r.ok);
   }catch(e){ afMsg(e.message); }
@@ -2558,6 +2561,56 @@ async function afWhopResync(b){
   catch(e){ afMsg(e.message); }
   b.disabled = false;
 }
+// ---------- réduction du code (03/11) : commission = base − réduction, sur le montant payé
+let AF_RED = null;
+const AF_PRIX = { eur: 23.99, xof: 15500 };
+function afRedCharger(uid){
+  AF_RED = { uid, d: null };
+  return rpc('admin_aff_reduction_info', { p_user: uid }).then(d => { if(AF_RED && AF_RED.uid === uid){ AF_RED.d = d || { erreur: 'introuvable' }; if(AF_DET && AF_DET_ONG === 'gerer') afRendreDetail(); } })
+    .catch(e => { if(AF_RED && AF_RED.uid === uid){ AF_RED.d = { erreur: e.message }; if(AF_DET && AF_DET_ONG === 'gerer') afRendreDetail(); } });
+}
+function afRedTexteHisto(h){
+  const nom = { reduction: 'Réduction', commission_fixe: '% fixe', paliers: 'Paliers' }[h.champ] || h.champ;
+  const v = x => x === null || x === undefined ? '—' : h.champ === 'reduction' && /^\d+$/.test(x) ? (x === '0' ? '0 %' : '−' + x + ' %') : h.champ === 'commission_fixe' && /^\d+$/.test(x) ? x + ' %'
+              : h.champ === 'paliers' && x.startsWith('[') ? (() => { try{ return JSON.parse(x).map(p => p.pct + ' %').join(' / '); }catch(e){ return x; } })() : x;
+  return `${afD(h.le)} · ${nom} : ${h.avant === null ? '' : afE(v(h.avant)) + ' → '}<b>${afE(v(h.apres))}</b> <small>(${h.par === 'candidature' ? 'candidature' : 'toi'})</small>`;
+}
+function afReductionCarte(p){
+  if(!AF_RED || AF_RED.uid !== p.user_id) afRedCharger(p.user_id);
+  const d = AF_RED.d;
+  const tete = `<div class="af-titre">Code promo &amp; commission</div>`;
+  if(!d) return tete + `<div class="af-carte" id="af-red"><div class="af-meta" style="margin-top:0">Chargement…</div></div>`;
+  if(d.erreur) return tete + `<div class="af-carte" id="af-red"><div class="af-meta" style="margin-top:0">Erreur : ${afE(d.erreur)} (reduction_code.sql exécuté ?)</div></div>`;
+  const r = d.reduction, rr = r || 0;
+  const pe = Math.round(AF_PRIX.eur * (100 - rr)) / 100, px = Math.round(AF_PRIX.xof * (100 - rr) / 100 / 50) * 50;
+  const ge = Math.round(pe * d.commission) / 100, gx = Math.round(px * d.commission / 100);
+  const eur = v => v.toFixed(2).replace('.', ',') + ' €', fx = v => v.toLocaleString('fr-FR').replace(/\s/g, ' ') + ' F';
+  const base = d.fixe ? d.fixe + ' % fixe' : 'palier ' + d.base + ' %';
+  return tete + `<div class="af-carte" id="af-red">
+    <div class="af-meta" style="margin-top:0">Réduction offerte à ses abonnés avec le code <b>${afE(p.code)}</b>. Elle se retire de sa commission : <b>commission = ${d.fixe ? '% fixe' : 'palier'} − réduction</b>, calculée sur ce que le client paie vraiment. Maximum −10 %.</div>
+    <div class="af-sous" style="margin-top:10px;padding-bottom:0">${[0, 5, 10].map(v => `<button class="${r === v ? 'actif' : ''}" onclick="afReduction(${v}, this)">${v ? '−' + v + ' %' : 'Aucune'}</button>`).join('')}</div>
+    ${r === null || r === undefined ? `<div class="af-meta" style="color:#FFC86B">Ancien système (réduction fixe en F CFA, pas sur carte). Choisis 0, −5 ou −10 % pour passer au nouveau.</div>` : ''}
+    <div class="af-kv">
+      <span>Base</span><b>${base}</b>
+      <span>Réduction</span><b>${r ? '−' + r + ' %' : 'aucune'}</b>
+      <span>Commission</span><b style="color:var(--aura1)">${d.commission} %</b>
+      ${!d.fixe && (d.paliers || []).length > 1 ? `<span>Paliers</span><b>${d.paliers.map(x => `${x.base} → ${x.pct} %`).join(' · ')}</b>` : ''}
+      <span>Exemple carte</span><b>${eur(AF_PRIX.eur)} → il paie ${eur(pe)} · ${afE(p.code)} touche ${eur(ge)}</b>
+      <span>Exemple Mobile Money</span><b>${fx(AF_PRIX.xof)} → il paie ${fx(px)} · ${afE(p.code)} touche ${fx(gx)}</b>
+    </div>
+    <div class="af-meta">Un changement vaut pour les nouveaux abonnements. Whop reçoit son nouveau % tout de suite (il s'applique à ses prochains paiements carte, renouvellements compris).</div>
+    ${(d.historique || []).length ? `<div class="af-meta" style="margin-top:10px"><b style="color:var(--texte)">Historique</b>${d.historique.slice(0, 12).map(h => `<div style="margin-top:4px">${afRedTexteHisto(h)}</div>`).join('')}</div>` : ''}
+  </div>`;
+}
+async function afReduction(v, b){
+  const uid = AF_DET.uid; b.disabled = true;
+  try{
+    const r = await rpc('admin_aff_reduction', { p_user: uid, p_pct: v });
+    if(r.ok){ try{ await partFn({ action:'sync', user_id: uid }); }catch(e){} await afCharger(); if(AF_DET){ AF_DET.p = AF.partenaires.find(x => x.user_id === uid) || AF_DET.p; } const pr = afRedCharger(uid); afRendreDetail(); await pr; }
+    afMsg(r.msg, r.ok);
+  }catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
 let AF_PAL = null;
 function afPaliersCarte(p){
   if(p.pct_perso) return `<div class="af-titre">Paliers</div><div class="af-carte"><div class="af-meta" style="margin-top:0">Taux fixe de ${p.pct_perso} % : remets « Paliers » dans ses réglages ci-dessous pour utiliser des paliers.</div></div>`;
@@ -2578,7 +2631,7 @@ async function afPaliersOk(b, general){
     const l = general ? null : AF_PAL.l.map((x, i) => ({ seuil: i === 0 ? 0 : x.seuil, pct: x.pct }));
     const r = await rpc('admin_aff_paliers', { p_user: AF_DET.uid, p_paliers: l });
     afMsg(r.msg, r.ok);
-    if(r.ok){ AF_PAL = null; try{ await partFn({ action:'sync', user_id: AF_DET.uid }); }catch(e){} await afCharger(); }
+    if(r.ok){ AF_PAL = null; AF_RED = null; try{ await partFn({ action:'sync', user_id: AF_DET.uid }); }catch(e){} await afCharger(); afRendreDetail(); }
   }catch(e){ afMsg(e.message); }
   b.disabled = false;
 }
@@ -2621,6 +2674,10 @@ function afCompta(){
         : '<div class="af-meta">Rien sur cette période.</div>'}
       <div class="af-meta">Com. Whop = versées directement par Whop aux affiliés (déjà retirées de tes versements Whop). Com. AURA90 = dues par l'entreprise, payées par les retraits. ${D.en_cours_total ? mD(D.en_cours_total) + ' de retraits demandés à envoyer.' : ''}</div>
     </div>
+    ${C.length ? `<div class="af-carte"><b>Détail des commissions</b>
+        ${C.slice().reverse().slice(0, 40).map(x => `<div class="af-det-l"><div class="h"><span>${new Date(x.le).toLocaleDateString('fr-FR', { day:'numeric', month:'short' })} · <b>${afE(x.code || '—')}</b> · ${x.methode === 'whop' ? 'carte' : 'Mobile Money'}</span><b>${mD(x.commission)}</b></div>
+          <div class="d">${x.reduction_pct ? `<s>${mD(x.prix_normal ?? x.montant)}</s> −${x.reduction_pct} % → ` : ''}${mD(x.montant)} payés · commission ${x.commission_pct ?? '—'} %${x.attente ? ' · en attente' : ''}</div></div>`).join('')}
+      ${C.length > 40 ? `<div class="af-meta">Les 40 derniers. Tout est dans l'export ci-dessous.</div>` : ''}<div class="af-meta">Montants en F CFA (carte : converti au jour du paiement).</div></div>` : ''}
     <div class="af-carte"><b>Exports pour la comptabilité</b>
       <div class="af-meta">Fichiers CSV (Excel, Google Sheets) à garder chaque mois avec les relevés de retrait.</div>
       <div class="af-ligne"><button class="gris" onclick="afExport('commissions')">⬇ Commissions (${C.length})</button><button class="gris" onclick="afExport('retraits')">⬇ Retraits (${R.length})</button></div>
@@ -2633,8 +2690,9 @@ function afExport(quoi){
   const D = AF_CPT.data; if(!D || D.erreur) return;
   const j = d => d ? new Date(d).toLocaleDateString('fr-FR') : '';
   const per = AF_CPT.per;
-  if(quoi === 'commissions') afTelecharger(`aura90_commissions_${per}.csv`, afCsv([['Date','Référence paiement','Moyen','Formule','Montant (F CFA)','Commission (F CFA)','Versée par','Code affilié','Affilié','Client'],
-    ...D.commissions.map(x => [j(x.le), x.ref, x.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money (SasPay)', x.formule, x.montant, x.commission, x.canal === 'whop' ? 'Whop' : 'AURA90', x.code, x.partenaire, x.client])]));
+  if(quoi === 'commissions') afTelecharger(`aura90_commissions_${per}.csv`, afCsv([['Date','Référence paiement','Moyen','Formule','Prix normal (F CFA)','Réduction (%)','Montant payé (F CFA)','Commission (%)','Commission (F CFA)','En attente','Versée par','Code affilié','Affilié','Client'],
+    ...D.commissions.map(x => [j(x.le), x.ref, x.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money (SasPay)', x.formule, x.prix_normal ?? x.montant, x.reduction_pct || 0, x.montant,
+      x.commission_pct ?? '', x.commission, x.attente ? 'oui' : '', x.canal === 'whop' ? 'Whop' : 'AURA90', x.code, x.partenaire, x.client])]));
   else afTelecharger(`aura90_retraits_${per}.csv`, afCsv([['N°','Demandé le','Payé le','Statut','Montant (F CFA)','Montant local','Devise','Moyen','Numéro / IBAN / adresse','Titulaire','Pays','Code affilié','Affilié'],
     ...D.retraits.map(x => [x.id, j(x.demande_le), j(x.paye_le), x.statut, x.montant, x.montant_local, x.devise, x.crypto ? x.crypto + ' ' + (x.reseau || '') : x.moyen, x.iban || x.adresse || x.numero, x.titulaire, x.pays, x.code, x.partenaire])]));
 }
@@ -3609,7 +3667,8 @@ function caRendre(){
     ${(c.fichiers || []).some(f => f.type === 'complement') ? `<div class="af-titre">Compléments</div><div class="af-carte">${c.decision && c.decision.reponse_complement ? `<div class="af-meta" style="margin-top:0">Message : ${afE(c.decision.reponse_complement)}</div>` : ''}${imgs(f => f.type === 'complement', f => afD(f.le))}</div>` : ''}
     <div class="af-titre">Projet</div>
     <div class="af-carte"><div class="af-kv">${kv('Contenu', afE(c.projet_contenu))}${kv('Fréquence', afE(c.projet_frequence))}${kv('Abonnés / mois visés', afF(c.projet_abonnes))}
-      ${kv('Code souhaité', afE(c.code))}${kv('Pseudo Whop', c.whop_pseudo ? '@' + afE(c.whop_pseudo) : '—')}${kv('Paiement', { whop: 'Whop', mm: 'Mobile Money', virement: 'Virement bancaire' }[c.paiement])}</div></div>
+      ${kv('Code souhaité', afE(c.code))}${kv('Pseudo Whop', c.whop_pseudo ? '@' + afE(c.whop_pseudo) : '—')}${kv('Paiement', { whop: 'Whop', mm: 'Mobile Money', virement: 'Virement bancaire' }[c.paiement])}
+      ${kv('Réduction choisie', c.reduction_pct ? '−' + c.reduction_pct + ' % pour ses abonnés' : 'aucune')}</div></div>
     <div class="af-titre">Signature électronique</div>
     ${(S || []).map(x => `<div class="af-carte"><div class="af-kv">${kv('Version', afE(x.version))}${kv('Signé le', afE(new Date(x.signe_le).toLocaleString('fr-FR')))}${kv('Nom tapé', afE(x.nom_tape))}
         ${kv('Adresse IP', afE(x.ip))}${kv('Appareil', `<small>${afE(x.appareil)}</small>`)}${kv('Empreinte', `<small style="word-break:break-all">${afE(x.empreinte)}</small>`)}</div>
@@ -3623,8 +3682,9 @@ function caRendre(){
     <div class="af-carte ca-act"><b>Accepter</b>
       <div class="af-meta">Ton clic active son espace (liens, et Whop s'il a donné son pseudo). Il n'ajoute aucune signature.</div>
       <div style="margin-top:10px"><input id="ca-code" value="${afE(c.code)}" maxlength="10" style="text-transform:uppercase" placeholder="Code">
-      <select class="af-sel" id="ca-mode" onchange="$('ca-pct').style.display=this.value==='fixe'?'':'none'"><option value="generaux">Paliers généraux</option><option value="fixe">% fixe</option><option value="propres">Paliers propres (à régler ensuite)</option></select>
-      <input id="ca-pct" type="number" min="1" max="60" value="25" style="display:none" placeholder="%"></div>
+      <select class="af-sel" id="ca-mode" onchange="$('ca-pct').style.display=this.value==='fixe'?'':'none';caApercu()"><option value="generaux">Paliers généraux</option><option value="fixe">% fixe</option><option value="propres">Paliers propres (à régler ensuite)</option></select>
+      <input id="ca-pct" type="number" min="1" max="60" value="25" style="display:none" placeholder="%" oninput="caApercu()"></div>
+      <div class="af-meta" id="ca-apercu" style="margin:0 0 10px">${caApercuTexte(c, 'generaux', 25)}</div>
       <div class="af-ligne" style="margin:0"><button class="vert" onclick="caDecider('accepter', this)">✓ Accepter et activer</button></div></div>
     <div class="af-carte ca-act"><b>Demander un complément</b><div class="af-meta">Message envoyé par email et visible dans son application. Il renvoie ses captures sans re-signer.</div>
       <textarea id="ca-comp" placeholder="Ex. : les statistiques TikTok par pays des 30 derniers jours"></textarea>
@@ -3633,6 +3693,14 @@ function caRendre(){
       <textarea id="ca-motif" placeholder="Motif du refus"></textarea>
       <div class="af-ligne" style="margin:0"><button class="rouge" onclick="caDecider('refuser', this)">Refuser</button></div></div>` : ''}`;
 }
+function caApercuTexte(c, mode, pct){
+  const r = +c.reduction_pct || 0, pal = (typeof AF !== 'undefined' && AF && AF.reglages && AF.reglages.paliers) || [];
+  const net = x => Math.max(1, x - r);
+  const com = mode === 'fixe' ? `${pct} % − ${r} % = <b>${net(pct)} %</b>`
+            : pal.length ? pal.map(x => `${x.pct} % − ${r} % = <b>${net(x.pct)} %</b>${x.seuil ? ' dès ' + x.seuil + ' VIP' : ' au départ'}`).join(' · ') : 'selon ses paliers, moins ' + r + ' %';
+  return `Réduction choisie : <b>${r ? '−' + r + ' %' : 'aucune'}</b>. Commission = ${mode === 'fixe' ? '% fixe' : 'palier'} − réduction : ${com}${mode === 'propres' ? ' (paliers à régler ensuite, même calcul)' : ''}.`;
+}
+function caApercu(){ const z = $('ca-apercu'); if(z && CA_DOS) z.innerHTML = caApercuTexte(CA_DOS.d.candidature, $('ca-mode').value, +$('ca-pct').value || 0); }
 async function caDecider(dec, b){
   const c = CA_DOS.d.candidature, corps = { action: 'admin_decider', id: c.id, decision: dec };
   if(dec === 'accepter'){ corps.code = $('ca-code').value; corps.mode = $('ca-mode').value; corps.pct = +$('ca-pct').value; }
