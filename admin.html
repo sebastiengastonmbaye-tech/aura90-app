@@ -355,6 +355,35 @@ h1 .neuf0{background:linear-gradient(135deg,var(--aura1),var(--aura2));-webkit-b
 .co-suivi{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}.co-suivi td,.co-suivi th{padding:6px 4px;border-bottom:1px solid var(--ligne);text-align:left}.co-suivi th{color:var(--sourdine);font-weight:600;font-size:11px}
 .co-suivi .g{color:var(--aura1)}.co-suivi .p{color:#ff7a9e}
 .mb-m.admin{align-self:flex-end;background:linear-gradient(135deg,var(--aura1),var(--aura2));color:#06110E}
+/* messagerie partenaires (03/11) */
+#pm-ecran{z-index:64}
+#pma-fil{display:flex;flex-direction:column;gap:6px}
+#pma-fil .mb-m{max-width:82%;font-size:13.5px}#pma-fil .mb-m small{text-align:right}#pma-fil .mb-m a{color:inherit}
+.pma-jour{align-self:center;font-size:10.5px;color:var(--sourdine);padding:3px 10px;border-radius:99px;background:var(--surface2);margin:8px 0 2px;text-transform:capitalize}
+.pma-liste{margin:0 12px}.pma-liste .mb-conv.urgent{border-color:rgba(61,232,200,.7)}
+.pf-ecrire{margin-top:10px;width:100%}
+/* candidatures partenaires (03/11) */
+#ca-ecran{z-index:64}
+.ca-corps{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 0 40px}
+.ca-alerte{margin:0 12px 10px;padding:11px 13px;border-radius:12px;background:rgba(255,92,122,.13);border:1px solid rgba(255,92,122,.55);color:#FFB3C1;font-size:12.5px;font-weight:700}
+.ca-alerte b{display:block;color:#FF7A9E;font-size:13.5px;margin-bottom:3px}
+.ca-manque{margin:0 12px 10px;padding:10px 13px;border-radius:12px;background:rgba(255,180,84,.12);border:1px solid rgba(255,180,84,.45);color:#FFD9A6;font-size:12.5px}
+.ca-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.ca-imgs a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--ligne);background:var(--surface2);position:relative}
+.ca-imgs img{width:100%;height:190px;object-fit:cover;display:block}
+.ca-imgs span{position:absolute;left:6px;bottom:6px;font:700 10px 'JetBrains Mono',monospace;background:rgba(0,0,0,.7);color:#fff;padding:3px 6px;border-radius:6px}
+.ca-sig{background:#fff;border-radius:12px;padding:8px;margin-top:8px;display:inline-block}.ca-sig img{height:70px;display:block}
+.ca-pill-fr{background:rgba(255,92,122,.16) !important;color:#FF7A9E !important}
+.ca-lien{word-break:break-all;font:600 12px 'JetBrains Mono',monospace;padding:10px 12px;border-radius:10px;background:var(--surface2);margin-top:10px}
+.ca-inv{display:flex;align-items:center;gap:10px}
+.ca-inv .t{flex:1;min-width:0}.ca-inv .t b{display:block;font-size:13.5px}.ca-inv .t span{font-size:11.5px;color:var(--sourdine)}
+.ca-etat{font:800 10px 'JetBrains Mono',monospace;padding:4px 8px;border-radius:99px;background:var(--surface2);color:var(--sourdine);white-space:nowrap}
+.ca-etat.ouverte{color:#FFB454;background:rgba(255,180,84,.12)}.ca-etat.candidature{color:var(--aura1);background:rgba(61,232,200,.12)}.ca-etat.envoyee{color:#8B7CFF;background:rgba(139,124,255,.13)}
+.ca-barres{margin-top:8px}.ca-barres div{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.ca-barres i{display:block;height:8px;border-radius:9px;background:var(--aura1);min-width:3px}.ca-barres div.fr i{background:#FF7A9E}
+.ca-barres em{font-style:normal;width:120px;flex:0 0 120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ca-act textarea{width:100%;box-sizing:border-box;min-height:80px}
+.ca-sigent{background:#fff;border-radius:12px;padding:10px;display:inline-block;margin:8px 0}.ca-sigent img{height:80px;display:block}
 /* coach 90' (02/11) */
 .co-onglets{display:flex;gap:6px;margin:0 0 12px;overflow-x:auto}
 .co-onglets button{flex:0 0 auto;padding:8px 13px;border-radius:99px;border:1px solid var(--ligne);background:var(--surface);color:var(--texte);font:700 12.5px inherit;cursor:pointer}
@@ -836,7 +865,7 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
       <div class="pg-lab">Affiliés</div>
       <div class="g2-lk">
         <button class="lk" onclick="afOuvrir('reglages')"><span class="ic">⚙️</span><span class="t"><b>Réglages des affiliés</b><span>Paliers, minimums, pays, crypto</span></span><span class="fl">›</span></button>
-        <button class="lk" onclick="afOuvrir('demandes');setTimeout(afAjouterForm,50)"><span class="ic">＋</span><span class="t"><b>Ajouter un affilié</b><span>Par email, avec son code et son %</span></span><span class="fl">›</span></button>
+        <button class="lk" onclick="afOuvrir('demandes');setTimeout(()=>$('ca-pour')?.focus(),300)"><span class="ic">✉️</span><span class="t"><b>Inviter un partenaire</b><span>Lien unique · candidature · signature</span></span><span class="fl">›</span></button>
       </div>
       <div class="pg-lab">Notification à tout le monde <span>in-app + push</span></div>
       <div class="carte">
@@ -870,6 +899,28 @@ html.ecran-ouvert,html.ecran-ouvert body{overflow:hidden}
     <div class="mb-saisie">
       <textarea id="mb-texte" placeholder="Message…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mbRepondre()}"></textarea>
       <button onclick="mbRepondre()">➤</button>
+    </div>
+  </div>
+</div></div>
+
+<div id="ca-ecran" class="ecran"><div class="ec-boite">
+  <div class="ec-barre"><button class="ec-fleche nu" onclick="history.back()">‹</button><div class="ec-titre" id="ca-titre">Candidature</div><button class="gris" onclick="caExporter()">Exporter</button></div>
+  <div class="ca-corps" id="ca-corps"></div>
+</div></div>
+
+<div id="pm-ecran" class="ecran"><div class="ec-boite">
+  <div class="mb-vue active">
+    <div class="mb-barre">
+      <button class="mb-fleche nu" onclick="history.back()">‹</button>
+      <div class="mb-av" id="pma-av">?</div>
+      <div class="mb-qui"><div class="n" id="pma-qui"></div><div class="m" id="pma-sous">Tu réponds au nom de l'équipe AURA90</div></div>
+      <button class="gris" onclick="pmaProfil()">Profil</button>
+    </div>
+    <div class="mb-defile" id="pma-fil"></div>
+    <div class="af-msg err" id="pma-msg"></div>
+    <div class="mb-saisie">
+      <textarea id="pma-texte" maxlength="2000" placeholder="Réponse de l'équipe AURA90…" onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!/Android|iPhone|iPad/i.test(navigator.userAgent)){event.preventDefault();pmaEnvoyer()}"></textarea>
+      <button id="pma-env" onclick="pmaEnvoyer()">➤</button>
     </div>
   </div>
 </div></div>
@@ -2204,12 +2255,12 @@ function afRendre(){
   if(AF_DET) return afRendreDetail();
   $('af-titre').textContent = AF_ONG === 'reglages' ? 'Réglages affiliés' : 'Affiliés';
   $('af-ret').hidden = true;
-  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length,
-              alertes: (AF.evenements || []).filter(x => !x.vu).length };
+  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length + caATraiter(), retraits: AF.retraits.filter(x => x.statut === 'demande').length,
+              alertes: (AF.evenements || []).filter(x => !x.vu).length, messages: PMA_NL };
   $('af-onglets').style.display = '';
-  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits'],['alertes','Paliers'],['compta','Compta']]
-    .map(([k, l]) => `<button class="${AF_ONG === k ? 'actif' : ''}" onclick="AF_ONG='${k}';afRendre()">${l}${n[k] ? `<b>${n[k]}</b>` : ''}</button>`).join('');
-  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages, alertes: afAlertes, compta: afCompta })[AF_ONG]();
+  $('af-onglets').innerHTML = [['demandes','Demandes'],['messages','Messages'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits'],['alertes','Paliers'],['compta','Compta']]
+    .map(([k, l]) => `<button data-k="${k}" class="${AF_ONG === k ? 'actif' : ''}" onclick="AF_ONG='${k}';afRendre()">${l}${n[k] ? `<b>${n[k]}</b>` : ''}</button>`).join('');
+  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, messages: afMessages, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages, alertes: afAlertes, compta: afCompta })[AF_ONG]();
   hautPage();
 }
 
@@ -2222,7 +2273,7 @@ function afCodePropose(d){
 }
 function afLien(l){ if(!l) return '—'; const u = /^https?:\/\//.test(l) ? l : (/\./.test(l) ? 'https://' + l : null); return u ? `<a href="${afE(u)}" target="_blank" rel="noopener">${afE(l)}</a>` : afE(l); }
 function afWa(num, texte){ const n = String(num || '').replace(/[^0-9]/g, ''); return n ? `https://wa.me/${n}${texte ? '?text=' + encodeURIComponent(texte) : ''}` : null; }
-function afDemandes(){
+function afDemandesAnciennes(){
   const L = AF.demandes.filter(x => x.statut === 'en_attente');
   const anciennes = AF.demandes.filter(x => x.statut !== 'en_attente').slice(0, 15);
   const carte = d => {
@@ -2244,7 +2295,7 @@ function afDemandes(){
     </div>`;
   };
   return (L.length ? L.map(carte).join('') : `<div class="vide" style="margin:0 12px">Aucune demande à valider.</div>`) +
-    `<div class="af-ligne af-pad" style="margin:14px 0 4px"><button class="gris" onclick="afAjouterForm()">＋ Ajouter un affilié par email</button></div>` +
+
     (anciennes.length ? `<div class="af-titre">Traitées récemment</div>` + anciennes.map(d => `<div class="af-carte"><div class="af-l1"><div><b>${afE(d.email)}</b><div class="af-meta">${afE(d.reseau)} · ${d.abonnes ? afF(d.abonnes) + ' abonnés' : ''} · ${afD(d.traite_le)}${d.motif ? ' · ' + afE(d.motif) : ''}</div></div><span class="af-pill ${d.statut === 'valide' ? 'ok' : 'ko'}">${d.statut === 'valide' ? 'Validée' : 'Refusée'}</span></div></div>`).join('') : '');
 }
 function afOptionsPct(v){
@@ -2276,7 +2327,8 @@ async function afRefuser(id, b){
 }
 
 /* ---------- ajouter par email ---------- */
-function afAjouterForm(){
+function afAjouterForm(){ AF_ONG = 'demandes'; afRendre(); }   // 03/11 : « Ajouter par email » remplacé par l'invitation
+function afAjouterFormAncien(){
   AF_ONG = 'demandes';
   document.querySelectorAll('#af-onglets button').forEach((b, i) => b.classList.toggle('actif', i === 0));
   $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>
@@ -2324,7 +2376,7 @@ function afAffilies(){
     <div class="af-sous">${filt.map(([k, l]) => `<button class="${AF_FIL === k ? 'actif' : ''}" onclick="AF_FIL='${k}';afRendre()">${l} · ${k === 'tous' ? P.length : P.filter(p => p.statut === k).length}</button>`).join('')}</div>
     <div class="af-pad"><input placeholder="Rechercher un email ou un code…" value="${afE(AF_Q)}" oninput="AF_Q=this.value;afFiltrerListe()"></div>
     <div id="af-liste">${L.length ? L.map(ligne).join('') : `<div class="vide" style="margin:0 12px">Personne ici.</div>`}</div>
-    <div class="af-ligne af-pad" style="margin-top:6px"><button class="gris" onclick="afAjouterForm()">＋ Ajouter un affilié par email</button></div>`;
+    <div class="af-ligne af-pad" style="margin-top:6px"><button class="gris" onclick="AF_ONG='demandes';afRendre()">✉️ Inviter un partenaire</button></div>`;
 }
 function afFiltrerListe(){ const q = AF_Q.toLowerCase(); document.querySelectorAll('#af-liste .af-part').forEach(e => e.style.display = e.textContent.toLowerCase().includes(q) ? '' : 'none'); }
 
@@ -2362,6 +2414,7 @@ function afProfilTete(p){
   const pays = afPays(p.pays);
   return `<div class="pf-carte">
       <div class="pf-l1"><div class="pf-bad">${afE(ini)}</div><div style="min-width:0"><b>${afE(p.code)}</b><div>${afE(p.email)}${pays ? ' · ' + pays.dr + ' ' + afE(pays.nom) : ''}${p.valide_le ? ' · depuis le ' + new Date(p.valide_le).toLocaleDateString('fr-FR', { day:'numeric', month:'short' }) : ''}</div></div></div>
+      <button class="gris pf-ecrire" onclick="pmaOuvrir('${p.user_id}')">💬 Écrire à ${afE(p.code)}</button>
       <div class="pf-rk">${rangs.map(r => `<span>${r}</span>`).join('')}<span class="pct">★ ${p.pct} %${p.pct_perso ? ' fixe' : ''}</span>${p.statut !== 'actif' ? `<span class="ko">${afE(p.statut)}</span>` : ''}</div>
     </div>`;
 }
@@ -2380,6 +2433,7 @@ function afGerer(p){
         <span>Disponible</span><b>${mD(p.dispo)}${p.en_cours ? ' · ' + mD(p.en_cours) + ' en cours de versement' : ''}</b>
       </div>
     </div>
+    ${caControleCarte(p)}
     ${afWhopCarte(p)}
     ${afPaliersCarte(p)}
     <div class="af-titre">Réglages de l'affilié</div>
@@ -2527,7 +2581,7 @@ async function afPaliersOk(b, general){
 function afAlertes(){
   const L = AF.evenements || [];
   setTimeout(() => { if(L.some(x => !x.vu)) rpc('admin_aff_evenements_vus').then(() => { L.forEach(x => x.vu = true); }).catch(() => {}); }, 1500);
-  return L.length ? L.map(e => `<div class="af-carte ${e.vu ? '' : 'neuf'}" onclick="afDetail('${e.user_id}')" style="cursor:pointer">
+  return L.length ? L.map(e => e.type === 'france' ? caAlerteFrance(e) : `<div class="af-carte ${e.vu ? '' : 'neuf'}" onclick="afDetail('${e.user_id}')" style="cursor:pointer">
       <div class="af-l1"><div><b>${afE(e.code || e.email)} : ${e.avant} % → ${e.apres} %</b><div class="af-meta">${afE(e.email)} · ${afD(e.cree_le)}</div></div>
       <span class="af-pill ${e.apres > e.avant ? 'ok' : 'att'}">${e.apres > e.avant ? 'Monte' : 'Baisse'}</span></div>
       <div class="af-meta">${e.whop_lie ? (e.whop_erreur ? '⚠️ Whop pas à jour : ' + afE(e.whop_erreur) : (e.whop_pct === e.apres ? '✓ Whop mis à jour (' + e.whop_pct + ' %)' : 'Whop : ' + (e.whop_pct || '—') + ' %')) : 'Pas de compte Whop : tout passe par son solde.'}
@@ -2610,7 +2664,7 @@ async function afReleve(id){
 let AF_REG = null;
 function afReglages(){
   AF_REG = JSON.parse(JSON.stringify(AF.reglages));
-  return afReglagesHtml();
+  return afReglagesHtml() + caReglagesHtml();
 }
 function afReglagesHtml(){
   const g = AF_REG;
@@ -2931,7 +2985,7 @@ function onglet(k){
 }
 function majBadges(){
   const mt = MB_CONVS.filter(c => c.a_traiter).length, nl = MB_CONVS.filter(c => c.non_lu_admin > 0).length;
-  const nAf = AF ? (AF.demandes||[]).filter(x => x.statut === 'en_attente').length + (AF.retraits||[]).filter(x => x.statut === 'demande').length : 0;
+  const nAf = caATraiter() + (AF ? (AF.demandes||[]).filter(x => x.statut === 'en_attente').length + (AF.retraits||[]).filter(x => x.statut === 'demande').length : 0) + (PMA_NL || 0);
   document.querySelectorAll('.nb-msg').forEach(e => e.textContent = (mt || nl) || '');
   document.querySelectorAll('.nb-aff').forEach(e => e.textContent = nAf || '');
 }
@@ -3056,8 +3110,10 @@ async function coAdmRepondre(id){
 }
 
 function hautPage(){ const p = document.getElementById('panel'); if(p) p.scrollTop = 0; window.scrollTo(0, 0); }
-function toast(m){ let t = document.getElementById('adm-toast'); if(!t){ t = document.createElement('div'); t.id = 'adm-toast'; t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#111a26;color:#fff;border:1px solid rgba(255,255,255,.15);padding:11px 16px;border-radius:12px;font:600 13px system-ui;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
-  t.textContent = m; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = '0', 3200); }
+function toast(m){ let t = document.getElementById('adm-toast'); if(!t){ t = document.createElement('div'); t.id = 'adm-toast'; t.style.cssText = 'position:fixed;left:50%;bottom:calc(var(--nav,64px) + 18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;pointer-events:none;background:#111a26;color:#fff;border:1px solid rgba(255,255,255,.15);padding:11px 16px;border-radius:12px;font:600 13px system-ui;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
+  t.textContent = m; t.style.visibility = 'visible'; t.style.opacity = '1'; clearTimeout(t._h); clearTimeout(t._v);
+  // 03/11 : une fois effacé, le message disparaît vraiment (avant, invisible, il restait posé sur la barre du bas et bloquait les clics)
+  t._h = setTimeout(() => { t.style.opacity = '0'; t._v = setTimeout(() => { t.style.visibility = 'hidden'; }, 350); }, 3200); }
 /* ================= RÉSILIATIONS (fonction « abonnement ») ================= */
 async function aboAdm(corps, encore){
   const r = await fetch(SUPABASE_URL + '/functions/v1/abonnement', { method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON }, body: JSON.stringify(corps) });
@@ -3306,6 +3362,414 @@ function rechUser(q){
 }
 document.addEventListener('click', e => { if(!e.target.closest('.rech')) $('rech-liste').hidden = true; });
 
+
+/* ================= MESSAGERIE PARTENAIRES (03/11/2026) =================
+   Chaque affilié écrit à « l'équipe AURA90 » depuis son espace ; ici, toutes les discussions en direct
+   (liste rafraîchie toutes les 15 s, discussion ouverte toutes les 4 s). Affiliés → Messages, ou « Écrire » sur un profil. */
+let PMA = null, PMA_NL = 0, PMA_UID = null, PMA_MSG = [], PMA_DERNIER = 0, PMA_LU = 0, PMA_T = null, PMA_ENVOI = false, PMA_ERR = '';
+const pmaLiens = s => afE(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+function pmaQuand(d){
+  if(!d) return '';
+  const x = new Date(d), a = new Date();
+  if(x.toDateString() === a.toDateString()) return x.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+  return x.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+}
+function pmaJour(d){
+  const x = new Date(d), a = new Date(), h = new Date(a.getFullYear(), a.getMonth(), a.getDate() - 1);
+  if(x.toDateString() === a.toDateString()) return "aujourd'hui";
+  if(x.toDateString() === h.toDateString()) return 'hier';
+  return x.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+}
+async function pmaCharger(){
+  if(!JETON) return;
+  try{ PMA = await rpc('admin_pm_conversations') || []; PMA_ERR = ''; }
+  catch(e){ PMA_ERR = e.message; if(!PMA) PMA = []; }
+  PMA_NL = PMA.reduce((a, c) => a + (c.non_lus || 0), 0);
+  majBadges();
+  const b = document.querySelector('#af-onglets button[data-k="messages"]');
+  if(b){ let n = b.querySelector('b'); if(PMA_NL){ if(!n){ n = document.createElement('b'); b.appendChild(n); } n.textContent = PMA_NL; } else if(n) n.remove(); }
+  const l = $('pma-liste'); if(l) l.innerHTML = pmaListe();
+  else if(AF && !AF_DET && ONGLET === 'affilies' && AF_ONG === 'messages') afRendre();
+}
+function afMessages(){
+  if(!PMA){ pmaCharger(); return `<div class="vide" style="margin:0 12px">Chargement…</div>`; }
+  const actifs = (AF?.partenaires || []).filter(p => p.statut === 'actif');
+  return `<div class="af-carte"><b>Écrire à un affilié</b>
+      <div class="af-meta">Tes messages partent au nom de « l'équipe AURA90 ». L'affilié reçoit une notification.</div>
+      <div style="margin-top:10px"><select class="af-sel" id="pma-choix">${actifs.map(p => `<option value="${p.user_id}">${afE(p.code)} · ${afE(p.email || '')}</option>`).join('') || '<option value="">Aucun affilié actif</option>'}</select></div>
+      <div class="af-ligne" style="margin:0"><button onclick="pmaOuvrir($('pma-choix').value)">Ouvrir la discussion</button></div>
+    </div>
+    <div class="af-titre" style="margin:14px 12px 8px">Discussions</div>
+    <div class="pma-liste" id="pma-liste">${pmaListe()}</div>`;
+}
+function pmaListe(){
+  if(PMA_ERR) return `<div class="vide">Erreur : ${afE(PMA_ERR)}<br>As-tu lancé messagerie_partenaires.sql ?</div>`;
+  const L = (PMA || []).filter(c => c.total > 0);
+  if(!L.length) return `<div class="vide">Aucune discussion pour l'instant. Les messages de tes affiliés arrivent ici en direct.</div>`;
+  return L.map(c => `<div class="mb-conv${c.non_lus ? ' urgent' : ''}" onclick="pmaOuvrir('${c.user_id}')">
+      <div class="mb-av">${afE((c.code || '?').slice(0, 2))}</div>
+      <div class="mb-c"><div class="n">${afE(c.code)}${c.email ? ' · ' + afE(c.email) : ''}${c.statut !== 'actif' ? ' · ' + afE(c.statut) : ''}</div><div class="d">${c.dernier_auteur === 'equipe' ? 'Toi : ' : ''}${afE(c.dernier || '')}</div></div>
+      <div class="mb-droite"><div class="h">${pmaQuand(c.dernier_le)}</div>${c.non_lus ? `<span class="mb-nl">${c.non_lus}</span>` : ''}</div>
+    </div>`).join('');
+}
+async function pmaOuvrir(uid){
+  if(!uid) return;
+  PMA_UID = uid; PMA_MSG = []; PMA_DERNIER = 0; PMA_LU = 0;
+  const c = (PMA || []).find(x => x.user_id === uid) || (AF?.partenaires || []).find(p => p.user_id === uid) || {};
+  $('pma-qui').textContent = (c.code || 'Affilié') + (c.email ? ' · ' + c.email : '');
+  $('pma-av').textContent = (c.code || '?').slice(0, 2);
+  $('pma-fil').innerHTML = '<div class="vide">Chargement…</div>'; $('pma-msg').textContent = '';
+  if(!$('pm-ecran').classList.contains('ouvert')){ $('pm-ecran').classList.add('ouvert'); history.pushState({ pm: uid }, ''); }
+  await pmaFil(true);
+  clearInterval(PMA_T); PMA_T = setInterval(() => { if(!document.hidden && PMA_UID) pmaFil(false); }, 4000);
+}
+function pmaFermer(){ PMA_UID = null; clearInterval(PMA_T); $('pm-ecran').classList.remove('ouvert'); pmaCharger(); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.pm) && $('pm-ecran').classList.contains('ouvert')) pmaFermer(); });
+async function pmaFil(premier){
+  const uid = PMA_UID; let d;
+  try{ d = await rpc('admin_pm_fil', { p_user: uid, p_apres: premier ? 0 : PMA_DERNIER }); }
+  catch(e){ if(premier) $('pma-fil').innerHTML = `<div class="vide">Erreur : ${afE(e.message)}</div>`; return; }
+  if(uid !== PMA_UID || !d) return;
+  const nv = (d.messages || []).filter(m => m.id > PMA_DERNIER), lu = d.lu_jusqua || 0, ch = lu !== PMA_LU;
+  PMA_LU = lu;
+  if(!nv.length && !premier){ if(ch) pmaRendre(); return; }
+  const f = $('pma-fil'), bas = premier || f.scrollHeight - f.scrollTop - f.clientHeight < 120;
+  PMA_MSG = PMA_MSG.concat(nv); if(nv.length) PMA_DERNIER = nv[nv.length - 1].id;
+  pmaRendre(); if(bas) f.scrollTop = 1e9;
+  const c = (PMA || []).find(x => x.user_id === uid);
+  if(c && c.non_lus){ c.non_lus = 0; PMA_NL = PMA.reduce((a, x) => a + (x.non_lus || 0), 0); majBadges(); }
+}
+function pmaRendre(){
+  const f = $('pma-fil');
+  if(!PMA_MSG.length){ f.innerHTML = `<div class="vide">Pas encore de message. Écris le premier : l'affilié reçoit une notification.</div>`; return; }
+  let jour = '', h = '';
+  PMA_MSG.forEach(m => {
+    const j = pmaJour(m.cree_le); if(j !== jour){ jour = j; h += `<div class="pma-jour">${afE(j)}</div>`; }
+    const eq = m.auteur === 'equipe', vu = eq && m.id <= PMA_LU;
+    h += `<div class="mb-m ${eq ? 'admin' : 'user'}">${pmaLiens(m.texte)}<small>${new Date(m.cree_le).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' })}${eq ? `<span class="tk${vu ? ' lu' : ''}">${vu ? '✓✓' : '✓'}</span>` : ''}</small></div>`;
+  });
+  f.innerHTML = h;
+}
+async function pmaEnvoyer(){
+  const ta = $('pma-texte'), t = ta.value.trim();
+  if(!t || PMA_ENVOI || !PMA_UID) return;
+  PMA_ENVOI = true; $('pma-env').disabled = true; $('pma-msg').textContent = '';
+  try{
+    const m = await rpc('admin_pm_envoyer', { p_user: PMA_UID, p_texte: t });
+    ta.value = '';
+    if(m && m.id > PMA_DERNIER){ PMA_MSG.push(m); PMA_DERNIER = m.id; }
+    pmaRendre(); $('pma-fil').scrollTop = 1e9;
+  }catch(e){ $('pma-msg').textContent = e.message; }
+  finally{ PMA_ENVOI = false; $('pma-env').disabled = false; }
+}
+function pmaProfil(){
+  const uid = PMA_UID; history.back();
+  setTimeout(() => { if(!AF) return; afOuvrir('affilies'); if(AF.partenaires.some(p => p.user_id === uid)) afDetail(uid, 'liste'); }, 60);
+}
+// ouverture directe depuis une notification : admin.html#pm=<id du partenaire>
+function pmaDepuisLien(){
+  const m = location.hash.match(/pm=([0-9a-f-]{36})/); if(!m) return;
+  try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  onglet('affilies'); AF_ONG = 'messages'; if(AF) afRendre();
+  pmaOuvrir(m[1]);
+}
+
+
+/* ================= CANDIDATURES PARTENAIRES (03/11/2026) =================
+   Invitations (lien unique, 7 jours) → candidature + Conditions signées → décision ici.
+   Les fichiers (captures, pièce d'identité, signatures, PDF) sont lus par liens temporaires (1 h) via la fonction « candidature ». */
+let CA = null, CA_PURGE = false, CA_DOS = null, CA_SIG = null;
+const caPaysNom = (() => { let dn = null; try{ dn = new Intl.DisplayNames(['fr'], { type: 'region' }); }catch(e){} return c => { if(!c) return '—'; let n = c; try{ n = dn ? dn.of(c) : c; }catch(e){} return n; }; })();
+const caDrapeau = c => /^[A-Z]{2}$/.test(c || '') ? String.fromCodePoint(...[...c].map(x => 0x1F1A5 + x.charCodeAt(0))) : '🌍';
+const caPays = c => `${caDrapeau(c)} ${afE(caPaysNom(c))}`;
+const CA_CANAL = { tiktok: 'TikTok', instagram: 'Instagram', youtube: 'YouTube', groupe_whatsapp: 'Groupe WhatsApp', chaine_whatsapp: 'Chaîne WhatsApp', telegram: 'Telegram', autre: 'Autre' };
+const CA_STATUT = { a_examiner: ['À examiner', 'att'], complement: ['Complément demandé', 'att'], acceptee: ['Acceptée', 'ok'], refusee: ['Refusée', 'non'] };
+const CA_ETAT = { envoyee: 'Envoyée', ouverte: 'Ouverte', candidature: 'Candidature reçue', expiree: 'Expirée', annulee: 'Annulée' };
+const caATraiter = () => (CA && CA.candidatures ? CA.candidatures.filter(c => c.statut === 'a_examiner').length : 0);
+async function caFn(corps, deja){
+  const r = await fetch(SUPABASE_URL + '/functions/v1/candidature', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: 'Bearer ' + JETON }, body: JSON.stringify(corps) });
+  if(r.status === 401 && !deja && await rafraichirJeton()) return caFn(corps, true);
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok && !d.erreur) d.erreur = 'HTTP ' + r.status;
+  return d;
+}
+async function caCharger(){
+  if(!JETON) return;
+  try{ CA = await rpc('admin_candidatures'); }
+  catch(e){ CA = { erreur: e.message, invitations: [], candidatures: [] }; }
+  if(!CA_PURGE && !CA.erreur){ CA_PURGE = true; caFn({ action: 'purge' }).catch(() => {}); }
+  majBadges();
+  if(AF && ONGLET === 'affilies' && !AF_DET && AF_ONG === 'demandes') afRendre();
+}
+// ce qui manque dans un dossier
+function caManque(c){
+  const m = [], f = c.fichiers || [];
+  if(!f.some(x => x.type === 'identite')) m.push('pièce d\'identité');
+  (c.canaux || []).forEach((k, i) => { if(!f.some(x => x.type === 'capture' && x.canal === i)) m.push('capture ' + (CA_CANAL[k.type] || k.type)); });
+  if(!c.signature_info || !c.signature_info.pdf) m.push('PDF signé');
+  return m;
+}
+const caLienInvit = j => location.origin + location.pathname.replace(/admin\.html.*$/, '') + '?invitation=' + j;
+
+// ---------- onglet « Demandes »
+function afDemandes(){
+  if(!CA){ caCharger(); return `<div class="vide" style="margin:0 12px">Chargement…</div>`; }
+  if(CA.erreur) return `<div class="vide" style="margin:0 12px">Erreur : ${afE(CA.erreur)}<br>As-tu lancé candidatures.sql ?</div>`;
+  const L = CA.candidatures || [];
+  const enCours = L.filter(c => ['a_examiner', 'complement'].includes(c.statut)), traitees = L.filter(c => !['a_examiner', 'complement'].includes(c.statut)).slice(0, 30);
+  const carte = c => {
+    const st = CA_STATUT[c.statut] || [c.statut, ''], man = caManque(c), fr = (c.alertes || []).length;
+    return `<div class="af-carte ${c.statut === 'a_examiner' ? 'neuf' : ''}" onclick="caOuvrir(${c.id})" style="cursor:pointer">
+      <div class="af-l1"><div><b>${afE(c.prenom)} ${afE(c.nom)} · ${afE(c.code)}</b><div class="af-meta">Public ${caPays(c.public_pays)} · ${(c.canaux || []).map(k => CA_CANAL[k.type] || k.type).join(', ')} · reçue le ${afD(c.cree_le)}</div></div>
+        <span class="af-pill ${st[1]}">${st[0]}</span></div>
+      ${fr || man.length ? `<div class="af-ligne" style="margin-top:8px;gap:6px">${fr ? `<span class="af-pill ca-pill-fr">⚠ Public France possible</span>` : ''}${man.length ? `<span class="af-pill att">Incomplet : ${afE(man.join(', '))}</span>` : ''}</div>` : ''}
+      ${c.complement_recu && c.statut === 'a_examiner' ? `<div class="af-meta">Complément reçu le ${afD(c.complement_recu)}</div>` : ''}
+    </div>`;
+  };
+  const inv = i => `<div class="af-carte"><div class="ca-inv"><div class="t"><b>${afE(i.pour || 'Sans nom')}${i.reseau ? ' · ' + afE(i.reseau) : ''}</b>
+      <span>Créée le ${afD(i.cree_le)} · ${i.etat === 'expiree' || ['envoyee', 'ouverte'].includes(i.etat) ? 'expire le ' + afD(i.expire_le) : i.etat === 'candidature' ? 'utilisée le ' + afD(i.utilisee_le) : 'annulée'}</span></div>
+      <span class="ca-etat ${i.etat}">${CA_ETAT[i.etat] || i.etat}</span></div>
+      ${['envoyee', 'ouverte'].includes(i.etat) ? `<div class="af-ligne"><button class="gris" onclick="caCopier('${i.jeton}', this)">Copier le lien</button><button class="gris" onclick="window.open('https://wa.me/?text='+encodeURIComponent(caMsgInvit('${i.jeton}')),'_blank')">WhatsApp</button><button class="rouge" onclick="caAnnuler(${i.id}, this)">Annuler</button></div>` : ''}
+      ${i.etat === 'candidature' && i.candidature ? `<div class="af-ligne"><button class="gris" onclick="caOuvrir(${i.candidature})">Voir la candidature</button></div>` : ''}
+    </div>`;
+  const anciennes = (AF.demandes || []).filter(x => x.statut === 'en_attente');
+  return `<div class="af-carte"><b>Inviter un partenaire</b>
+      <div class="af-meta">Lien unique, à usage unique, valable 7 jours. Sans lien valide, personne ne peut candidater. Public en France refusé automatiquement.</div>
+      <div style="margin-top:10px"><input id="ca-pour" placeholder="Pour qui ? (nom)" maxlength="80"><input id="ca-res" placeholder="Son réseau (ex. TikTok @moussa)" maxlength="80"></div>
+      <div class="af-ligne" style="margin:0"><button onclick="caInviter(this)">Créer un lien d'invitation</button></div>
+      <div id="ca-lien"></div></div>
+    <div class="af-titre">Candidatures${enCours.length ? ' · ' + enCours.length + ' en cours' : ''}</div>
+    ${enCours.length ? enCours.map(carte).join('') : `<div class="vide" style="margin:0 12px 10px">Aucune candidature à traiter. Elles arrivent ici après signature des conditions.</div>`}
+    ${(CA.invitations || []).length ? `<div class="af-titre">Invitations</div>` + CA.invitations.map(inv).join('') : ''}
+    ${traitees.length ? `<div class="af-titre">Traitées</div>` + traitees.map(carte).join('') : ''}
+    ${anciennes.length ? `<div class="af-titre">Anciennes demandes (avant les invitations)</div>` + afDemandesAnciennes() : ''}`;
+}
+const caMsgInvit = j => `Salut ! Voici ton lien pour candidater au programme partenaire AURA90 (valable 7 jours) : ${caLienInvit(j)}`;
+async function caInviter(b){
+  b.disabled = true;
+  try{
+    const r = await rpc('admin_invitation_creer', { p_pour: $('ca-pour').value, p_reseau: $('ca-res').value });
+    await caCharger();
+    const z = $('ca-lien'); if(z) z.innerHTML = `<div class="ca-lien" id="ca-lien-txt">${afE(caLienInvit(r.jeton))}</div>
+      <div class="af-ligne"><button onclick="caCopier('${r.jeton}', this)">Copier le lien</button><button class="gris" onclick="window.open('https://wa.me/?text='+encodeURIComponent(caMsgInvit('${r.jeton}')),'_blank')">Envoyer par WhatsApp</button></div>
+      <div class="af-meta">Valable jusqu'au ${afD(r.expire_le)}, pour une seule candidature.</div>`;
+  }catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+async function caCopier(j, b){
+  const t = caLienInvit(j);
+  try{ await navigator.clipboard.writeText(t); }catch(e){ const x = document.createElement('textarea'); x.value = t; document.body.appendChild(x); x.select(); try{ document.execCommand('copy'); }catch(_){} x.remove(); }
+  if(b){ const o = b.textContent; b.textContent = 'Copié ✓'; setTimeout(() => b.textContent = o, 1500); }
+}
+async function caAnnuler(id, b){
+  if(!confirm('Annuler ce lien ? La personne ne pourra plus candidater avec.')) return;
+  b.disabled = true; try{ await rpc('admin_invitation_annuler', { p_id: id }); await caCharger(); }catch(e){ afMsg(e.message); b.disabled = false; }
+}
+
+// ---------- dossier d'une candidature
+async function caOuvrir(id){
+  CA_DOS = { id, d: null };
+  $('ca-titre').textContent = 'Candidature'; $('ca-corps').innerHTML = `<div class="vide" style="margin:12px">Chargement du dossier…</div>`;
+  if(!$('ca-ecran').classList.contains('ouvert')){ $('ca-ecran').classList.add('ouvert'); history.pushState({ ca: id }, ''); }
+  const d = await caFn({ action: 'admin_dossier', id });
+  if(!CA_DOS || CA_DOS.id !== id) return;
+  if(!d.ok){ $('ca-corps').innerHTML = `<div class="vide" style="margin:12px">Erreur : ${afE(d.erreur || d.detail || 'dossier introuvable')}</div>`; return; }
+  CA_DOS.d = d; caRendre();
+}
+function caFermer(){ CA_DOS = null; $('ca-ecran').classList.remove('ouvert'); }
+window.addEventListener('popstate', e => { if(!(e.state && e.state.ca) && $('ca-ecran').classList.contains('ouvert')) caFermer(); });
+function caRendre(){
+  const { candidature: c, signatures: S, invitation: I } = CA_DOS.d, s = (S || [])[S.length - 1] || null, st = CA_STATUT[c.statut] || [c.statut, ''];
+  const man = caManque({ ...c, signature_info: s });
+  $('ca-titre').textContent = `${c.prenom} ${c.nom} · ${c.code}`;
+  const kv = (l, v) => v === null || v === undefined || v === '' ? '' : `<span>${l}</span><b>${v}</b>`;
+  const imgs = (filtre, lab) => { const l = (c.fichiers || []).filter(filtre); return l.length ? `<div class="ca-imgs">${l.map(f => f.chemin.endsWith('.pdf') ? `<a href="${afE(f.url)}" target="_blank" rel="noopener" style="padding:20px;text-align:center">📄 PDF<span>${afE(lab(f))}</span></a>` : `<a href="${afE(f.url)}" target="_blank" rel="noopener"><img src="${afE(f.url)}" alt="" loading="lazy"><span>${afE(lab(f))}</span></a>`).join('')}</div>` : `<div class="af-meta">Aucun fichier.</div>`; };
+  const canaux = (c.canaux || []).map((k, i) => `<div class="af-carte"><b>${CA_CANAL[k.type] || afE(k.type)} · ${/^https?:\/\//.test(k.lien) ? `<a href="${afE(k.lien)}" target="_blank" rel="noopener">${afE(k.lien)}</a>` : afE(k.lien)}</b>
+      <div class="af-meta">${afF(k.abonnes)} ${/whatsapp|telegram/.test(k.type) ? 'membres' : 'abonnés'}</div>${imgs(f => f.type === 'capture' && f.canal === i, () => 'capture')}</div>`).join('');
+  const peutDecider = ['a_examiner', 'complement'].includes(c.statut);
+  $('ca-corps').innerHTML = `<div class="af-msg" id="ca-msg"></div>
+    ${(c.alertes || []).length ? `<div class="ca-alerte"><b>⚠ Public France possible</b>${c.alertes.map(afE).join(' · ')}</div>` : ''}
+    ${man.length ? `<div class="ca-manque">Il manque : ${afE(man.join(', '))}</div>` : ''}
+    <div class="af-carte"><div class="af-l1"><div><b>${afE(c.prenom)} ${afE(c.nom)}</b><div class="af-meta">${afE(c.email)} · reçue le ${afD(c.cree_le)}</div></div><span class="af-pill ${st[1]}">${st[0]}</span></div>
+      <div class="af-kv">
+        ${kv('Né(e) le', c.naissance ? new Date(c.naissance + 'T12:00:00').toLocaleDateString('fr-FR') + ` (${Math.floor((Date.now() - new Date(c.naissance + 'T12:00:00')) / 31557600000)} ans)` : '')}
+        ${kv('Résidence', caPays(c.pays_residence))}${kv('Adresse', afE(c.adresse + ', ' + c.ville))}
+        ${kv('WhatsApp', `<a href="https://wa.me/${afE(String(c.whatsapp).replace(/\D/g, ''))}" target="_blank" rel="noopener">${afE(c.whatsapp)}</a>`)}
+        ${kv('Statut', { particulier: 'Particulier', auto: 'Auto-entrepreneur', societe: 'Société' }[c.statut_juridique] + (c.societe_nom ? ' · ' + afE(c.societe_nom) : '') + (c.societe_num ? ' · n° ' + afE(c.societe_num) : ''))}
+      </div></div>
+    <div class="af-titre">Public</div>
+    <div class="af-carte"><div class="af-kv">${kv('Pays principal', caPays(c.public_pays))}${kv('Autres pays', (c.public_autres || []).map(caPays).join(', ') || '—')}</div></div>
+    <div class="af-titre">Canaux et captures</div>${canaux}
+    <div class="af-titre">Pièce d'identité</div><div class="af-carte">${imgs(f => f.type === 'identite', () => 'identité')}</div>
+    ${(c.fichiers || []).some(f => f.type === 'complement') ? `<div class="af-titre">Compléments</div><div class="af-carte">${c.decision && c.decision.reponse_complement ? `<div class="af-meta" style="margin-top:0">Message : ${afE(c.decision.reponse_complement)}</div>` : ''}${imgs(f => f.type === 'complement', f => afD(f.le))}</div>` : ''}
+    <div class="af-titre">Projet</div>
+    <div class="af-carte"><div class="af-kv">${kv('Contenu', afE(c.projet_contenu))}${kv('Fréquence', afE(c.projet_frequence))}${kv('Abonnés / mois visés', afF(c.projet_abonnes))}
+      ${kv('Code souhaité', afE(c.code))}${kv('Pseudo Whop', c.whop_pseudo ? '@' + afE(c.whop_pseudo) : '—')}${kv('Paiement', { whop: 'Whop', mm: 'Mobile Money', virement: 'Virement bancaire' }[c.paiement])}</div></div>
+    <div class="af-titre">Signature électronique</div>
+    ${(S || []).map(x => `<div class="af-carte"><div class="af-kv">${kv('Version', afE(x.version))}${kv('Signé le', afE(new Date(x.signe_le).toLocaleString('fr-FR')))}${kv('Nom tapé', afE(x.nom_tape))}
+        ${kv('Adresse IP', afE(x.ip))}${kv('Appareil', `<small>${afE(x.appareil)}</small>`)}${kv('Empreinte', `<small style="word-break:break-all">${afE(x.empreinte)}</small>`)}</div>
+        ${x.signature_url ? `<div class="ca-sig"><img src="${afE(x.signature_url)}" alt="signature"></div>` : ''}
+        ${x.pdf_url ? `<div class="af-ligne"><button onclick="window.open('${afE(x.pdf_url)}','_blank')">📄 PDF signé</button></div>` : ''}</div>`).join('') || `<div class="vide" style="margin:0 12px">Pas de signature.</div>`}
+    ${I ? `<div class="af-titre">Invitation</div><div class="af-carte"><div class="af-kv">${kv('Pour', afE(I.pour || '—'))}${kv('Réseau', afE(I.reseau || '—'))}${kv('Créée', afD(I.cree_le))}${kv('Ouverte', afD(I.ouverte_le))}${kv('Utilisée', afD(I.utilisee_le))}</div></div>` : ''}
+    ${c.decision && c.decision.action ? `<div class="af-titre">Décision</div><div class="af-carte"><div class="af-kv">${kv('Décision', c.decision.action === 'acceptee' ? 'Acceptée' : 'Refusée')}${kv('Le', afD(c.decision.le))}
+        ${kv('Code', afE(c.decision.code || ''))}${kv('Commission', c.decision.mode === 'fixe' ? c.decision.pct + ' % fixe' : c.decision.mode === 'propres' ? 'paliers propres' : c.decision.mode ? 'paliers généraux' : '')}${kv('Motif', afE(c.decision.motif || ''))}</div></div>` : ''}
+    ${c.complement_msg ? `<div class="af-titre">Complément demandé</div><div class="af-carte"><div class="af-meta" style="margin-top:0">Le ${afD(c.complement_le)} : ${afE(c.complement_msg)}</div></div>` : ''}
+    ${peutDecider ? `<div class="af-titre">Décision</div>
+    <div class="af-carte ca-act"><b>Accepter</b>
+      <div class="af-meta">Ton clic active son espace (liens, et Whop s'il a donné son pseudo). Il n'ajoute aucune signature.</div>
+      <div style="margin-top:10px"><input id="ca-code" value="${afE(c.code)}" maxlength="10" style="text-transform:uppercase" placeholder="Code">
+      <select class="af-sel" id="ca-mode" onchange="$('ca-pct').style.display=this.value==='fixe'?'':'none'"><option value="generaux">Paliers généraux</option><option value="fixe">% fixe</option><option value="propres">Paliers propres (à régler ensuite)</option></select>
+      <input id="ca-pct" type="number" min="1" max="60" value="25" style="display:none" placeholder="%"></div>
+      <div class="af-ligne" style="margin:0"><button class="vert" onclick="caDecider('accepter', this)">✓ Accepter et activer</button></div></div>
+    <div class="af-carte ca-act"><b>Demander un complément</b><div class="af-meta">Message envoyé par email et visible dans son application. Il renvoie ses captures sans re-signer.</div>
+      <textarea id="ca-comp" placeholder="Ex. : les statistiques TikTok par pays des 30 derniers jours"></textarea>
+      <div class="af-ligne" style="margin:0"><button class="gris" onclick="caDecider('complement', this)">Envoyer la demande</button></div></div>
+    <div class="af-carte ca-act"><b>Refuser</b><div class="af-meta">Le motif est envoyé par email. Le dossier est effacé au bout de 6 mois.</div>
+      <textarea id="ca-motif" placeholder="Motif du refus"></textarea>
+      <div class="af-ligne" style="margin:0"><button class="rouge" onclick="caDecider('refuser', this)">Refuser</button></div></div>` : ''}`;
+}
+async function caDecider(dec, b){
+  const c = CA_DOS.d.candidature, corps = { action: 'admin_decider', id: c.id, decision: dec };
+  if(dec === 'accepter'){ corps.code = $('ca-code').value; corps.mode = $('ca-mode').value; corps.pct = +$('ca-pct').value; }
+  if(dec === 'refuser') corps.motif = $('ca-motif').value;
+  if(dec === 'complement') corps.motif = $('ca-comp').value;
+  if(dec === 'refuser' && !confirm('Refuser la candidature de ' + c.prenom + ' ' + c.nom + ' ?')) return;
+  b.disabled = true;
+  const r = await caFn(corps);
+  b.disabled = false;
+  const m = $('ca-msg');
+  if(!r.ok){ m.className = 'af-msg err'; m.textContent = r.erreur || 'Impossible'; m.scrollIntoView({ behavior: 'smooth' }); return; }
+  let t = dec === 'accepter' ? 'Partenaire activé ✓ Email de bienvenue envoyé.' : dec === 'refuser' ? 'Candidature refusée, motif envoyé.' : 'Demande de complément envoyée.';
+  if(r.whop) t += r.whop.ok ? ' Whop relié (@' + r.whop.pseudo + ').' : ' Whop non relié : ' + (r.whop.erreur || '') + ' (il pourra le relier lui-même).';
+  if(dec === 'accepter' && corps.mode === 'propres') t += ' Règle maintenant ses paliers dans son profil.';
+  await Promise.all([caCharger(), afCharger()]);
+  await caOuvrir(c.id);
+  const m2 = $('ca-msg'); if(m2){ m2.className = 'af-msg ok'; m2.textContent = t; }
+}
+// export imprimable (Enregistrer en PDF depuis l'impression) : la preuve en cas de contrôle
+function caExporter(){
+  if(!CA_DOS || !CA_DOS.d) return;
+  const { candidature: c, signatures: S, invitation: I } = CA_DOS.d, e = afE;
+  const ligne = (l, v) => v ? `<tr><th>${l}</th><td>${v}</td></tr>` : '';
+  const imgs = l => l.map(f => f.chemin.endsWith('.pdf') ? `<p>PDF : ${e(f.chemin)}</p>` : `<figure><img src="${e(f.url)}"><figcaption>${e(f.type)}${f.canal != null ? ' · canal ' + (f.canal + 1) : ''} · ${e(f.chemin.split('/').pop())}</figcaption></figure>`).join('');
+  const w = window.open('', '_blank'); if(!w) return;
+  w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Dossier partenaire ${e(c.code)} – ${e(c.prenom)} ${e(c.nom)}</title>
+    <style>body{font:12px Arial,sans-serif;color:#111;margin:24px}h1{font-size:18px}h2{font-size:14px;margin-top:22px;border-bottom:1px solid #ccc;padding-bottom:4px}
+    table{border-collapse:collapse;width:100%}th{text-align:left;width:200px;color:#555;font-weight:600;padding:4px 8px 4px 0;vertical-align:top}td{padding:4px 0}
+    figure{display:inline-block;margin:6px;width:220px;vertical-align:top}figure img{width:100%;border:1px solid #ddd}figcaption{font-size:10px;color:#666}
+    .sig{height:70px}.al{color:#b00020;font-weight:700}@media print{button{display:none}}</style></head><body>
+    <button onclick="print()">Imprimer / Enregistrer en PDF</button>
+    <h1>Dossier partenaire AURA90 · ${e(c.prenom)} ${e(c.nom)} · ${e(c.code)}</h1>
+    <p>GOMIS ADMIR – SGM BUSINESS · NINEA 012678077 · RCCM SN DKR 2025 A 48271 · exporté le ${new Date().toLocaleString('fr-FR')}</p>
+    ${(c.alertes || []).length ? `<p class="al">⚠ Public France possible : ${c.alertes.map(e).join(' · ')}</p>` : ''}
+    <h2>Candidature</h2><table>${ligne('Statut', (CA_STATUT[c.statut] || [c.statut])[0])}${ligne('Reçue le', new Date(c.cree_le).toLocaleString('fr-FR'))}${ligne('Email', e(c.email))}
+      ${ligne('Nom', e(c.prenom + ' ' + c.nom))}${ligne('Naissance', e(c.naissance))}${ligne('Résidence', e(caPaysNom(c.pays_residence)) + ' · ' + e(c.adresse) + ', ' + e(c.ville))}${ligne('WhatsApp', e(c.whatsapp))}
+      ${ligne('Statut juridique', e(c.statut_juridique) + (c.societe_nom ? ' · ' + e(c.societe_nom) : '') + (c.societe_num ? ' · n° ' + e(c.societe_num) : ''))}
+      ${ligne('Public principal', e(caPaysNom(c.public_pays)))}${ligne('Autres pays', (c.public_autres || []).map(x => e(caPaysNom(x))).join(', '))}
+      ${ligne('Canaux', (c.canaux || []).map(k => e((CA_CANAL[k.type] || k.type) + ' · ' + k.lien + ' · ' + k.abonnes)).join('<br>'))}
+      ${ligne('Projet', e(c.projet_contenu) + '<br>' + e(c.projet_frequence) + ' · ' + e(c.projet_abonnes) + ' abonnés / mois visés')}
+      ${ligne('Code / Whop / paiement', e(c.code) + ' · ' + e(c.whop_pseudo || '—') + ' · ' + e(c.paiement))}</table>
+    <h2>Signatures</h2>${(S || []).map(x => `<table>${ligne('Version', e(x.version))}${ligne('Signé le', new Date(x.signe_le).toLocaleString('fr-FR') + ' · ' + e(x.signe_le))}${ligne('Nom tapé', e(x.nom_tape))}
+      ${ligne('Adresse IP', e(x.ip))}${ligne('Appareil', e(x.appareil))}${ligne('Empreinte SHA-256', e(x.empreinte))}${ligne('Cases cochées', Object.values(x.cases || {}).map(e).join('<br>'))}
+      ${ligne('PDF', e(x.pdf))}</table>${x.signature_url ? `<img class="sig" src="${e(x.signature_url)}">` : ''}`).join('')}
+    ${I ? `<h2>Invitation</h2><table>${ligne('Pour', e(I.pour || '—'))}${ligne('Créée', e(I.cree_le))}${ligne('Ouverte', e(I.ouverte_le || ''))}${ligne('Utilisée', e(I.utilisee_le || ''))}</table>` : ''}
+    ${c.decision ? `<h2>Décision</h2><table>${Object.entries(c.decision).map(([k, v]) => ligne(e(k), e(typeof v === 'object' ? JSON.stringify(v) : v))).join('')}</table>` : ''}
+    <h2>Pièces jointes</h2>${imgs(c.fichiers || [])}
+    </body></html>`);
+  w.document.close();
+}
+// ouverture depuis une notification : admin.html#candidature=ID
+function caDepuisLien(){
+  const m = location.hash.match(/candidature=(\d+)/); if(!m) return;
+  try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  onglet('affilies'); AF_ONG = 'demandes'; if(AF) afRendre();
+  caOuvrir(+m[1]);
+}
+
+// ---------- alertes « France »
+function caAlerteFrance(e){
+  return `<div class="af-carte ${e.vu ? '' : 'neuf'}" onclick="afDetail('${e.user_id}')" style="cursor:pointer">
+    <div class="af-l1"><div><b>${afE(e.code || e.email)} : ${e.avant} % d'inscrits en France (30 j)</b><div class="af-meta">${afE(e.email)} · ${afD(e.cree_le)} · ${e.apres} inscrit(s) en France</div></div>
+    <span class="af-pill ca-pill-fr">France</span></div>
+    <div class="af-meta">Les commissions de ses inscrits en France sont en attente. Ouvre son profil → Gérer pour les libérer, les annuler ou le suspendre.</div></div>`;
+}
+
+// ---------- profil : pays des inscrits, commissions en attente, dossier, suspension
+function caControleCarte(p){
+  setTimeout(() => caControleCharger(p), 30);
+  return `<div class="af-titre">Contrôle</div><div class="af-carte" id="ca-ctrl"><div class="af-meta" style="margin-top:0">Chargement…</div></div>`;
+}
+async function caControleCharger(p){
+  const z = $('ca-ctrl'); if(!z) return;
+  let d; try{ d = await rpc('admin_aff_pays', { p_user: p.user_id }); }catch(e){ z.innerHTML = `<div class="af-meta" style="margin-top:0">Erreur : ${afE(e.message)} (candidatures.sql ?)</div>`; return; }
+  if(!CA) await caCharger();
+  const dossier = (CA && CA.candidatures || []).find(c => c.user_id === p.user_id && c.statut === 'acceptee');
+  const barres = l => { const t = l.reduce((a, x) => a + x.n, 0); return t ? `<div class="ca-barres">${l.slice(0, 8).map(x => `<div class="${x.pays === 'FR' ? 'fr' : ''}"><em>${caPays(x.pays === '?' ? '' : x.pays)}</em><i style="width:${Math.max(2, Math.round(x.n / t * 100))}%"></i><span>${Math.round(x.n / t * 100)} % · ${x.n}</span></div>`).join('')}</div>` : `<div class="af-meta">Pas encore d'inscrit.</div>`; };
+  const at = d.attente || { n: 0, montant: 0 };
+  z.innerHTML = `${d.alerte ? `<div class="ca-alerte" style="margin:0 0 10px"><b>⚠ Plus de 20 % d'inscrits en France sur 30 jours</b>Les commissions de ses inscrits en France sont mises en attente.</div>` : ''}
+    <b>Pays des inscrits · 30 jours</b>${barres(d.j30 || [])}
+    <b style="display:block;margin-top:12px">Depuis le début</b>${barres(d.tout || [])}
+    <div class="af-meta">Le pays est celui du compte de chaque inscrit (détecté par l'app).</div>
+    ${at.n ? `<div class="af-kv" style="margin-top:10px"><span>En attente</span><b>${at.n} commission(s) · ${mD(at.montant)}</b></div>
+      <div class="af-ligne"><button class="vert" onclick="caAttente('${p.user_id}','liberer',this)">Libérer</button><button class="rouge" onclick="caAttente('${p.user_id}','annuler',this)">Annuler ces commissions</button></div>` : ''}
+    ${d.alerte ? `<div class="af-ligne"><button class="gris" onclick="caAttente('${p.user_id}','lever',this)">Lever l'alerte</button></div>` : ''}
+    <div class="af-ligne">${dossier ? `<button class="gris" onclick="caOuvrir(${dossier.id})">📁 Son dossier signé</button>` : `<span class="af-meta">Activé avant les candidatures : pas de dossier signé.</span>`}
+      ${p.statut === 'actif' ? `<button class="rouge" onclick="caSuspendre('${p.user_id}',this)">Suspendre l'affilié</button>` : ''}</div>`;
+}
+async function caAttente(uid, a, b){
+  if(a === 'annuler' && !confirm('Annuler définitivement ces commissions ?')) return;
+  b.disabled = true;
+  try{ const r = await rpc('admin_aff_attente', { p_user: uid, p_action: a }); afMsg(r.msg, r.ok); }catch(e){ afMsg(e.message); }
+  const p = AF.partenaires.find(x => x.user_id === uid); if(p) caControleCharger(p);
+}
+async function caSuspendre(uid, b){
+  const p = AF.partenaires.find(x => x.user_id === uid); if(!p) return;
+  if(!confirm(`Suspendre ${p.code} ? Ses liens sont désactivés et ses commissions futures bloquées.`)) return;
+  b.disabled = true;
+  try{
+    const r = await rpc('admin_aff_modifier', { p_user: uid, p_code: p.code, p_pct: p.pct_perso || 0, p_pays: p.pays || '', p_statut: 'suspendu' });
+    if(r.ok) afPush(uid, 'Compte partenaire suspendu', 'Écris-nous depuis la messagerie pour en savoir plus.');
+    afMsg(r.msg || 'Affilié suspendu.', r.ok);
+    await afCharger(); if(AF_DET){ AF_DET.p = AF.partenaires.find(x => x.user_id === uid); afRendreDetail(); }
+  }catch(e){ afMsg(e.message); b.disabled = false; }
+}
+
+// ---------- réglages : Conditions partenaire + signature de l'entreprise
+function caReglagesHtml(){
+  setTimeout(caSigCharger, 30);
+  const v = CA && CA.conditions;
+  return `<div class="af-titre">Conditions partenaire</div>
+    <div class="af-carte"><div class="af-kv">${v ? `<span>En vigueur</span><b>${afE(v.version)}</b><span>Publiée le</span><b>${afD(v.publiee_le)}</b><span>Empreinte</span><b><small style="word-break:break-all">${afE(v.empreinte)}</small></b>` : '<span>En vigueur</span><b>—</b>'}</div>
+      <details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700">Publier une nouvelle version</summary>
+        <div class="af-meta">Chaque affilié qui a signé une version devra signer la nouvelle à sa prochaine connexion ; ses liens sont en pause d'ici là. Préviens-les 30 jours avant (article 10).</div>
+        <input id="ca-cv" placeholder="Nom de la version, ex. v2 – 01/12/2026" maxlength="40" style="margin-top:8px">
+        <textarea id="ca-ct" placeholder="Texte complet des conditions" style="width:100%;min-height:180px;box-sizing:border-box"></textarea>
+        <div class="af-ligne" style="margin:0"><button class="rouge" onclick="caPublier(this)">Publier cette version</button></div></details></div>
+    <div class="af-titre">Signature de l'entreprise</div>
+    <div class="af-carte"><div class="af-meta" style="margin-top:0">Posée automatiquement sous les conditions et sur chaque PDF signé : « Pour GOMIS ADMIR – SGM BUSINESS : Admir Gomis, gérant ».</div>
+      <div class="ca-sigent" id="ca-sigent"><span class="af-meta">Chargement…</span></div>
+      <label class="af-ligne" style="margin:0"><span class="gris" style="display:inline-block;padding:10px 14px;border-radius:11px;background:var(--surface2);cursor:pointer;font-weight:700">Remplacer l'image (PNG transparent)<input type="file" accept="image/png" style="display:none" onchange="caSigEnvoyer(this)"></span></label></div>`;
+}
+async function caSigCharger(){
+  const z = $('ca-sigent'); if(!z) return;
+  const r = await caFn({ action: 'conditions' }).catch(() => ({}));
+  z.innerHTML = r.signature_entreprise ? `<img src="${r.signature_entreprise}" alt="signature">` : `<span class="af-meta">Indisponible (fonction « candidature » déployée ?)</span>`;
+}
+async function caSigEnvoyer(inp){
+  const f = inp.files && inp.files[0]; inp.value = ''; if(!f) return;
+  const b64 = await new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = ko; r.readAsDataURL(f); });
+  const r = await caFn({ action: 'admin_signature', png: b64 });
+  afMsg(r.ok ? 'Signature de l\'entreprise remplacée ✓' : (r.erreur || 'Erreur'), r.ok);
+  caSigCharger();
+}
+async function caPublier(b){
+  const v = $('ca-cv').value.trim(), t = $('ca-ct').value.trim();
+  if(!confirm(`Publier « ${v} » ? Les affiliés devront la signer et leurs liens seront en pause jusque-là.`)) return;
+  b.disabled = true;
+  try{ const r = await rpc('admin_conditions_publier', { p_version: v, p_texte: t }); afMsg(r.msg, r.ok); if(r.ok){ await caCharger(); } }catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+
 /* ================= DÉMARRAGE ================= */
 function adminPret(){
   document.querySelectorAll('.dev-select').forEach(x => { x.innerHTML = devOptions(); x.value = DEV; });
@@ -3313,6 +3777,9 @@ function adminPret(){
   onglet_(NAV.some(n => n[0] === o) ? o : 'accueil');
   majTableauDeBord();
   afCharger(); chargerMessagerie(true); liveMaj(); progCharger(); majSources(); majInstallations();
+  pmaCharger().then(pmaDepuisLien);
+  caCharger().then(caDepuisLien);
+  setInterval(() => { if(!document.hidden && !PMA_UID) pmaCharger(); }, 15000);
   dtCharger().then(majTableauDeBord).catch(() => {});
   setInterval(() => { if(!document.hidden && ONGLET === 'accueil'){ afCharger(); dtCharger(true).then(majTableauDeBord).catch(() => {}); majSources(); } }, 120000);
   setTimeout(() => paDonnees().catch(() => {}), 2500);
