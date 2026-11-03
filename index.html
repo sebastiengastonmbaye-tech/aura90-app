@@ -1636,6 +1636,55 @@ html.co-charge::after{content:"";position:fixed;top:0;left:0;height:3px;width:40
 .co-chiffres > div{padding:10px 4px;min-width:0}
 .co-chiffres b{white-space:nowrap;font-size:clamp(14px,4.4vw,19px);letter-spacing:-.3px}
 
+/* ===== Espace partenaire v2 (03/11/2026) ===== */
+.ep-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ep-split button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);min-width:0}
+.ep-split b{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-split small{font-size:11px;color:var(--sourdine)}
+.pt{display:inline-block;width:8px;height:8px;border-radius:50%;margin-bottom:4px}
+.pt.c{background:#8B7CFF}.pt.m{background:#3DE8C8}
+.ep-btn2{margin-top:12px;background:rgba(255,255,255,.08) !important;color:var(--texte) !important;border:1px solid rgba(255,255,255,.14) !important}
+.ep-gd{margin-top:14px;padding:14px;border-radius:16px;background:var(--surface2);border:1px solid var(--ligne)}
+.ep-gd .h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ep-gd .h .pt{margin:0}
+.ep-gd .h b{flex:1;font-size:14px}
+.ep-gd .h span:last-child{font-weight:800}
+.ep-gd .ep-info{margin-top:10px}
+.ep-ok{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(61,232,200,.08);font-size:12.5px}
+.ep-whop{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;margin:12px 16px 0;padding:13px 14px;border-radius:18px;background:rgba(139,124,255,.1);border:1px solid rgba(139,124,255,.35);width:calc(100% - 32px)}
+.ep-whop .i{width:34px;height:34px;border-radius:10px;background:#FF6243;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ep-whop .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ep-whop .t b{font-size:14px}.ep-whop .t small{font-size:12px;color:var(--sourdine)}
+.ep-whop .fl{color:var(--sourdine);font-size:20px}
+.ep-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:11px;flex-shrink:0}
+.ep-res-b{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--ligne)}
+.ep-bloc > .ep-res-b:first-child{border-top:0}
+.ep-res-b .t{flex:1;min-width:0}
+.ep-chev{color:var(--sourdine);font-size:18px;flex-shrink:0}
+.ep-ajout{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:0 16px}
+.ep-ajout button{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);color:var(--texte);font:700 13px inherit;cursor:pointer}
+.ep-retour{all:unset;cursor:pointer;display:inline-block;margin:6px 16px 4px;color:var(--sourdine);font-size:13.5px;font-weight:700;padding:6px 0}
+.ep-rt{display:flex;align-items:center;gap:12px;margin:4px 16px 14px}
+.ep-rt h2{margin:0;font-size:20px}.ep-rt span{font-size:12.5px;color:var(--sourdine)}
+.ep-lc{margin:0 16px 10px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--ligne)}
+.ep-lc .h{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ep-lc .h b{font-size:14.5px}
+.ep-lc .n{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.ep-lc .n div{display:flex;flex-direction:column;gap:1px}
+.ep-lc .n b{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-lc .n span{font-size:10.5px;color:var(--sourdine)}
+.ep-lc .u{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--ligne)}
+.ep-lc .u span{flex:1;min-width:0;font-size:11.5px;color:var(--sourdine);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'JetBrains Mono',monospace}
+.ep-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 16px}
+.ep-kpi div{padding:12px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--ligne);display:flex;flex-direction:column;gap:2px;min-width:0}
+.ep-kpi b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep-kpi span{font-size:11px;color:var(--sourdine)}
+.ep-fh{display:flex;align-items:center;gap:12px}
+.ep-fh b{display:block;font-size:15px;margin-bottom:4px}
+.ep-etapes{margin:12px 0 0 18px;padding:0;font-size:13px;line-height:1.55;color:var(--texte2,#C3CDDB)}
+.ep-choix button:disabled{opacity:.4}
+@media (max-width:360px){ .ep-lc .n{grid-template-columns:repeat(2,1fr)} .ep-kpi{grid-template-columns:repeat(2,1fr)} }
+
 </style>
 </head>
 <body>
@@ -1873,7 +1922,7 @@ const CONFIG = {
       <button class="lien-retour" id="guide-ios" style="display:none;width:auto;margin:0;font-size:11px" onclick="ouvrirGuideInstall()">📲 Installer l'app</button>
     </div>
 
-    <div class="cp-pied" id="pied-resp"><span>Réservé aux 18 ans et plus. AURA90 fournit des analyses statistiques, jamais une garantie de résultat.</span><span>Édité et vendu par GOMIS ADMIR – SGM BUSINESS, Dakar, Sénégal.</span><span id="pied-legal"></span><span>© 2026 AURA90 · Tous droits réservés</span></div>
+    <div class="cp-pied" id="pied-resp"><span id="pied-legal"></span><span>© 2026 AURA90 · Tous droits réservés</span></div>
   </div>
 
 <!-- ============ COACH 90' (31/10/2026) ============ -->
@@ -4671,11 +4720,12 @@ function lienSuivi(){
 }
 (function(){
   const s = suiviSourceDuLien(); if(!s) return;
+  const l = (new URLSearchParams(location.search).get('l') || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12);
   let ancien = null; try{ ancien = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
-  if(!ancien || Date.now() - ancien.t > 30 * 864e5) LS.set('aura90_src', JSON.stringify({ s, t: Date.now() }));
+  if(!ancien || Date.now() - ancien.t > 30 * 864e5) LS.set('aura90_src', JSON.stringify({ s, l: l || null, t: Date.now() }));
   fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/noter_visite', {
     method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+CONFIG.SUPABASE_KEY },
-    body: JSON.stringify({ p_source: s, p_visiteur: SUIVI_VIS })
+    body: JSON.stringify({ p_source: s, p_visiteur: SUIVI_VIS, p_lien: l || null })
   }).catch(()=>{});
 })();
 // navigateur interne (TikTok, Instagram…) : on laisse ?s=…&vid=… dans la barre d'adresse
@@ -4701,7 +4751,7 @@ async function suiviBattement(){
       // compte relié au réseau d'arrivée (une seule fois)
       let src = null; try{ src = JSON.parse(LS.get('aura90_src') || 'null'); }catch(e){}
       if(src && src.s && LS.get('aura90_src_lie') !== (SESSION.email || '1')){
-        const res = await epRpc('lier_source', { p_source: src.s, p_visiteur: SUIVI_VIS });
+        const res = await epRpc('lier_source', { p_source: src.s, p_visiteur: SUIVI_VIS, p_lien: src.l || null });
         if(res) LS.set('aura90_src_lie', SESSION.email || '1');
       }
     } else {
@@ -4727,16 +4777,17 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden) suivi
 /* ---- lien ?ref=CODE&s=reseau : clic compté, filleul noté à la connexion ---- */
 (function(){
   const q = new URLSearchParams(location.search);
-  const r = q.get('ref'), s = (q.get('s') || '').toLowerCase().replace(/[^a-z]/g,'').slice(0,12);
+  const r = q.get('ref'), s = (q.get('s') || '').toLowerCase().replace(/[^a-z]/g,'').slice(0,12), l = (q.get('l') || '').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12);
   if(!r || !/^[A-Za-z0-9]{4,10}$/.test(r)) return;
   try{
     localStorage.setItem('aura90_ref', r.toUpperCase());
     localStorage.setItem('aura90_ref_src', s || 'autre');
+    localStorage.setItem('aura90_ref_lien', l || '');
     let v = localStorage.getItem('aura90_visiteur');
     if(!v){ v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); localStorage.setItem('aura90_visiteur', v); }
     fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/noter_clic', {
       method:'POST', headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer '+CONFIG.SUPABASE_KEY },
-      body: JSON.stringify({ p_code: r.toUpperCase(), p_source: s || 'autre', p_visiteur: v })
+      body: JSON.stringify({ p_code: r.toUpperCase(), p_source: s || 'autre', p_visiteur: v, p_lien: l || null })
     }).catch(()=>{});
   }catch(e){}
 })();
@@ -4744,7 +4795,7 @@ async function noterFilleul(){
   try{
     const c = localStorage.getItem('aura90_ref');
     if(!c || localStorage.getItem('aura90_ref_note') === c) return;
-    const res = await epRpc('noter_filleul', { p_code: c, p_source: localStorage.getItem('aura90_ref_src') || 'autre' });
+    const res = await epRpc('noter_filleul', { p_code: c, p_source: localStorage.getItem('aura90_ref_src') || 'autre', p_lien: localStorage.getItem('aura90_ref_lien') || null });
     if(res) localStorage.setItem('aura90_ref_note', c);
   }catch(e){}
 }
@@ -7074,6 +7125,440 @@ async function ajusterCotesCoupons(){
 
 /* 03/11 : « plus de 2 buts » — avec 2 buts pile, la sélection compte 1,00 (ni gagnée ni perdue) */
 function rbNote(s){ return s && s.resultat === 'rembourse' ? '<small class="rb-note">' + T('2 buts pile : compté à 1,00') + '</small>' : ''; }
+
+/* ================= ESPACE PARTENAIRE v2 (03/11/2026) =================
+   · Gains séparés : carte (Whop paie le partenaire) / Mobile Money (solde à retirer)
+   · Compte Whop relié depuis l'espace (fonction « partenaires »)
+   · Paliers propres à chaque partenaire, mis à jour en direct
+   · Filleuls détaillés, liens nommés par réseau avec leurs stats
+   · Retraits : Mobile Money, virement bancaire ou crypto (minimum 15 €) */
+
+const EP_LOGO = {
+  tt: ['#000', '<path fill="#fff" d="M13.5 3h2.6c.2 1.7 1.3 3.2 3.2 3.5v2.7c-1.2 0-2.3-.4-3.2-1v6.3a5 5 0 1 1-5-5h.5v2.8a2.3 2.3 0 1 0 1.9 2.2z"/>'],
+  ig: ['linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF)', '<rect x="4.5" y="4.5" width="15" height="15" rx="4.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="#fff" stroke-width="2"/><circle cx="16.8" cy="7.3" r="1.2" fill="#fff"/>'],
+  fb: ['#1877F2', '<path fill="#fff" d="M13.4 20v-6.6h2.3l.4-2.7h-2.7V9c0-.8.3-1.3 1.4-1.3h1.4V5.3c-.3 0-1.1-.1-2-.1-2 0-3.3 1.2-3.3 3.4v2.1H8.6v2.7h2.3V20z"/>'],
+  yt: ['#FF0000', '<rect x="3.5" y="6.5" width="17" height="11" rx="3.2" fill="#fff"/><path fill="#FF0000" d="M10.5 9.4l4.4 2.6-4.4 2.6z"/>'],
+  sc: ['#FFFC00', '<path fill="#000" d="M12 4.5c2.6 0 4.3 2 4.3 4.5v2l1.4-.5c.5 0 .7.6.2.9l-1.6.8c.6 1.5 1.8 2.6 3.2 3 .3.1.3.5 0 .7-.7.3-1.5.4-2 .6-.2.5-.1 1-.6 1-.8 0-1.6-.3-2.6.3-.7.5-1.2 1-2.3 1s-1.6-.5-2.3-1c-1-.6-1.8-.3-2.6-.3-.5 0-.4-.5-.6-1-.5-.2-1.3-.3-2-.6-.3-.2-.3-.6 0-.7 1.4-.4 2.6-1.5 3.2-3l-1.6-.8c-.5-.3-.3-.9.2-.9l1.4.5V9c0-2.5 1.7-4.5 4.3-4.5z"/>'],
+  x: ['#000', '<path fill="#fff" d="M5 5h3.6l3.6 5 4.2-5h2l-5.3 6.2L19 19h-3.6l-3.9-5.4L6.9 19h-2l5.7-6.6z"/>'],
+  tg: ['#229ED9', '<path fill="#fff" d="M4.5 11.6l13.6-5.3c.6-.2 1.2.2 1 1.1l-2.3 11c-.2.8-.7 1-1.4.6l-3.6-2.7-1.8 1.7c-.2.2-.4.3-.8.3l.3-3.7 6.7-6.1c.3-.3-.1-.4-.4-.2l-8.3 5.2-3.6-1.1c-.8-.2-.8-.8.2-1.1z"/>'],
+  wa: ['#25D366', '<path fill="#fff" d="M12 4a8 8 0 0 0-6.9 12l-1.1 4 4.1-1.1A8 8 0 1 0 12 4zm4.6 11.2c-.2.5-1.1 1-1.6 1-.4.1-.9.1-1.5-.1-.3-.1-.8-.3-1.3-.5-2.3-1-3.8-3.3-3.9-3.5-.1-.1-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.1 0 .3 0 .5.4l.7 1.6c.1.1.1.3 0 .4l-.3.4-.3.3c-.1.1-.2.3-.1.5.2.3.7 1.1 1.4 1.7.9.8 1.7 1.1 1.9 1.2.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.3.1.1.1.6-.1 1z"/>'],
+  autre: ['linear-gradient(135deg,#3DE8C8,#8B7CFF)', '<path fill="none" stroke="#05201B" stroke-width="2" stroke-linecap="round" d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>'],
+};
+const epLogo = (k, t = 36) => { const [bg, svg] = EP_LOGO[k] || EP_LOGO.autre; return `<span class="ep-logo" style="width:${t}px;height:${t}px;background:${bg}"><svg viewBox="0 0 24 24" width="${Math.round(t * .62)}" height="${Math.round(t * .62)}" aria-hidden="true">${svg}</svg></span>`; };
+const epPct = (a, b) => b ? (a / b * 100).toLocaleString(LOC, { maximumFractionDigits: 1 }) + ' %' : '—';
+let EP_LPER = '30', EP_RES_V = null, EP_LIEN_V = null, EP_SYNC_FAIT = false;
+
+async function epFn(corps){
+  const appel = () => fetch(CONFIG.SUPABASE_URL + '/functions/v1/partenaires', { method:'POST',
+    headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body: JSON.stringify(corps || {}) });
+  try{ let r = await appel(); if(r.status === 401 && await rafraichirSession()) r = await appel(); return await r.json(); }catch(e){ return null; }
+}
+// une fois par ouverture : palier vérifié (et % mis à jour chez Whop) ; on recharge si quelque chose a changé
+async function epSyncMoi(){
+  if(EP_SYNC_FAIT) return; EP_SYNC_FAIT = true;
+  const pct0 = EP?.pct;
+  await epFn({ action:'sync_moi' });
+  const d = await epRpc('espace_partenaire');
+  if(d && d.statut === 'actif' && $('ep')?.classList.contains('actif') && (d.pct !== pct0 || JSON.stringify(d.whop) !== JSON.stringify(EP.whop))){ EP = d; epTab(EP_TAB); }
+}
+
+/* ---------- haut de l'accueil : total gagné + détail carte / Mobile Money ---------- */
+function epHero(bouton){
+  const G = EP.gains || { total: EP.gagne_total, mois: EP.gagne_mois, whop_total: 0, solde_total: EP.gagne_total };
+  if(!bouton) return epHeroRetrait();
+  const ev = EP.gagne_prec > 0 ? Math.round((EP.gagne_mois - EP.gagne_prec) / EP.gagne_prec * 100) : null;
+  const mois = new Date().toLocaleDateString(epLoc(), { month:'long' });
+  return `<div class="ep-hero">
+    <small>Total gagné</small>
+    <div class="ep-gros">${typeof mGros === 'function' ? mGros(G.total) : epF(G.total) + ' <span>F CFA</span>'}</div>
+    <div class="ep-split">
+      <button onclick="epDetailGains()"><span class="pt c"></span><b>${epM(G.whop_total)}</b><small>Carte · Whop</small></button>
+      <button onclick="epDetailGains()"><span class="pt m"></span><b>${epM(G.solde_total)}</b><small>Mobile Money · à retirer</small></button>
+    </div>
+    <div class="ep-sous" style="margin-top:12px">
+      <div><b>${epM(G.mois)}</b><span>Gagné en ${mois}${ev !== null ? `<br><span class="${ev>=0?'ep-v':'ep-o'}" style="display:inline">${ev>=0?'▲ +':'▼ '}${ev} % vs mois dernier</span>` : ''}</span></div>
+      <div><b class="ep-v">${epM(EP.dispo)}</b><span>Disponible au retrait</span></div>
+    </div>
+    <button class="ep-btn ep-btn2" onclick="epDetailGains()">Voir le détail</button>
+  </div>`;
+}
+function epHeroRetrait(){
+  const G = EP.gains || {};
+  return `<div class="ep-hero">
+    <small>Disponible au retrait</small>
+    <div class="ep-gros">${typeof mGros === 'function' ? mGros(EP.dispo) : epF(EP.dispo) + ' <span>F CFA</span>'}</div>
+    <div class="ep-sous">
+      ${EP.en_cours > 0
+        ? `<div><b class="ep-o">${epM(EP.en_cours)}</b><span>Retrait en cours<br>de versement</span></div>`
+        : `<div><b class="ep-o">${epM(EP.deblocage)}</b><span>En cours de déblocage${EP.deblocage_date ? '<br>dès le ' + new Date(EP.deblocage_date).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'}) : ''}</span></div>`}
+      <div><b>${epM(G.retire || 0)}</b><span>Déjà retiré</span></div>
+    </div>
+    ${epBoutonRetrait()}
+    <div class="ep-info">Ce solde vient des abonnements payés par Mobile Money${EP.whop?.lie ? '' : ' et par carte'}. Une commission se débloque ${EP.reglages.delai_jours} jours après le paiement de ton filleul.${EP.whop?.lie ? ' Tes commissions carte, elles, sont versées par Whop sur ton compte Whop.' : ''}</div>
+  </div>`;
+}
+function epDetailGains(){
+  const G = EP.gains || {}, W = EP.whop || {};
+  epVoile(`<h3>Tes gains en détail</h3><p class="s">Tu touches ${EP.pct} % sur chaque abonnement payé par tes filleuls, quel que soit le moyen de paiement.</p>
+    <div class="ep-gd">
+      <div class="h">${'<span class="pt c"></span>'}<b>Carte bancaire · Whop</b><span class="ep-v">${epM(G.whop_total)}</span></div>
+      <div class="ep-kv"><span>Ce mois-ci</span><b>${epM(G.whop_mois)}</b></div>
+      <div class="ep-kv"><span>En attente chez Whop (moins de 30 jours)</span><b>${epM(G.whop_attente)}</b></div>
+      <div class="ep-kv"><span>Abonnements carte de tes filleuls</span><b>${G.carte_vip || 0}</b></div>
+      <p class="ep-info">Quand un filleul paie par carte, Apple Pay ou Google Pay, c'est <b>Whop</b> (notre plateforme de paiement par carte) qui te verse ta commission <b>automatiquement</b> sur ton compte Whop, environ 30 jours après le paiement. Tu n'as rien à demander.</p>
+      ${W.lie ? `<div class="ep-ok">✓ Compte Whop relié : <b>@${epEsc(W.user)}</b>${W.erreur ? `<br><span class="ep-o">${epEsc(W.erreur)}</span>` : ''}</div>`
+              : `<div class="ep-alerte">Ton compte Whop n'est pas relié : tes commissions carte vont dans ton solde à retirer (ci-dessous). Relie-le pour être payé automatiquement.</div>
+                 <button class="ep-btn" style="margin-top:10px" onclick="epWhopLier()">Relier mon compte Whop</button>`}
+    </div>
+    <div class="ep-gd">
+      <div class="h"><span class="pt m"></span><b>Mobile Money · SasPay</b><span class="ep-v">${epM(G.solde_total)}</span></div>
+      <div class="ep-kv"><span>Ce mois-ci</span><b>${epM(G.solde_mois)}</b></div>
+      <div class="ep-kv"><span>Disponible au retrait</span><b class="ep-v">${epM(EP.dispo)}</b></div>
+      <div class="ep-kv"><span>En cours de déblocage</span><b>${epM(EP.deblocage)}</b></div>
+      <div class="ep-kv"><span>Déjà retiré</span><b>${epM(G.retire || 0)}</b></div>
+      <p class="ep-info">Quand un filleul paie par Wave, Orange Money ou un autre Mobile Money, le paiement passe par <b>SasPay</b>. Ta commission arrive dans ton <b>solde AURA90</b> et se débloque ${EP.reglages.delai_jours} jours après. Le lundi, tu demandes un retrait (dès ${epM(EP.reglages.min_retrait)}) : Mobile Money, virement bancaire ou crypto.</p>
+      <button class="ep-btn ep-btn2" onclick="epFermerVoile();epTab('retraits')">Mes retraits</button>
+    </div>`);
+}
+
+/* ---------- relier le compte Whop ---------- */
+function epWhopLier(){
+  epVoile(`<h3>Relier mon compte Whop</h3>
+    <p class="s">Whop est la plateforme qui encaisse les paiements par carte d'AURA90. Une fois ton compte relié, Whop te verse automatiquement ta commission sur chaque paiement carte de tes filleuls, au taux de ton palier.</p>
+    <ol class="ep-etapes"><li>Crée un compte gratuit sur <b>whop.com</b> si tu n'en as pas (avec ton e-mail).</li><li>Choisis un pseudo dans ton profil Whop.</li><li>Entre ce pseudo (ou l'e-mail de ton compte Whop) ici.</li></ol>
+    <div class="ep-ch"><label>Pseudo ou e-mail Whop</label><input id="wh-pseudo" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ex. kader_tt" value="${epEsc(EP.whop?.user || '')}"></div>
+    <button class="ep-btn" style="margin-top:16px" id="wh-go" onclick="epWhopEnvoyer()">Relier mon compte</button>
+    <div class="ep-msg" id="wh-msg"></div>
+    <p class="s" style="margin-top:10px;font-size:11px">Les paiements par carte faits avant de relier ton compte, et leurs renouvellements, restent dans ton solde AURA90.</p>`);
+}
+async function epWhopEnvoyer(){
+  const v = ($('wh-pseudo')?.value || '').trim(), m = $('wh-msg'), b = $('wh-go');
+  if(v.length < 2){ m.innerHTML = '<span style="color:var(--ko)">Entre ton pseudo Whop.</span>'; return; }
+  b.disabled = true; b.textContent = 'Connexion à Whop…';
+  const r = await epFn({ action:'lier_whop', pseudo: v });
+  b.disabled = false; b.textContent = 'Relier mon compte';
+  if(r && r.ok){
+    epVoile(`<h3>Compte Whop relié ✓</h3><p class="s">@${epEsc(r.pseudo)} · ${r.pct} % sur chaque paiement carte de tes filleuls, versé par Whop. Ton % suit ton palier automatiquement.</p><button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
+    epRecharger(); return;
+  }
+  m.innerHTML = `<span style="color:var(--ko)">${epEsc(r?.erreur || 'Erreur — réessaie dans un instant.')}</span>`;
+}
+
+/* ---------- palier ---------- */
+function epNiveau(){
+  const pal = (EP.paliers||[]).slice().sort((a,b)=>a.seuil-b.seuil);
+  const suiv = pal.find(p => p.pct > EP.pct);
+  const prec = pal.filter(p => p.pct <= EP.pct).pop() || pal[0];
+  const prog = suiv ? Math.min(100, Math.round((EP.abonnes_mois - (prec?.seuil||0)) / Math.max(1, suiv.seuil - (prec?.seuil||0)) * 100)) : 100;
+  return `<div class="ep-sec"><h2>Ton pourcentage</h2><span>${EP.pct_perso ? 'taux fixé avec AURA90' : EP.paliers_perso ? 'tes paliers' : 'selon tes VIP payés du mois'}</span></div>
+    <div class="ep-bloc" style="padding:16px">
+      <b style="font-size:14px">${EP.pct} % sur chaque abonnement</b>
+      ${EP.pct_perso ? '' : `<div class="ep-prog"><i style="width:${Math.max(3,prog)}%"></i></div>
+      <div style="font-size:12px;color:var(--sourdine)">${EP.abonnes_mois} VIP payé${EP.abonnes_mois>1?'s':''} ce mois${suiv ? ` — encore <b style="color:var(--texte)">${Math.max(0, suiv.seuil - EP.abonnes_mois)}</b> pour passer à ${suiv.pct} %` : ' — tu es au niveau maximum'}</div>
+      <div class="ep-pal" style="grid-template-columns:repeat(${Math.min(4, pal.length)},1fr)">${pal.map(p=>`<div class="${p.pct===EP.pct?'c':''}"><b>${p.pct} %</b>${p.seuil ? p.seuil+' VIP payés' : 'Départ'}</div>`).join('')}</div>
+      <div class="ep-info">VIP payés = abonnements payés par tes filleuls ce mois (nouveaux et réabonnements, carte et Mobile Money). Ton nouveau taux s'applique tout de suite, aussi chez Whop, et il est gardé tout le mois suivant.</div>`}
+    </div>`;
+}
+function epAccueil(){
+  setTimeout(epSyncMoi, 400);
+  const s7 = epSerie(7).reverse();
+  const tot = s7.reduce((a,x)=>a+x.commission,0);
+  const W = EP.whop || {};
+  return epHero(true) +
+    (W.lie ? '' : `<button class="ep-whop" onclick="epWhopLier()"><span class="i">W</span><span class="t"><b>Relie ton compte Whop</b><small>pour être payé automatiquement sur les paiements par carte</small></span><span class="fl">›</span></button>`) +
+    `<div class="ep-sec"><h2>7 derniers jours</h2><span class="ep-v">+${epM(tot)}</span></div>
+     <div class="ep-bloc">${s7.map((x,i)=>epLigneJour(x, i===0)).join('')}
+       <button class="ep-lien-b" onclick="epTab('stats')">Voir toutes mes stats ›</button></div>` +
+    epNiveau();
+}
+
+/* ---------- filleuls : une fiche par filleul ---------- */
+const EP_ACT = { auj:"Actif aujourd'hui", semaine:'Actif cette semaine', mois:'Actif ce mois-ci', inactif:'Inactif depuis plus de 30 jours' };
+const epNomPays = c => { try{ return (typeof nomPays === 'function' && typeof PAYS_PAR_CODE !== 'undefined' && PAYS_PAR_CODE[c]) ? nomPays(PAYS_PAR_CODE[c]) : c; }catch(e){ return c; } };
+function epFilleuls(){
+  const L = EP.filleuls || [];
+  const bientot = f => f.etat === 'actif' && f.fin && (new Date(f.fin) - Date.now()) < 7*864e5;
+  const n = { tous:L.length, abonnes:L.filter(f=>f.etat==='actif').length, relance:L.filter(bientot).length, inscrits:L.filter(f=>f.etat==='inscrit').length, expires:L.filter(f=>f.etat==='expire').length };
+  const filtre = { tous:()=>true, abonnes:f=>f.etat==='actif', relance:bientot, inscrits:f=>f.etat==='inscrit', expires:f=>f.etat==='expire' }[EP_FIL];
+  const liste = L.map((f, i) => ({ ...f, i })).filter(filtre);
+  const ligne = f => {
+    const src = f.lien_nom ? ' · ' + epEsc(f.lien_nom) : f.source ? ' · via ' + (EP_RES[f.source] || epEsc(f.source)) : '';
+    let info, pill;
+    if(f.etat === 'actif'){
+      const j = Math.ceil((new Date(f.fin) - Date.now())/864e5);
+      info = `${f.formule === '3mois' ? '3 mois' : '1 mois'} · ${j <= 7 ? 'expire dans ' + j + ' j' : "jusqu'au " + epJ(f.fin)}${src}`;
+      pill = j <= 7 ? `<span class="ep-pill att">À relancer</span>` : `<span class="ep-pill ok">+${epM(f.gains)}</span>`;
+    } else if(f.etat === 'expire'){
+      info = `Abonnement terminé${f.fin ? ' le ' + epJ(f.fin) : ''}${src}`; pill = `<span class="ep-pill non">Expiré</span>`;
+    } else {
+      info = `Inscrit le ${epJ(f.inscrit_le)} · pas encore abonné${src}`; pill = `<span class="ep-pill non">Inscrit</span>`;
+    }
+    return `<button class="ep-res ep-res-b" onclick="epFiche(${f.i})"><div class="ep-av">${epEsc((f.email||'?')[0])}</div><div class="t"><b>${epEsc(f.email)}</b><div>${info}</div></div>${pill}<span class="ep-chev">›</span></button>`;
+  };
+  const filt = [['tous','Tous'],['abonnes','VIP'],['relance','À relancer'],['inscrits','Inscrits'],['expires','Expirés']];
+  return `<div class="ep-tuiles" style="margin-top:6px;margin-bottom:12px">
+      <div><b class="ep-v">${n.abonnes}</b><span>VIP actifs</span></div>
+      <div><b class="ep-o">${n.relance}</b><span>Expirent sous 7 jours</span></div>
+    </div>
+    <div class="ep-per">${filt.map(([k,l])=>`<button class="${EP_FIL===k?'a':''}" onclick="EP_FIL='${k}';epTab('filleuls')">${l} · ${n[k]}</button>`).join('')}</div>
+    ${liste.length ? `<div class="ep-bloc">${liste.slice(0,300).map(ligne).join('')}</div>` : `<div class="ep-vide">${L.length ? 'Personne dans cette catégorie.' : 'Tes filleuls apparaîtront ici dès leur inscription avec ton lien ou ton code.'}</div>`}
+    <div class="ep-info" style="margin:12px 16px 0">Touche un filleul pour voir son détail. Adresses masquées pour protéger tes filleuls.</div>`;
+}
+function epFiche(i){
+  const f = (EP.filleuls || [])[i]; if(!f) return;
+  const lig = (k, v) => `<div class="ep-kv"><span>${k}</span><b>${v}</b></div>`;
+  const vip = f.etat === 'actif' ? `<span class="ep-pill ok">VIP</span>` : f.etat === 'expire' ? `<span class="ep-pill non">Ancien VIP</span>` : `<span class="ep-pill non">Pas encore VIP</span>`;
+  const lien = f.lien_nom ? `${epEsc(f.lien_nom)} (${EP_RES[f.source] || epEsc(f.source || '')})` : f.source && f.source !== 'autre' ? `${EP_RES[f.source] || epEsc(f.source)} · lien principal` : 'Lien général ou code';
+  epVoile(`<div class="ep-fh"><div class="ep-av">${epEsc((f.email||'?')[0])}</div><div><b>${epEsc(f.email)}</b>${vip}</div></div>
+    <div style="margin-top:12px">
+      ${lig('Arrivé par', lien)}
+      ${lig('Inscrit le', new Date(f.inscrit_le).toLocaleDateString(epLoc(), { day:'numeric', month:'long', year:'numeric' }))}
+      ${lig('Pays', f.pays ? epEsc(epNomPays(f.pays)) : '—')}
+      ${lig('Activité', EP_ACT[f.activite] || '—')}
+      ${lig('Abonnement', f.etat === 'actif' ? `${f.formule === '3mois' ? '3 mois' : '1 mois'} · jusqu'au ${epJ(f.fin)}` : f.etat === 'expire' ? `terminé le ${epJ(f.fin)}` : '—')}
+      ${lig('Paiement', f.methode ? (f.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money') : '—')}
+      ${lig('VIP depuis le', f.vip_le ? epJ(f.vip_le) : '—')}
+      ${lig('Abonnements payés', f.paiements || 0)}
+      ${lig('Ce filleul t\'a rapporté', `<span class="ep-v">${epM(f.gains)}</span>`)}
+    </div>
+    <p class="s" style="margin-top:12px;font-size:11.5px">L'activité est approximative : AURA90 ne partage jamais l'heure exacte de connexion de tes filleuls.</p>`);
+}
+
+/* ---------- liens : réseaux → liens nommés → stats ---------- */
+function epLienUrl(s, slug){ return location.origin + location.pathname + '?ref=' + EP.code + (s && s !== 'autre' ? '&s=' + s : '') + (slug ? '&l=' + slug : ''); }
+function epLStats(f){
+  const deb = EP_LPER === 'tout' ? null : new Date(Date.now() - (+EP_LPER - 1) * 864e5).toISOString().slice(0, 10);
+  const T = { c:0, i:0, v:0, g:0 };
+  (EP.liens_stats || []).forEach(x => { if((!deb || x.j >= deb) && f(x)){ T.c += +x.c||0; T.i += +x.i||0; T.v += +x.v||0; T.g += +x.g||0; } });
+  return T;
+}
+const epReseauxAff = () => { const s = new Set(EP.reseaux || []); (EP.liens || []).forEach(l => s.add(l.reseau)); return [...s].filter(k => k !== 'autre'); };
+function epPerL(apres){ return `<div class="ep-per">${[['7','7 jours'],['30','30 jours'],['tout','Tout']].map(([k,l])=>`<button class="${EP_LPER===k?'a':''}" onclick="EP_LPER='${k}';${apres}">${l}</button>`).join('')}</div>`; }
+function epLiens(){
+  if(EP_LIEN_V) return epVueLien();
+  if(EP_RES_V) return epVueReseau();
+  const mes = epReseauxAff();
+  const st = k => { const T = epLStats(x => x.s === k); return `${epF(T.c)} clics · ${epF(T.i)} inscrits · ${epF(T.v)} VIP`; };
+  const nb = k => (EP.liens || []).filter(l => l.reseau === k).length;
+  const dispo = Object.keys(EP_RES).filter(k => k !== 'autre' && !mes.includes(k));
+  return `<div class="ep-code" style="margin-top:6px"><div class="t"><small>Ton code (réduction pour tes filleuls)</small><b>${epEsc(EP.code)}</b></div><button class="ep-cp" onclick="epCopier('${epEsc(EP.code)}',this)">COPIER</button></div>
+    ${epPerL("epTab('liens')")}
+    <div class="ep-sec" style="margin-top:6px"><h2>Tes réseaux</h2><span>touche un réseau pour ses liens</span></div>
+    <div class="ep-bloc">
+      ${mes.map(k=>`<button class="ep-res ep-res-b" onclick="EP_RES_V='${k}';epTab('liens')">${epLogo(k)}<div class="t"><b>${EP_RES[k]||epEsc(k)}</b><div>${st(k)}${nb(k) ? ' · ' + (nb(k) + 1) + ' liens' : ''}</div></div><span class="ep-chev">›</span></button>`).join('')}
+      <button class="ep-res ep-res-b" onclick="EP_RES_V='autre';epTab('liens')">${epLogo('autre')}<div class="t"><b>Lien général</b><div>Pour tout le reste · ${st('autre')}</div></div><span class="ep-chev">›</span></button>
+    </div>
+    ${dispo.length ? `<div class="ep-sec"><h2>Ajouter un réseau</h2><span>pour savoir lequel te rapporte</span></div>
+    <div class="ep-ajout">${dispo.map(k=>`<button onclick="epReseaux(${epEsc(JSON.stringify([...(EP.reseaux||[]), k]))})">${epLogo(k, 26)}<span>${EP_RES[k]}</span></button>`).join('')}</div>` : ''}
+    <div style="margin:16px"><button class="ep-btn" onclick="epPartager('')">Partager mon invitation</button></div>
+    <div class="ep-info" style="margin:0 16px">Dans chaque réseau, tu peux créer plusieurs liens (un par compte, par vidéo, par groupe…) et voir ce que chacun te rapporte.</div>`;
+}
+function epVueReseau(){
+  const k = EP_RES_V, nom = k === 'autre' ? 'Lien général' : (EP_RES[k] || k);
+  const liens = (EP.liens || []).filter(l => l.reseau === k);
+  const carte = (titre, slug, T, id) => `<div class="ep-lc">
+      <button class="h" ${id ? `onclick="EP_LIEN_V=${id};epTab('liens')"` : ''}><b>${epEsc(titre)}</b>${id ? '<span class="ep-chev">›</span>' : ''}</button>
+      <div class="n"><div><b>${epF(T.c)}</b><span>clics</span></div><div><b>${epF(T.i)}</b><span>inscrits</span></div><div><b>${epF(T.v)}</b><span>VIP</span></div><div><b class="ep-v">${epM(T.g)}</b><span>gagné</span></div></div>
+      <div class="u"><span>${epEsc(epLienUrl(k, slug).replace(/^https?:\/\//, ''))}</span><button class="ep-cp" onclick="epCopier('${epLienUrl(k, slug)}',this)">COPIER</button></div>
+    </div>`;
+  return `<button class="ep-retour" onclick="EP_RES_V=null;epTab('liens')">‹ Tous les réseaux</button>
+    <div class="ep-rt">${epLogo(k, 44)}<div><h2>${epEsc(nom)}</h2><span>${liens.length + 1} lien${liens.length ? 's' : ''}</span></div></div>
+    ${epPerL("epTab('liens')")}
+    ${carte(k === 'autre' ? 'Lien général' : 'Lien principal ' + nom, null, epLStats(x => x.s === k && !x.l), 0)}
+    ${liens.map(l => carte(l.nom, l.slug, epLStats(x => x.l === l.slug), l.id)).join('')}
+    ${k === 'autre' ? '' : `<div style="margin:16px"><button class="ep-btn" onclick="epNouveauLien('${k}')">+ Nouveau lien ${epEsc(nom)}</button></div>
+    <div class="ep-info" style="margin:0 16px">Un lien par compte ou par usage (ex. « ${epEsc(nom)} compte 1 », « ${epEsc(nom)} compte 2 », « Vidéo Ligue des champions ») pour savoir lequel ramène des VIP.</div>`}`;
+}
+function epVueLien(){
+  const l = (EP.liens || []).find(x => x.id === EP_LIEN_V); if(!l){ EP_LIEN_V = null; return epVueReseau(); }
+  const T = epLStats(x => x.l === l.slug);
+  const deb = EP_LPER === 'tout' ? null : new Date(Date.now() - (+EP_LPER - 1) * 864e5).toISOString().slice(0, 10);
+  const jours = {}; (EP.liens_stats || []).filter(x => x.l === l.slug && (!deb || x.j >= deb)).forEach(x => { const j = jours[x.j] = jours[x.j] || { c:0, i:0, v:0, g:0 }; j.c += +x.c||0; j.i += +x.i||0; j.v += +x.v||0; j.g += +x.g||0; });
+  const lj = Object.entries(jours).sort((a, b) => b[0].localeCompare(a[0]));
+  return `<button class="ep-retour" onclick="EP_LIEN_V=null;epTab('liens')">‹ ${epEsc(EP_RES[l.reseau] || l.reseau)}</button>
+    <div class="ep-rt">${epLogo(l.reseau, 44)}<div><h2>${epEsc(l.nom)}</h2><span>créé le ${epJ(l.cree_le)}</span></div></div>
+    ${epPerL("epTab('liens')")}
+    <div class="ep-kpi">
+      <div><b>${epF(T.c)}</b><span>Clics</span></div>
+      <div><b>${epF(T.i)}</b><span>Inscrits</span></div>
+      <div><b>${epPct(T.i, T.c)}</b><span>Taux d'inscription</span></div>
+      <div><b>${epF(T.v)}</b><span>VIP payés</span></div>
+      <div><b>${epPct(T.v, T.i)}</b><span>Taux VIP</span></div>
+      <div><b class="ep-v">${epM(T.g)}</b><span>Gagné</span></div>
+    </div>
+    <div class="ep-lc" style="margin-top:12px"><div class="u"><span>${epEsc(epLienUrl(l.reseau, l.slug).replace(/^https?:\/\//, ''))}</span><button class="ep-cp" onclick="epCopier('${epLienUrl(l.reseau, l.slug)}',this)">COPIER</button></div></div>
+    <div class="ep-sec"><h2>Par jour</h2><span>jours avec activité</span></div>
+    <div class="ep-bloc">${lj.length ? `<table class="ep-tab"><tr><th>Jour</th><th>Clics</th><th>Inscr.</th><th>VIP</th><th>Gagné</th></tr>
+      ${lj.map(([j, x]) => `<tr><td>${new Date(j + 'T12:00:00').toLocaleDateString(epLoc(), { day:'2-digit', month:'2-digit' })}</td><td>${x.c}</td><td>${x.i}</td><td>${x.v}</td><td class="${x.g ? 'ep-v' : ''}">${epM(x.g)}</td></tr>`).join('')}</table>`
+      : `<div class="ep-vide" style="margin:14px;border:0">Aucune activité sur cette période.</div>`}</div>
+    <div class="ep-per" style="margin-top:16px"><button onclick="epRenommerLien(${l.id})">Renommer</button><button onclick="epRetirerLien(${l.id})" style="opacity:.75">Retirer ce lien</button></div>`;
+}
+function epNouveauLien(k){
+  const nom = EP_RES[k] || k, n = (EP.liens || []).filter(l => l.reseau === k).length + 1;
+  epVoile(`<h3>Nouveau lien ${epEsc(nom)}</h3><p class="s">Donne-lui un nom pour le reconnaître dans tes stats.</p>
+    <div class="ep-ch"><label>Nom du lien</label><input id="nl-nom" maxlength="40" value="${epEsc(nom)} compte ${n + 1}"></div>
+    <button class="ep-btn" style="margin-top:16px" id="nl-go" onclick="epCreerLien('${k}')">Créer le lien</button><div class="ep-msg" id="nl-msg"></div>`);
+}
+async function epCreerLien(k){
+  const nom = ($('nl-nom')?.value || '').trim(); if(!nom){ $('nl-msg').innerHTML = '<span style="color:var(--ko)">Donne un nom au lien.</span>'; return; }
+  $('nl-go').disabled = true;
+  const r = await epRpc('mes_liens', { p_action:'creer', p_id: null, p_reseau: k, p_nom: nom });
+  if(r && r.ok){
+    const l = r.lien; EP.liens = [...(EP.liens || []), l];
+    epVoile(`<h3>Lien créé ✓</h3><p class="s">${epEsc(l.nom)}</p><div class="ep-lc"><div class="u"><span>${epEsc(epLienUrl(k, l.slug).replace(/^https?:\/\//, ''))}</span><button class="ep-cp" onclick="epCopier('${epLienUrl(k, l.slug)}',this)">COPIER</button></div></div>
+      <button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile();epTab('liens')">OK</button>`);
+    return;
+  }
+  $('nl-go').disabled = false;
+  $('nl-msg').innerHTML = `<span style="color:var(--ko)">${r?.raison === 'MAX' ? '60 liens au maximum.' : 'Erreur — réessaie dans un instant.'}</span>`;
+}
+function epRenommerLien(id){
+  const l = (EP.liens || []).find(x => x.id === id); if(!l) return;
+  epVoile(`<h3>Renommer le lien</h3><div class="ep-ch"><label>Nom du lien</label><input id="nl-nom" maxlength="40" value="${epEsc(l.nom)}"></div>
+    <button class="ep-btn" style="margin-top:16px" onclick="epRenommerOk(${id})">Enregistrer</button>`);
+}
+async function epRenommerOk(id){
+  const nom = ($('nl-nom')?.value || '').trim(); if(!nom) return;
+  const r = await epRpc('mes_liens', { p_action:'renommer', p_id: id, p_reseau: null, p_nom: nom });
+  if(r && r.ok){ const l = EP.liens.find(x => x.id === id); if(l) l.nom = nom; }
+  epFermerVoile(); epTab('liens');
+}
+function epRetirerLien(id){
+  epVoile(`<h3>Retirer ce lien ?</h3><p class="s">Il disparaît de ta liste. Les clics déjà faits restent comptés dans ton réseau. Les personnes qui l'ont encore pourront toujours s'inscrire avec, mais il ne sera plus suivi à part.</p>
+    <button class="ep-btn" style="margin-top:16px;background:var(--ko)" onclick="epRetirerOk(${id})">Retirer</button>`);
+}
+async function epRetirerOk(id){
+  const r = await epRpc('mes_liens', { p_action:'retirer', p_id: id, p_reseau: null, p_nom: null });
+  if(r && r.ok){ EP.liens = (EP.liens || []).filter(x => x.id !== id); EP_LIEN_V = null; }
+  epFermerVoile(); epTab('liens');
+}
+// on quitte l'onglet Liens → on revient à la liste des réseaux la fois suivante
+(function(){ const t0 = epTab; window.epTab = function(t){ if(t !== 'liens'){ EP_RES_V = null; EP_LIEN_V = null; } return t0(t); }; })();
+
+/* ---------- retraits : Mobile Money, virement bancaire, crypto ---------- */
+function epRetraits(){
+  const R = EP.reglages;
+  const L = EP.retraits || [];
+  const statut = r => r.statut === 'paye' ? `<span class="ep-pill ok">Envoyé le ${new Date(r.paye_le||r.demande_le).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'})}</span>`
+    : r.statut === 'refuse' ? `<span class="ep-pill ko">Refusé</span>` : `<span class="ep-pill att">En cours</span>`;
+  const moyen = r => r.crypto ? `${epEsc(r.crypto)} · ${epEsc(r.reseau||'')}` : r.iban ? `Virement · ${epEsc(r.iban)}` : epEsc(r.moyen || 'Wave');
+  return epHeroRetrait() +
+    `<div class="ep-sec"><h2>Comment ça marche</h2></div>
+     <div class="ep-bloc" style="padding:4px 14px">
+       <div class="ep-kv"><span>Minimum</span><b>${epM(R.min_retrait)}</b></div>
+       <div class="ep-kv"><span>Bitcoin et Ethereum</span><b>dès ${mo(R.min_crypto)}</b></div>
+       <div class="ep-kv"><span>Demande</span><b>le lundi</b></div>
+       <div class="ep-kv"><span>Reçu par</span><b>Mobile Money, virement ou crypto</b></div>
+       <div class="ep-kv"><span>Montant</span><b>tout ton disponible</b></div>
+     </div>
+     <div class="ep-sec"><h2>Historique</h2><span>${L.length} retrait${L.length>1?'s':''}</span></div>
+     ${L.length ? `<div class="ep-bloc">${L.map(r=>`<div class="ep-res"><div class="t"><b style="font-family:'JetBrains Mono',monospace">${epM(r.montant)}</b><div>${moyen(r)} · demandé le ${new Date(r.demande_le).toLocaleDateString(epLoc(),{day:'2-digit',month:'2-digit'})}${r.statut==='refuse' && r.motif ? ' · ' + epEsc(r.motif) : ''}</div></div>${statut(r)}</div>`).join('')}</div>`
+       : `<div class="ep-vide">Aucun retrait pour l'instant.</div>`}`;
+}
+function ouvrirRetrait(){
+  const R = EP.reglages, der = EP.dernier || {};
+  const pays = R.pays.find(p => p.c === (der.pays || EP.pays || (typeof PAYS_U !== 'undefined' ? PAYS_U : ''))) || R.pays[R.pays.length - 1];
+  RT = { pays: pays.c, mode: der.iban ? 'banque' : der.crypto ? 'crypto' : (pays.moyens.length ? 'mm' : 'banque'),
+         moyen: pays.moyens.includes(der.moyen) ? der.moyen : pays.moyens[0], numero: der.numero || '',
+         crypto: der.crypto || 'USDT', reseau: der.reseau || 'TRC20', adresse: der.adresse || '', adresse2: der.adresse || '',
+         iban: der.iban || '', bic: der.bic || '', titulaire: der.titulaire || '', msg:'' };
+  epRendreRetrait();
+  epPrixCrypto().then(() => { if($('ep-voile')?.classList.contains('actif') && RT) epRendreRetrait(); });
+}
+function epRtMaj(k, v){
+  RT[k] = v;
+  if(k === 'pays'){ const p = EP.reglages.pays.find(x=>x.c===v); RT.moyen = p.moyens[0]; if(!p.moyens.length && RT.mode === 'mm') RT.mode = 'banque'; }
+  if(k === 'crypto'){ const c = EP.reglages.cryptos.find(x=>x.c===v); RT.reseau = c.reseaux[0]; }
+  epRendreRetrait();
+}
+function epIbanOk(v){
+  const s = String(v || '').replace(/\s/g, '').toUpperCase();
+  if(!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(s)) return false;
+  const r = (s.slice(4) + s.slice(0, 4)).replace(/[A-Z]/g, c => String(c.charCodeAt(0) - 55));
+  let m = 0; for(const ch of r) m = (m * 10 + +ch) % 97; return m === 1;
+}
+function epRtConversion(){
+  const R = EP.reglages, m = EP.dispo, p = R.pays.find(x=>x.c===RT.pays);
+  if(RT.mode === 'crypto'){
+    const usd = R.pays.find(x=>x.devise==='USD');
+    const prix = EP_PRIX && EP_PRIX[RT.crypto];
+    if(!usd || !prix) return { txt: 'Converti au cours du jour au moment de l\'envoi', devise: RT.crypto, local: null, taux: null };
+    const q = m * usd.taux / prix;
+    const dec = RT.crypto === 'BTC' ? 6 : RT.crypto === 'ETH' ? 5 : RT.crypto === 'SOL' ? 3 : 2;
+    return { txt: `≈ ${q.toLocaleString(LOC,{maximumFractionDigits:dec})} ${RT.crypto} au cours du jour`, devise: RT.crypto, local: +q.toFixed(dec), taux: +(usd.taux/prix).toPrecision(6) };
+  }
+  if(RT.mode === 'banque'){
+    const e = m / 655.957;
+    return { txt: `≈ ${e.toLocaleString(LOC, { maximumFractionDigits: 2, minimumFractionDigits: 2 })} € par virement`, devise: 'EUR', local: +e.toFixed(2), taux: +(1 / 655.957).toPrecision(6) };
+  }
+  if(!p || p.taux === 1) return { txt: `${p ? p.nom : ''} · franc CFA`, devise: p?.devise || 'XOF', local: m, taux: 1 };
+  const q = m * p.taux;
+  return { txt: `≈ ${q.toLocaleString(LOC,{maximumFractionDigits: p.devise==='USD'?2:0})} ${p.devise} (indicatif)`, devise: p.devise, local: +q.toFixed(2), taux: p.taux };
+}
+function epRendreRetrait(){
+  const R = EP.reglages, p = R.pays.find(x=>x.c===RT.pays), conv = epRtConversion();
+  const cr = R.cryptos.find(x=>x.c===RT.crypto);
+  const mini = RT.mode === 'crypto' && ['BTC','ETH'].includes(RT.crypto) ? R.min_crypto : R.min_retrait;
+  epVoile(`<h3>Demander un retrait</h3><p class="s">Tout ton disponible est versé en une fois.</p>
+    <div class="ep-montant"><b>${epM(EP.dispo)}</b><span>${epEsc(conv.txt)}</span></div>
+    <div class="ep-ch"><label>Recevoir par</label><div class="ep-choix">
+      <button class="${RT.mode==='mm'?'a':''}" ${p.moyens.length ? '' : 'disabled'} onclick="epRtMaj('mode','mm')">Mobile Money</button>
+      <button class="${RT.mode==='banque'?'a':''}" onclick="epRtMaj('mode','banque')">Virement bancaire</button>
+      <button class="${RT.mode==='crypto'?'a':''}" onclick="epRtMaj('mode','crypto')">Crypto</button></div></div>
+    ${RT.mode === 'mm' ? `
+      <div class="ep-ch"><label>Pays</label><select onchange="epRtMaj('pays',this.value)">${R.pays.filter(x => x.moyens.length).map(x=>`<option value="${x.c}" ${x.c===RT.pays?'selected':''}>${x.dr} ${epEsc(x.nom)}</option>`).join('')}</select></div>
+      <div class="ep-ch"><label>Service</label><div class="ep-choix">${p.moyens.map(m=>`<button class="${RT.moyen===m?'a':''}" onclick="epRtMaj('moyen','${epEsc(m)}')">${epEsc(m)}</button>`).join('')}</div></div>
+      <div class="ep-ch"><label>Numéro ${epEsc(RT.moyen || '')}</label><input id="rt-num" inputmode="tel" placeholder="Numéro qui reçoit l'argent" value="${epEsc(RT.numero)}" oninput="RT.numero=this.value"></div>`
+    : RT.mode === 'banque' ? `
+      <div class="ep-ch"><label>Titulaire du compte</label><input autocomplete="name" placeholder="Prénom et nom" value="${epEsc(RT.titulaire)}" oninput="RT.titulaire=this.value"></div>
+      <div class="ep-ch"><label>IBAN</label><input autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="FR76 …" value="${epEsc(RT.iban)}" oninput="RT.iban=this.value"></div>
+      <div class="ep-ch"><label>BIC (facultatif)</label><input autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="ex. BNPAFRPP" value="${epEsc(RT.bic)}" oninput="RT.bic=this.value"></div>
+      <div class="ep-info">Virement en euros sur ton compte bancaire. Jamais de numéro de carte : seulement ton IBAN.</div>`
+    : `
+      <div class="ep-ch"><label>Monnaie</label><div class="ep-choix">${R.cryptos.map(c=>`<button class="${RT.crypto===c.c?'a':''}" onclick="epRtMaj('crypto','${c.c}')">${epEsc(c.nom)}</button>`).join('')}</div></div>
+      <div class="ep-ch"><label>Réseau</label><div class="ep-choix">${cr.reseaux.map(r=>`<button class="${RT.reseau===r?'a':''}" onclick="epRtMaj('reseau','${r}')">${epEsc(cr.nom)} · ${r}</button>`).join('')}</div></div>
+      <div class="ep-ch"><label>Adresse de ton portefeuille ${epEsc(RT.crypto)} (${epEsc(RT.reseau)})</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle ton adresse" value="${epEsc(RT.adresse)}" oninput="RT.adresse=this.value.trim()"></div>
+      <div class="ep-ch"><label>Confirme l'adresse</label><input autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Colle-la une 2e fois" value="${epEsc(RT.adresse2)}" oninput="RT.adresse2=this.value.trim()"></div>
+      <div class="ep-alerte">Vérifie que ton adresse est bien sur le réseau ${epEsc(RT.reseau)}. Un envoi vers une mauvaise adresse ou un mauvais réseau est perdu.</div>`}
+    ${EP.dispo < mini ? `<div class="ep-alerte">Minimum ${mo(mini)} pour ce moyen de retrait.</div>` : ''}
+    <button class="ep-btn" style="margin-top:16px" id="rt-go" ${EP.dispo < mini ? 'disabled' : ''} onclick="envoyerRetrait()">Envoyer ma demande</button>
+    <div class="ep-msg" id="rt-msg">${RT.msg || ''}</div>
+    <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>`);
+}
+async function envoyerRetrait(){
+  const err = t => { RT.msg = `<span style="color:var(--ko)">${t}</span>`; $('rt-msg').innerHTML = RT.msg; };
+  const conv = epRtConversion();
+  const corps = { p_pays: RT.pays, p_mode: RT.mode, p_moyen: null, p_numero: null, p_crypto: null, p_reseau: null, p_adresse: null,
+                  p_iban: null, p_bic: null, p_titulaire: null, p_devise: conv.devise, p_montant_local: conv.local, p_taux: conv.taux };
+  if(RT.mode === 'crypto'){
+    if(RT.adresse.length < 20) return err('Colle l\'adresse complète de ton portefeuille.');
+    if(RT.adresse !== RT.adresse2) return err('Les deux adresses ne sont pas identiques.');
+    Object.assign(corps, { p_crypto: RT.crypto, p_reseau: RT.reseau, p_adresse: RT.adresse });
+  } else if(RT.mode === 'banque'){
+    if(String(RT.titulaire).trim().length < 3) return err('Indique le nom du titulaire du compte.');
+    if(!epIbanOk(RT.iban)) return err('IBAN invalide : vérifie-le.');
+    Object.assign(corps, { p_iban: RT.iban, p_bic: RT.bic || null, p_titulaire: RT.titulaire.trim() });
+  } else {
+    if(String(RT.numero).replace(/[^0-9]/g,'').length < 7) return err('Entre le numéro qui recevra l\'argent.');
+    Object.assign(corps, { p_moyen: RT.moyen, p_numero: RT.numero });
+  }
+  $('rt-go').disabled = true;
+  const res = await epRpc('demander_retrait_v3', corps);
+  if(res && res.ok){
+    const par = RT.mode === 'crypto' ? epEsc(RT.crypto + ' · ' + RT.reseau) : RT.mode === 'banque' ? 'Virement bancaire' : epEsc(RT.moyen);
+    epVoile(`<h3>Demande envoyée ✓</h3><p class="s">${mo(res.montant)} · ${par}</p>
+      <div class="ep-suivi"><div class="f"><i></i>Demande envoyée</div><div><i></i>Validée par AURA90</div><div><i></i>Argent envoyé</div></div>
+      <p class="s" style="margin-top:14px">Tu reçois une notification dès que l'argent est envoyé, avec ton relevé de commission.</p>
+      <button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
+    epRecharger();
+    return;
+  }
+  $('rt-go').disabled = false;
+  const m = { JOUR:'Les demandes de retrait se font le lundi.', EN_COURS:'Tu as déjà un retrait en cours de versement.', SEUIL:'Disponible insuffisant pour ce moyen de retrait.',
+              NUMERO:'Numéro invalide.', ADRESSE:'Adresse ou réseau invalide.', PARTENAIRE:'Compte partenaire inactif.', IBAN:'IBAN invalide : vérifie-le.',
+              BIC:'BIC invalide (8 ou 11 caractères).', TITULAIRE:'Indique le nom du titulaire du compte.' };
+  err(m[res?.raison] || 'Erreur — réessaie dans un instant.');
+}
 
 </script>
 <!-- aura90-v4-sans-jeu · montantes v2 29/09 · seo 14/10 · messagerie 15/10 -->

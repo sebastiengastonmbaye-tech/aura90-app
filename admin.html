@@ -59,6 +59,11 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 /* ---------- coque ---------- */
 #panel{display:none}
 body.co #panel{display:block}
+/* 03/11 : sur iPhone, quand la page entière défile, Safari réduit sa barre et la barre du bas « remonte ».
+   Le panneau défile donc dans son propre cadre (comme l'app) : la page ne bouge plus, la barre reste collée en bas. */
+html,body{height:100%}
+body.co{overflow:hidden}
+body.co #panel{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
 .coque{display:flex;min-height:100vh}
 .side{display:none}
 .main{flex:1;min-width:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(var(--nav) + 24px + env(safe-area-inset-bottom,0px))}
@@ -271,6 +276,12 @@ a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important
 .sl-t td{padding:10px 4px;border-top:1px solid var(--ligne);text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px}
 .sl-t td:first-child{font-family:inherit;font-weight:800}
 .sl-t small{display:block;color:var(--sourdine);font-size:10px}
+.sl-gr{border:1px solid var(--ligne);border-radius:14px;background:var(--surface);margin:8px 0;overflow:hidden}
+.sl-grt{padding:9px 12px;font-weight:800;font-size:12.5px;background:var(--surface2)}
+.sl-ln{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--ligne)}
+.sl-ln .t{flex:1;min-width:0}.sl-ln .t b{display:block;font-size:13px}.sl-ln .t span{font-size:11.5px;color:var(--sourdine)}
+.sl-ln button{padding:7px 10px;font-size:11.5px}
+.sl-new{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.sl-new select{flex:1 1 120px}.sl-new input{flex:2 1 180px;margin:0}
 .sl-lien{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ligne);border-radius:12px;margin:7px 0;background:var(--surface)}
 .sl-lien span{flex:1;min-width:0;font:12px 'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sl-lien button{padding:7px 11px;font-size:12px}
@@ -2193,12 +2204,13 @@ function afRendre(){
   if(AF_DET) return afRendreDetail();
   $('af-titre').textContent = AF_ONG === 'reglages' ? 'Réglages affiliés' : 'Affiliés';
   $('af-ret').hidden = true;
-  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length };
+  const n = { demandes: AF.demandes.filter(x => x.statut === 'en_attente').length, retraits: AF.retraits.filter(x => x.statut === 'demande').length,
+              alertes: (AF.evenements || []).filter(x => !x.vu).length };
   $('af-onglets').style.display = '';
-  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits']]
+  $('af-onglets').innerHTML = [['demandes','Demandes'],['classement','Classement'],['affilies','Liste'],['retraits','Retraits'],['alertes','Paliers'],['compta','Compta']]
     .map(([k, l]) => `<button class="${AF_ONG === k ? 'actif' : ''}" onclick="AF_ONG='${k}';afRendre()">${l}${n[k] ? `<b>${n[k]}</b>` : ''}</button>`).join('');
-  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages })[AF_ONG]();
-  window.scrollTo(0, 0);
+  $('af-corps').innerHTML = `<div class="af-msg" id="af-msg"></div>` + ({ demandes: afDemandes, classement: afClassement, affilies: afAffilies, retraits: afRetraits, reglages: afReglages, alertes: afAlertes, compta: afCompta })[AF_ONG]();
+  hautPage();
 }
 
 /* ---------- demandes ---------- */
@@ -2322,7 +2334,7 @@ async function afDetail(uid, depuis){
   AF_DET_ONG = 'stats';
   if(depuis === 'classement'){ EP_PER = { jour:'jour', '7':'7', mois:'mois', '30':'30', tout:'tout', dates:'perso' }[CL.per]; EP_DEB = CL.deb; EP_FIN = CL.fin; }
   else EP_PER = '30';
-  window.scrollTo(0, 0);
+  hautPage();
   history.pushState({ afd: 1 }, '');
   afRendreDetail();
   try{ AF_DET.ep = await rpc('admin_aff_detail', { p_user: uid }); }catch(e){ AF_DET.ep = { statut:'erreur' }; }
@@ -2368,6 +2380,8 @@ function afGerer(p){
         <span>Disponible</span><b>${mD(p.dispo)}${p.en_cours ? ' · ' + mD(p.en_cours) + ' en cours de versement' : ''}</b>
       </div>
     </div>
+    ${afWhopCarte(p)}
+    ${afPaliersCarte(p)}
     <div class="af-titre">Réglages de l'affilié</div>
     <div class="af-carte">
       <input id="afm-code" value="${afE(p.code)}" maxlength="10" style="text-transform:uppercase" placeholder="Code">
@@ -2416,19 +2430,21 @@ function afCarteRetrait(r){
   const pays = afPays(r.pays);
   const local = r.montant_local && r.devise && r.devise !== 'XOF' && r.devise !== 'XAF'
     ? `<span>À envoyer</span><b>≈ ${Number(r.montant_local).toLocaleString('fr-FR', { maximumFractionDigits: 6 })} ${afE(r.devise)}${crypto ? ' (cours au moment de la demande)' : ''}</b>` : '';
-  const cible = crypto ? r.adresse : r.numero;
+  const cible = crypto ? r.adresse : r.iban ? r.iban : r.numero;
   return `<div class="af-carte ${r.statut === 'demande' ? 'neuf' : ''}">
     <div class="af-l1"><div><div class="af-gros">${mD(r.montant)}</div><div class="af-meta">${afE(r.email)}${r.code ? ' · ' + afE(r.code) : ''} · demandé le ${afD(r.demande_le)}</div></div>
       <span class="af-pill ${r.statut === 'demande' ? 'att' : r.statut === 'paye' ? 'ok' : 'ko'}">${r.statut === 'demande' ? 'À envoyer' : r.statut === 'paye' ? 'Envoyé ' + new Date(r.paye_le).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' }) : 'Refusé'}</span></div>
     <div class="af-kv">
       <span>Pays</span><b>${pays ? pays.dr + ' ' + afE(pays.nom) : afE(r.pays || '—')}</b>
       <span>Moyen</span><b>${crypto ? afE(r.crypto) + ' · réseau ' + afE(r.reseau) : afE(r.moyen || 'Wave')}</b>
+      ${r.iban ? `<span>Titulaire</span><b>${afE(r.titulaire || '—')}</b>${r.bic ? `<span>BIC</span><b>${afE(r.bic)}</b>` : ''}` : ''}
       ${local}
       ${r.motif ? `<span>Motif</span><b>${afE(r.motif)}</b>` : ''}
     </div>
     ${cible ? `<div class="af-copie" onclick="afCopier(this, '${afE(cible)}')"><span class="v">${afE(cible)}</span><span class="c">COPIER</span></div>` : '<div class="af-meta">Numéro manquant</div>'}
     ${crypto && r.statut === 'demande' ? `<div class="af-meta" style="color:#FFB3BB">Vérifie le réseau ${afE(r.reseau)} avant d'envoyer.</div>` : ''}
     ${r.statut === 'demande' ? `<div class="af-ligne"><button onclick="afRetrait(${r.id}, 'paye', this)">✓ Argent envoyé</button><button class="rouge" onclick="afRetrait(${r.id}, 'refuse', this)">Refuser</button></div>` : ''}
+    ${r.statut === 'paye' ? `<div class="af-ligne"><button class="gris" onclick="afReleve(${r.id})">📄 Relevé de commission (PDF)</button></div>` : ''}
   </div>`;
 }
 function afCopier(el, t){ navigator.clipboard?.writeText(t).then(() => { const c = el.querySelector('.c'); c.textContent = 'COPIÉ ✓'; setTimeout(() => c.textContent = 'COPIER', 1400); }); }
@@ -2458,6 +2474,136 @@ async function afRetrait(id, action, b){
     afMsg(r.ok ? (action === 'paye' ? 'Retrait marqué envoyé — affilié notifié.' : 'Retrait refusé — le montant revient dans son disponible.') : r.msg, r.ok);
     admin({ action:'stats' }).then(afficherStats);
   }catch(e){ afMsg(e.message); b.disabled = false; }
+}
+
+/* ---------- 03/11 : Whop, paliers propres, alertes, relevés, comptabilité ---------- */
+async function partFn(corps, encore){
+  const x = await fetch(SUPABASE_URL + '/functions/v1/partenaires', { method:'POST', headers:{ 'Content-Type':'application/json', apikey: SUPABASE_KEY, Authorization:'Bearer '+JETON }, body: JSON.stringify(corps) });
+  if(x.status === 401 && !encore && await rafraichirJeton()) return partFn(corps, true);
+  const d = await x.json().catch(() => ({}));
+  if(!x.ok) throw new Error(d.erreur || ('HTTP ' + x.status));
+  return d;
+}
+function afWhopCarte(p){
+  return `<div class="af-titre">Whop (paiements par carte)</div><div class="af-carte">
+    ${p.whop_lie ? `<div class="af-l1"><div><b>@${afE(p.whop_user)}</b><div class="af-meta">Whop lui verse ${p.whop_pct || '—'} % sur les paiements carte de ses filleuls</div></div><span class="af-pill ${p.whop_erreur ? 'ko' : 'ok'}">${p.whop_erreur ? 'Erreur' : 'Relié'}</span></div>
+        ${p.whop_erreur ? `<div class="af-meta" style="color:#FFB3BB">${afE(p.whop_erreur)}</div>` : ''}
+        ${p.whop_pct !== p.pct ? `<div class="af-meta" style="color:#FFC86B">Son taux est ${p.pct} % mais Whop a encore ${p.whop_pct || '—'} %.</div>` : ''}
+        <div class="af-ligne"><button class="gris" onclick="afWhopResync(this)">↻ Renvoyer son % à Whop</button></div>`
+      : `<div class="af-meta" style="margin-top:0">Pas de compte Whop relié : ses commissions carte vont dans son solde à retirer (tu le paies comme pour le Mobile Money). Il peut le relier depuis son Espace partenaire.</div>`}
+  </div>`;
+}
+async function afWhopResync(b){
+  b.disabled = true;
+  try{ const d = await partFn({ action:'resync', user_id: AF_DET.uid }); const m = (d.maj || [])[0];
+    afMsg(m ? (m.ok ? 'Whop mis à jour : ' + m.pct + ' %' : m.erreur) : 'Rien à mettre à jour.', !m || m.ok); await afCharger(); }
+  catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+let AF_PAL = null;
+function afPaliersCarte(p){
+  if(p.pct_perso) return `<div class="af-titre">Paliers</div><div class="af-carte"><div class="af-meta" style="margin-top:0">Taux fixe de ${p.pct_perso} % : remets « Paliers » dans ses réglages ci-dessous pour utiliser des paliers.</div></div>`;
+  AF_PAL = AF_PAL && AF_PAL.uid === p.user_id ? AF_PAL : { uid: p.user_id, l: (p.paliers || p.paliers_effectifs || AF.reglages.paliers || []).map(x => ({ seuil: +x.seuil, pct: +x.pct })) };
+  return `<div class="af-titre">Paliers ${p.paliers ? '(propres à lui)' : '(généraux)'}</div><div class="af-carte" id="af-pal">
+    <div class="af-meta" style="margin-top:0">Son % selon ses VIP payés du mois. Il voit ses paliers dans son espace, et Whop est mis à jour dès qu'il change de palier.</div>
+    ${AF_PAL.l.map((x, i) => `<div class="af-ligne" style="align-items:center"><span style="flex:0 0 74px;font-size:12px;color:var(--sourdine)">${i === 0 ? 'Départ' : 'À partir de'}</span>
+      <input type="number" min="0" style="flex:1 1 70px;margin:0" value="${x.seuil}" ${i === 0 ? 'disabled' : ''} oninput="AF_PAL.l[${i}].seuil=+this.value" aria-label="VIP payés"><span style="font-size:12px;color:var(--sourdine)">VIP</span>
+      <input type="number" min="1" max="70" style="flex:1 1 60px;margin:0" value="${x.pct}" oninput="AF_PAL.l[${i}].pct=+this.value" aria-label="Pourcentage"><span style="font-size:12px;color:var(--sourdine)">%</span>
+      ${i ? `<button class="rouge" style="padding:7px 10px" onclick="AF_PAL.l.splice(${i},1);afRendreDetail()">✕</button>` : ''}</div>`).join('')}
+    <div class="af-ligne"><button class="gris" onclick="AF_PAL.l.push({ seuil: (AF_PAL.l[AF_PAL.l.length-1]||{seuil:0}).seuil + 10, pct: Math.min(70, (AF_PAL.l[AF_PAL.l.length-1]||{pct:25}).pct + 5) });afRendreDetail()">＋ Palier</button>
+      <button onclick="afPaliersOk(this)">Enregistrer</button>${p.paliers ? `<button class="gris" onclick="afPaliersOk(this, true)">Revenir aux paliers généraux</button>` : ''}</div>
+  </div>`;
+}
+async function afPaliersOk(b, general){
+  b.disabled = true;
+  try{
+    const l = general ? null : AF_PAL.l.map((x, i) => ({ seuil: i === 0 ? 0 : x.seuil, pct: x.pct }));
+    const r = await rpc('admin_aff_paliers', { p_user: AF_DET.uid, p_paliers: l });
+    afMsg(r.msg, r.ok);
+    if(r.ok){ AF_PAL = null; try{ await partFn({ action:'sync', user_id: AF_DET.uid }); }catch(e){} await afCharger(); }
+  }catch(e){ afMsg(e.message); }
+  b.disabled = false;
+}
+function afAlertes(){
+  const L = AF.evenements || [];
+  setTimeout(() => { if(L.some(x => !x.vu)) rpc('admin_aff_evenements_vus').then(() => { L.forEach(x => x.vu = true); }).catch(() => {}); }, 1500);
+  return L.length ? L.map(e => `<div class="af-carte ${e.vu ? '' : 'neuf'}" onclick="afDetail('${e.user_id}')" style="cursor:pointer">
+      <div class="af-l1"><div><b>${afE(e.code || e.email)} : ${e.avant} % → ${e.apres} %</b><div class="af-meta">${afE(e.email)} · ${afD(e.cree_le)}</div></div>
+      <span class="af-pill ${e.apres > e.avant ? 'ok' : 'att'}">${e.apres > e.avant ? 'Monte' : 'Baisse'}</span></div>
+      <div class="af-meta">${e.whop_lie ? (e.whop_erreur ? '⚠️ Whop pas à jour : ' + afE(e.whop_erreur) : (e.whop_pct === e.apres ? '✓ Whop mis à jour (' + e.whop_pct + ' %)' : 'Whop : ' + (e.whop_pct || '—') + ' %')) : 'Pas de compte Whop : tout passe par son solde.'}
+        Mobile Money : nouveau % appliqué automatiquement.</div></div>`).join('')
+    : `<div class="vide" style="margin:0 12px">Aucun changement de palier pour l'instant. Tu seras prévenu ici dès qu'un affilié monte (ou redescend) de palier.</div>`;
+}
+let AF_CPT = { per:'mois', data:null, cle:'' };
+function afComptaPeriode(){
+  const n = new Date(), deb = AF_CPT.per === 'mois' ? new Date(n.getFullYear(), n.getMonth(), 1) : AF_CPT.per === 'prec' ? new Date(n.getFullYear(), n.getMonth() - 1, 1)
+    : AF_CPT.per === 'annee' ? new Date(n.getFullYear(), 0, 1) : null;
+  const fin = AF_CPT.per === 'prec' ? new Date(n.getFullYear(), n.getMonth(), 1) : null;
+  return [deb, fin];
+}
+function afCompta(){
+  const cle = AF_CPT.per;
+  if(AF_CPT.cle !== cle){ AF_CPT.cle = cle; AF_CPT.data = null; const [d, f] = afComptaPeriode();
+    rpc('admin_aff_compta', { p_debut: d ? d.toISOString() : null, p_fin: f ? f.toISOString() : null }).then(x => { AF_CPT.data = x; if(AF_ONG === 'compta' && !AF_DET) afRendre(); })
+      .catch(e => { AF_CPT.data = { erreur: e.message }; if(AF_ONG === 'compta') afRendre(); }); }
+  const D = AF_CPT.data;
+  const per = `<div class="af-sous">${[['mois','Ce mois'],['prec','Mois dernier'],['annee','Cette année'],['tout','Tout']].map(([k, l]) => `<button class="${AF_CPT.per === k ? 'actif' : ''}" onclick="AF_CPT.per='${k}';afRendre()">${l}</button>`).join('')}</div>`;
+  if(!D) return per + `<div class="vide" style="margin:0 12px">Chargement…</div>`;
+  if(D.erreur) return per + `<div class="vide" style="margin:0 12px">Erreur : ${afE(D.erreur)}<br>(affilies.sql exécuté ?)</div>`;
+  const C = D.commissions, R = D.retraits;
+  const mois = {};
+  C.forEach(x => { const k = String(x.le).slice(0, 7), m = mois[k] = mois[k] || { ca:0, whop:0, solde:0, n:0, paye:0 }; m.ca += +x.montant || 0; m.n++; if(x.canal === 'whop') m.whop += +x.commission || 0; else m.solde += +x.commission || 0; });
+  R.filter(x => x.statut === 'paye').forEach(x => { const k = String(x.paye_le || x.demande_le).slice(0, 7), m = mois[k] = mois[k] || { ca:0, whop:0, solde:0, n:0, paye:0 }; m.paye += +x.montant || 0; });
+  const tot = Object.values(mois).reduce((a, m) => ({ ca: a.ca + m.ca, whop: a.whop + m.whop, solde: a.solde + m.solde, paye: a.paye + m.paye }), { ca:0, whop:0, solde:0, paye:0 });
+  const nomM = k => new Date(k + '-15').toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+  return per + `<div class="af-tot"><div><b>${mD(tot.ca)}</b><span>Ventes via affiliés</span></div><div><b>${mD(tot.whop + tot.solde)}</b><span>Commissions</span></div><div><b>${mD(D.du_total)}</b><span>Dû aux affiliés (dispo)</span></div></div>
+    <div class="af-carte"><b>Par mois</b>
+      ${Object.keys(mois).length ? `<table class="sl-t" style="margin-top:8px"><tr><th>Mois</th><th>Ventes</th><th>Com. Whop</th><th>Com. AURA90</th><th>Retraits payés</th></tr>
+        ${Object.keys(mois).sort().reverse().map(k => `<tr><td>${nomM(k)}</td><td>${mD(mois[k].ca)}<small>${mois[k].n} paiement${mois[k].n > 1 ? 's' : ''}</small></td><td>${mD(mois[k].whop)}</td><td>${mD(mois[k].solde)}</td><td>${mD(mois[k].paye)}</td></tr>`).join('')}</table>`
+        : '<div class="af-meta">Rien sur cette période.</div>'}
+      <div class="af-meta">Com. Whop = versées directement par Whop aux affiliés (déjà retirées de tes versements Whop). Com. AURA90 = dues par l'entreprise, payées par les retraits. ${D.en_cours_total ? mD(D.en_cours_total) + ' de retraits demandés à envoyer.' : ''}</div>
+    </div>
+    <div class="af-carte"><b>Exports pour la comptabilité</b>
+      <div class="af-meta">Fichiers CSV (Excel, Google Sheets) à garder chaque mois avec les relevés de retrait.</div>
+      <div class="af-ligne"><button class="gris" onclick="afExport('commissions')">⬇ Commissions (${C.length})</button><button class="gris" onclick="afExport('retraits')">⬇ Retraits (${R.length})</button></div>
+      ${R.filter(x => x.statut === 'paye').length ? `<div class="af-ligne">${R.filter(x => x.statut === 'paye').slice(-12).map(x => `<button class="gris" onclick="afReleve(${x.id})">📄 Relevé n° ${x.id}</button>`).join('')}</div>` : ''}
+    </div>`;
+}
+function afCsv(lignes){ return '﻿' + lignes.map(l => l.map(v => { const t = v === null || v === undefined ? '' : String(v); return /[;"\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }).join(';')).join('\r\n'); }
+function afTelecharger(nom, contenu){ const u = URL.createObjectURL(new Blob([contenu], { type:'text/csv;charset=utf-8' })); const a = document.createElement('a'); a.href = u; a.download = nom; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); }
+function afExport(quoi){
+  const D = AF_CPT.data; if(!D || D.erreur) return;
+  const j = d => d ? new Date(d).toLocaleDateString('fr-FR') : '';
+  const per = AF_CPT.per;
+  if(quoi === 'commissions') afTelecharger(`aura90_commissions_${per}.csv`, afCsv([['Date','Référence paiement','Moyen','Formule','Montant (F CFA)','Commission (F CFA)','Versée par','Code affilié','Affilié','Client'],
+    ...D.commissions.map(x => [j(x.le), x.ref, x.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money (SasPay)', x.formule, x.montant, x.commission, x.canal === 'whop' ? 'Whop' : 'AURA90', x.code, x.partenaire, x.client])]));
+  else afTelecharger(`aura90_retraits_${per}.csv`, afCsv([['N°','Demandé le','Payé le','Statut','Montant (F CFA)','Montant local','Devise','Moyen','Numéro / IBAN / adresse','Titulaire','Pays','Code affilié','Affilié'],
+    ...D.retraits.map(x => [x.id, j(x.demande_le), j(x.paye_le), x.statut, x.montant, x.montant_local, x.devise, x.crypto ? x.crypto + ' ' + (x.reseau || '') : x.moyen, x.iban || x.adresse || x.numero, x.titulaire, x.pays, x.code, x.partenaire])]));
+}
+async function afReleve(id){
+  let r = (AF.retraits || []).find(x => x.id === id);
+  if(!r && AF_CPT.data && !AF_CPT.data.erreur) r = AF_CPT.data.retraits.find(x => x.id === id);
+  if(!r){ afMsg('Retrait introuvable.'); return; }
+  const w = window.open('', '_blank'); if(!w){ afMsg('Autorise les fenêtres pour imprimer le relevé.'); return; }
+  const j = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '—';
+  const e = afE, moyen = r.crypto ? `${r.crypto} (réseau ${r.reseau || '—'})` : r.iban ? 'Virement bancaire' : (r.moyen || 'Mobile Money');
+  const dest = r.crypto ? r.adresse : r.iban ? r.iban + (r.titulaire ? ' — ' + r.titulaire : '') : r.numero;
+  const local = r.montant_local && r.devise && !['XOF', 'XAF'].includes(r.devise) ? `${Number(r.montant_local).toLocaleString('fr-FR', { maximumFractionDigits: 6 })} ${r.devise}` : '';
+  w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Relevé de commission n° AFF-${r.id}</title>
+    <style>body{font:14px/1.5 -apple-system,system-ui,sans-serif;color:#111;max-width:720px;margin:40px auto;padding:0 24px}h1{font-size:22px;margin:0 0 4px}
+    .l{display:flex;justify-content:space-between;gap:20px;margin-top:28px}.b{border:1px solid #ccc;border-radius:8px;padding:14px;flex:1}
+    table{width:100%;border-collapse:collapse;margin-top:28px}td,th{border-bottom:1px solid #ddd;padding:10px 6px;text-align:left}th{background:#f4f4f4}
+    .t{font-size:18px;font-weight:700}.p{margin-top:36px;font-size:12px;color:#555}@media print{button{display:none}}</style></head><body>
+    <h1>Relevé de commissions d'affiliation</h1><div>N° AFF-${r.id} · émis le ${j(r.paye_le || new Date())}</div>
+    <div class="l"><div class="b"><b>Payeur</b><br>GOMIS ADMIR – SGM BUSINESS<br>Yoff Ndiouffène, Dakar, Sénégal<br>NINEA 012678077 · RCCM SN DKR 2025 A 48271<br>contact@aura90.app</div>
+      <div class="b"><b>Bénéficiaire (affilié)</b><br>${e(r.titulaire || '')}${r.titulaire ? '<br>' : ''}${e(r.email || r.partenaire || '')}<br>Code affilié : ${e(r.code || '—')}${r.pays ? '<br>Pays : ' + e(r.pays) : ''}</div></div>
+    <table><tr><th>Désignation</th><th>Montant</th></tr>
+      <tr><td>Commissions d'affiliation AURA90 (abonnements payés par Mobile Money${r.iban ? ' et carte' : ''}) — demande du ${j(r.demande_le)}</td><td>${Number(r.montant).toLocaleString('fr-FR')} F CFA${local ? '<br>≈ ' + local : ''}</td></tr>
+      <tr><td class="t">Total versé</td><td class="t">${Number(r.montant).toLocaleString('fr-FR')} F CFA</td></tr></table>
+    <div class="l"><div class="b"><b>Paiement</b><br>${e(moyen)}<br>${e(dest || '')}<br>Versé le ${j(r.paye_le)}</div></div>
+    <p class="p">Relevé établi par GOMIS ADMIR – SGM BUSINESS pour le compte de l'affilié. Les commissions sur les paiements par carte versées directement par Whop n'y figurent pas. L'affilié reste responsable de la déclaration de ses revenus dans son pays.</p>
+    <button onclick="print()">Imprimer / enregistrer en PDF</button></body></html>`);
+  w.document.close();
 }
 
 /* ---------- réglages ---------- */
@@ -2676,6 +2822,33 @@ async function ficheUser(id){
 }
 function ficheFermer(){ $('fu-voile').classList.remove('ouvert'); }
 
+/* ---- 03/11 : liens nommés (plusieurs liens par réseau : « TikTok compte 1 », « Vidéo LDC »…) ---- */
+let SL_LN = null, SL_LN_RES = 'tiktok';
+function slLiensNommes(){
+  if(SL_LN === null) return `<div class="pg-lab" style="margin-top:20px">Liens nommés</div><div class="vide">Indisponible (affilies.sql exécuté ?)</div>`;
+  const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
+  const par = {}; SL_LN.filter(x => x.actif).forEach(x => (par[x.reseau] = par[x.reseau] || []).push(x));
+  const url = x => `${SL_SITE}/?s=${x.reseau}&l=${x.slug}`;
+  return `<div class="pg-lab" style="margin-top:20px">Liens nommés · un lien par compte ou par campagne</div>
+    ${Object.keys(par).length ? Object.keys(par).sort().map(k => `<div class="sl-gr"><div class="sl-grt">${slE(SL_NOMS[k] || k)}</div>
+      ${par[k].map(x => `<div class="sl-ln"><div class="t"><b>${slE(x.nom)}</b><span>${slF(x.clics)} clics · ${slF(x.inscrits)} inscrits (${pct(x.inscrits, x.clics)}) · ${slF(x.vip)} VIP (${pct(x.vip, x.inscrits)}) · ${mD(x.ca)}</span></div>
+        <button class="gris" onclick="slCopier('${url(x)}', this)">Copier</button><button class="gris" title="Retirer" onclick="slLienRetirer(${x.id})">✕</button></div>`).join('')}</div>`).join('')
+      : '<div class="pg-sous" style="margin:0 0 8px">Aucun lien nommé : crée-en un par compte TikTok, par chaîne ou par campagne pour savoir lequel ramène des VIP.</div>'}
+    <div class="sl-new"><select id="sl-ln-res" onchange="SL_LN_RES=this.value">${SL_RESEAUX.map(([k, l]) => `<option value="${k}" ${k === SL_LN_RES ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      <input id="sl-ln-nom" maxlength="40" placeholder="Nom du lien (ex. TikTok compte 2)"><button onclick="slLienCreer(this)">Créer</button></div>`;
+}
+async function slLienCreer(b){
+  const nom = ($('sl-ln-nom').value || '').trim(); if(!nom){ toast('Donne un nom au lien'); return; }
+  b.disabled = true;
+  try{ const r = await rpc('admin_liens', { p_action:'creer', p_id: null, p_reseau: $('sl-ln-res').value, p_nom: nom });
+    if(r && r.ok){ navigator.clipboard?.writeText(`${SL_SITE}/?s=${r.lien.reseau}&l=${r.lien.slug}`).catch(() => {}); toast('Lien créé et copié ✓'); await slRendre(true); } else toast((r && r.msg) || 'Erreur'); }
+  catch(e){ toast('Erreur : ' + e.message); }
+  b.disabled = false;
+}
+async function slLienRetirer(id){
+  if(!confirm('Retirer ce lien ? Ses clics restent comptés dans le réseau.')) return;
+  try{ await rpc('admin_liens', { p_action:'retirer', p_id: id, p_reseau: null, p_nom: null }); await slRendre(true); }catch(e){ toast('Erreur : ' + e.message); }
+}
 function slCopier(t, b){ navigator.clipboard?.writeText(t).then(() => { const x = b.textContent; b.textContent = 'Copié ✓'; setTimeout(() => b.textContent = x, 1400); }); }
 async function slRendre(silencieux){
   const c = $('sl-corps');
@@ -2696,10 +2869,11 @@ async function slRendre(silencieux){
   if(!silencieux) c.innerHTML = '<div class="vide">Chargement…</div>';
   let L = [];
   const [deb, fin] = slPeriode();
-  let RL = null;
-  try{ [L, RL] = await Promise.all([
+  let RL = null; SL_LN = null;
+  try{ [L, RL, SL_LN] = await Promise.all([
     rpc('admin_sources', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }).then(x => x || []),
-    rpc('admin_relances').catch(() => null)]); }
+    rpc('admin_relances').catch(() => null),
+    rpc('admin_liens_stats', { p_debut: deb ? deb.toISOString() : null, p_fin: fin ? fin.toISOString() : null }).catch(() => null)]); }
   catch(e){ c.innerHTML = `<div class="vide">Erreur : ${slE(e.message)}<br>(suivi_liens.sql exécuté ?)</div>`; return; }
   const tot = L.reduce((a, x) => ({ clics: a.clics + x.clics, inscrits: a.inscrits + x.inscrits, vip: a.vip + x.vip, ca: a.ca + Number(x.ca) }), { clics: 0, inscrits: 0, vip: 0, ca: 0 });
   const pct = (a, b) => b ? Math.round(a * 100 / b) + ' %' : '—';
@@ -2713,6 +2887,7 @@ async function slRendre(silencieux){
         <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
       <div class="pg-sous" style="margin-top:8px">Touche un réseau pour voir ses inscrits et ses VIP · Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
+    ${slLiensNommes()}
     ${RL ? `<div class="pg-lab" style="margin-top:20px">Emails de relance (inscrits non VIP)</div>
       ${(RL.etapes || []).length ? `<table class="sl-t"><tr><th>Mail</th><th>Envoyés</th><th>Cliqués</th><th>Payés</th></tr>
         ${RL.etapes.map(x => `<tr><td>${x.etape} · −${x.pct} %</td><td>${slF(x.envoyes)}</td><td>${slF(x.cliques)}<small>${pct(x.cliques, x.envoyes)}</small></td><td>${slF(x.payes)}<small>${pct(x.payes, x.envoyes)}</small></td></tr>`).join('')}</table>`
@@ -2744,7 +2919,7 @@ function onglet_(k){
   document.querySelectorAll('.pg').forEach(p => p.classList.toggle('actif', p.id === 'pg-' + k));
   document.querySelectorAll('.side nav button, .adm-nav button').forEach(b => b.classList.toggle('a', b.dataset.o === k));
   try{ localStorage.setItem('aura90_admin_onglet', k); }catch(e){}
-  window.scrollTo(0, 0);
+  hautPage();
 }
 function onglet(k){
   if(k === 'affilies' && AF_DET){ AF_DET = null; if(AF) afRendre(); }
@@ -2880,6 +3055,7 @@ async function coAdmRepondre(id){
   b.disabled = false; b.textContent = 'Envoyer';
 }
 
+function hautPage(){ const p = document.getElementById('panel'); if(p) p.scrollTop = 0; window.scrollTo(0, 0); }
 function toast(m){ let t = document.getElementById('adm-toast'); if(!t){ t = document.createElement('div'); t.id = 'adm-toast'; t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#111a26;color:#fff;border:1px solid rgba(255,255,255,.15);padding:11px 16px;border-radius:12px;font:600 13px system-ui;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
   t.textContent = m; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = '0', 3200); }
 /* ================= RÉSILIATIONS (fonction « abonnement ») ================= */
