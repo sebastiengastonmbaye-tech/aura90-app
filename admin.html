@@ -2943,7 +2943,7 @@ function kpiHtml(cls, l, v, s, cle, extra){
 function majTableauDeBord(){
   if(!document.body.classList.contains('co')) return;
   const j = new Date(), h = j.getHours();
-  $('acc-bonjour').textContent = (h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir') + ' Babs';
+  $('acc-bonjour').textContent = (h < 5 ? 'Bonne nuit' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir');
   $('acc-date').textContent = j.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }).replace(/^./, c => c.toUpperCase()) + ' · à jour à ' + j.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
   $('acc-per').innerHTML = PERIODES.map(([k, l]) => `<button class="${PER === k ? 'actif' : ''}" onclick="perChoisir('${k}')">${l}</button>`).join('');
   majKpis(); majTodo(); majProgCartes(); majLiveCartes(); majAffCarte(); majBadges();
