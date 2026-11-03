@@ -637,6 +637,7 @@ html[dir=rtl] .ep-sl b{margin-left:0;margin-right:auto}
 .af-kv b{font-weight:700;word-break:break-all}
 .af-kv a{color:var(--aura1);text-decoration:none;word-break:break-all}
 #af-red .af-kv b{word-break:normal}
+.wa-l{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--ligne);font-size:13px}.wa-l small{display:block;color:var(--sourdine);font-size:11.5px;margin-top:2px}.wa-act{display:flex;gap:6px}.wa-act input{margin:0;padding:8px 10px;font-size:13px;min-width:200px}.wa-act button{padding:8px 12px}
 .af-det-l{padding:9px 0;border-bottom:1px solid var(--ligne);font-size:12.5px}.af-det-l:last-of-type{border-bottom:0}.af-det-l .h{display:flex;justify-content:space-between;gap:8px}.af-det-l .h span{color:var(--sourdine)}.af-det-l .h span b{color:var(--texte)}.af-det-l .h>b{color:var(--aura1);white-space:nowrap}.af-det-l .d{margin-top:3px;color:var(--sourdine)}.af-det-l s{opacity:.7}
 .af-gros{font:800 22px 'JetBrains Mono',monospace;color:var(--aura1)}
 .af-copie{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px dashed rgba(61,232,200,.35);border-radius:11px;padding:10px 12px;margin-top:8px;cursor:pointer}
@@ -1494,6 +1495,7 @@ function dtRevenus(){
     + bloc('Répartition des formules', `<div class="dt-repart"><div><b>${pm.length}</b><span>1 mois · ${fF(s(pm))}</span></div><div><b>${p3.length}</b><span>3 mois · ${fF(s(p3))}</span></div></div>`)
     + bloc('Moyens de paiement', `<div class="dt-repart">${[...new Set(p.map(x => moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech'))].sort().map(m => { const l = p.filter(x => (moyenDe(x).startsWith('SasPay') ? 'SasPay' : 'PayTech') === m); return `<div><b>${l.length}</b><span>${m} · ${fF(s(l))}</span></div>`; }).join('') || '<div><span>Aucun paiement</span></div>'}</div>`)
     + saspayEnAttente()
+    + whopEnAttente()
     + bloc('Historique des paiements' + (tous > p.length ? ` <small>(${tous - p.length} tentative(s) non abouties masquées)</small>` : ''),
         tableau('t-paie', ['Date','Email','Montant','Formule','Moyen','Code'],
           p.sort((a,b)=>(b._d||0)-(a._d||0)).map(x => [fDH(x._d), echap(emailDe(x)), fF(x._m), est3m(x._f) ? '3 mois' : '1 mois', echap(moyenDe(x)), echap(champ(x, ['code_promo','code','code_parrain']) || '—')])));
@@ -1512,6 +1514,31 @@ function saspayEnAttente(){
   return bloc('🛒 Paiements commencés, pas finalisés · 7 jours' + (lignes.length ? ` <small>(${lignes.length} à relancer)</small>` : ''),
     tableau('t-sp-att', ['Ouvert le','Email','Formule','Montant'],
       lignes.map(x => [fDH(x._d), echap(emailDe(x)), x.formule === '3mois' ? '3 mois' : '1 mois', fF(Number(x.prix) || 0)]), 'Personne — tous les paiements ouverts ont été réglés.'));
+}
+
+/* paiements Whop reçus sans compte AURA90 correspondant (03/11) : rattachés tout seuls dès que le compte est créé, ou à la main ici */
+let WA = null;
+function whopEnAttente(){
+  if(WA === null){ WA = { l: null }; rpc('admin_whop_attente').then(l => { WA.l = l || []; if(DT_VUE === 'paiements') dtRendre('paiements'); }).catch(e => { WA.l = { erreur: e.message }; if(DT_VUE === 'paiements') dtRendre('paiements'); }); }
+  const l = WA.l;
+  if(!l) return bloc('💳 Paiements Whop sans compte AURA90', '<div class="vide">Chargement…</div>');
+  if(l.erreur) return bloc('💳 Paiements Whop sans compte AURA90', `<div class="vide">Erreur : ${echap(l.erreur)} (whop_attente.sql exécuté ?)</div>`);
+  const att = l.filter(x => !x.traite_le), fait = l.filter(x => x.traite_le);
+  const ligne = x => `<div class="wa-l"><div><b>${echap(x.email || 'email inconnu')}</b>${x.whop_user ? ' · @' + echap(x.whop_user) : ''}<small>${fDH(new Date(x.recu_le))} · ${x.formule === '3mois' ? '3 mois' : '1 mois'} · ${Number(x.montant || 0).toFixed(2).replace('.', ',')} ${(x.devise || 'eur').toUpperCase()} · ${echap(x.paiement_id)}</small></div>
+      ${x.traite_le ? `<span class="dt-p ok">Rattaché à ${echap(x.compte || '?')} (${x.par === 'admin' ? 'toi' : 'création du compte'})</span>`
+        : `<div class="wa-act"><input placeholder="Email du compte AURA90" value="${echap(x.email || '')}" id="wa-${echap(x.paiement_id)}"><button onclick="whopRattacher('${echap(x.paiement_id)}', this)">Rattacher</button></div>`}</div>`;
+  return bloc('💳 Paiements Whop sans compte AURA90' + (att.length ? ` <small>(${att.length} à rattacher)</small>` : ''),
+    `<div class="dt-note">Paiement fait sur Whop sans passer par l'app : le PRO s'active tout seul dès qu'un compte est créé avec l'email du client Whop. Si la personne a un autre email, tape-le ici.</div>
+     <div class="af-msg" id="wa-msg"></div>` + (att.length ? att.map(ligne).join('') : '<div class="vide">Aucun paiement en attente : tous les paiements Whop ont un compte.</div>')
+     + (fait.length ? `<div class="dt-note" style="margin-top:12px"><b>Rattachés récemment</b></div>` + fait.slice(0, 10).map(ligne).join('') : ''));
+}
+async function whopRattacher(id, b){
+  const email = ($('wa-' + id)?.value || '').trim(), m = $('wa-msg');
+  if(!email){ m.className = 'af-msg err'; m.textContent = 'Tape l\'email du compte AURA90.'; return; }
+  b.disabled = true;
+  try{ const r = await rpc('admin_whop_attente_rattacher', { p_paiement: id, p_email: email }); m.className = 'af-msg ' + (r.ok ? 'ok' : 'err'); m.textContent = r.msg; if(r.ok){ WA = null; dtCharger().then(() => dtRendre('paiements')); } }
+  catch(e){ m.className = 'af-msg err'; m.textContent = e.message; }
+  b.disabled = false;
 }
 
 /* ---------- Activité ---------- */
