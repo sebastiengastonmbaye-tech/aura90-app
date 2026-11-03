@@ -7906,11 +7906,14 @@ function candEcran(){
   el.classList.add('actif'); try{ document.body.classList.add('cand-ouvert'); }catch(e){}
   return el;
 }
-function candFermer(){ $('cand')?.classList.remove('actif'); document.body.classList.remove('cand-ouvert'); if(CAND) candSauver(); if(CAND && CAND.mode === 'resigner') CAND = null; }
+// 03/11 : fermer le formulaire (×) = « mis de côté » : l'app ne le rouvre plus toute seule ; il se reprend depuis l'onglet Compte
+function candFermer(){ $('cand')?.classList.remove('actif'); document.body.classList.remove('cand-ouvert'); if(CAND) candSauver(); if(CAND && CAND.mode === 'candidature') candLS.set('aura90_cand_pause', '1'); if(CAND && CAND.mode === 'resigner') CAND = null; }
+const candAuto = () => candLS.get('aura90_invitation') && !candLS.get('aura90_cand_pause');
 
 // ---------- point d'entrée : lien d'invitation
 async function candOuvrir(jeton){
   jeton = jeton || candLS.get('aura90_invitation'); if(!jeton) return;
+  candLS.set('aura90_cand_pause', null);   // ouverture voulue (lien, bouton Reprendre, connexion depuis le formulaire)
   candEcran();
   $('cand-titre').textContent = 'Candidature partenaire'; $('cand-prog').innerHTML = ''; $('cand-bas').innerHTML = '';
   $('cand-corps').innerHTML = `<div class="cand-vide">Vérification de ton invitation…</div>`;
@@ -8214,16 +8217,16 @@ async function candResigner(){
   // 1. lien d'invitation : gardé dans le téléphone, retiré de l'adresse
   try{
     const q = new URLSearchParams(location.search), j = (q.get('invitation') || '').toLowerCase().replace(/[^a-f0-9]/g, '').slice(0, 80);
-    if(j){ candLS.set('aura90_invitation', j); q.delete('invitation'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); }
+    if(j){ candLS.set('aura90_invitation', j); candLS.set('aura90_cand_pause', null); q.delete('invitation'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); }
     if(q.get('candidature')){ q.delete('candidature'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); setTimeout(() => { try{ allerPage('compte'); }catch(e){} }, 900); }
   }catch(e){}
-  setTimeout(() => { if(candLS.get('aura90_invitation')) candOuvrir(); }, 1200);
+  setTimeout(() => { if(candAuto()) candOuvrir(); }, 1200);
   // 1 bis. déconnexion : le brouillon (identité, adresse…) ne reste pas dans le téléphone
   const dc0 = deconnecter;
-  window.deconnecter = function(){ candLS.set('aura90_cand_brouillon', null); CAND = null; return dc0.apply(this, arguments); };
+  window.deconnecter = function(){ candLS.set('aura90_cand_brouillon', null); candLS.set('aura90_invitation', null); candLS.set('aura90_cand_pause', null); CAND = null; return dc0.apply(this, arguments); };   // déconnexion : plus rien ne se rouvre ; l'invité reclique son lien
   // 2. après connexion : le formulaire se rouvre
   const s0 = ouvrirSession;
-  window.ouvrirSession = function(d){ const r = s0(d); if(candLS.get('aura90_invitation')) setTimeout(() => candOuvrir(), 700); return r; };
+  window.ouvrirSession = function(d){ const r = s0(d); if(candAuto()) setTimeout(() => candOuvrir(), 700); return r; };
   // 3. Compte : état de la candidature
   const c0 = chargerPartenaire;
   window.chargerPartenaire = async function(){
