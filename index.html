@@ -7882,8 +7882,15 @@ function candOptionsPays(sel, vide){
 function candAge(n){ if(!/^\d{4}-\d{2}-\d{2}$/.test(n || '')) return null; const d = new Date(n + 'T12:00:00'), a = new Date(); let x = a.getFullYear() - d.getFullYear(); if(a.getMonth() < d.getMonth() || (a.getMonth() === d.getMonth() && a.getDate() < d.getDate())) x--; return x; }
 
 // ---------- brouillon (sans les fichiers ni la signature)
-function candSauver(){ if(CAND && CAND.mode === 'candidature') candLS.set('aura90_cand_brouillon', JSON.stringify({ jeton: CAND.jeton, d: CAND.d, etape: CAND.etape })); }
-function candBrouillon(jeton){ try{ const b = JSON.parse(candLS.get('aura90_cand_brouillon') || 'null'); return b && b.jeton === jeton ? b : null; }catch(e){ return null; } }
+// 03/11 : le brouillon appartient au COMPTE qui l'a rempli (téléphone partagé, changement de compte) ; effacé à la déconnexion
+const candQui = () => (typeof SESSION !== 'undefined' && SESSION && (SESSION.uid || SESSION.email)) || null;
+function candSauver(){ if(CAND && CAND.mode === 'candidature' && candQui()) candLS.set('aura90_cand_brouillon', JSON.stringify({ jeton: CAND.jeton, u: candQui(), d: CAND.d, etape: CAND.etape })); }
+function candBrouillon(jeton){
+  try{ const b = JSON.parse(candLS.get('aura90_cand_brouillon') || 'null'); if(!b) return null;
+    if(b.jeton === jeton && b.u && b.u === candQui()) return b;
+    if(b.u !== candQui()) candLS.set('aura90_cand_brouillon', null);   // brouillon d'un autre compte : jamais montré, supprimé
+    return null; }catch(e){ return null; }
+}
 
 // ---------- écran
 function candEcran(){
@@ -7925,9 +7932,9 @@ async function candOuvrir(jeton){
     $('cand-corps').innerHTML = `<div class="cand-bloc"><b>Tu as déjà une candidature en cours</b><p>Elle est en cours d'examen. Tu retrouves son état dans l'onglet Compte.</p></div>`;
     $('cand-bas').innerHTML = `<button class="cand-b2" onclick="candFermer()">Fermer</button>`; return;
   }
-  if(CAND && CAND.mode === 'candidature' && CAND.jeton === jeton){ candRendre(); return; }   // reprise sans perdre les captures déjà ajoutées
+  if(CAND && CAND.mode === 'candidature' && CAND.jeton === jeton && CAND.u === candQui()){ candRendre(); return; }   // reprise sans perdre les captures déjà ajoutées
   const b = candBrouillon(jeton);
-  CAND = { mode: 'candidature', jeton, etape: b ? Math.min(b.etape || 0, 4) : 0, d: Object.assign({ canaux: [{ type: 'tiktok', lien: '', abonnes: '' }], public_autres: [], statut_juridique: 'particulier', paiement: '' }, b ? b.d : {}),
+  CAND = { mode: 'candidature', jeton, u: candQui(), etape: b ? Math.min(b.etape || 0, 4) : 0, d: Object.assign({ canaux: [{ type: 'tiktok', lien: '', abonnes: '' }], public_autres: [], statut_juridique: 'particulier', paiement: '' }, b ? b.d : {}),
            fichiers: [], cond: null, lu: false, sig: { nom: '', vide: true, a: false, b: false, c: false }, envoi: false };
   candRendre();
 }
@@ -8211,6 +8218,9 @@ async function candResigner(){
     if(q.get('candidature')){ q.delete('candidature'); history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); setTimeout(() => { try{ allerPage('compte'); }catch(e){} }, 900); }
   }catch(e){}
   setTimeout(() => { if(candLS.get('aura90_invitation')) candOuvrir(); }, 1200);
+  // 1 bis. déconnexion : le brouillon (identité, adresse…) ne reste pas dans le téléphone
+  const dc0 = deconnecter;
+  window.deconnecter = function(){ candLS.set('aura90_cand_brouillon', null); CAND = null; return dc0.apply(this, arguments); };
   // 2. après connexion : le formulaire se rouvre
   const s0 = ouvrirSession;
   window.ouvrirSession = function(d){ const r = s0(d); if(candLS.get('aura90_invitation')) setTimeout(() => candOuvrir(), 700); return r; };
