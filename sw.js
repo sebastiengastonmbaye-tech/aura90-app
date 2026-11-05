@@ -20,6 +20,8 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // ne jamais mettre en cache Supabase ni les fonctions : données vivantes
   if (url.hostname.endsWith('supabase.co')) return;
+  // vidéos (05/11/2026) : lecture par morceaux (Range), jamais mises en cache
+  if (e.request.headers.has('range') || url.pathname.endsWith('.mp4')) return;
   e.respondWith(
     fetch(e.request)
       .then(rep => {
