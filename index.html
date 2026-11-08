@@ -4880,7 +4880,16 @@ const SUIVI_VIS = (() => {
   if(!v){ v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); LS.set('aura90_visiteur', v); }
   return v;
 })();
-const SUIVI_ALIAS = { instagram:'insta', ig:'insta', yt:'youtube', tt:'tiktok', wa:'whatsapp', fb:'facebook', snap:'snapchat', tg:'telegram', twitter:'x' };
+// 08/11/2026 : assistants IA reconnus (par le lien ?utm_source= ou par le site d'origine)
+const SUIVI_IA = [[/chatgpt|openai/, 'chatgpt'], [/perplexity/, 'perplexity'], [/gemini|bard\./, 'gemini'], [/copilot/, 'copilot'],
+  [/claude/, 'claude'], [/grok/, 'grok'], [/deepseek/, 'deepseek'], [/mistral/, 'mistral'], [/(^|\.)meta\.ai/, 'metaai'], [/you\.com/, 'youcom']];
+function suiviIA(t){ if(!t) return null; for(const [re, k] of SUIVI_IA) if(re.test(t)) return k; return null; }
+// autre site : on garde son nom (w-lequipe_fr → « lequipe.fr » dans l'admin) au lieu de « Autres sites »
+function suiviSite(h){
+  const d = String(h).toLowerCase().replace(/^(www|m|l|lm)\./, '').replace(/[^a-z0-9.-]/g, '').replace(/\./g, '_').slice(0, 18);
+  return d.length >= 2 ? 'w-' + d : 'autre-site';
+}
+const SUIVI_ALIAS = { chatgptcom:'chatgpt', instagram:'insta', ig:'insta', yt:'youtube', tt:'tiktok', wa:'whatsapp', fb:'facebook', snap:'snapchat', tg:'telegram', twitter:'x' };
 function suiviSourceDuLien(){
   const q = new URLSearchParams(location.search);
   if(q.get('ref')) return null;
@@ -4891,15 +4900,17 @@ function suiviSourceDuLien(){
     const h0 = document.referrer ? new URL(document.referrer).hostname : '';
     if(/(^|\.)accounts\.google\.|supabase\.co$|whop\.com$|saspay|bictorys|^checkout\./.test(h0) && !q.get('s')) return null;
   }catch(e){}
-  let s = (q.get('s') || q.get('utm_source') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20);
+  // 08/11/2026 : les assistants IA (ChatGPT, Perplexity…) ajoutent ?utm_source=chatgpt.com à leurs liens
+  const brut = (q.get('s') || q.get('utm_source') || '').toLowerCase();
+  let s = suiviIA(brut) || brut.replace(/[^a-z0-9_-]/g, '').slice(0, 20);
   if(!s){
     try{
       const h = document.referrer ? new URL(document.referrer).hostname : '';
       if(h && h !== location.hostname){
-        s = /tiktok/.test(h) ? 'tiktok' : /instagram/.test(h) ? 'insta' : /youtu/.test(h) ? 'youtube'
+        s = suiviIA(h) ? suiviIA(h) : /aura90/.test(h) ? '' : /tiktok/.test(h) ? 'tiktok' : /instagram/.test(h) ? 'insta' : /youtu/.test(h) ? 'youtube'
           : /facebook|fb\.com/.test(h) ? 'facebook' : /whatsapp|wa\.me/.test(h) ? 'whatsapp'
           : /snapchat/.test(h) ? 'snapchat' : /t\.me|telegram/.test(h) ? 'telegram'
-          : /(^|\.)t\.co$|twitter|x\.com/.test(h) ? 'x' : /google\./.test(h) ? 'google' : /bing\./.test(h) ? 'bing' : 'autre-site';
+          : /(^|\.)t\.co$|twitter|x\.com/.test(h) ? 'x' : /google\./.test(h) ? 'google' : /bing\./.test(h) ? 'bing' : suiviSite(h);
       }
     }catch(e){}
   }
@@ -5785,7 +5796,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-08-1';
+const APP_VERSION = '2026-11-08-2';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;

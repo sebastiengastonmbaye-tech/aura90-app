@@ -2874,7 +2874,11 @@ function afClassement(){
 const SL_SITE = 'https://aura90.app';
 const SL_RESEAUX = [['tiktok','🎵 TikTok'],['youtube','▶️ YouTube'],['insta','📸 Instagram'],['whatsapp','💬 WhatsApp'],
   ['facebook','📘 Facebook'],['snapchat','👻 Snapchat'],['telegram','✈️ Telegram'],['x','𝕏 X / Twitter']];
-const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites', email1:'✉️ Mail −10 %', email2:'✉️ Mail −15 %', email3:'✉️ Mail −20 %' });
+const SL_NOMS = Object.assign(Object.fromEntries(SL_RESEAUX), { google:'🔎 Google', bing:'🔎 Bing', 'autre-site':'🌐 Autres sites',
+  chatgpt:'🤖 ChatGPT', perplexity:'🤖 Perplexity', gemini:'🤖 Gemini', copilot:'🤖 Copilot', claude:'🤖 Claude', grok:'🤖 Grok',
+  deepseek:'🤖 DeepSeek', mistral:'🤖 Le Chat (Mistral)', metaai:'🤖 Meta AI', youcom:'🤖 You.com', chatgptcom:'🤖 ChatGPT', email1:'✉️ Mail −10 %', email2:'✉️ Mail −15 %', email3:'✉️ Mail −20 %' });
+// 08/11/2026 : site précis (w-lequipe_fr → 🌐 lequipe.fr)
+function slNom(k){ return SL_NOMS[k] || (/^w-/.test(k || '') ? '🌐 ' + k.slice(2).replace(/_/g, '.') : k); }
 let SL_VUE = 'live', SL_PER = 'auj', SL_DEB = '', SL_FIN = '', SL_LIVE = null;
 // période choisie → [début, fin] (heure du téléphone : « aujourd'hui » = minuit → 23h59)
 function slPeriode(){
@@ -2909,7 +2913,7 @@ function slFermer(){ $('sl-voile').classList.remove('ouvert'); }
 let SL_SRC = null, SL_SRC_ONG = 'inscrits';
 async function slSource(src){
   SL_SRC = src; SL_VUE = 'source'; SL_SRC_ONG = 'inscrits';
-  $('sl-titre').textContent = SL_NOMS[src] || src;
+  $('sl-titre').textContent = slNom(src);
   $('sl-corps').innerHTML = '<div class="vide">Chargement…</div>';
   const [deb, fin] = slPeriode();
   try{
@@ -2945,7 +2949,7 @@ async function ficheUser(id){
   if(!u){ $('fu-corps').innerHTML = '<div class="vide">Compte introuvable.</div>'; return; }
   const jd = d => d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) + ' à ' + new Date(d).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) : '—';
   const actif = u.vip_jusqua && new Date(u.vip_jusqua) > new Date();
-  const src = u.source ? (SL_NOMS[u.source.source] || u.source.source) + (u.source.nouveau ? '' : ' (déjà inscrit avant le clic)')
+  const src = u.source ? (slNom(u.source.source)) + (u.source.nouveau ? '' : ' (déjà inscrit avant le clic)')
             : u.parrain ? 'Lien partenaire · code ' + u.parrain.code + (u.parrain.reseau ? ' (' + u.parrain.reseau + ')' : '')
             : 'Inconnu (inscrit avant le suivi des liens, ou venu en direct)';
   const lig = (k, v2) => `<div class="fu-l"><span>${k}</span><b>${v2}</b></div>`;
@@ -2973,7 +2977,7 @@ function slLiensNommes(){
   const par = {}; SL_LN.filter(x => x.actif).forEach(x => (par[x.reseau] = par[x.reseau] || []).push(x));
   const url = x => `${SL_SITE}/?s=${x.reseau}&l=${x.slug}`;
   return `<div class="pg-lab" style="margin-top:20px">Liens nommés · un lien par compte ou par campagne</div>
-    ${Object.keys(par).length ? Object.keys(par).sort().map(k => `<div class="sl-gr"><div class="sl-grt">${slE(SL_NOMS[k] || k)}</div>
+    ${Object.keys(par).length ? Object.keys(par).sort().map(k => `<div class="sl-gr"><div class="sl-grt">${slE(slNom(k))}</div>
       ${par[k].map(x => `<div class="sl-ln"><div class="t"><b>${slE(x.nom)}</b><span>${slF(x.clics)} clics · ${slF(x.inscrits)} inscrits (${pct(x.inscrits, x.clics)}) · ${slF(x.vip)} VIP (${pct(x.vip, x.inscrits)}) · ${mD(x.ca)}</span></div>
         <button class="gris" onclick="slCopier('${url(x)}', this)">Copier</button><button class="gris" title="Retirer" onclick="slLienRetirer(${x.id})">✕</button></div>`).join('')}</div>`).join('')
       : '<div class="pg-sous" style="margin:0 0 8px">Aucun lien nommé : crée-en un par compte TikTok, par chaîne ou par campagne pour savoir lequel ramène des VIP.</div>'}
@@ -3026,7 +3030,7 @@ async function slRendre(silencieux){
       <span>→</span><label>Fin<input type="date" value="${SL_FIN}" onchange="SL_FIN=this.value;slRendre()"></label></div>` : ''}
     <div class="sl-kpi"><div><b>${slF(tot.clics)}</b><span>Clics</span></div><div><b>${slF(tot.inscrits)}</b><span>Inscrits</span></div><div><b>${slF(tot.vip)}</b><span>VIP · ${mD(tot.ca)}</span></div></div>
     ${L.length ? `<table class="sl-t"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th><th>Encaissé</th></tr>
-      ${L.map(x => `<tr class="clic" onclick="slSource('${slE(x.source)}')"><td>${slE(SL_NOMS[x.source] || x.source)} <span style="color:var(--sourdine)">›</span></td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
+      ${L.map(x => `<tr class="clic" onclick="slSource('${slE(x.source)}')"><td>${slE(slNom(x.source))} <span style="color:var(--sourdine)">›</span></td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}<small>${pct(x.inscrits, x.clics)}</small></td>
         <td>${slF(x.vip)}<small>${pct(x.vip, x.inscrits)}</small></td><td>${mD(x.ca)}</td></tr>`).join('')}</table>
       <div class="pg-sous" style="margin-top:8px">Touche un réseau pour voir ses inscrits et ses VIP · Inscrits = comptes créés après le clic · VIP = inscrits venus du lien qui ont payé · % = taux de passage</div>`
       : '<div class="vide">Aucun clic suivi pour l\'instant : mets les liens ci-dessous dans tes bios.</div>'}
@@ -3363,7 +3367,7 @@ async function majSources(){
   }catch(e){ z.innerHTML = `<div class="vide">Liens indisponibles (suivi_liens.sql ?)</div>`; return; }
   const L = SRC7.slice().sort((a, b) => b.vip - a.vip || b.inscrits - a.inscrits || b.clics - a.clics).slice(0, 5);
   z.innerHTML = L.length ? `<div class="carte" style="padding:6px 14px"><table class="tb"><tr><th>Réseau</th><th>Clics</th><th>Inscrits</th><th>VIP</th></tr>
-    ${L.map(x => `<tr class="clic" onclick="slOuvrir('sources');setTimeout(()=>slSource('${echap(x.source)}'),50)"><td>${echap(SL_NOMS[x.source] || x.source)}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}</td><td>${slF(x.vip)}</td></tr>`).join('')}</table></div>`
+    ${L.map(x => `<tr class="clic" onclick="slOuvrir('sources');setTimeout(()=>slSource('${echap(x.source)}'),50)"><td>${echap(slNom(x.source))}</td><td>${slF(x.clics)}</td><td>${slF(x.inscrits)}</td><td>${slF(x.vip)}</td></tr>`).join('')}</table></div>`
     : '<div class="vide">Aucun clic suivi ces 7 derniers jours.</div>';
 }
 /* ---- installations ---- */
