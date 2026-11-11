@@ -3623,6 +3623,11 @@ function rendreCompte(){
   const cp = $('code-promo'), ref = localStorage.getItem('aura90_ref');
   if(offreActive() && !ab){ if(cp.value !== OFFRE.code){ cp.value = OFFRE.code; verifierCodePromo(); } }
   else if(ref && !cp.value){ cp.value = ref; verifierCodePromo(); }
+  // 10/11/2026 : filleul d'un partenaire (lien ouvert sur un autre navigateur, ou code oublié) → son code est pré-rempli
+  else if(!cp.value && !ab && estConnecte() && !window.__codeParrainVu){
+    window.__codeParrainVu = 1;
+    epRpc('mon_code_parrain', {}).then(c => { if(typeof c === 'string' && /^[A-Z0-9]{4,10}$/.test(c) && !cp.value){ cp.value = c; verifierCodePromo(); } }).catch(()=>{});
+  }
 }
 // ---- bandeau « Offre LDC » avec décompte
 function rendreLdc(){
@@ -5796,7 +5801,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-08-2';
+const APP_VERSION = '2026-11-10-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
