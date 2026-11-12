@@ -3688,7 +3688,10 @@ function ouvrirPaiement(autre){
   if(!cguOk()) return;
   $('msg-acces').innerHTML = '';
   const x = prixAffiche(FORMULE), lib = FORMULES[FORMULE][1];
-  $('paie-libelle').innerHTML = `${lib} · ${x.reduit ? '<s style="opacity:.55;font-weight:500">' + x.base + '</s> ' : ''}${x.txt}`;
+  // 12/11/2026 : code d'un partenaire appliqué (−5 % / −10 %) → la feuille montre le prix réduit, pas le prix normal
+  let prixTxt = x.txt, prixBase = x.reduit ? x.base : '';
+  try{ if(!x.reduit && typeof RED_CODE !== 'undefined' && RED_CODE && RED_CODE.pct){ const d = redDetail(FORMULE, RED_CODE.pct); prixTxt = d.final; prixBase = d.normal; } }catch(e){}
+  $('paie-libelle').innerHTML = `${lib} · ${prixBase ? '<s style="opacity:.55;font-weight:500">' + prixBase + '</s> ' : ''}${prixTxt}`;
   majBoutonCarte();
   const z = $('ps-boutons'), carte = $('champ-carte'), mob = $('btn-payer-sp').closest('.champ');
   const carteDabord = modeEuro() ? !autre : !!autre;
@@ -5801,7 +5804,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-10-1';
+const APP_VERSION = '2026-11-12-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -7408,8 +7411,8 @@ async function ajusterCotesCoupons(){
 function rbNote(s){ return s && s.resultat === 'rembourse' ? '<small class="rb-note">' + T('2 buts pile : compté à 1,00') + '</small>' : ''; }
 
 /* ================= ESPACE PARTENAIRE v2 (03/11/2026) =================
-   · Gains séparés : carte (Whop paie le partenaire) / Mobile Money (solde à retirer)
-   · Compte Whop relié depuis l'espace (fonction « partenaires »)
+   · 11/11/2026 : plus aucune liaison Whop. Toutes les commissions (carte et Mobile Money) vont dans le
+     solde AURA90 du partenaire, qui demande un retrait (Mobile Money, virement, crypto) validé par l'équipe.
    · Paliers propres à chaque partenaire, mis à jour en direct
    · Filleuls détaillés, liens nommés par réseau avec leurs stats
    · Retraits : Mobile Money, virement bancaire ou crypto (minimum 15 €) */
@@ -7434,14 +7437,6 @@ async function epFn(corps){
     headers:{ 'Content-Type':'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization:'Bearer ' + SESSION.access }, body: JSON.stringify(corps || {}) });
   try{ let r = await appel(); if(r.status === 401 && await rafraichirSession()) r = await appel(); return await r.json(); }catch(e){ return null; }
 }
-// une fois par ouverture : palier vérifié (et % mis à jour chez Whop) ; on recharge si quelque chose a changé
-async function epSyncMoi(){
-  if(EP_SYNC_FAIT) return; EP_SYNC_FAIT = true;
-  const pct0 = EP?.pct;
-  await epFn({ action:'sync_moi' });
-  const d = await epRpc('espace_partenaire');
-  if(d && d.statut === 'actif' && $('ep')?.classList.contains('actif') && (d.pct !== pct0 || JSON.stringify(d.whop) !== JSON.stringify(EP.whop))){ EP = d; epTab(EP_TAB); }
-}
 
 /* ---------- haut de l'accueil : total gagné + détail carte / Mobile Money ---------- */
 function epHero(bouton){
@@ -7453,8 +7448,8 @@ function epHero(bouton){
     <small>Total gagné</small>
     <div class="ep-gros">${typeof mGros === 'function' ? mGros(G.total) : epF(G.total) + ' <span>F CFA</span>'}</div>
     <div class="ep-split">
-      <button onclick="epDetailGains()"><span class="pt c"></span><b>${epM(G.whop_total)}</b><small>Carte · Whop</small></button>
-      <button onclick="epDetailGains()"><span class="pt m"></span><b>${epM(G.solde_total)}</b><small>Mobile Money · à retirer</small></button>
+      <button onclick="epDetailGains()"><span class="pt c"></span><b>${G.carte_vip || 0}</b><small>Abonnements par carte</small></button>
+      <button onclick="epDetailGains()"><span class="pt m"></span><b>${G.mobile_vip || 0}</b><small>Abonnements Mobile Money</small></button>
     </div>
     <div class="ep-sous" style="margin-top:12px">
       <div><b>${epM(G.mois)}</b><span>Gagné en ${mois}${ev !== null ? `<br><span class="${ev>=0?'ep-v':'ep-o'}" style="display:inline">${ev>=0?'▲ +':'▼ '}${ev} % vs mois dernier</span>` : ''}</span></div>
@@ -7475,55 +7470,25 @@ function epHeroRetrait(){
       <div><b>${epM(G.retire || 0)}</b><span>Déjà retiré</span></div>
     </div>
     ${epBoutonRetrait()}
-    <div class="ep-info">Ce solde vient des abonnements payés par Mobile Money${EP.whop?.lie ? '' : ' et par carte'}. Une commission se débloque ${EP.reglages.delai_jours} jours après le paiement de ton filleul.${EP.whop?.lie ? ' Tes commissions carte, elles, sont versées par Whop sur ton compte Whop.' : ''}</div>
+    <div class="ep-info">Ce solde vient de tous les abonnements payés par tes filleuls, par carte comme par Mobile Money. Une commission se débloque ${EP.reglages.delai_jours} jours après le paiement de ton filleul.</div>
   </div>`;
 }
 function epDetailGains(){
-  const G = EP.gains || {}, W = EP.whop || {};
+  const G = EP.gains || {};
   epVoile(`<h3>Tes gains en détail</h3><p class="s">Tu touches ${EP.pct} % sur chaque abonnement payé par tes filleuls, quel que soit le moyen de paiement.</p>
     <div class="ep-gd">
-      <div class="h">${'<span class="pt c"></span>'}<b>Carte bancaire · Whop</b><span class="ep-v">${epM(G.whop_total)}</span></div>
-      <div class="ep-kv"><span>Ce mois-ci</span><b>${epM(G.whop_mois)}</b></div>
-      <div class="ep-kv"><span>En attente chez Whop (moins de 30 jours)</span><b>${epM(G.whop_attente)}</b></div>
-      <div class="ep-kv"><span>Abonnements carte de tes filleuls</span><b>${G.carte_vip || 0}</b></div>
-      <p class="ep-info">Quand un filleul paie par carte, Apple Pay ou Google Pay, c'est <b>Whop</b> (notre plateforme de paiement par carte) qui te verse ta commission <b>automatiquement</b> sur ton compte Whop, environ 30 jours après le paiement. Tu n'as rien à demander.</p>
-      ${W.lie ? `<div class="ep-ok">✓ Compte Whop relié : <b>@${epEsc(W.user)}</b>${W.erreur ? `<br><span class="ep-o">${epEsc(W.erreur)}</span>` : ''}</div>`
-              : `<div class="ep-alerte">Ton compte Whop n'est pas relié : tes commissions carte vont dans ton solde à retirer (ci-dessous). Relie-le pour être payé automatiquement.</div>
-                 <button class="ep-btn" style="margin-top:10px" onclick="epWhopLier()">Relier mon compte Whop</button>`}
-    </div>
-    <div class="ep-gd">
-      <div class="h"><span class="pt m"></span><b>Mobile Money · SasPay</b><span class="ep-v">${epM(G.solde_total)}</span></div>
-      <div class="ep-kv"><span>Ce mois-ci</span><b>${epM(G.solde_mois)}</b></div>
+      <div class="h"><span class="pt m"></span><b>Ton solde AURA90</b><span class="ep-v">${epM(G.total ?? EP.gagne_total)}</span></div>
+      <div class="ep-kv"><span>Gagné ce mois-ci</span><b>${epM(G.mois ?? EP.gagne_mois)}</b></div>
+      <div class="ep-kv"><span>Abonnements par carte de tes filleuls</span><b>${G.carte_vip || 0}</b></div>
+      <div class="ep-kv"><span>Abonnements Mobile Money de tes filleuls</span><b>${G.mobile_vip || 0}</b></div>
       <div class="ep-kv"><span>Disponible au retrait</span><b class="ep-v">${epM(EP.dispo)}</b></div>
       <div class="ep-kv"><span>En cours de déblocage</span><b>${epM(EP.deblocage)}</b></div>
       <div class="ep-kv"><span>Déjà retiré</span><b>${epM(G.retire || 0)}</b></div>
-      <p class="ep-info">Quand un filleul paie par Wave, Orange Money ou un autre Mobile Money, le paiement passe par <b>SasPay</b>. Ta commission arrive dans ton <b>solde AURA90</b> et se débloque ${EP.reglages.delai_jours} jours après. Le lundi, tu demandes un retrait (dès ${epM(EP.reglages.min_retrait)}) : Mobile Money, virement bancaire ou crypto.</p>
+      <p class="ep-info">Que ton filleul paie par carte, Apple Pay, Google Pay, Wave, Orange Money ou un autre Mobile Money, ta commission arrive dans ton <b>solde AURA90</b> et se débloque ${EP.reglages.delai_jours} jours après. Tu demandes ensuite un retrait (dès ${epM(EP.reglages.min_retrait)}) : Mobile Money, virement bancaire ou crypto. L'équipe vérifie ta demande puis t'envoie l'argent.</p>
       <button class="ep-btn ep-btn2" onclick="epFermerVoile();epTab('retraits')">Mes retraits</button>
     </div>`);
 }
 
-/* ---------- relier le compte Whop ---------- */
-function epWhopLier(){
-  epVoile(`<h3>Relier mon compte Whop</h3>
-    <p class="s">Whop est la plateforme qui encaisse les paiements par carte d'AURA90. Une fois ton compte relié, Whop te verse automatiquement ta commission sur chaque paiement carte de tes filleuls, au taux de ton palier.</p>
-    <ol class="ep-etapes"><li>Crée un compte gratuit sur <b>whop.com</b> si tu n'en as pas (avec ton e-mail).</li><li>Choisis un pseudo dans ton profil Whop.</li><li>Entre ce pseudo (ou l'e-mail de ton compte Whop) ici.</li></ol>
-    <div class="ep-ch"><label>Pseudo ou e-mail Whop</label><input id="wh-pseudo" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ex. kader_tt" value="${epEsc(EP.whop?.user || '')}"></div>
-    <button class="ep-btn" style="margin-top:16px" id="wh-go" onclick="epWhopEnvoyer()">Relier mon compte</button>
-    <div class="ep-msg" id="wh-msg"></div>
-    <p class="s" style="margin-top:10px;font-size:11px">Les paiements par carte faits avant de relier ton compte, et leurs renouvellements, restent dans ton solde AURA90.</p>`);
-}
-async function epWhopEnvoyer(){
-  const v = ($('wh-pseudo')?.value || '').trim(), m = $('wh-msg'), b = $('wh-go');
-  if(v.length < 2){ m.innerHTML = '<span style="color:var(--ko)">Entre ton pseudo Whop.</span>'; return; }
-  b.disabled = true; b.textContent = 'Connexion à Whop…';
-  const r = await epFn({ action:'lier_whop', pseudo: v });
-  b.disabled = false; b.textContent = 'Relier mon compte';
-  if(r && r.ok){
-    epVoile(`<h3>Compte Whop relié ✓</h3><p class="s">@${epEsc(r.pseudo)} · ${r.pct} % sur chaque paiement carte de tes filleuls, versé par Whop. Ton % suit ton palier automatiquement.</p><button class="ep-btn" style="margin-top:16px" onclick="epFermerVoile()">OK</button>`);
-    epRecharger(); return;
-  }
-  m.innerHTML = `<span style="color:var(--ko)">${epEsc(r?.erreur || 'Erreur — réessaie dans un instant.')}</span>`;
-}
 
 /* ---------- palier ---------- */
 function epNiveau(){
@@ -7537,16 +7502,13 @@ function epNiveau(){
       ${EP.pct_perso ? '' : `<div class="ep-prog"><i style="width:${Math.max(3,prog)}%"></i></div>
       <div style="font-size:12px;color:var(--sourdine)">${EP.abonnes_mois} VIP payé${EP.abonnes_mois>1?'s':''} ce mois${suiv ? ` — encore <b style="color:var(--texte)">${Math.max(0, suiv.seuil - EP.abonnes_mois)}</b> pour passer à ${suiv.pct} %` : ' — tu es au niveau maximum'}</div>
       <div class="ep-pal" style="grid-template-columns:repeat(${Math.min(4, pal.length)},1fr)">${pal.map(p=>`<div class="${p.pct===EP.pct?'c':''}"><b>${p.pct} %</b>${p.seuil ? p.seuil+' VIP payés' : 'Départ'}</div>`).join('')}</div>
-      <div class="ep-info">VIP payés = abonnements payés par tes filleuls ce mois (nouveaux et réabonnements, carte et Mobile Money). Ton nouveau taux s'applique tout de suite, aussi chez Whop, et il est gardé tout le mois suivant.</div>`}
+      <div class="ep-info">VIP payés = abonnements payés par tes filleuls ce mois (nouveaux et réabonnements, carte et Mobile Money). Ton nouveau taux s'applique tout de suite et il est gardé tout le mois suivant.</div>`}
     </div>`;
 }
 function epAccueil(){
-  setTimeout(epSyncMoi, 400);
   const s7 = epSerie(7).reverse();
   const tot = s7.reduce((a,x)=>a+x.commission,0);
-  const W = EP.whop || {};
   return epHero(true) +
-    (W.lie ? '' : `<button class="ep-whop" onclick="epWhopLier()"><span class="i">W</span><span class="t"><b>Relie ton compte Whop</b><small>pour être payé automatiquement sur les paiements par carte</small></span><span class="fl">›</span></button>`) +
     `<div class="ep-sec"><h2>7 derniers jours</h2><span class="ep-v">+${epM(tot)}</span></div>
      <div class="ep-bloc">${s7.map((x,i)=>epLigneJour(x, i===0)).join('')}
        <button class="ep-lien-b" onclick="epTab('stats')">Voir toutes mes stats ›</button></div>` +
@@ -7597,7 +7559,7 @@ function epFiche(i){
       ${lig('Pays', f.pays ? epEsc(epNomPays(f.pays)) : '—')}
       ${lig('Activité', EP_ACT[f.activite] || '—')}
       ${lig('Abonnement', f.etat === 'actif' ? `${f.formule === '3mois' ? '3 mois' : '1 mois'} · jusqu'au ${epJ(f.fin)}` : f.etat === 'expire' ? `terminé le ${epJ(f.fin)}` : '—')}
-      ${lig('Paiement', f.methode ? (f.methode === 'whop' ? 'Carte (Whop)' : 'Mobile Money') : '—')}
+      ${lig('Paiement', f.methode ? (f.methode === 'whop' ? 'Carte bancaire' : 'Mobile Money') : '—')}
       ${lig('VIP depuis le', f.vip_le ? epJ(f.vip_le) : '—')}
       ${lig('Abonnements payés', f.paiements || 0)}
       ${lig('Ce filleul t\'a rapporté', `<span class="ep-v">${epM(f.gains)}</span>`)}
@@ -8169,7 +8131,8 @@ function candCaptures(){
       <div class="cand-vigs">${candVignettes(f => f.type === 'identite')}<label class="cand-plus">＋<input type="file" accept="image/*" multiple onchange="candAjouterFichiers(this,'identite')"></label></div></div>`;
 }
 function candProjet(){
-  const d = CAND.d, p = d.paiement;
+  const d = CAND.d; if(d.paiement === 'whop'){ d.paiement = ''; d.whop_pseudo = ''; }   // 11/11 : plus de versement par Whop
+  const p = d.paiement;
   const r = (k, l, sous) => `<label class="cand-radio${p === k ? ' a' : ''}"><input type="radio" name="cand-pay" ${p === k ? 'checked' : ''} onchange="CAND.d.paiement='${k}';candSauver();candRendre()"><span><b>${l}</b><small>${sous}</small></span></label>`;
   return `<div class="cand-bloc"><b>Ton projet</b></div>
     <label class="cand-ch"><span>Ce que tu comptes publier</span><textarea rows="3" oninput="CAND.d.projet_contenu=this.value;candSauver();candMajEtat()" placeholder="Ex. : vidéos d'analyse des matchs, présentation de l'app…">${candEsc(d.projet_contenu || '')}</textarea></label>
@@ -8180,9 +8143,9 @@ function candProjet(){
     <div class="cand-sous">Ton code partenaire</div>
     <label class="cand-ch"><span>Code souhaité (4 à 10 lettres ou chiffres)</span><input value="${candEsc(d.code || '')}" maxlength="10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');CAND.d.code=this.value;CAND.codeOk=null;candSauver();candVerifCode()"></label>
     <div class="cand-code" id="cand-code"></div>
-    ${candChamp('whop_pseudo', 'Ton pseudo Whop (facultatif)', 'text', 'placeholder="@pseudo"')}
     <div class="cand-sous">Paiement de tes commissions</div>
-    ${r('whop', 'Whop', 'Paiements par carte versés directement par Whop')}${r('mm', 'Mobile Money', 'Wave, Orange Money…')}${r('virement', 'Virement bancaire', 'Sur un compte à ton nom')}`;
+    <div class="cand-red" style="margin-bottom:8px">Tes commissions arrivent dans ton solde AURA90. Tu demandes un retrait, l'équipe le vérifie puis t'envoie l'argent. Choisis ton moyen préféré (tu pourras en changer à chaque retrait).</div>
+    ${r('mm', 'Mobile Money', 'Wave, Orange Money…')}${r('virement', 'Virement bancaire', 'Sur un compte à ton nom')}${r('crypto', 'Crypto', 'USDT, BTC…')}`;
 }
 let CAND_PAL = null;
 function candTexteReduction(){
