@@ -5850,7 +5850,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-12-4';
+const APP_VERSION = '2026-11-12-5';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -6959,8 +6959,8 @@ function coachRendreCombine(res){
   const chips = [1.5, 2, 3, 5, 10, 20].filter(c => c <= max);
   coFeuille(`<div class="co-f-tete"><h3>${t("Construire un combiné")}</h3><button class="co-x" onclick="coFermerFeuille()" aria-label="${coEchap(t("Fermer"))}">✕</button></div>
     <div class="co-lab">${t("Cote visée")}</div>
-    <div class="co-chips">${chips.map(c => `<button class="co-chip ${CO_CIBLE === c ? 'on' : ''}" onclick="CO_CIBLE=${c};CO_DEJA=[];coachRendreCombine()">${coCote(c)}</button>`).join('')}</div>
-    <div class="co-saisie"><input id="co-cible" type="number" inputmode="decimal" step="0.1" min="1.3" max="${max}" placeholder="${coEchap(tr("Autre cote (max {1})", max))}" value="${chips.includes(CO_CIBLE) ? '' : CO_CIBLE}" oninput="const v=parseFloat(this.value.replace(',','.'));if(v>0){CO_CIBLE=v;CO_DEJA=[];document.querySelectorAll('#co-feuille .co-chip').forEach(c=>c.classList.remove('on'))}"></div>
+    <div class="co-chips" id="co-chips-cote">${chips.map(c => `<button class="co-chip ${CO_CIBLE === c ? 'on' : ''}" onclick="CO_CIBLE=${c};CO_DEJA=[];coachRendreCombine()">${coCote(c)}</button>`).join('')}</div>
+    <div class="co-saisie"><input id="co-cible" type="number" inputmode="decimal" step="0.1" min="1.3" max="${max}" placeholder="${coEchap(tr("Autre cote (max {1})", max))}" value="${chips.includes(CO_CIBLE) ? '' : CO_CIBLE}" oninput="const v=parseFloat(this.value.replace(',','.'));if(v>0){CO_CIBLE=v;CO_DEJA=[];document.querySelectorAll('#co-chips-cote .co-chip').forEach(c=>c.classList.remove('on'))}"></div>
     <div class="co-lab">${t("Période")}</div>
     <div class="co-chips">${[['auj', "Aujourd'hui"], ['2j', "2 jours"], ['3j', "3 jours"]].map(([v, x]) => `<button class="co-chip ${CO_PERIODE === v ? 'on' : ''}" onclick="CO_PERIODE='${v}';CO_DEJA=[];coachRendreCombine()">${t(x)}</button>`).join('')}</div>
     ${coLgLigne()}
@@ -7018,6 +7018,8 @@ let CO_LG = { mode: 'tous', liste: [] }, CO_LG_DISPO = null, CO_LG_Q = '', CO_LG
 try{ const x = JSON.parse(localStorage.getItem('aura90_co_ligues') || 'null');
   if(x && ['tous', 'sauf', 'seul'].includes(x.mode) && Array.isArray(x.liste)) CO_LG = { mode: x.mode, liste: x.liste.filter(l => typeof l === 'string' && l).slice(0, 80) };
   if(CO_LG.mode !== 'tous' && !CO_LG.liste.length) CO_LG = { mode: 'tous', liste: [] }; }catch(e){}
+const CO_LG_ALIAS = { 'UEFA Nations League': 'Ligue des Nations' };
+CO_LG.liste = [...new Set(CO_LG.liste.map(l => CO_LG_ALIAS[l] || l))];
 const coLgNorm = x => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const coLgOn = (l, s) => { s = s || CO_LG; return s.mode === 'tous' || (s.mode === 'sauf' ? !s.liste.includes(l) : s.liste.includes(l)); };
 const coLgFrais = () => !!CO_LG_DISPO && !CO_LG_DISPO.erreur && Date.now() - CO_LG_DISPO.le < 5 * 60e3;
