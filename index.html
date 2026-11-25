@@ -5909,7 +5909,7 @@ if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catc
    À chaque retour dans l'app (et toutes les 15 min), on regarde si une version plus
    récente est en ligne. Si oui : bandeau « Mettre à jour » → un toucher recharge tout.
    ⚠️ Changer APP_VERSION à chaque nouvelle mise en ligne de index.html. */
-const APP_VERSION = '2026-11-22-1';
+const APP_VERSION = '2026-11-25-1';
 let MAJ_DERNIERE = 0;
 async function verifierMaj(){
   if(Date.now() - MAJ_DERNIERE < 60000) return;
@@ -8631,7 +8631,10 @@ function redAfficher(){
         const r = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/code_reduction', { method: 'POST',
           headers: { 'Content-Type': 'application/json', apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + (SESSION.access || CONFIG.SUPABASE_KEY) }, body: JSON.stringify({ p_code: c }) });
         const d = r.ok ? await r.json() : null;
-        if(d && d.pct > 0 && ($('code-promo')?.value || '').trim().toUpperCase() === c){ RED_CODE = { code: d.code, pct: d.pct }; redAfficher(); return; }
+        if(d && d.pct > 0 && ($('code-promo')?.value || '').trim().toUpperCase() === c){ RED_CODE = { code: d.code, pct: d.pct }; redAfficher();
+          // 25/11 : code d'un partenaire appliqué par un membre connecté → rattaché à ce partenaire (comme avec son lien)
+          try{ if(SESSION.access) epRpc('noter_filleul', { p_code: d.code, p_source: 'code', p_lien: null }).catch(() => {}); }catch(e){}
+          return; }
       }catch(e){}
     }
     return v0(tout);
